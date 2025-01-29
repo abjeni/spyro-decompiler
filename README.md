@@ -49,3 +49,7 @@ make run
 # -j flag to run with multiple threads
 make -j$(nproc) run
 ```
+
+## license
+
+I don't know much about licenses, Hopefully I chose a good one.
