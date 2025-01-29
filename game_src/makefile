@@ -1,0 +1,42 @@
+PROGRAM := program
+
+CC := gcc
+
+BUILD_DIR := build
+INCLUDE_DIR := include
+SOURCE_DIR := source
+DECOMPILE_DIR := decompiled
+
+SRCS = $(wildcard $(SOURCE_DIR)/*.c)
+OBJS = $(patsubst $(SOURCE_DIR)%,$(BUILD_DIR)%,$(SRCS:.c=.o))
+
+DESRCS = $(wildcard $(DECOMPILE_DIR)/*.c)
+DEOBJS = $(patsubst $(DECOMPILE_DIR)%,$(BUILD_DIR)%,$(DESRCS:.c=.o))
+
+#CFLAGS := -Wall -march=native -Ofast -pipe -ggdb -rdynamic
+CFLAGS := -Wall -march=native -Ofast -pipe
+all: $(BUILD_DIR) $(PROGRAM)
+
+$(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR) -c $< -o $@ -I.
+
+$(BUILD_DIR)/%.o: $(DECOMPILE_DIR)/%.c
+	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR) -c $< -o $@ -I.
+
+$(BUILD_DIR):
+	mkdir --parents $(BUILD_DIR)
+
+$(PROGRAM): $(OBJS) $(DEOBJS)
+	$(CC) $(CFLAGS) -lSDL2 -L../disassembly/program $^ -o $@
+
+.PHONY: clean run test
+
+clean:
+	rm -f $(PROGRAM)
+	rm -r $(BUILD_DIR)
+
+run: all
+	./$(PROGRAM)
+
+test: all
+	./$(PROGRAM) test

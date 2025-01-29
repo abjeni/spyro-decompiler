@@ -1,0 +1,10 @@
+*.bin
+/game_src/decompiled
+/game_src/objdump
+/root
+/mem_card
+build/
+program
+.cache
+compile_commands.json
+.clangd
