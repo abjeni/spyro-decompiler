@@ -6,6 +6,7 @@ BUILD_DIR := build
 INCLUDE_DIR := include
 SOURCE_DIR := source
 DECOMPILE_DIR := decompiled
+MEMCARD_DIR := ../mem_card
 
 SRCS = $(wildcard $(SOURCE_DIR)/*.c)
 OBJS = $(patsubst $(SOURCE_DIR)%,$(BUILD_DIR)%,$(SRCS:.c=.o))
@@ -15,7 +16,10 @@ DEOBJS = $(patsubst $(DECOMPILE_DIR)%,$(BUILD_DIR)%,$(DESRCS:.c=.o))
 
 #CFLAGS := -Wall -march=native -Ofast -pipe -ggdb -rdynamic
 CFLAGS := -Wall -march=native -Ofast -pipe
-all: $(BUILD_DIR) $(PROGRAM)
+all: $(BUILD_DIR) $(PROGRAM) $(MEMCARD_DIR)
+
+$(MEMCARD_DIR):
+	mkdir --parents $(MEMCARD_DIR)
 
 $(BUILD_DIR)/%.o: $(SOURCE_DIR)/%.c
 	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR) -c $< -o $@ -I.

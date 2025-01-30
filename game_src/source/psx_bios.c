@@ -563,14 +563,14 @@ uint32_t psx_open(char *file_name, uint32_t modev)
 
   char *file_path = get_memcard_path(file_name);
 
-  //printf("open(%s, %.8X)\n", file_path, modev);
-
   struct file file;
 
   if (mode.create)
   {
+    printf("creating %s\n", file_path);
     file.fd = creat(file_path, S_IRUSR | S_IWUSR);
 
+    printf("error %m\n");
     if (file.fd == -1) BREAKPOINT;
 
     file.size = mode.blocks*0x2000;
