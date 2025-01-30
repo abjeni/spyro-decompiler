@@ -1,6 +1,7 @@
 #include "psx_mem.h"
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
@@ -648,19 +649,18 @@ void init_cdrom()
   psx_mem.cdrom.status.PRMWRDY = 1;
   psx_mem.cdrom.stat.spindle_motor = 1;
 
-  int file = open(ROM_NAME, O_RDONLY);
+  FILE *file = fopen(ROM_NAME, "r");
+  assert2(file != NULL);
 
-  assert2(file >= 0);
+  assert2(fseek(file, 0, SEEK_END) != -1);
+  int filesize = ftell(file);
+  assert2(filesize != -1);
+  assert2(fseek(file, 0, SEEK_SET) != -1);
 
-  struct stat st = {0};
-
-  assert2(fstat(file, &st) == 0);
-
-  int filesize = st.st_size;
-  
-  uint8_t *ptr = mmap(NULL, filesize, PROT_READ, MAP_SHARED, file, 0);
-
-  close(file);
+  uint8_t *ptr = malloc(filesize);
+  int things_read = fread(ptr, filesize, 1, file);
+  assert2(things_read == 1);
+  assert(fclose(file) == 0);
 
   psx_mem.cdrom.disc = ptr;
 }
