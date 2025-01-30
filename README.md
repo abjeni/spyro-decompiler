@@ -70,3 +70,10 @@ make -j$(nproc) run
 ## license
 
 I don't know much about licenses, Hopefully I chose a good one.
+
+## compilation targets
+
+You will not be able to run the program on a playstation ironically.
+You would have to replace all calls to LW and SW etc. functions before we can consider adding playstation support, which is a nearly impossible task.
+It should run perfectly fine on your local machine though, and you can modify the source code and decompiled code however you want.
+Keep in mind the decompiled code gets overwritten once you rerun the decompiler, I can add a guide in the future for how to avoid this.
