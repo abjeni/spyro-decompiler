@@ -11,7 +11,7 @@
 #include <time.h>
 
 #include "psx_bios.h"
-#include "vram_view.h"
+#include "game_viewer.h"
 #include "debug.h"
 #include "triangle.h"
 #include "debug.h"

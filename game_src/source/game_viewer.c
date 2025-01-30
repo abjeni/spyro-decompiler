@@ -75,39 +75,6 @@ uint16_t keys = 0xFFFF;
 
 uint32_t get_key_mask(SDL_Keycode key)
 {
-  /*if (key == SDLK_g)
-    return 1 << 0;
-  if (key == SDLK_h)
-    return 1 << 1;
-  if (key == SDLK_b)
-    return 1 << 2;
-  if (key == SDLK_n)
-    return 1 << 3;
-  if (key == SDLK_q)
-    return 1 << 4;
-  if (key == SDLK_e)
-    return 1 << 5;
-  if (key == SDLK_SPACE)
-    return 1 << 6;
-  if (key == SDLK_LSHIFT)
-    return 1 << 7;
-  if (key == SDLK_z)
-    return 1 << 8;
-  if (key == SDLK_x)
-    return 1 << 9;
-  if (key == SDLK_c)
-    return 1 << 10;
-  if (key == SDLK_RETURN)
-    return 1 << 11;
-  if (key == SDLK_w)
-    return 1 << 12;
-  if (key == SDLK_a)
-    return 1 << 13;
-  if (key == SDLK_s)
-    return 1 << 14;
-  if (key == SDLK_d)
-    return 1 << 15;*/
-
   if (key == SDLK_RETURN)
     return 1 << 3;
 

@@ -13,6 +13,7 @@ The decompiler is a bit annoying to work with, but I was able to complete the en
 
 - graphical issues, seeing rainbows when the camera is close to the floor/grass?
 - demo mode
+- no sound
 
 ## how to compile
 
@@ -49,6 +50,19 @@ make run
 # -j flag to run with multiple threads
 make -j$(nproc) run
 ```
+
+## controls
+
+- d-pad: wasd
+- square: left shift
+- circle: e
+- cross: space
+- triangle: q
+- l1: y
+- r1: u
+- l2: h
+- r2: j
+- start: enter
 
 ## license
 
