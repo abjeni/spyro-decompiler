@@ -38,6 +38,9 @@ To compile the decompiler all you need to do is run make in the program folder, 
 cd decompilation
 
 make run
+
+# to return to git folder
+cd ..
 ```
 
 To compile the decompiled game you do the same in the games folder
