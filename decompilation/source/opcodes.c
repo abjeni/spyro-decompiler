@@ -645,7 +645,8 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
 
   if (double_inst <= 1)
   {
-    fprintf(prog.output, "  %s = 0x%.4X0000;\n", registers_nospace[inst.i16type.r2], inst.i16type.imm);
+    uint32_t addr = inst.i16type.imm << 16;
+    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr));
     return 0;
   }
 
@@ -777,13 +778,13 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
     addr += num;
     switch (inst2.opcode) {
     case SW:
-      fprintf(prog.output, "  sw(0x%.8X, %s);\n", addr, registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sw(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
       break;
     case SH:
-      fprintf(prog.output, "  sh(0x%.8X, %s);\n", addr, registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sh(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
       break;
     case SB:
-      fprintf(prog.output, "  sb(0x%.8X, %s);\n", addr, registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sb(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
       break;
     default:
       assert(0);
@@ -795,7 +796,7 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
   {
     uint32_t addr = inst2.i16type.imm;
     num |= addr;
-    fprintf(prog.output, "  %s = 0x%.8X;\n", registers_nospace[inst.i16type.r2], num);
+    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
     return 1;
   }
 
@@ -805,11 +806,11 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
     if (addr&0x8000)
       addr |= 0xFFFF0000;
     num += addr;
-    fprintf(prog.output, "  %s = 0x%.8X;\n", registers_nospace[inst.i16type.r2], num);
+    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
     return 1;
   }
 
-  fprintf(prog.output, "  %s = 0x%.4X0000;\n", registers_nospace[inst.i16type.r2], inst.i16type.imm);
+  fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
   return 0;
 }
 
