@@ -26,8 +26,7 @@ void div_psx(int32_t a, int32_t b)
     hi = 0;
     return;
   }
-    //BREAKPOINT;
-
+  
   if (b == -1 && a == 0x80000000)
     BREAKPOINT;
 
@@ -37,14 +36,14 @@ void div_psx(int32_t a, int32_t b)
 
 void multu(uint32_t a, uint32_t b)
 {
-  uint64_t result = (uint64_t)a*(uint32_t)b;
+  uint64_t result = (uint64_t)a*(uint64_t)b;
   hi = result>>32;
   lo = result&0xFFFFFFFF;
 }
 
 void mult(int32_t a, int32_t b)
 {
-  int64_t result = (int64_t)a*(int32_t)b;
+  int64_t result = (int64_t)a*(int64_t)b;
   hi = result>>32;
   lo = result&0xFFFFFFFF;
 }

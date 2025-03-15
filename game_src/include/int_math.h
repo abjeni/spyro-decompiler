@@ -18,12 +18,10 @@ typedef struct {
   int32_t x, y, z;
 } vec3_32;
 
-uint32_t spyro_cos(uint32_t angle);
-uint32_t spyro_sin(uint32_t angle);
-
 int32_t fixed_multi(int32_t a, int32_t b);
 uint32_t fixed_multu(uint32_t a, uint32_t b);
 
+int32_t abs_int(int32_t x);
 int32_t max_int(int32_t x, int32_t y);
 int32_t min_int(int32_t x, int32_t y);
 int32_t clamp_int(int32_t x, int32_t min, int32_t max);

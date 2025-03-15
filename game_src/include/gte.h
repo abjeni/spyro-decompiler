@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "int_math.h"
+
 struct cop2 {
   uint32_t VXY0;
   uint32_t VZ0;
@@ -133,6 +135,8 @@ typedef union {
 #define LM_ON 1
 
 extern struct cop2 cop2;
+
+vec3 xy_z_to_vec(uint32_t xy, uint32_t z);
 
 void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm);
 void RTPS(void);

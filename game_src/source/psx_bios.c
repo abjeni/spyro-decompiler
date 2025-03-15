@@ -454,7 +454,6 @@ uint32_t TestEvent(uint32_t event)
 
   if (events[i].class == 0xF0000009) rdy = 1;
 
-  fflush(stdout);
   return rdy;
 }
 

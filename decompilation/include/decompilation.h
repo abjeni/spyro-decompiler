@@ -102,10 +102,12 @@ struct function_name {
 struct address_name {
   uint32_t addr;
   char *name;
+  uint32_t size;
   char *id;
 };
 
 void print_func_name(struct program prog, uint32_t addr);
 char *get_address_name(struct program prog, uint32_t addr);
+char *address_description(struct program prog, uint32_t addr);
 int addr_in_range(struct program prog, uint32_t addr);
 int read_instructions(struct program prog);

@@ -1,0 +1,91 @@
+a0: pointer to big nested object
+a1: bool
+
+interesting addresses:
+0x800785A8
+
+
+the pointer (pointers in struct are relative to their own pointer's address in memory):
+// struct size parameter include its own variable size
+struct a0_struct {
+  int32_t struct1_size;
+  struct {
+    int32_t len;
+    struct {
+      uint8_t unknown[16];
+    } elements[len];
+  } struct1;
+  int32_t struct2_size;
+  struct {
+    int32_t len;
+    void *elements[len]; // pointer to unknown, relative to struct2 address, function_80012D58 makes it absolute
+  } struct2;
+
+#if a1 == 0
+
+  int32_t struct3_size;
+  struct {
+    int8_t struct3_1_size;
+    struct {
+      int32_t len;
+      void *elements[len]; // pointer to unknown, relative to struct2 address, function_80012D58 makes it absolute
+    } struct3_1;
+    int8_t struct3_2_size;
+    struct {
+      int32_t len;
+      void *elements[len]; // pointer to unknown, relative to struct2 address, function_80012D58 makes it absolute
+    } struct3_2;
+  } struct3;
+
+  int32_t struct4_size;
+  struct {
+    int32_t len;
+    void *elements[len]; // pointer to unknown, relative to struct4 address, function_80012D58 makes it absolute
+  } struct4;
+
+  int32_t struct5_size;
+  struct {
+    uint32_t unknown[2];
+    void *elements[5]; // pointer to unknown, relative to struct5 address, function_80012D58 makes it absolute
+  } struct5;
+
+#endif
+
+  int32_t struct6_size;
+  struct { // skybox (?)
+    uint32_t unknown[2];
+    void *elements[5]; // pointer to unknown, relative to struct5 address, function_80012D58 makes it absolute
+  } struct6;
+
+  struct {
+    int32_t len;
+    struct {
+      uint32_t unknown1;
+      struct {
+        int32_t len;
+        struct {
+          uint8_t unknown[0x0C];
+        } elements[len];
+        uint8_t unknown1[0x18];
+      } struct1;
+      uint32_t unknown2[5];
+      int32_t struct2_size;
+      struct {
+        void *unknown1;
+        int32_t len;
+        void *elements[len]; // pointer to unknown, relative to struct2 address, function_80012D58 makes it absolute
+      } struct2;
+    } elements[len];
+  } struct7;
+
+  int32_t struct8_size;
+  struct {
+    int8_t len;
+    struct {
+      int16_t index;
+      int16_t len;
+      uint8_t elements[len];
+    } elements[len];
+  } struct8;
+
+};

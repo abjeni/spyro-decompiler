@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define GTE_H_NO_FUNC
 #include "gte.h"
 #include "int_math.h"
 #include "debug.h"

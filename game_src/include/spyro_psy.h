@@ -1,13 +1,60 @@
+#pragma once
+
 #include <stdint.h>
 
-uint32_t ResetGraph(uint32_t mode);
-void SetDispMask(uint32_t mask);
+typedef struct __attribute__((packed)) {
+  int16_t x, y, w, h;
+} RECT;
+
+typedef struct __attribute__((packed)) {
+  uint32_t tag;
+  uint32_t code[15];
+} DR_ENV;
+
+typedef struct {
+  uint32_t tag;
+  uint32_t code[2];
+} DR_MODE;
+
+typedef struct __attribute__((packed)) {
+  RECT clip; // 0
+  int16_t ofs[2]; // 8
+  RECT tw; // C
+  uint16_t tpage; // 14
+  uint8_t dtd; // 16
+  uint8_t dfe; // 17
+  uint8_t isbg; // 18
+
+  uint8_t r0, g0, b0; // 19, 1A, 1B
+  DR_ENV dr_env; // 1C
+} DRAWENV;
+
+typedef struct __attribute__((packed)) {
+  RECT disp; // 0
+  RECT screen; // 8
+  uint8_t isinter; // 10
+  uint8_t isrgb24; // 11
+  uint8_t pad0, pad1; // 12, 13
+} DISPENV;
+
+
+void function_8005EBA0(void);
+
+// size: 0x00000010
+void spyro_srand(int32_t seed);
+int spyro_rand(void);
+
+int32_t ResetGraph(int32_t mode);
+void SetDispMask(int32_t mask);
 uint32_t DrawSync(uint32_t mode);
-uint32_t SetGraphDebug(uint32_t level);
-uint32_t ClearImage(uint32_t box_ptr, uint32_t r, uint32_t g, uint32_t b);
-uint32_t LoadImage(uint32_t box_ptr, uint32_t img_ptr);
-uint32_t StoreImage(uint32_t box_ptr, uint32_t img_ptr);
-uint32_t MoveImage(uint32_t box_ptr, uint32_t x, uint32_t y);
-void DrawOTag(uint32_t of);
-uint32_t PutDrawEnv(uint32_t env_ptr);
-uint32_t PutDispEnv(uint32_t env_ptr);
+int32_t SetGraphDebug(int32_t level);
+int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b);
+int32_t LoadImage(RECT *recp, uint32_t *p);
+int32_t StoreImage(RECT *recp, uint32_t *p);
+int32_t MoveImage(RECT *recp, int32_t x, int32_t y);
+void DrawOTag(uint32_t *of);
+DRAWENV *PutDrawEnv(DRAWENV *env);
+DISPENV *PutDispEnv(DISPENV *env);
+void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw);
+void MemCardStart(void);
+void MemCardStop(void);

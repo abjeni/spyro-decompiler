@@ -1,0 +1,43 @@
+a0: pointer to big nested object
+
+
+the pointer (pointers in struct are relative to their own pointer's address in memory):
+// struct size parameter include its own variable size
+
+struct a0_struct {
+  int32_t len;
+
+#if len < 0
+
+  void *unknown2;
+  void *unknown3;
+  void *unknown4;
+
+#endif
+
+  // 0x04
+
+  uint8_t unknown2[0x10];
+
+  // 0x14
+
+  void *unknown3[8];
+
+  // 0x34
+
+  void *unknown4;
+
+  struct {
+    int32_t len;
+    uint8_t unknown_bool1;
+    uint8_t unknown2[3];
+    uint32_t unknown3;
+    uint32_t unknown4;
+    void *unknown5; // 0x10
+    void *unknown6;
+    void *unknown7;
+    void *unknown8; // can be NULL, is tied to unknown9
+    void *unknown9;
+    
+  } *unknown5[len];
+}

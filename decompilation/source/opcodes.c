@@ -646,7 +646,7 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
   if (double_inst <= 1)
   {
     uint32_t addr = inst.i16type.imm << 16;
-    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr));
+    fprintf(prog.output, "  %s = %s;%s\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
     return 0;
   }
 
@@ -672,19 +672,19 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
       addr += num;
       switch (inst3.opcode) {
       case LW:
-        fprintf(prog.output, "  %s = lw(%s + %s);\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg]);
+        fprintf(prog.output, "  %s = lw(%s + %s);%s\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
         break;
       case LH:
-        fprintf(prog.output, "  %s = lh(%s + %s);\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg]);
+        fprintf(prog.output, "  %s = lh(%s + %s);%s\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
         break;
       case LB:
-        fprintf(prog.output, "  %s = lb(%s + %s);\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg]);
+        fprintf(prog.output, "  %s = lb(%s + %s);%s\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
         break;
       case LHU:
-        fprintf(prog.output, "  %s = lhu(%s + %s);\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg]);
+        fprintf(prog.output, "  %s = lhu(%s + %s);%s\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
         break;
       case LBU:
-        fprintf(prog.output, "  %s = lbu(%s + %s);\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg]);
+        fprintf(prog.output, "  %s = lbu(%s + %s);%s\n", registers_nospace[inst3.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
         break;
       default:
         assert(0);
@@ -704,13 +704,13 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
       addr += num;
       switch (inst3.opcode) {
       case SW:
-        fprintf(prog.output, "  sw(%s + %s, %s);\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2]);
+        fprintf(prog.output, "  sw(%s + %s, %s);%s\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2], address_description(prog, addr));
         break;
       case SH:
-        fprintf(prog.output, "  sh(%s + %s, %s);\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2]);
+        fprintf(prog.output, "  sh(%s + %s, %s);%s\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2], address_description(prog, addr));
         break;
       case SB:
-        fprintf(prog.output, "  sb(%s + %s, %s);\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2]);
+        fprintf(prog.output, "  sb(%s + %s, %s);%s\n", get_address_name(prog, addr), registers_nospace[add_reg], registers_nospace[inst3.i16type.r2], address_description(prog, addr));
         break;
       default:
         assert(0);
@@ -723,12 +723,14 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
       uint32_t addr = inst3.i16type.imm;
       if (addr&0x8000)
         addr |= 0xFFFF0000;
-      num += addr;
-      fprintf(prog.output, "  %s = %s + %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num), registers_nospace[add_reg]);
+      addr += num;
+      fprintf(prog.output, "  %s = %s + %s;%s\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
       return 2;
     }
+
+    const uint32_t addr = inst.i16type.imm << 16;
   
-    fprintf(prog.output, "  %s = 0x%.4X0000 + %s;\n", registers_nospace[inst2.rtype.r3], inst.i16type.imm, registers_nospace[add_reg]);
+    fprintf(prog.output, "  %s = %s + %s;%s\n", registers_nospace[inst2.rtype.r3], get_address_name(prog, addr), registers_nospace[add_reg], address_description(prog, addr));
     return 1;
   }
 
@@ -745,19 +747,19 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
     addr += num;
     switch (inst2.opcode) {
     case LW:
-      fprintf(prog.output, "  %s = lw(%s);\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr));
+      fprintf(prog.output, "  %s = lw(%s);%s\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
       break;
     case LH:
-      fprintf(prog.output, "  %s = lh(%s);\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr));
+      fprintf(prog.output, "  %s = lh(%s);%s\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
       break;
     case LB:
-      fprintf(prog.output, "  %s = lb(%s);\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr));
+      fprintf(prog.output, "  %s = lb(%s);%s\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
       break;
     case LHU:
-      fprintf(prog.output, "  %s = lhu(%s);\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr));
+      fprintf(prog.output, "  %s = lhu(%s);%s\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
       break;
     case LBU:
-      fprintf(prog.output, "  %s = lbu(%s);\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr));
+      fprintf(prog.output, "  %s = lbu(%s);%s\n", registers_nospace[inst2.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
       break;
     default:
       assert(0);
@@ -778,13 +780,13 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
     addr += num;
     switch (inst2.opcode) {
     case SW:
-      fprintf(prog.output, "  sw(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sw(%s, %s);%s\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2], address_description(prog, addr));
       break;
     case SH:
-      fprintf(prog.output, "  sh(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sh(%s, %s);%s\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2], address_description(prog, addr));
       break;
     case SB:
-      fprintf(prog.output, "  sb(%s, %s);\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2]);
+      fprintf(prog.output, "  sb(%s, %s);%s\n", get_address_name(prog, addr), registers_nospace[inst2.i16type.r2], address_description(prog, addr));
       break;
     default:
       assert(0);
@@ -795,8 +797,8 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
   if (inst.i16type.r2 == inst2.i16type.r1 && inst2.i16type.r1 == inst2.i16type.r2 && inst2.opcode == ORI)
   {
     uint32_t addr = inst2.i16type.imm;
-    num |= addr;
-    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
+    addr += num;
+    fprintf(prog.output, "  %s = %s;%s\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
     return 1;
   }
 
@@ -805,12 +807,12 @@ int simplify_lui(struct program prog, instruction inst, instruction inst2, instr
     uint32_t addr = inst2.i16type.imm;
     if (addr&0x8000)
       addr |= 0xFFFF0000;
-    num += addr;
-    fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
+    addr += num;
+    fprintf(prog.output, "  %s = %s;%s\n", registers_nospace[inst.i16type.r2], get_address_name(prog, addr), address_description(prog, addr));
     return 1;
   }
 
-  fprintf(prog.output, "  %s = %s;\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num));
+  fprintf(prog.output, "  %s = %s;%s\n", registers_nospace[inst.i16type.r2], get_address_name(prog, num), address_description(prog, num));
   return 0;
 }
 

@@ -1,3 +1,4 @@
+#include "spyro_psy.h"
 #include <string.h>
 
 #include "debug.h"
@@ -12,8 +13,42 @@
 #include "spyro_graphics.h"
 #include "decompilation.h"
 
+// size: 0x00000010
+void function_8005EBA0(void)
+{
+  v0 = lw(0x80074A10);
+  return;
+}
+
+int32_t random_seed = 0;
+
+// size: 0x00000010
+void spyro_srand(int32_t seed)
+{
+  random_seed = seed;
+}
+
+// size: 0x00000010
+void function_8006275C(void)
+{
+  spyro_srand(a0);
+}
+
+// size: 0x00000030
+int spyro_rand(void)
+{
+  random_seed = random_seed*0x41C64E6D + 12345;
+  return (random_seed >> 16) & 0x7FFF;
+}
+
+// size: 0x00000030
+void function_8006272C(void)
+{
+  v0 = spyro_rand();
+}
+
 // size: 0x00000184
-uint32_t ResetGraph(uint32_t mode)
+int32_t ResetGraph(int32_t mode)
 {
   sp -= 0x20;
   sw(sp + 0x10, s0);
@@ -24,7 +59,7 @@ uint32_t ResetGraph(uint32_t mode)
   switch (mode & 7) {
   case 0: // reset
   case 3:
-    spyro_printf(0x800117A8, 0x80074A1C, 0x80074A64, 0); // "ResetGraph:jtb=%08x,env=%08x\n"
+    printf("ResetGraph:jtb=%08x,env=%08x\n", 0x80074A1C, 0x80074A64);
   case 5:
     s0 = 0x80074A64;
     spyro_memset8(s0, 0, 0x80);
@@ -35,16 +70,16 @@ uint32_t ResetGraph(uint32_t mode)
     sb(0x80074A65, 1);
     sb(s0, v0);
     v0 = v0 & 0xFF;
-    sh(0x80074A68, lw(0x80074AE4 + v0*4));
-    sh(0x80074A6A, lw(0x80074AF8 + v0*4));
+    sh(VRAM_SIZE_X, lw(0x80074AE4 + v0*4));
+    sh(VRAM_SIZE_Y, lw(0x80074AF8 + v0*4));
     spyro_memset8(s0 + 0x10, -1, 0x5C);
     spyro_memset8(s0 + 0x6C, -1, 0x14);
     v0 = lbu(s0);
     break;
   default: // flush
-    if (lbu(0x80074A66) >= 2) {
+    if (lbu(psy_debug_level_ptr) >= 2) {
       if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
-      spyro_printf(0x800117C8, mode, 0, 0); // "ResetGraph(%d)...\n"
+      printf("ResetGraph(%d)...\n", mode);
     }
     a0 = 1;
     v0 = lw(lw(0x80074A5C) + 0x34);
@@ -67,20 +102,20 @@ void function_8005F2A4(void)
 }
 
 // size: 0x0000009C
-void SetDispMask(uint32_t mask)
+void SetDispMask(int32_t mask)
 {
   sp -= 0x20;
   sw(sp + 0x14, s1);
   sw(sp + 0x18, ra);
   sw(sp + 0x10, s0);
 
-  s1 = 0x80074A66;
-  if (lbu(s1) >= 2) {
+  s1 = psy_debug_level_ptr;
+  if (lbu(psy_debug_level_ptr) >= 2) {
     if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x80011850, mask, 0, 0); // SetDispMask(%d)
+    printf("SetDispMask(%d)...\n", mask);
   }
   if (mask == 0)
-    memset(addr_to_pointer(s1 + 0x6A), -1, 0x14);
+    memset(addr_to_pointer(psy_debug_level_ptr + 0x6A), -1, 0x14);
   
   if (mask)
     a0 = 0x03000000;
@@ -88,7 +123,7 @@ void SetDispMask(uint32_t mask)
     a0 = 0x03000001;
 
   if (lw(lw(0x80074A5C) + 0x10) != 0x800616F4) BREAKPOINT;
-  function_800616F4();
+  GP1_command(a0);
 
   ra = lw(sp + 0x18);
   s1 = lw(sp + 0x14);
@@ -106,10 +141,10 @@ void function_8005F6C8(void)
 // size: 0x0000006C
 uint32_t DrawSync(uint32_t mode)
 {
-  if (lbu(0x80074A66) >= 2) {
+  if (lbu(psy_debug_level_ptr) >= 2) {
     v0 = lw(0x80074A60);
     if (v0 != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x80011864, mode, 0, 0); // "DrawSync(%d)"
+    printf("DrawSync(%d)...\n", mode);
   }
   
   if (lw(lw(0x80074A5C) + 0x3C) != 0x80061F48) BREAKPOINT;
@@ -126,20 +161,21 @@ void function_8005F764(void)
 }
 
 // size: 0x00000064
-uint32_t SetGraphDebug(uint32_t level)
+int32_t SetGraphDebug(int32_t level)
 {
   // level 0: nothing
   // level 1: warnings/errors
   // level 2: function calls
   //printf("SetGraphDebug level set to %d i am setting it to level 2 instead\n", level);
   //level = 2;
+  level = 0;
 
   uint32_t previous_debug_level = lbu(psy_debug_level_ptr);
   sb(psy_debug_level_ptr, level);
 
   if (level & 0xFF) {
     if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x800117F4, level, lbu(0x80074A64), lbu(0x80074A67)); // "SetGraphDebug:level:%d,type:%d reverse:%d\n"
+    printf("SetGraphDebug:level:%d,type:%d reverse:%d\n", level, lbu(0x80074A64), lbu(0x80074A67));
   }
 
   return previous_debug_level;
@@ -152,65 +188,58 @@ void function_8005F53C(void)
 }
 
 // size: 0x00000128
-void psyq_check_box(uint32_t str, uint32_t box_ptr)
+void psyq_check_box(char *str, RECT box)
 {
-  t0 = str;
-  v1 = lbu(0x80074A66);
-  if (v1 == 1) goto label8005F808;
-  if (v1 == 2) goto label8005F8A0;
-  goto label8005F8E4;
-label8005F808: {}
-  BREAKPOINT;
-  int32_t val1 = (int32_t)lh(0x80074A68);
-  int32_t val2 = (int32_t)lh(0x80074A6A);
-  a3 = lh(box_ptr + 0);
-  v1 = lh(box_ptr + 2);
-  a1 = lh(box_ptr + 4);
-  a2 = lh(box_ptr + 6);
-  if (val1 < (int32_t)a1) goto label8005F890;
-  if (val1 < (int32_t)(a1 + a3)) goto label8005F890;
-  if (val2 < (int32_t)v1) goto label8005F890;
-  if (val2 < (int32_t)(v1 + a2)) goto label8005F890;
-  if ((int32_t)a3 < 0) goto label8005F890;
-  if ((int32_t)v1 < 0) goto label8005F890;
-  if ((int32_t)a1 <= 0) goto label8005F890;
-  if ((int32_t)a2 <= 0) goto label8005F890;
-  goto label8005F8E4;
-label8005F890:
-  a0 = 0x80011878; // "%s:bad RECT"
-  goto label8005F8A8;
-label8005F8A0:
-  a0 = 0x80011898; // "%s:"
-label8005F8A8:
-  if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
-  spyro_printf(a0, str, a2, a3);
-  if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
-  sw(sp + 0x10, lh(box_ptr + 6));
-  spyro_printf(0x80011884, lh(box_ptr + 0), lh(box_ptr + 2), lh(box_ptr + 4)); // "(%d,%d)-(%d,%d)\n"
-label8005F8E4:
+  uint32_t debug_level = lbu(psy_debug_level_ptr);
+  if (debug_level == 1) {
+    int32_t size_x = (int32_t)lh(VRAM_SIZE_X);
+    int32_t size_y = (int32_t)lh(VRAM_SIZE_Y);
+    if ((size_x < box.w)
+     || (size_x < (box.w + box.x))
+     || (size_y < box.y)
+     || (size_y < (box.y + box.h))
+     || (box.x < 0)
+     || (box.y < 0)
+     || (box.w <= 0)
+     || (box.h <= 0)) {
+      if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+      printf("%s:bad RECT", str);
+      printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
+      return;
+     }
+    return;
+  }
+  if (debug_level == 2) {
+    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    printf("%s:", str);
+    printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
+    return;
+  }
   return;
 }
 
 void function_8005F7D0(void)
 {
   BREAKPOINT;
-  psyq_check_box(a0, a1);
+  psyq_check_box(addr_to_pointer(a0), *(RECT*)addr_to_pointer(a1));
 }
 
 // size: 0x00000094
-uint32_t ClearImage(uint32_t box_ptr, uint32_t r, uint32_t g, uint32_t b)
+int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b)
 {
-  psyq_check_box(0x8001189C, box_ptr); // "ClearImage"
-  
-  a0 = lw(lw(0x80074A5C) + 0x0C);
-  a1 = box_ptr;
-  a2 = 8;
-  a3 = ((b & 0xFF) << 16)
-     | ((g & 0xFF) <<  8)
-     | ((r & 0xFF) <<  0);
+  psyq_check_box("ClearImage", *rect);
   
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
-  function_80061820();
+  //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x0C), pointer_to_addr(rect), 8, 
+  //   ((b & 0xFF) << 16)
+  // | ((g & 0xFF) <<  8)
+  // | ((r & 0xFF) <<  0));
+
+  fill_color(rect, 
+      ((b & 0xFF) << 16)
+    | ((g & 0xFF) <<  8)
+    | ((r & 0xFF) <<  0));
+  v0 = 0;
 
   return v0;
 }
@@ -218,21 +247,19 @@ uint32_t ClearImage(uint32_t box_ptr, uint32_t r, uint32_t g, uint32_t b)
 void function_8005F8F8(void)
 {
   BREAKPOINT;
-  v0 = ClearImage(a0, a1, a2, a3);
+  v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3);
 }
 
 // size: 0x00000064
-uint32_t LoadImage(uint32_t box_ptr, uint32_t img_ptr)
+int32_t LoadImage(RECT *recp, uint32_t *p)
 {
-  psyq_check_box(0x800118A8, box_ptr); // "LoadImage"
+  psyq_check_box("LoadImage", *recp); // "LoadImage"
 
-  a1 = box_ptr;
-  v0 = lw(0x80074A5C);
-  a2 = 8;
-  a0 = lw(lw(0x80074A5C) + 0x20);
-  a3 = img_ptr;
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
-  function_80061820();
+  //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x20), pointer_to_addr(recp), 8, pointer_to_addr(p));
+
+  ram_to_vram(recp, p);
+  v0 = 0;
 
   return v0;
 }
@@ -240,20 +267,18 @@ uint32_t LoadImage(uint32_t box_ptr, uint32_t img_ptr)
 void function_8005FA28(void)
 {
   BREAKPOINT;
-  v0 = LoadImage(a0, a1);
+  v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
 // size: 0x00000064
-uint32_t StoreImage(uint32_t box_ptr, uint32_t img_ptr)
+int32_t StoreImage(RECT *recp, uint32_t *p)
 {
-  psyq_check_box(0x800118B4, box_ptr); // "StoreImage"
+  psyq_check_box("StoreImage", *recp);
 
-  a1 = box_ptr;
-  a2 = 8;
-  a0 = lw(lw(0x80074A5C) + 0x1C);
-  a3 = img_ptr;
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
-  function_80061820();
+  vram_to_ram(recp, p);
+  v0 = 0;
+  //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x1C), pointer_to_addr(recp), 8, pointer_to_addr(p));
 
   return v0;
 }
@@ -261,26 +286,22 @@ uint32_t StoreImage(uint32_t box_ptr, uint32_t img_ptr)
 void function_8005FA8C(void)
 {
   BREAKPOINT;
-  v0 = StoreImage(a0, a1);
+  v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
 // size: 0x000000C4
-uint32_t MoveImage(uint32_t box_ptr, uint32_t x, uint32_t y)
+int32_t MoveImage(RECT *recp, int32_t x, int32_t y)
 {
-  psyq_check_box(0x800118C0, box_ptr); // MoveImage
+  psyq_check_box("MoveImage", *recp);
 
-  if (lh(box_ptr + 0x04) == 0 || lh(box_ptr + 0x06) == 0)
+  if (recp->w == 0 || recp->h == 0)
     return -1;
 
+  sw(0x80074B14, (recp->y << 16) | (recp->x & 0xFFFF));
   sw(0x80074B18, (y << 16) | (x & 0xFFFF));
-  sw(0x80074B14, lw(box_ptr + 0x00));
-  sw(0x80074B1C, lw(box_ptr + 0x04));
+  sw(0x80074B1C, (recp->h << 16) | (recp->w & 0xFFFF));
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
-  a0 = lw(lw(0x80074A5C) + 0x18);
-  a1 = 0x80074B0C;
-  a2 = 0x14;
-  a3 = 0;
-  function_80061820();
+  v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), 0x80074B0C, 0x14, 0);
 
   return v0;
 }
@@ -288,381 +309,384 @@ uint32_t MoveImage(uint32_t box_ptr, uint32_t x, uint32_t y)
 void function_8005FAF0(void)
 {
   BREAKPOINT;
-  v0 = MoveImage(a0, a1, a2);
+  v0 = MoveImage(addr_to_pointer(a0), a1, a2);
 }
 
 // size: 0x00000074
-void DrawOTag(uint32_t of)
+void DrawOTag(uint32_t *ot)
 {
-  if (lbu(0x80074A66) >= 2) {
-    uint32_t func = lw(0x80074A60); // 0x8006279C
-    if (func != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x800118FC, of, 0, 0); // "DrawOTag(%08x)...\n"
+  if (lbu(psy_debug_level_ptr) >= 2) {
+    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    printf("DrawOTag(%08x)...\n", pointer_to_addr_maybe(ot));
   }
-  
-  a0 = lw(lw(0x80074A5C) + 0x18);
-  a1 = of;
-  a2 = 0;
-  a3 = 0;
+
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
-  function_80061820();
+  //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), pointer_to_addr(ot), 0, 0);
+
+  execute_gpu_linked_list(ot);
 }
 
 void function_8005FD64(void)
 {
   BREAKPOINT;
-  DrawOTag(a0);
+  DrawOTag(addr_to_pointer(a0));
 }
 
 // size: 0x00000104
-uint32_t PutDrawEnv(uint32_t env_ptr)
+DRAWENV *PutDrawEnv(DRAWENV *env)
 {
-
-  sp -= 0x20;
-  sw(sp + 0x18, s2);
-  sw(sp + 0x1C, ra);
-  sw(sp + 0x10, s0);
-  s2 = 0x80074A66;
-  if (lbu(s2) >= 2) {
+  if (lbu(psy_debug_level_ptr) >= 2) {
     uint32_t func = lw(0x80074A60);
     if (func != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x80011910, env_ptr, 0, 0); // "PutDrawEnv(%08x)...\n"
+    spyro_printf(0x80011910, pointer_to_addr_maybe(env), 0, 0); // "PutDrawEnv(%08x)...\n"
   }
-  s0 = env_ptr + 0x1C;
-  spyro_clear_screen(s0, env_ptr);
-  a0 = 0x00FFFFFF;
-  a1 = s0;
-  a2 = 0x40;
-  v0 = lw(env_ptr + 0x1C);
-  v1 = lw(0x80074A5C);
-  v0 = v0 | a0;
-  sw(env_ptr + 0x1C, v0);
-  a0 = lw(v1 + 0x18);
-  v0 = lw(v1 + 0x08);
-  a3 = 0;
-  if (v0 != 0x80061820) BREAKPOINT;
-  function_80061820();
-  a3 = s2 + 0x0E;
-  a2 = env_ptr;
-  for (int i = 0; i < 23; i++) {
-    sw(a3, lw(a2));
-    a2 += 4;
-    a3 += 4;
-  }
-  v0 = env_ptr;
-  ra = lw(sp + 0x1C);
-  s2 = lw(sp + 0x18);
-  s0 = lw(sp + 0x10);
-  sp += 0x20;
-  return v0;
+
+  spyro_clear_screen(&env->dr_env, *env);
+  env->dr_env.tag = env->dr_env.tag | 0x00FFFFFF;
+  
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), pointer_to_addr(&env->dr_env), 0x40, 0);
+
+  execute_gpu_linked_list(&env->dr_env);
+
+  *(DRAWENV*)addr_to_pointer(0x80074A74) = *env;
+
+  return env;
 }
 
 void function_8005FDD8(void)
 {
   BREAKPOINT;
-  v0 = PutDrawEnv(a0);
+  v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
 }
 
 // size: 0x000000B0
-void function_80060E28(void)
+uint32_t psy_lib_func1(RECT box)
 {
   v1 = lbu(0x80074A64);
   if (v1 == 1) {
     if (lbu(0x80074A67))
-      v0 = 1024 - lh(a0 + 4) - lh(a0 + 0);
+      v0 = 1024 - box.w - box.x;
     else
-      v0 = lh(a0 + 0);
+      v0 = box.x;
   } else if (v1 != 2) {
-    v0 = lh(a0 + 0);
+    v0 = box.x;
   } else if (lbu(0x80074A67)) {
-    v1 = lh(a0 + 4);
+    v1 = box.w;
     if ((int32_t)v1 < 0) v1++;
     v1 = (int32_t)v1 >> 1;
-    v0 = 1024 - v1 - lh(a0 + 0);
+    v0 = 1024 - v1 - box.x;
   } else {
-    v1 = lh(a0 + 0);
+    v1 = box.x;
     if ((int32_t)v1 < 0) v1++;
     v0 = (int32_t)v1 >> 1;
   }
-  return;
+  return v0;
+}
+
+void function_80060E28(void)
+{
+  v0 = psy_lib_func1(*(RECT*)addr_to_pointer(a0));
 }
 
 // size: 0x000004A8
-uint32_t PutDispEnv(uint32_t env_ptr)
+DISPENV *PutDispEnv(DISPENV *env)
 {
   sp -= 40; // 0xFFFFFFD8
-  sw(sp + 0x20, ra);
   sw(sp + 0x1C, s3);
   sw(sp + 0x18, s2);
   sw(sp + 0x14, s1);
-  sw(sp + 0x10, s0);
-  s0 = env_ptr;
+
+  DISPENV *current_env = addr_to_pointer(0x80074AD0);
+
   s3 = 0x08000000;
-  v0 = lbu(0x80074A66);
+  v0 = lbu(psy_debug_level_ptr);
   if (v0 > 2) {
     v0 = lw(0x80074A60);
     if (v0 != 0x8006279C) BREAKPOINT;
-    spyro_printf(0x80011944, s0, a2, a3); // "PutDispEnv(%08x)...\n"
+    printf("PutDispEnv(%08x)...\n", pointer_to_addr_maybe(env));
   }
-  v0 = lbu(0x80074A64);
-  if (v0 == 1 || v0 == 2) {
-    a0 = s0;
-    function_80060E28();
-    v1 = lhu(s0 + 2);
-    v0 = v0 & 0xFFF;
-    v1 = v1 & 0xFFF;
-    v1 = (v1 << 12) | v0;
-    v0 = 0x05000000;
+  if (psx_has_2mb_vram()) {
+    a0 = 0x05000000 | ((env->disp.y & 0xFFF) << 12) | (psy_lib_func1(env->disp) & 0xFFF);
   } else {
-    v1 = lhu(s0 + 0);
-    v1 = v1 & 0x3FF;
-    v0 = lhu(s0 + 2);
-    v0 = v0 & 0x3FF;
-    v0 = (v0 << 10) | v1;
-    v1 = 0x05000000;
+    a0 = 0x05000000 | ((env->disp.y & 0x3FF) << 10) | (env->disp.x & 0x3FF);
   }
-  a0 = v0 | v1;
   v0 = lw(lw(0x80074A5C) + 0x10);
   if (v0 != 0x800616F4) BREAKPOINT;
-  function_800616F4();
-  v0 = lh(0x80074AD0 + 0x08);
-  v1 = lh(s0 + 0x08);
-  if (v0 != v1) goto label8006016C;
-  v0 = lh(0x80074AD0 + 0x0A);
-  v1 = lh(s0 + 0x0A);
-  if (v0 != v1) goto label8006016C;
-  v0 = lh(0x80074AD0 + 0x0C);
-  v1 = lh(s0 + 0x0C);
-  if (v0 != v1) goto label8006016C;
-  v0 = lh(0x80074AD0 + 0x0E);
-  v1 = lh(s0 + 0x0E);
-  if (v0 == v1) goto label80060334;
-label8006016C:
-  function_8005EBA0();
-  a0 = lh(s0 + 0x08);
-  sb(s0 + 0x12, v0);
-  v0 = v0 & 0xFF;
-  v1 = a0 << 2;
-  v1 += a0;
-  v1 = v1 << 1;
-  a0 = lh(s0 + 0x0A);
-  if (v0 == 0) {
-    v1 += 608; // 0x0260
-    goto label800601A0;
-  }
-  v1 += 608; // 0x0260
-  s1 = a0 + 19; // 0x0013
-  goto label800601A4;
-label800601A0:
-  s1 = a0 + 16; // 0x0010
-label800601A4:
-  a1 = lh(s0 + 0x000C);
-  if (a1 == 0) {
-    v0 = a1 << 2;
-    goto label800601C4;
-  }
-  v0 = a1 << 2;
-  v0 += a1;
-  v0 = v0 << 1;
-  a2 = v1 + v0;
-  goto label800601C8;
-label800601C4:
-  a2 = v1 + 2560; // 0x0A00
-label800601C8:
-  v0 = lh(s0 + 0x000E);
-  if (v0 != 0) {
-    s2 = s1 + v0;
-    goto label800601DC;
-  }
-  s2 = s1 + v0;
-  s2 = s1 + 240; // 0x00F0
-label800601DC:
-  v0 = (int32_t)v1 < 500;
-  if (v0 != 0) {
-    v0 = (int32_t)v1 < 3291;
-    goto label800601F8;
-  }
-  v0 = (int32_t)v1 < 3291;
-  if (v0 == 0) {
-    a1 = 3290; // 0x0CDA
-    goto label800601FC;
-  }
-  a1 = 3290; // 0x0CDA
-  a1 = v1;
-  goto label800601FC;
-label800601F8:
-  a1 = 500; // 0x01F4
-label800601FC:
-  v1 = a1;
-  a1 = v1 + 80; // 0x0050
-  v0 = (int32_t)a2 < (int32_t)a1;
-  if (v0 != 0) {
-    v0 = (int32_t)s1 < 16;
-    goto label80060224;
-  }
-  v0 = (int32_t)s1 < 16;
-  v0 = (int32_t)a2 < 3291;
-  if (v0 == 0) {
-    a1 = 3290; // 0x0CDA
-    goto label80060220;
-  }
-  a1 = 3290; // 0x0CDA
-  a1 = a2;
-label80060220:
-  v0 = (int32_t)s1 < 16;
-label80060224:
-  if (v0 != 0) {
-    a2 = a1;
-    goto label80060278;
-  }
-  a2 = a1;
-  v0 = lbu(s0 + 0x0012);
-  if (v0 == 0) {
-    v0 = (int32_t)s1 < 311;
-    goto label8006024C;
-  }
-  v0 = (int32_t)s1 < 311;
-  if (v0 == 0) goto label80060258;
-  a0 = s1;
-  goto label8006027C;
-label8006024C:
-  v0 = (int32_t)s1 < 257;
-  if (v0 != 0) goto label80060270;
-label80060258:
-  v0 = lbu(s0 + 0x0012);
-  if (v0 == 0) {
-    a0 = 256; // 0x0100
-    goto label8006027C;
-  }
-  a0 = 256; // 0x0100
-  a0 = 310; // 0x0136
-  goto label8006027C;
-label80060270:
-  a0 = s1;
-  goto label8006027C;
-label80060278:
-  a0 = 16; // 0x0010
-label8006027C:
-  s1 = a0;
-  a1 = s1 + 2; // 0x0002
-  v0 = (int32_t)s2 < (int32_t)a1;
-  if (v0 != 0) goto label800602D8;
-  v0 = lbu(s0 + 0x0012);
-  if (v0 == 0) {
-    v0 = (int32_t)s2 < 313;
-    goto label800602B0;
-  }
-  v0 = (int32_t)s2 < 313;
-  if (v0 == 0) goto label800602BC;
-  a1 = s2;
-  goto label800602D8;
-label800602B0:
-  if ((int32_t)s2 < 259) goto label800602D4;
-label800602BC:
-  if (lbu(s0 + 0x12))
-    a1 = 0x138;
-  else
-    a1 = 0x102;
-  goto label800602D8;
-label800602D4:
-  a1 = s2;
-label800602D8:
-  s2 = a1;
-  v0 = a2 & 0xFFF;
-  v0 = v0 << 12;
-  a0 = v1 & 0xFFF;
-  v1 = 0x06000000;
-  a1 = lw(0x80074A5C);
-  a0 = a0 | v1;
-  a0 = v0 | a0;
-  v0 = lw(lw(0x80074A5C) + 0x10);
-  if (v0 != 0x800616F4) BREAKPOINT;
-  function_800616F4();
+  GP1_command(a0);
 
-  v0 = s2 & 0x3FF;
-  v0 = v0 << 10;
-  a0 = s1 & 0x3FF;
-  v1 = 0x07000000;
-  a1 = lw(0x80074A5C);
-  a0 = a0 | v1;
-  a0 = v0 | a0;
-  v0 = lw(lw(0x80074A5C) + 0x10);
-  if (v0 != 0x800616F4) BREAKPOINT;
-  function_800616F4();
-label80060334:
-  v1 = lw(0x80074AE0);
-  v0 = lw(s0 + 0x10);
-  if (v1 != v0) goto label800603BC;
-  v0 = lh(0x80074AD0);
-  v1 = lh(s0 + 0x00);
-  if (v0 != v1) goto label800603BC;
-  v0 = lh(0x80074AD2);
-  v1 = lh(s0 + 0x02);
-  if (v0 != v1) goto label800603BC;
-  v0 = lh(0x80074AD4);
-  v1 = lh(s0 + 0x04);
-  if (v0 != v1) goto label800603BC;
-  v0 = lh(0x80074AD6);
-  v1 = lh(s0 + 0x06);
-  if (v0 == v1) goto label800604A0;
-label800603BC:
-  function_8005EBA0();
-  sb(s0 + 0x0012, v0);
-  v0 = v0 & 0xFF;
-  if (v0 == 1)
-    s3 = s3 | 0x08;
-  v0 = lbu(s0 + 0x11);
-  if (v0) s3 = s3 | 0x10;
-  v0 = lbu(s0 + 0x10);
-  if (v0) s3 = s3 | 0x20;
-  v0 = lbu(0x80074A67);
-  if (v0) s3 = s3 | 0x80;
-  v1 = lh(s0 + 0x04);
-  v0 = (int32_t)v1 < 281;
-  if (v0 != 0) goto label80060464;
-  v0 = (int32_t)v1 < 353;
-  if (v0) {
-    s3 = s3 | 0x01;
+  if (current_env->screen.x != env->screen.x
+   || current_env->screen.y != env->screen.y
+   || current_env->screen.w != env->screen.w
+   || current_env->screen.h != env->screen.h)
+  {
+    function_8005EBA0();
+    env->pad0 = v0;
+    v0 = v0 & 0xFF;
+    v1 = env->screen.x*10;
+    
+    a0 = env->screen.y;
+    v1 += 608; // 0x0260
+    if (v0 == 0) goto label800601A0;
+    s1 = a0 + 0x13;
+    goto label800601A4;
+  label800601A0:
+    s1 = a0 + 0x10;
+  label800601A4:
+    a1 = env->screen.w;
+    if (a1 == 0) {
+      v0 = a1 << 2;
+      goto label800601C4;
+    }
+    v0 = a1 << 2;
+    v0 += a1;
+    v0 = v0 << 1;
+    a2 = v1 + v0;
+    goto label800601C8;
+  label800601C4:
+    a2 = v1 + 2560; // 0x0A00
+  label800601C8:
+    v0 = env->screen.h;
+    if (v0 != 0) {
+      s2 = s1 + v0;
+      goto label800601DC;
+    }
+    s2 = s1 + v0;
+    s2 = s1 + 240; // 0x00F0
+  label800601DC:
+    v0 = (int32_t)v1 < 500;
+    if (v0 != 0) {
+      v0 = (int32_t)v1 < 3291;
+      goto label800601F8;
+    }
+    v0 = (int32_t)v1 < 3291;
+    if (v0 == 0) {
+      a1 = 3290; // 0x0CDA
+      goto label800601FC;
+    }
+    a1 = 3290; // 0x0CDA
+    a1 = v1;
+    goto label800601FC;
+  label800601F8:
+    a1 = 500; // 0x01F4
+  label800601FC:
+    v1 = a1;
+    a1 = v1 + 80; // 0x0050
+    v0 = (int32_t)a2 < (int32_t)a1;
+    if (v0 != 0) {
+      v0 = (int32_t)s1 < 16;
+      goto label80060224;
+    }
+    v0 = (int32_t)s1 < 16;
+    v0 = (int32_t)a2 < 3291;
+    if (v0 == 0) {
+      a1 = 3290; // 0x0CDA
+      goto label80060220;
+    }
+    a1 = 3290; // 0x0CDA
+    a1 = a2;
+  label80060220:
+    v0 = (int32_t)s1 < 16;
+  label80060224:
+    if (v0 != 0) {
+      a2 = a1;
+      goto label80060278;
+    }
+    a2 = a1;
+    v0 = env->pad0;
+    if (v0 == 0) {
+      v0 = (int32_t)s1 < 311;
+      goto label8006024C;
+    }
+    v0 = (int32_t)s1 < 311;
+    if (v0 == 0) goto label80060258;
+    a0 = s1;
+    goto label8006027C;
+  label8006024C:
+    v0 = (int32_t)s1 < 257;
+    if (v0 != 0) goto label80060270;
+  label80060258:
+    v0 = env->pad0;
+    if (v0 == 0) {
+      a0 = 256; // 0x0100
+      goto label8006027C;
+    }
+    a0 = 256; // 0x0100
+    a0 = 310; // 0x0136
+    goto label8006027C;
+  label80060270:
+    a0 = s1;
+    goto label8006027C;
+  label80060278:
+    a0 = 16; // 0x0010
+  label8006027C:
+    s1 = a0;
+    a1 = s1 + 2; // 0x0002
+    v0 = (int32_t)s2 < (int32_t)a1;
+    if (v0 != 0) goto label800602D8;
+    v0 = env->pad0;
+    if (v0 == 0) {
+      v0 = (int32_t)s2 < 313;
+      goto label800602B0;
+    }
+    v0 = (int32_t)s2 < 313;
+    if (v0 == 0) goto label800602BC;
+    a1 = s2;
+    goto label800602D8;
+  label800602B0:
+    if ((int32_t)s2 < 259) goto label800602D4;
+  label800602BC:
+    if (env->pad0)
+      a1 = 0x138;
+    else
+      a1 = 0x102;
+    goto label800602D8;
+  label800602D4:
+    a1 = s2;
+  label800602D8:
+    s2 = a1;
+    a0 = 0x06000000 | ((a2 & 0xFFF) << 12) | (v1 & 0xFFF);
+    a1 = lw(0x80074A5C);
+    v0 = lw(lw(0x80074A5C) + 0x10);
+    if (v0 != 0x800616F4) BREAKPOINT;
+    GP1_command(a0);
+
+    a0 = 0x07000000 | ((s2 & 0x3FF) << 10) | (s1 & 0x3FF);
+    a1 = lw(0x80074A5C);
+    v0 = lw(lw(0x80074A5C) + 0x10);
+    if (v0 != 0x800616F4) BREAKPOINT;
+    GP1_command(a0);
+  }
+  
+  if (current_env->isinter != env->isinter
+   || current_env->disp.x != env->disp.x
+   || current_env->disp.y != env->disp.y
+   || current_env->disp.w != env->disp.w
+   || current_env->disp.h != env->disp.h) 
+  {
+    function_8005EBA0();
+    env->pad0 = v0;
+    v0 = v0 & 0xFF;
+    if (v0 == 1)
+      s3 = s3 | 0x08;
+    v0 = env->isrgb24;
+    if (v0) s3 = s3 | 0x10;
+    v0 = env->isinter;
+    if (v0) s3 = s3 | 0x20;
+    v0 = lbu(0x80074A67);
+    if (v0) s3 = s3 | 0x80;
+    v1 = env->disp.w;
+    v0 = (int32_t)v1 < 281;
+    if (v0 != 0) goto label80060464;
+    v0 = (int32_t)v1 < 353;
+    if (v0) {
+      s3 = s3 | 0x01;
+      goto label80060464;
+    }
+    v0 = (int32_t)v1 < 401;
+    if (v0 == 0) goto label80060450;
+    s3 = s3 | 0x40;
     goto label80060464;
+  label80060450:
+    v0 = (int32_t)v1 < 561;
+    if (v0 == 0) goto label80060460;
+    s3 = s3 | 0x2;
+    goto label80060464;
+  label80060460:
+    s3 = s3 | 0x3;
+  label80060464:
+    v0 = env->pad0;
+    v1 = env->disp.h;
+    if (v0) {
+      v0 = (int32_t)v1 < 289;
+    } else {
+      v0 = (int32_t)v1 < 257;
+    }
+    if (v0 == 0) s3 = s3 | 0x24;
+    v0 = lw(lw(0x80074A5C) + 0x10);
+    a0 = s3;
+    if (v0 != 0x800616F4) BREAKPOINT;
+    GP1_command(a0);
   }
-  v0 = (int32_t)v1 < 401;
-  if (v0 == 0) goto label80060450;
-  s3 = s3 | 0x40;
-  goto label80060464;
-label80060450:
-  v0 = (int32_t)v1 < 561;
-  if (v0 == 0) goto label80060460;
-  s3 = s3 | 0x2;
-  goto label80060464;
-label80060460:
-  s3 = s3 | 0x3;
-label80060464:
-  v0 = lbu(s0 + 0x12);
-  v1 = lh(s0 + 0x06);
-  if (v0) {
-    v0 = (int32_t)v1 < 289;
-  } else {
-    v0 = (int32_t)v1 < 257;
-  }
-  if (v0 == 0) s3 = s3 | 0x24;
-  v0 = lw(lw(0x80074A5C) + 0x10);
-  a0 = s3;
-  if (v0 != 0x800616F4) BREAKPOINT;
-  function_800616F4();
-label800604A0:
-  spyro_memcpy8(0x80074AD0, s0, 0x14);
-  v0 = s0;
-  ra = lw(sp + 0x20);
+  *current_env = *env;
   s3 = lw(sp + 0x1C);
   s2 = lw(sp + 0x18);
   s1 = lw(sp + 0x14);
-  s0 = lw(sp + 0x10);
   sp += 0x28;
-  return v0;
+  return env;
 }
 
 void function_80060030(void)
 {
   BREAKPOINT;
-  v0 = PutDispEnv(a0);
+  v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
+}
+
+// size: 0x00000058
+void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw)
+{
+  p->tag = (p->tag & 0x00FFFFFF) | (2 << 24);
+  p->code[0] = spyro_draw_mode_setting_command(dfe, dfd, tpage);
+  p->code[1] = spyro_set_texture_window_setting_command(tw);
+  return;
+}
+
+// size: 0x00000058
+void function_80060670(void)
+{
+  SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)));
+}
+
+// size: 0x000001E4
+void MemCardStart(void)
+{
+  uint32_t crit = EnterCriticalSection();
+  sw(memcard_events, OpenEvent(0xF4000001, 4, 0x1000, 0x80067DD0));
+  sw(0x80075B10, OpenEvent(0xF4000001, 0x8000, 0x1000, 0x80067DE4));
+  sw(0x80075B14, OpenEvent(0xF4000001, 0x100, 0x1000, 0x80067DF8));
+  sw(0x80075B18, OpenEvent(0xF4000001, 0x2000, 0x1000, 0x80067E0C));
+  sw(0x80075B1C, OpenEvent(0xF0000011, 4, 0x1000, 0x80067E20));
+  sw(0x80075B20, OpenEvent(0xF0000011, 0x8000, 0x1000, 0x80067E34));
+  sw(0x80075B24, OpenEvent(0xF0000011, 0x100, 0x1000, 0x80067E48));
+  sw(0x80075B28, OpenEvent(0xF0000011, 0x2000, 0x1000, 0x80067E5C));
+  EnableEvent(lw(memcard_events));
+  EnableEvent(lw(0x80075B10));
+  EnableEvent(lw(0x80075B14));
+  EnableEvent(lw(0x80075B18));
+  EnableEvent(lw(0x80075B1C));
+  EnableEvent(lw(0x80075B20));
+  EnableEvent(lw(0x80075B24));
+  EnableEvent(lw(0x80075B28));
+
+  ra = 0x8006805C;
+  function_8006815C();
+  
+  if (crit == 1) ExitCriticalSection();
+}
+
+// size: 0x000001E4
+void function_80067EA0(void)
+{
+  MemCardStart();
+}
+
+// size: 0x000000B8
+void MemCardStop(void)
+{
+  uint32_t crit = EnterCriticalSection();
+  CloseEvent(lw(memcard_events));
+  CloseEvent(lw(0x80075B10));
+  CloseEvent(lw(0x80075B14));
+  CloseEvent(lw(0x80075B18));
+  CloseEvent(lw(0x80075B1C));
+  CloseEvent(lw(0x80075B20));
+  CloseEvent(lw(0x80075B24));
+  CloseEvent(lw(0x80075B28));
+  if (crit == 1) ExitCriticalSection(); 
+}
+
+// size: 0x000000B8
+void function_800680A4(void)
+{
+  MemCardStop();
 }

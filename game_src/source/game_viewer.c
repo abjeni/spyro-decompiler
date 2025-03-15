@@ -9,7 +9,10 @@
 
 #define WIDTH (512)
 #define HEIGHT (240)
-#define SCALE 4
+#define SCALE 2
+
+int resx = WIDTH;
+int resy = HEIGHT;
 
 int create_window(SDL_Window** window, SDL_Surface **screen_surface, int x, int y)
 {
@@ -29,39 +32,66 @@ int create_window(SDL_Window** window, SDL_Surface **screen_surface, int x, int 
 SDL_Window* g_window;
 SDL_Surface *g_screen_surface;
 
-void update_vram(uint8_t *mem, uint32_t X, uint32_t Y)
+void update_vram(uint8_t *mem, uint32_t X, uint32_t Y, uint8_t bit16)
 {
   SDL_Window *window = g_window;
   SDL_Surface *screen_surface = g_screen_surface;
 
   SDL_LockSurface(screen_surface);
 
-  uint16_t *ptr = (uint16_t *)mem;  
   uint32_t *pixels = (uint32_t *)screen_surface->pixels;
 
-  uint32_t sx = screen_surface->w/WIDTH;
-  uint32_t sy = screen_surface->h/HEIGHT;
+  uint32_t sx = screen_surface->w/resx;
+  uint32_t sy = screen_surface->h/resy;
 
   uint32_t scale = sx < sy ? sx : sy;
 
-  for (int y = 0; y < HEIGHT; y++)
+  if (bit16)
   {
-    for (int x = 0; x < WIDTH; x++)
+    uint8_t *ptr = (uint8_t *)mem;
+    for (int y = 0; y < resy; y++)
     {
-      uint32_t i = (y+Y)*1024+x+X;
-      uint32_t rgb = ptr[i];
-      uint32_t r = (rgb >>  0) & 0x1F;
-      uint32_t g = (rgb >>  5) & 0x1F;
-      uint32_t b = (rgb >> 10) & 0x1F;
-
-      uint32_t color = (b<<3) | (g<<11) | (r<<19);
-
-      for (int x2 = 0; x2 < scale; x2++)
-      for (int y2 = 0; y2 < scale; y2++)
+      for (int x = 0; x < resx; x++)
       {
-        int x3 = x*scale+x2;
-        int y3 = y*scale+y2;
-        pixels[y3*screen_surface->pitch/4+x3] = color;
+        uint32_t i = (y+Y)*2048+(x+X)*3;
+        uint32_t r = ptr[i+0];
+        uint32_t g = ptr[i+1];
+        uint32_t b = ptr[i+2];
+
+        uint32_t color = (b<<0) | (g<<8) | (r<<16);
+
+        for (int x2 = 0; x2 < scale; x2++)
+        for (int y2 = 0; y2 < scale; y2++)
+        {
+          int x3 = x*scale+x2;
+          int y3 = y*scale+y2;
+          pixels[y3*screen_surface->pitch/4+x3] = color;
+        }
+      }
+    }
+  }
+  else
+  {
+    uint16_t *ptr = (uint16_t *)mem;
+    for (int y = 0; y < resy; y++)
+    {
+      for (int x = 0; x < resx; x++)
+      {
+        uint32_t i = (y+Y)*1024+x+X;
+        uint32_t rgb = ptr[i];
+        uint32_t r = (rgb >>  0) & 0x1F;
+        uint32_t g = (rgb >>  5) & 0x1F;
+        uint32_t b = (rgb >> 10) & 0x1F;
+
+        uint32_t color = (b<<3) | (g<<11) | (r<<19);
+
+        for (int x2 = 0; x2 < scale; x2++)
+        for (int y2 = 0; y2 < scale; y2++)
+        {
+          int x3 = x*scale+x2;
+          int y3 = y*scale+y2;
+          pixels[y3*screen_surface->pitch/4+x3] = color;
+        }
       }
     }
   }
@@ -159,12 +189,20 @@ void wait_frame(void)
     do {
       current_ticks = SDL_GetTicks();
       diff = current_ticks-last_ticks;
-    } while (diff < 1000/30);
+    } while (diff < 1000/60);
   }
   last_ticks = current_ticks;
 }
 
-void init_vram_view()
+void set_resolution(int x, int y)
+{
+  if (resx != x || resy != y) {
+    resx = x;
+    resy = y;
+  }
+}
+
+void init_game_window()
 {
   SDL_Window *window = NULL;
   SDL_Surface *screen_surface = NULL;

@@ -12,84 +12,163 @@
 char *used_skips = NULL;
 
 struct function_name function_names[] = {
-  {0x80016500,"read_disk1(a0, a1, a2, a3, lw(sp+0x10))","void read_disk1(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)"},
-  {0x80016698,"read_disk2(a0, a1, a2, a3, lw(sp+0x10))","void read_disk2(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)"},
-  {0x80016914,"spyro_memset32(a0, a1, a2)","void spyro_memset32(uint32_t dst, uint32_t set, uint32_t len)"},
-  {0x80016930,"assert((a2%16) == 0);spyro_memset32(a0, a1, a2)"},
-  {0x80016958,"spyro_memcpy32(a0, a1, a2)","void spyro_memcpy32(uint32_t dst, uint32_t src, uint32_t len)"},
-  {0x8005DB14,"InitHeap(a0, a1)"},
-  {0x8005DB24,"LoadExec((char *)addr_to_pointer(a0), a1, a2)"},
-  {0x8005DB34,"_96_init()"},
-  {0x8005DB4C,"_96_remove()"},
-  {0x8005DB64,"DeliverEvent(a0, a1)"},
-  {0x8005DB74,"v0 = OpenEvent(a0, a1, a2, a3)"},
-  {0x8005DB84,"v0 = TestEvent(a0)"},
-  {0x8005DB94,"v0 = EnableEvent(a0)"},
-  {0x8005DBA4,"v0 = EnterCriticalSection()"},
-  {0x8005DBB4,"ExitCriticalSection()"},
-  {0x8005DDA8,"v0 = ChangeClearPAD(a0)"},
-  {0x8005DDB8,"v0 = ChangeClearRCnt(a0, a1)"},
-  {0x8005E4AC,"spyro_memclr32(a0, a1)", "void spyro_memclr32(uint32_t dst, uint32_t len)"},
-  {0x8005E4D8,"ReturnFromException()"},
-  {0x8005E4E8,"ResetEntryInt(a0)"},
-  {0x8005E4F8,"HookEntryInt(a0)"},
-  {0x8005E604,"spyro_memclr32(a0, a1)"},
-  {0x8005E8AC,"spyro_memclr32(a0, a1)"},
-  {0x8005F2A4,"v0 = ResetGraph(a0)","uint32_t ResetGraph(uint32_t mode)"},
-  {0x8005F53C,"v0 = SetGraphDebug(a0)","uint32_t SetGraphDebug(uint32_t level)"},
-  {0x8005F6C8,"SetDispMask(a0)","void SetDispMask(uint32_t mask)"},
-  {0x8005F764,"v0 = DrawSync(a0)","uint32_t DrawSync(uint32_t mode)"},
-  {0x8005F8F8,"v0 = ClearImage(a0, a1, a2, a3)","uint32_t ClearImage(uint32_t box_ptr, uint32_t r, uint32_t g, uint32_t b)"},
-  {0x8005FA28,"v0 = LoadImage(a0, a1)","uint32_t LoadImage(uint32_t box_ptr, uint32_t img_ptr)"},
-  {0x8005FA8C,"v0 = StoreImage(a0, a1)","uint32_t StoreImage(uint32_t box_ptr, uint32_t img_ptr)"},
-  {0x8005FAF0,"v0 = MoveImage(a0, a1, a2)","uint32_t MoveImage(uint32_t box_ptr, uint32_t x, uint32_t y)"},
-  {0x8005FD64,"DrawOTag(a0)","void DrawOTag(uint32_t of)"},
-  {0x8005FDD8,"v0 = PutDrawEnv(a0)","uint32_t PutDrawEnv(uint32_t env_ptr)"},
-  {0x80060030,"v0 = PutDispEnv(a0)","uint32_t PutDispEnv(uint32_t env_ptr)"},
-  {0x80060B70,"v0 = spyro_draw_mode_setting_command(a0, a1, a2)","uint32_t spyro_draw_mode_setting_command(uint32_t allow_drawing_to_display, uint32_t dithering_enabled, uint32_t tex_page)"},
-  {0x80060BC8,"v0 = spyro_set_drawing_area_top_left_command(a0, a1)","uint32_t spyro_set_drawing_area_top_left_command(int16_t x, int16_t y)"},
-  {0x80060C94,"v0 = spyro_set_drawing_area_bottom_right_command(a0, a1)","uint32_t spyro_set_drawing_area_bottom_right_command(int16_t x, int16_t y)"},
-  {0x80060D60,"v0 = spyro_set_drawing_offset_command(a0, a1)","uint32_t spyro_set_drawing_offset_command(uint32_t x, uint32_t y)"},
-  {0x80060DA4,"v0 = spyro_set_texture_window_setting_command(a0)","uint32_t spyro_set_texture_window_setting_command(uint32_t texture_window)"},
-  {0x800608E0,"spyro_clear_screen(a0, a1)","void spyro_clear_screen(uint32_t cmd_ptr, uint32_t screen_info)"},
-  {0x8006230C,"spyro_memset8(a0, a1, a2)","void spyro_memset8(uint32_t dst, uint8_t set, uint32_t len)"},
-  {0x80062338,"GPU_cw(a0)"},
-  {0x800626E8,"FlushCache()"},
-  {0x8006276C,"v0 = spyro_strlen(a0)","uint32_t spyro_strlen(uint32_t str)"},
-  {0x8006279C,"spyro_printf(a0, a1, a2, a3)","void spyro_printf(uint32_t fmt, uint32_t param1, uint32_t param2, uint32_t param3)"},
-  {0x80062EC0,"v0 = spyro_strchr(a0, a1, a2)","uint32_t spyro_strchr(uint32_t str, uint32_t chr, uint32_t len)"},
-  {0x80062F10,"spyro_putchar(a0)","void spyro_putchar(uint32_t chr)"},
-  {0x80062FD4,"spyro_sprintf()","void spyro_sprintf(void)"},
-  {0x80062FC4,"v0 = psx_write(a0, addr_to_pointer(a1), a2)","uint32_t psx_write(int fd, char *str, uint32_t len)"},
-  {0x8006389C,"spyro_puts(a0)","void spyro_puts(uint32_t str)"},
-  {0x8006396C,"psx_exit(a0)"},
-  {0x80068494,"_bu_init()"},
-  {0x800684A4,"v0 = CloseEvent(a0)"},
-  {0x800684B4,"v0 = psx_open(addr_to_pointer(a0), a1)"},
-  {0x800684C4,"v0 = psx_lseek(a0, a1, a2)"},
-  {0x800684D4,"v0 = psx_read(a0, addr_to_pointer(a1), a2)"},
-  {0x800684E4,"v0 = psx_close(a0)"},
-  {0x800684F4,"v0 = format(a0)"},
-  {0x800688E0,"v0 = _card_info(a0)"},
-  {0x800688F0,"v0 = _card_load(a0)"},
-  {0x80068900,"_card_write(a0, a1, a2)"},
-  {0x80068910,"_new_card()"},
-  {0x80068D50,"SysEnqIntRP(a0, a1)"},
-  {0x80068D60,"SysDeqIntRP(a0, a1)"},
-  {0x80068E80,"InitCARD2(a0)"},
-  {0x80068E90,"StartCARD2()"},
-  {0x8006B670,"v0 = spyro_memclr8(a0, a1)","uint32_t spyro_memclr8(uint32_t dst, uint32_t len)"},
+  {0x80012204, "game_loop()"},
+  {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
+  {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
+  {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))"},
+  {0x80016914, "spyro_memset32(a0, a1, a2)"},
+  {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)"},
+  {0x80016958, "spyro_memcpy32(a0, a1, a2)"},
+  {0x800169AC, "v0 = spyro_atan(a0, a1)"},
+  {0x80016AB4, "v0 = spyro_atan2(a0, a1, a2)"},
+  {0x80016C58, "v0 = spyro_sin(a0)"},
+  {0x80016CB0, "v0 = spyro_cos(a0)"},
+  {0x80016D08, "v0 = spyro_log2_uint(a0)"},
+  {0x80016D2C, "spyro_mat3_rotation(a0, a1, a2)"},
+  {0x80016FD0, "spyro_mat3_transpose(a0, a1)"},
+  {0x80017048, "spyro_set_mat_mirrored_vec_multiply(a0, a1, a2)"},
+  {0x800170C0, "spyro_mat_mirrored_vec_multiply(a0, a1)"},
+  {0x80017110, "spyro_camera_mat_vec_multiply(a0, a1)"},
+  {0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
+  {0x80017330, "spyro_set_vec3_length(a0, a1)"},
+  {0x800175B8, "vec3_mul_div(a0, a1, a2)"},
+  {0x80017614, "spyro_vec3_multiply_fancy_shift_right(a0, a1, a2)"},
+  {0x800176A0, "spyro_vec3_shift_left(a0, a1)"},
+  {0x800176C8, "spyro_vec3_shift_right(a0, a1)"},
+  {0x800176F0, "spyro_vec3_clear(a0)"},
+  {0x80017700, "spyro_vec3_copy(a0, a1)"},
+  {0x80017758, "spyro_vec3_add(a0, a1, a2)"},
+  {0x8001778C, "spyro_vec3_sub(a0, a1, a2)"},
+  {0x800177C0, "spyro_vec3_mul(a0, a1, a2)"},
+  {0x800177F8, "spyro_vec3_div(a0, a1, a2)"},
+  {0x80017894, "spyro_vec_interpolation(a0, a1, a2, a3)"},
+  {0x80017908, "v0 = spyro_two_angle_diff_8bit(a0, a1)"},
+  {0x80017928, "v0 = spyro_two_angle_diff_12bit(a0, a1)"},
+  {0x80017948, "v0 = spyro_two_angle_signed_diff_8bit(a0, a1)"},
+  {0x8001796C, "v0 = spyro_two_angle_signed_diff_12bit(a0, a1)"},
+  {0x80017990, "v0 = spyro_octagon_distance(a0, a1)"},
+  {0x800179F0, "v0 = spyro_attract_angle_in_range(a0, a1, a2, a3)"},
+  {0x80017A38, "v0 = spyro_sqrt(a0)"},
+  {0x80017AA4, "spyro_world_to_screen_projection(a0, a1)"},
+  {0x80017B48, "spyro_world_to_screen_projection_with_right_shift(a0, a1, a2)"},
+  {0x80017BFC, "spyro_vec_32_to_16_div_4(a0, a1)"},
+  {0x80017C24, "spyro_vec_16_to_32_mul_4(a0, a1)"},
+  {0x80017C4C, "spyro_vec_16_to_32(a0, a1)"},
+  {0x80017C68, "spyro_vec_32_to_16(a0, a1)"},
+  {0x80017C84, "spyro_vec_16_add(a0, a1, a2)"},
+  {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
+  {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
+  {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
+  {0x8002BB20, "v0 = completion_percentage()"},
+  {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
+  {0x8004EBA8, "draw_skybox(a0, a1, a2)","void draw_skybox(int32_t index, uint32_t matrix1, uint32_t matrix2)"},
+  {0x8005C720, "do_literally_nothing()"},
+  {0x8005CBB0, "v0 = test_spu_event(a0)"},
+  {0x8005DB14, "InitHeap(a0, a1)"},
+  {0x8005DB24, "LoadExec(addr_to_pointer(a0), a1, a2)"},
+  {0x8005DB34, "_96_init()"},
+  {0x8005DB4C, "_96_remove()"},
+  {0x8005DB64, "DeliverEvent(a0, a1)"},
+  {0x8005DB74, "v0 = OpenEvent(a0, a1, a2, a3)"},
+  {0x8005DB84, "v0 = TestEvent(a0)"},
+  {0x8005DB94, "v0 = EnableEvent(a0)"},
+  {0x8005DBA4, "v0 = EnterCriticalSection()"},
+  {0x8005DBB4, "ExitCriticalSection()"},
+  {0x8005DBC4, "v0 = VSync(a0)"},
+  {0x8005DD0C, "wait_until_frame(a0, a1)"},
+  {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
+  {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
+  {0x8005DF44, "v0 = set_I_MASK(a0)"},
+  {0x8005E4AC, "spyro_memclr32(a0, a1)", "void spyro_memclr32(uint32_t dst, uint32_t len)"},
+  {0x8005E4D8, "ReturnFromException()"},
+  {0x8005E4E8, "ResetEntryInt(a0)"},
+  {0x8005E4F8, "HookEntryInt(a0)"},
+  {0x8005E604, "spyro_memclr32(a0, a1)"},
+  {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
+  {0x8005E8AC, "spyro_memclr32(a0, a1)"},
+  {0x8005F2A4, "v0 = ResetGraph(a0)"},
+  {0x8005F53C, "v0 = SetGraphDebug(a0)"},
+  {0x8005F6C8, "SetDispMask(a0)"},
+  {0x8005F764, "v0 = DrawSync(a0)"},
+  {0x8005F8F8, "v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3)"},
+  {0x8005FA28, "v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1))"},
+  {0x8005FA8C, "v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1))"},
+  {0x8005FAF0, "v0 = MoveImage(addr_to_pointer(a0), a1, a2)"},
+  {0x8005FD64, "DrawOTag(addr_to_pointer(a0))"},
+  {0x8005FDD8, "v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)))"},
+  {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))"},
+  {0x80060670, "SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)))"},
+  {0x800608E0, "spyro_clear_screen(addr_to_pointer(a0), *(DRAWENV*)addr_to_pointer(a1));"},
+  {0x80060B70, "v0 = spyro_draw_mode_setting_command(a0, a1, a2)"},
+  {0x80060BC8, "v0 = spyro_set_drawing_area_top_left_command(a0, a1)"},
+  {0x80060C94, "v0 = spyro_set_drawing_area_bottom_right_command(a0, a1)"},
+  {0x80060D60, "v0 = spyro_set_drawing_offset_command(a0, a1)"},
+  {0x80060DA4, "v0 = spyro_set_texture_window_setting_command(addr_to_pointer(a0));"},
+  {0x80060FD8, "v0 = fill_color(addr_to_pointer(a0), a1)"},
+  {0x80061234, "v0 = ram_to_vram(addr_to_pointer(a0), addr_to_pointer(a1))"},
+  {0x80061470, "v0 = vram_to_ram(addr_to_pointer(a0), addr_to_pointer(a1))"},
+  {0x800616F4, "GP1_command(a0)"},
+  {0x80061780, "execute_gpu_linked_list(addr_to_pointer(a0))"},
+  {0x800617CC, "v0 = gpu_internal_register(a0)"},
+  {0x80062090, "gpu_start_timeout()"},
+  {0x800620C4, "v0 = gpu_check_timeout()"},
+  {0x8006230C, "spyro_memset8(a0, a1, a2)","void spyro_memset8(uint32_t dst, uint8_t set, uint32_t len)"},
+  {0x80062338, "GPU_cw(a0)"},
+  {0x800623D8, "spyro_mat_mul(a0, a1, a2)"},
+  {0x80062618, "SetGeomOffset(a0, a1)"},
+  {0x80062638, "SetGeomScreen(a0)"},
+  {0x800626E8, "FlushCache()"},
+  {0x8006272C, "v0 = spyro_rand()"},
+  {0x8006275C, "spyro_srand(a0)"},
+  {0x8006276C, "v0 = spyro_strlen(a0)","uint32_t spyro_strlen(uint32_t str)"},
+  {0x8006279C, "spyro_printf(a0, a1, a2, a3)","void spyro_printf(uint32_t fmt, uint32_t param1, uint32_t param2, uint32_t param3)"},
+  {0x80062EC0, "v0 = spyro_strchr(a0, a1, a2)","uint32_t spyro_strchr(uint32_t str, uint32_t chr, uint32_t len)"},
+  {0x80062F10, "spyro_putchar(a0)","void spyro_putchar(uint32_t chr)"},
+  {0x80062FD4, "spyro_sprintf()","void spyro_sprintf(void)"},
+  {0x80062FC4, "v0 = psx_write(a0, addr_to_pointer(a1), a2)","uint32_t psx_write(int fd, char *str, uint32_t len)"},
+  {0x8006389C, "spyro_puts(a0)","void spyro_puts(uint32_t str)"},
+  {0x8006396C, "psx_exit(a0)"},
+  {0x80064050, "v0 = dma_cdrom_callback(a0)"},
+  {0x80064094, "v0 = pointer_to_addr(write_cdrom_header(a0, addr_to_pointer(a1)))"},
+  {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
+  {0x80067EA0, "MemCardStart()"},
+  {0x800680A4, "MemCardStop()"},
+  {0x80068494, "_bu_init()"},
+  {0x800684A4, "v0 = CloseEvent(a0)"},
+  {0x800684B4, "v0 = psx_open(addr_to_pointer(a0), a1)"},
+  {0x800684C4, "v0 = psx_lseek(a0, a1, a2)"},
+  {0x800684D4, "v0 = psx_read(a0, addr_to_pointer(a1), a2)"},
+  {0x800684E4, "v0 = psx_close(a0)"},
+  {0x800684F4, "v0 = format(a0)"},
+  {0x800688E0, "v0 = _card_info(a0)"},
+  {0x800688F0, "v0 = _card_load(a0)"},
+  {0x80068900, "_card_write(a0, a1, a2)"},
+  {0x80068910, "_new_card()"},
+  {0x80068D50, "SysEnqIntRP(a0, a1)"},
+  {0x80068D60, "SysDeqIntRP(a0, a1)"},
+  {0x80068E80, "InitCARD2(a0)"},
+  {0x80068E90, "StartCARD2()"},
+  {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
 };
 
 struct address_name address_names[] = {
   {0x1F801120, "TIMER2"},
   {0x1F801124, "TIMER2_MODE"},
   {0x1F801128, "TIMER2_TARGET"},
+  {0x800113A0, "exe_end_ptr"},
   {0x8006CBF8, "spyro_sin_lut"},
   {0x8006CC78, "spyro_cos_lut"},
   {0x800730E8, "spu_event"},
+  {0x80073554, "spu_registers_base_ptr"},
+  {0x80073558, "DMA_SPU_address_ptr"},
+  {0x8007355C, "DMA_SPU_block_control_ptr"},
+  {0x80073560, "DMA_SPU_channel_control_ptr"},
+  {0x80073564, "DMA_control_register_copy_4_ptr"},
+  {0x80073568, "SPU_DELAY"},
   {0x800738BC, "GPUSTAT_ptr"},
   {0x800738C0, "TIMER_1_horizontal_retrace_ptr"},
+  {0x800738C4, "VSync_last_vsync_time"},
+  {0x800738C8, "VSync_last_frame_num"},
   {0x800749B0, "I_STAT_ptr"},
   {0x800749B4, "I_MASK_ptr"},
   {0x800749B8, "DMA_control_register_copy_1_ptr"},
@@ -107,6 +186,11 @@ struct address_name address_names[] = {
   {0x80074B48, "DMA_OTC_address_ptr"},
   {0x80074B4C, "DMA_OTC_block_control_ptr"},
   {0x80074B54, "DMA_control_register_copy_2_ptr"},
+  {0x80074B70, "saved_I_STAT"},
+  {0x80074B74, "saved_I_STAT3"},
+  {0x80074B78, "saved_I_STAT2"},
+  {0x80074B7C, "gpu_frame_limit"},
+  {0x80074B80, "gpu_retry_counter"},
   {0x800750FC, "CDROM_INDEX_ptr"},
   {0x80075100, "CDROM_REG_1_ptr"},
   {0x80075104, "CDROM_REG_2_ptr"},
@@ -122,20 +206,35 @@ struct address_name address_names[] = {
   {0x80075220, "JOY_BASE_ptr"},
   {0x80075254, "JOY_BASE2_ptr"},
   {0x80075238, "JOY_BASE3_ptr"},
+  {0x80075710, "gameobject_stack_ptr"},
   {0x8007572C, "level_frame_counter"},
   {0x80075750, "total_found_dragons"},
+  {0x80075780, "allocator1_end"},
+  {0x800757B0, "allocator1_ptr"},
   {0x80075810, "total_found_eggs"},
+  {0x8007581C, "linked_list1"},
+  {0x80075820, "ordered_linked_list"},
   {0x80075860, "total_found_gems"},
+  {0x8007596C, "LEVEL_ID"},
+  {0x8007595C, "WORLD_ID"},
+  {0x80075964, "CONTINUOUS_LEVEL_ID"},
   {0x80075AC0, "rng_seed"},
   {0x80075B0C, "memcard_events"},
   {0x80076B78, "timeout1_start"},
+  {0x80076B90, "WAD_sector"},
+  {0x80076C00, "WAD_nested_header", 0x1D0},
   {0x80077378, "buttons_press"},
   {0x8007737C, "buttons_unpress"},
   {0x80077380, "buttons"},
+  {0x800785D8, "lib_end_ptr"},
+  {0x80078A40, "SKYBOX_DATA", 0x14},
   {0x80078A58, "spyro_position_x"},
   {0x80078A5C, "spyro_position_y"},
   {0x80078A60, "spyro_position_z"},
   {0x80078E9C, "timeout1_duration"},
+  {0x80075950, "drawn_frame"},
+  {0x80075954, "current_frame"},
+  {0x8007A6D0, "WAD_header", 0x330},
 };
 
 uint32_t jump_list_get_jump_list(struct program prog, struct jump_list jump_list, uint32_t list[static jump_list.num_jumps])
@@ -212,6 +311,8 @@ void print_func_name(struct program prog, uint32_t addr)
 
 char *get_address_name(struct program prog, uint32_t addr)
 {
+  static char buf[256];
+
   for (int i = 0; i < sizeof(address_names)/sizeof(address_names[0]); i++)
   {
     struct address_name an = address_names[i];
@@ -222,13 +323,89 @@ char *get_address_name(struct program prog, uint32_t addr)
     else
       same_id = (an.id == NULL) || (strcmp(an.id, prog.id) == 0);
 
-    if (addr == an.addr && same_id)
-      return an.name;
+    if (same_id) {
+      if (an.size == 0) {
+        if (addr == an.addr)
+          return an.name;
+      } else {
+        if (addr >= an.addr && addr < an.addr + an.size) {
+          snprintf(buf, 256, "%s + 0x%.4hX", an.name, addr - an.addr);
+          return buf;
+        }
+      }
+    }
   }
 
   static char addr_hex[16];
   snprintf(addr_hex, sizeof(addr_hex), "0x%.8X", addr);
   return addr_hex;
+}
+
+char *address_description(struct program prog, uint32_t addr)
+{
+  static char buf[256];
+  buf[0] = 0;
+
+  for (int i = 0; i < sizeof(address_names)/sizeof(address_names[0]); i++)
+  {
+    struct address_name an = address_names[i];
+
+    int same_id = 0;
+    if (prog.id == NULL)
+      same_id = an.id == NULL;
+    else
+      same_id = (an.id == NULL) || (strcmp(an.id, prog.id) == 0);
+
+    if (same_id)
+      if (addr == an.addr || (addr >= an.addr && addr < an.addr + an.size))
+        return buf;
+  }
+
+  if (addr > prog.range.base+prog.range.size-4 || addr < prog.range.base) return buf;
+
+  char *ptr = prog.psx_mem + (addr - 0x80000000);
+  uint32_t len = 0x80200000 - addr;
+
+  buf[0] = ' ';
+  buf[1] = '/';
+  buf[2] = '/';
+  buf[3] = ' ';
+  buf[4] = '"';
+
+  uint32_t characters = 0;
+  for (int i = 0; i < len; i++)
+  {
+    char ch = *ptr;
+    if (ch == 0) break;
+
+    if (ch != '\n' && ch != '\t' && (ch < 0x20 || ch > 0x7E)) {
+      characters = 0;
+      break;
+    }
+
+    if (ch == '\n') {
+      buf[characters+5] = '\\';
+      characters++;
+      buf[characters+5] = 'n';
+    } else if (ch == '\t') {
+      buf[characters+5] = '\\';
+      characters++;
+      buf[characters+5] = 't';
+    } else {
+      buf[characters+5] = ch;
+    }
+
+    characters++;
+    ptr++;
+  }
+
+  buf[characters+5] = '"';
+  buf[characters+6] = 0;
+
+  if (characters >= 2) return buf; 
+  
+  snprintf(buf, sizeof(buf), " // &0x%.8X", *(uint32_t *)(prog.psx_mem + (addr - 0x80000000)));
+  return buf;
 }
 
 #define FUNC_NULL_DECLARATION 0
@@ -479,9 +656,6 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
         else if (label_next == 0)
         {
           fprintf(prog.output, "label%.8X:\n", labels.addrs[label_num]);
-          // spyro specific instruction
-          if (labels.addrs[label_num] == 0x8001222C)
-            fprintf(prog.output, "  start_frame();\n");
           label_num++;
           if (label_num < labels.size)
             label_next = (labels.addrs[label_num] - inst1.addr) / 4;
@@ -711,6 +885,18 @@ int read_instructions(struct program prog)
 
   fprintf(prog.output, "#include <stdint.h>\n\n");
   fprintf(prog.output, "#include \"decompilation.h\"\n");
+  fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
+  fprintf(prog.output, "#include \"spyro_controller.h\"\n");
+  fprintf(prog.output, "#include \"spyro_game.h\"\n");
+  fprintf(prog.output, "#include \"spyro_graphics.h\"\n");
+  fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
+  fprintf(prog.output, "#include \"spyro_math.h\"\n");
+  fprintf(prog.output, "#include \"spyro_print.h\"\n");
+  fprintf(prog.output, "#include \"spyro_psy.h\"\n");
+  fprintf(prog.output, "#include \"spyro_spu.h\"\n");
+  fprintf(prog.output, "#include \"spyro_string.h\"\n");
+  fprintf(prog.output, "#include \"spyro_system.h\"\n");
+  fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
   fprintf(prog.output, "#include \"psx_mem.h\"\n");
