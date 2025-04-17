@@ -9,6 +9,7 @@ void function_8001ED5C(void);
 void function_8005DE58(void);
 void function_80069080(void);
 void function_8005DEBC(void);
+void function_8006397C(void);
 
 void function_8007BFD0_credits(void);
 void function_8007CEE4_title_screen(void);
