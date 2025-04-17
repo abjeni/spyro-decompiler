@@ -16,6 +16,7 @@
 #include "triangle.h"
 #include "debug.h"
 #include "../../config.h"
+#include "decompilation.h"
 
 //#define LOG_DISK_READ
 
@@ -1554,7 +1555,10 @@ uint32_t lbu(uint32_t addr, file_loc loc);
 
 #define MASK_READ   (1 << 0)
 #define MASK_WRITE  (1 << 1)
+#define MASK_ACCESS (MASK_READ | MASK_WRITE)
 #define MASK_PANIC  (1 << 2)
+#define MASK_READONLY (MASK_PANIC | MASK_WRITE)
+#define MASK_FORBIDDEN (MASK_PANIC | MASK_ACCESS)
 
 struct segment {
   uint32_t base;
@@ -1563,8 +1567,10 @@ struct segment {
 };
 
 struct segment segments[] = {
-  {0x80074A10, 4, MASK_WRITE | MASK_PANIC},
-  {0x80010000, 0x5BBDC, MASK_PANIC | MASK_WRITE}
+  {LEVEL_ID, 4, MASK_WRITE},
+  {0x80074A10, 4, MASK_READONLY},
+  {0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
+  {0x80010000, 0x5BBDC, MASK_READONLY}
 };
 
 void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)

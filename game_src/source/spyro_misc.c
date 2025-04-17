@@ -2,6 +2,7 @@
 #include "main.h"
 #include "spyro_psy.h"
 #include "decompilation.h"
+#include "not_renamed.h"
 
 #include <stdio.h>
 

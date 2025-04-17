@@ -37,8 +37,16 @@ typedef struct __attribute__((packed)) {
   uint8_t pad0, pad1; // 12, 13
 } DISPENV;
 
-
-void function_8005EBA0(void);
+// i made this one up
+typedef struct __attribute__((packed)) {
+  DRAWENV draw;
+  DISPENV disp;
+  uint32_t unknown1;
+  uint32_t unknown2;
+  uint32_t unknown3;
+  uint32_t unknown4;
+  uint32_t unknown5;
+} DISP;
 
 // size: 0x00000010
 void spyro_srand(int32_t seed);

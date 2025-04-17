@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#define SWAP(x, y) do {typeof(x) SWAP = x; x = y; y = SWAP;} while(0)
+
 typedef struct {
   int16_t m[3][3];
 } mat3;
@@ -41,6 +43,7 @@ vec3_32 vec_mat_mul_gte(vec3 v, mat3 m);
 vec3_32 vec3_32_shift_right(vec3_32 v, int32_t shift);
 vec3_32 vec3_32_shift_left(vec3_32 v, int32_t shift);
 vec3_32 vec3_32_mat_mul(vec3_32 v, mat3 m);
+vec3_32 vec3_32_sub(vec3_32 a, vec3_32 b);
 vec3 vec3_shift_right(vec3 v, int32_t shift);
 vec3 vec3_shift_left(vec3 v, int32_t shift);
 vec3 vec3_mat_mul(vec3 v, mat3 m);

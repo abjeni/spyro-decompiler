@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 
+#include "decompilation.h"
 #include "main.h"
 #include "psx_mem.h"
 #include "spyro_vsync.h"
@@ -206,10 +207,6 @@ void int_load_regs(void)
   lo = int_ret_regs[33];
 }
 
-void function_8005E03C(void);
-void function_80069634(void);
-void function_8006969C(void);
-
 void interrupt2(uint32_t type)
 {
   //uint32_t mask = 1<<type;
@@ -382,15 +379,6 @@ uint32_t EnableEvent(uint32_t event)
 
   return 1;
 }
-
-void function_80067DD0(void);
-void function_80067DE4(void);
-void function_80067DF8(void);
-void function_80067E0C(void);
-void function_80067E20(void);
-void function_80067E34(void);
-void function_80067E48(void);
-void function_80067E5C(void);
 
 void DeliverEvent(uint32_t class, uint32_t spec)
 {

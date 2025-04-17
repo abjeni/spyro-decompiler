@@ -4,6 +4,7 @@
 #include "psx_bios.h"
 #include "spyro_system.h"
 #include "spyro_string.h"
+#include "not_renamed.h"
 
 // size: 0x0000002C
 void function_8005C6C8(void)
@@ -60,6 +61,7 @@ uint32_t test_spu_event(uint32_t sync)
 // size: 0x000000A8
 void function_8005CBB0(void)
 {
+  BREAKPOINT;
   v0 = test_spu_event(a0);
 }
 

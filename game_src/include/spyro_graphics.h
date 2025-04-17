@@ -17,6 +17,13 @@ uint32_t ram_to_vram(RECT *rect, uint32_t *data);
 
 void execute_gpu_linked_list(void *node);
 
+void append_gpu_command_block(void *node);
+void append_gpu_command_block_depth_slot(void *node, uint32_t depth_slot);
+
+void GP1_command(uint32_t cmd);
+
+uint32_t command_queue_advance(void);
+
 uint32_t fill_color(RECT *rect, uint32_t color);
 
 uint32_t *spyro_combine_all_command_buffers(uint32_t depth_command_buffers);

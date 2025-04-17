@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "int_math.h"
+#include "spyro_math.h"
 
 int32_t fixed_multi(int32_t a, int32_t b)
 {
@@ -87,6 +88,15 @@ vec3_32 vec3_32_mat_mul(vec3_32 v, mat3 m)
     (int32_t)m.m[1][0]*v.x + (int32_t)m.m[1][1]*v.y + (int32_t)m.m[1][2]*v.z,
     (int32_t)m.m[2][0]*v.x + (int32_t)m.m[2][1]*v.y + (int32_t)m.m[2][2]*v.z
   }, 12);
+}
+
+vec3_32 vec3_32_sub(vec3_32 a, vec3_32 b)
+{
+  return (vec3_32){
+    a.x - b.x,
+    a.y - b.y,
+    a.z - b.z
+  };
 }
 
 vec3 vec3_shift_right(vec3 v, int32_t shift)

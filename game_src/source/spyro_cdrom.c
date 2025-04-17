@@ -34,6 +34,7 @@ char *write_cdrom_header(uint32_t sector_num, char header[])
 // size: 0x00000104
 void function_80064094(void)
 {
+  BREAKPOINT;
   v0 = pointer_to_addr(write_cdrom_header(a0, addr_to_pointer(a1)));
 }
 
@@ -53,6 +54,7 @@ uint32_t parse_cdrom_header(char header[])
 // size: 0x00000080
 void function_80064198(void)
 {
+  BREAKPOINT;
   v0 = parse_cdrom_header(addr_to_pointer(a0));
 }
 
@@ -65,6 +67,7 @@ uint32_t dma_cdrom_callback(uint32_t callback)
 // size: 0x00000024
 void function_80064050(void)
 {
+  BREAKPOINT;
   v0 = dma_cdrom_callback(a0);
 }
 
@@ -148,7 +151,7 @@ void function_80063ACC(void)
 }
 
 // size: 0x00000098
-void function_8006397C(void)
+uint32_t CdInit(void)
 {
   uint32_t s0 = 4;
   while (1) {
@@ -169,15 +172,20 @@ void function_8006397C(void)
       a0 = 0;
       ra = 0x800639D8;
       function_80066254();
-      v0 = 1;
-      return;
+      return 1;
     }
     if (s0 == -1) {
       printf("CdInit: Init failed\n");
-      v0 = 0;
-      return;
+      return 0;
     }
   }
+}
+
+// size: 0x00000098
+void function_8006397C(void)
+{
+  BREAKPOINT
+  v0 = CdInit();
 }
 
 // size: 0x0000008C
@@ -185,8 +193,8 @@ void init_cdrom(void)
 {
   sp -= 0x20;
   sb(sp + 0x10, 0x80);
-  ra = 0x80012494;
-  function_8006397C();
+
+  CdInit();
 
   a0 = 14;
   a1 = sp + 0x10;
@@ -218,6 +226,7 @@ void init_cdrom(void)
 // size: 0x0000008C
 void function_80012480(void)
 {
+  BREAKPOINT;
   init_cdrom();
 }
 
@@ -275,13 +284,13 @@ void read_disk2(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, ui
   read_disk(sector, dst, len, offset, num);
 }
 
-void function_80016500()
+void function_80016500(void)
 {
   BREAKPOINT;
   read_disk1(a0, a1, a2, a3, lw(sp+0x10));
 }
 
-void function_80016698()
+void function_80016698(void)
 {
   BREAKPOINT;
   read_disk2(a0, a1, a2, a3, lw(sp+0x10));

@@ -1,5 +1,9 @@
 #include "debug.h"
 #include "level_loading.h"
+#include "not_renamed.h"
+
+#include "title_screen.h"
+#include "credits.h"
 
 #include "alpine_ridge.h"
 #include "artisans_home.h"
@@ -41,6 +45,7 @@
 
 // 0x800785D8 is the end of the exe file
 // which functions are currently in memory from address 0x8007AA38 onwards?
+// it depends, and this is the workaround to get the colliding function addresses to work.
 
 void function_8007AA50(void)
 {
@@ -102,12 +107,6 @@ void function_8007B020(void)
 {
   if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
   function_8007B020_artisans_home();
-}
-
-void function_8007CFC0(void)
-{
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
-  function_8007CFC0_artisans_home();
 }
 
 void function_8008249C(void)
@@ -235,6 +234,7 @@ void function_8007B1FC(void)
   }
 }
 
+/*
 void function_8007B68C(void)
 {
   switch(lib_num) {
@@ -257,7 +257,9 @@ void function_8007B68C(void)
       BREAKPOINT;
   }
 }
+*/
 
+/*
 void function_8007B4B0(void)
 {
   switch(lib_num) {
@@ -280,6 +282,7 @@ void function_8007B4B0(void)
       BREAKPOINT;
   }
 }
+*/
 
 void function_8008772C(void)
 {
@@ -355,17 +358,6 @@ void function_8007B0D0(void)
   switch(lib_num) {
     case LIB_STONE_HILL:
       function_8007B0D0_stone_hill();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
-void function_8007D070(void)
-{
-  switch(lib_num) {
-    case LIB_STONE_HILL:
-      function_8007D070_stone_hill();
       return;
     default:
       BREAKPOINT;
@@ -493,17 +485,6 @@ void function_8007B0AC(void)
   }
 }
 
-void function_8007D04C(void)
-{
-  switch(lib_num) {
-    case LIB_TOWN_SQUARE:
-      function_8007D04C_town_square();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
 void function_80081DA8(void)
 {
   switch(lib_num) {
@@ -625,17 +606,6 @@ void function_8007B9F8(void)
   }
 }
 
-void function_8007D998(void)
-{
-  switch(lib_num) {
-    case LIB_PEACEKEEPERS_HOME:
-      function_8007D998_peacekeepers_home();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
 void function_8008A4D0(void)
 {
   switch(lib_num) {
@@ -722,20 +692,6 @@ void function_8007B898(void)
       return;
     case LIB_DREAMWEAVERS_HOME:
       function_8007B898_dreamweavers_home();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
-void function_8007D838(void)
-{
-  switch(lib_num) {
-    case LIB_DRY_CANYON:
-      function_8007D838_dry_canyon();
-      return;
-    case LIB_CLIFF_TOWN:
-      function_8007D838_cliff_town();
       return;
     default:
       BREAKPOINT;
@@ -938,6 +894,7 @@ void function_8007B870(void)
       BREAKPOINT;
   }
 }
+
 void function_8007B9AC(void)
 {
   switch(lib_num) {
@@ -948,21 +905,12 @@ void function_8007B9AC(void)
       BREAKPOINT;
   }
 }
+
 void function_8007B9F0(void)
 {
   switch(lib_num) {
     case LIB_MAGICCRAFTERS_HOME:
       function_8007B9F0_magiccrafters_home();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-void function_8007D990(void)
-{
-  switch(lib_num) {
-    case LIB_MAGICCRAFTERS_HOME:
-      function_8007D990_magiccrafters_home();
       return;
     default:
       BREAKPOINT;
@@ -979,6 +927,7 @@ void function_8008A36C(void)
       BREAKPOINT;
   }
 }
+
 void function_8007BB00(void)
 {
   switch(lib_num) {
@@ -989,6 +938,7 @@ void function_8007BB00(void)
       BREAKPOINT;
   }
 }
+
 void function_8008C9D8(void)
 {
   switch(lib_num) {
@@ -1244,17 +1194,6 @@ void function_8007B7E4(void)
   switch(lib_num) {
     case LIB_BEASTMAKERS_HOME:
       function_8007B7E4_beastmakers_home();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
-void function_8007D784(void)
-{
-  switch(lib_num) {
-    case LIB_BEASTMAKERS_HOME:
-      function_8007D784_beastmakers_home();
       return;
     default:
       BREAKPOINT;
@@ -1536,17 +1475,6 @@ void function_8007BA18(void)
   }
 }
 
-void function_8007D9B8(void)
-{
-  switch(lib_num) {
-    case LIB_DREAMWEAVERS_HOME:
-      function_8007D9B8_dreamweavers_home();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
 void function_80084B94(void)
 {
   switch(lib_num) {
@@ -1814,17 +1742,6 @@ void function_8007AF90(void)
   switch(lib_num) {
     case LIB_GNASTYS_WORLD:
       function_8007AF90_gnastys_world();
-      return;
-    default:
-      BREAKPOINT;
-  }
-}
-
-void function_8007CF30(void)
-{
-  switch(lib_num) {
-    case LIB_GNASTYS_WORLD:
-      function_8007CF30_gnastys_world();
       return;
     default:
       BREAKPOINT;

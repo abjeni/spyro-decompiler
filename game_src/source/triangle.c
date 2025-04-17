@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "triangle.h"
+#include "int_math.h"
 
 inline static color mix_colors(color c1, color c2, int a, int b)
 {
@@ -87,7 +88,6 @@ inline static vertex mix_vertices4(vertex_int v1, vertex_int v2, int a, int b, i
   };
 }
 
-#define SWAP(x, y) do {typeof(x) SWAP = x; x = y; y = SWAP;} while(0)
 inline static void sort_tri(vertex *v)
 {
   if (v[0].v.y > v[1].v.y)
@@ -157,18 +157,18 @@ void draw_triangle(vertex v[static 3], int x1, int x2, int y1, int y2, void (*se
 void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pixel)(vertex v))
 {
 
-  if (v[0].v.y > v[1].v.y)
-  {
-    vertex tmp = v[1];
-    v[1] = v[0];
-    v[0] = tmp;
-  }
-
-  int32_t dx = v[1].v.x - v[0].v.x;
-  int32_t dy = v[1].v.y - v[0].v.y;
+  int32_t dx = abs(v[1].v.x - v[0].v.x);
+  int32_t dy = abs(v[1].v.y - v[0].v.y);
 
   if (dy > dx)
   {
+    if (v[0].v.y > v[1].v.y)
+    {
+      vertex tmp = v[1];
+      v[1] = v[0];
+      v[0] = tmp;
+    }
+
     for (int i = v[0].v.y; i < v[1].v.y; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.y, dy);
@@ -178,6 +178,13 @@ void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pi
   }
   else
   {
+    if (v[0].v.x > v[1].v.x)
+    {
+      vertex tmp = v[1];
+      v[1] = v[0];
+      v[0] = tmp;
+    }
+
     for (int i = v[0].v.x; i < v[1].v.x; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.x, dx);

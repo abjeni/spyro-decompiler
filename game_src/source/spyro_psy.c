@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "main.h"
 #include "psx_mem.h"
+#include "psx_bios.h"
 #include "spyro_string.h"
 #include "psx_bios.h"
 #include "spyro_vsync.h"
@@ -12,6 +13,7 @@
 #include "spyro_print.h"
 #include "spyro_graphics.h"
 #include "decompilation.h"
+#include "not_renamed.h"
 
 // size: 0x00000010
 void function_8005EBA0(void)

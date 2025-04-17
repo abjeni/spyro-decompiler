@@ -12,6 +12,10 @@
 #include "spyro_vsync.h"
 #include "psx_ops.h"
 #include "int_math.h"
+#include "function_chooser.h"
+#include "not_renamed.h"
+
+#include <string.h>
 
 void redirect_func_800758CC()
 {
@@ -127,390 +131,213 @@ void redirect_func_800758CC()
   }
 }
 
-// size: 0x000001C8
-void function_80017FE4(void)
+// size: 0x000001D4
+void function_80051FEC(void)
 {
-  uint32_t temp, return_address = ra;
-  sp -= 40; // 0xFFFFFFD8
-  sw(sp + 0x0010, s0);
-  s0 = a0;
-  sw(sp + 0x0014, s1);
-  s1 = a1;
-  sw(sp + 0x0018, s2);
-  s2 = a2;
-  sw(sp + 0x0020, ra);
-  sw(sp + 0x001C, s3);
-  v1 = lbu(s0);
-  temp = v1 == 0;
-  s3 = a3;
-  if (temp) goto label80018184;
-label80018018:
-  v1 = v1 & 0xFF;
-  v0 = 32; // 0x0020
-  temp = v1 == v0;
-  a1 = 0;
-  if (temp) goto label80018164;
-  a0 = lw(gameobject_stack_ptr);
-  a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
-  a2 = 88; // 0x0058
-  ra = 0x80018048;
-  spyro_memset32(a0, a1, a2);
-  a0 = lw(gameobject_stack_ptr);
-  a1 = s1;
-  a0 += 12; // 0x000C
-  ra = 0x8001805C;
-  spyro_vec3_copy(a0, a1);
-  a0 = lbu(s0);
-  v0 = a0 - 48; // 0xFFFFFFD0
-  v0 = v0 < 10;
-  temp = v0 == 0;
-  v0 = a0 + 212; // 0x00D4
-  if (temp) goto label80018084;
-  v1 = lw(gameobject_stack_ptr);
-  sh(v1 + 0x0036, v0);
-  goto label80018134;
-label80018084:
-  v0 = a0 - 65; // 0xFFFFFFBF
-  v0 = v0 < 26;
-  temp = v0 == 0;
-  v0 = a0 + 361; // 0x0169
-  if (temp) goto label800180A4;
-  v1 = lw(gameobject_stack_ptr);
-  sh(v1 + 0x0036, v0);
-  goto label80018134;
-label800180A4:
-  v1 = a0 & 0xFF;
-  v0 = 47; // 0x002F
-  temp = v1 != v0;
-  v0 = 63; // 0x003F
-  if (temp) goto label800180C4;
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 277; // 0x0115
-  goto label8001812C;
-label800180C4:
-  temp = v1 != v0;
-  v0 = 37; // 0x0025
-  if (temp) goto label800180DC;
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 278; // 0x0116
-  goto label8001812C;
-label800180DC:
-  temp = v1 != v0;
-  v0 = 94; // 0x005E
-  if (temp) goto label800180F4;
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 272; // 0x0110
-  goto label8001812C;
-label800180F4:
-  temp = v1 != v0;
-  v0 = 43; // 0x002B
-  if (temp) goto label8001810C;
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 321; // 0x0141
-  goto label8001812C;
-label8001810C:
-  temp = v1 != v0;
-  v0 = 327; // 0x0147
-  if (temp) goto label80018124;
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 317; // 0x013D
-  goto label8001812C;
-label80018124:
-  v1 = lw(gameobject_stack_ptr);
-label8001812C:
-  sh(v1 + 0x0036, v0);
-label80018134:
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 127; // 0x007F
-  sb(v1 + 0x0047, v0);
-  v0 = lw(gameobject_stack_ptr);
-  sb(v0 + 0x004F, s3);
-  v1 = lw(gameobject_stack_ptr);
-  v0 = 255; // 0x00FF
-  sb(v1 + 0x0050, v0);
-label80018164:
-  v0 = lw(s1);
-  s0++;
-  v0 += s2;
-  sw(s1, v0);
-  v1 = lbu(s0);
-  temp = v1 != 0;
-  if (temp) goto label80018018;
-label80018184:
-  v0 = lw(gameobject_stack_ptr);
-  ra = lw(sp + 0x20);
-  s3 = lw(sp + 0x1C);
-  s2 = lw(sp + 0x18);
-  s1 = lw(sp + 0x14);
-  s0 = lw(sp + 0x10);
-  sp += 0x28;
+  memset(addr_to_pointer(0x80077868), 0, 32);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position_x);
+  t6 = 0x8006FCF4 + 0x400;
+  for (struct game_object *object = addr_to_pointer(lw(0x80075828)); object->unknown48 != -1; object++) {
+    if ((int32_t)object->unknown48 < 0) continue;
+    if (object->unknown51) goto label8005210C;
+    v1 = object->unknown52;
+    if (v1 == 0) continue;
+    if ((int32_t)v1 < 0) goto label8005210C;
+    v1 = v1 << 10;
+    vec3_32 p = vec3_32_sub(object->p, pos);
+    if (abs_int(p.x) >= v1
+     || abs_int(p.y) >= v1
+     || abs_int(p.z) >= v1) continue;
+    if (v1/8*v1/8 <= p.x/8*p.x/8 + p.y/8*p.y/8) continue;
+  label8005210C:
+    if ((int32_t)object->unknown43 >= 0) {
+      sb(0x80077868 + object->unknown43, 1);
+    } else {
+      sw(t6, pointer_to_addr(object));
+      t6 += 4;
+    }
+  }
+  struct game_object *game_objects = addr_to_pointer(lw(0x80075828));
+  at = lw(0x80075828);
+  v0 = lw(0x800757F8);
+  for (int i = 0; i < 0x20; i++) {
+    if (lb(0x80077868+i) == 0) continue;
+
+    a2 = lw(v0 + i*4);
+    do {
+      a3 = lh(a2);
+      a2 += 2;
+      struct game_object *object = &game_objects[a3 & 0x7FFF];
+      if (object->unknown48 >= 0) {
+        sw(t6, pointer_to_addr(object));
+        t6 += 4;
+      }
+    } while ((int32_t)a3 >= 0);
+  }
+  sw(t6, 0);
 }
 
 // size: 0x0000038C
 void function_8003C358(void)
 {
-  uint32_t temp, return_address = ra;
   sp -= 128; // 0xFFFFFF80
-  sw(sp + 0x0068, s4);
+  sw(sp + 0x68, s4);
+  sw(sp + 0x64, s3);
+  sw(sp + 0x7C, ra);
+  sw(sp + 0x78, fp);
+  sw(sp + 0x74, s7);
+  sw(sp + 0x70, s6);
+  sw(sp + 0x6C, s5);
+  sw(sp + 0x60, s2);
+  sw(sp + 0x5C, s1);
+  sw(sp + 0x58, s0);
+
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position_x);
+
   s4 = a0;
-  sw(sp + 0x0064, s3);
   s3 = a1;
-  sw(sp + 0x007C, ra);
-  sw(sp + 0x0078, fp);
-  sw(sp + 0x0074, s7);
-  sw(sp + 0x0070, s6);
-  sw(sp + 0x006C, s5);
-  sw(sp + 0x0060, s2);
-  sw(sp + 0x005C, s1);
-  temp = s3 == 0;
-  sw(sp + 0x0058, s0);
-  if (temp) goto label8003C3B8;
-  v0 = lw(s4 + 0x0000);
-  v0 = lw(v0 + 0x0000);
-  s7 = lbu(s4 + 0x0046);
-  v0 = v0 << 2;
-  s2 = lw(0x8006F7F0 + v0); // &0x80075578
-  s0 = s7 & 0xFF;
-  goto label8003C3F0;
-label8003C3B8:
-  a2 = 0;
-  s2 = lw(0x8006F880); // &0x80010078
-  v1 = lw(spyro_position_x);
-  a0 = lw(s4 + 0x000C);
-  v0 = lw(spyro_position_y);
-  a1 = lw(s4 + 0x0010);
-  a0 = v1 - a0;
-  a1 = v0 - a1;
-  ra = 0x8003C3E8;
-  v0 = spyro_atan2(a0, a1, a2);
-  s7 = v0;
-  s0 = s7 & 0xFF;
-label8003C3F0:
-  s1 = s0 << 4;
-  a0 = s1;
-  ra = 0x8003C3FC;
-  v0 = spyro_cos(a0);
-  a0 = s1;
-  v1 = v0 << 1;
-  v1 += v0;
-  v1 = (int32_t)v1 >> 4;
-  sw(sp + 0x0010, v1);
-  ra = 0x8003C414;
-  v0 = spyro_sin(a0);
-  s0 += 64; // 0x0040
-  s0 = s0 << 4;
-  a0 = s0;
-  v1 = v0 << 1;
-  v1 += v0;
-  v1 = (int32_t)v1 >> 4;
-  sw(sp + 0x0014, v1);
-  sw(sp + 0x0018, 0);
-  ra = 0x8003C438;
-  v0 = spyro_cos(a0);
-  a0 = s0;
-  v0 = (int32_t)v0 >> 5;
-  sw(sp + 0x0020, v0);
-  ra = 0x8003C448;
-  v0 = spyro_sin(a0);
-  v0 = (int32_t)v0 >> 5;
-  sw(sp + 0x0024, v0);
-  temp = s3 == 0;
-  sw(sp + 0x0028, 0);
-  if (temp) goto label8003C4A0;
-  v0 = lbu(s4 + 0x0049);
-  temp = v0 != 0;
-  s0 = sp + 48; // 0x0030
-  if (temp) goto label8003C474;
-  v0 = lbu(s4 + 0x0046);
-  s7 = v0 - 128; // 0xFFFFFF80
-  goto label8003C4A0;
-label8003C474:
-  s7 = lbu(s4 + 0x0046);
-  a0 = s0;
-  ra = 0x8003C480;
-  spyro_vec3_clear(a0);
-  a0 = sp + 16; // 0x0010
-  a1 = s0;
-  a2 = a0;
-  ra = 0x8003C490;
-  spyro_vec3_sub(a0, a1, a2);
-  a0 = sp + 32; // 0x0020
-  a1 = s0;
-  a2 = a0;
-  ra = 0x8003C4A0;
-  spyro_vec3_sub(a0, a1, a2);
-label8003C4A0:
-  a0 = s2;
-  ra = 0x8003C4A8;
-  v0 = spyro_strlen(a0);
-  a0 = sp + 48; // 0x0030
-  s0 = sp + 32; // 0x0020
-  a1 = s0;
-  fp = v0;
-  s1 = fp - 1; // 0xFFFFFFFF
-  a2 = s1;
-  ra = 0x8003C4C4;
-  spyro_vec3_mul(a0, a1, a2);
-  a0 = s0;
-  a1 = 1; // 0x0001
-  ra = 0x8003C4D0;
-  spyro_vec3_shift_left(a0, a1);
-  s5 = s1 << 1;
-  s0 = s5 & 0xFF;
-  s0 = s0 << 4;
-  a0 = s0;
-  ra = 0x8003C4E4;
-  v0 = spyro_cos(a0);
-  a0 = s0;
-  v1 = v0 << 1;
-  v1 += v0;
-  v0 = lw(sp + 0x0038);
-  v1 = (int32_t)v1 >> 3;
-  v0 += v1;
-  sw(sp + 0x0038, v0);
-  ra = 0x8003C504;
-  v0 = spyro_cos(a0);
-  v1 = lw(sp + 0x0010);
-  mult(v1, v0);
-  a0 = s0;
-  a3=lo;
-  sw(sp + 0x0040, a3);
-  ra = 0x8003C520;
-  v0 = spyro_cos(a0);
-  v1 = lw(sp + 0x0014);
-  mult(v1, v0);
-  s3 = 0;
-  sw(sp + 0x0048, 0);
-  a3=lo;
-  temp = (int32_t)fp <= 0;
-  sw(sp + 0x0044, a3);
-  if (temp) goto label8003C6B0;
-  s6 = s2;
-label8003C544:
-  v1 = lbu(s6 + 0x0000);
-  v0 = 32; // 0x0020
-  a0 = v1 & 0xFF;
-  temp = a0 == v0;
-  v0 = v1 - 65; // 0xFFFFFFBF
-  if (temp) goto label8003C68C;
-  v0 = v0 < 26;
-  temp = v0 == 0;
-  if (temp) goto label8003C56C;
-  a0 += 361; // 0x0169
-  goto label8003C570;
-label8003C56C:
-  a0 = 76; // 0x004C
-label8003C570:
-  a1 = s4;
-  ra = 0x8003C584;
-  redirect_func_800758CC();
-  s2 = v0;
-  v0 = lw(s2 + 0x0000);
-  s1 = s5 & 0xFF;
-  sw(v0 + 0x0000, s4);
-  v0 = lw(s2 + 0x0000);
-  s1 = s1 << 4;
-  sh(v0 + 0x0004, fp);
-  v0 = lw(s2 + 0x0000);
-  a0 = s1;
-  sh(v0 + 0x0006, s3);
-  ra = 0x8003C5B0;
-  v0 = spyro_cos(a0);
-  v1 = lw(sp + 0x0010);
-  mult(v1, v0);
-  a0 = s1;
-  a3=lo;
-  sw(s2 + 0x000C, a3);
-  ra = 0x8003C5CC;
-  v0 = spyro_cos(a0);
-  v1 = lw(sp + 0x0014);
-  mult(v1, v0);
-  s0 = s2 + 12; // 0x000C
-  a0 = s0;
-  a1 = s0;
-  a2 = sp + 64; // 0x0040
-  sw(s2 + 0x0014, 0);
-  a3=lo;
-  sw(s2 + 0x0010, a3);
-  ra = 0x8003C5F8;
-  spyro_vec3_sub(a0, a1, a2);
-  a0 = s0;
-  a1 = 10; // 0x000A
-  ra = 0x8003C604;
-  spyro_vec3_shift_right(a0, a1);
-  a0 = s0;
-  a1 = s0;
-  a2 = sp + 16; // 0x0010
-  ra = 0x8003C614;
-  spyro_vec3_add(a0, a1, a2);
-  a0 = s0;
-  a1 = s0;
-  a2 = s4 + 12; // 0x000C
-  ra = 0x8003C624;
-  spyro_vec3_add(a0, a1, a2);
-  a0 = s0;
-  a1 = a0;
-  a2 = sp + 48; // 0x0030
-  ra = 0x8003C634;
-  spyro_vec3_sub(a0, a1, a2);
-  a0 = s1;
-  ra = 0x8003C63C;
-  v0 = spyro_cos(a0);
-  v1 = v0 << 1;
-  v1 += v0;
-  v0 = lw(s2 + 0x0014);
-  v1 = (int32_t)v1 >> 3;
-  a0 = v0 + v1;
-  v1 = lh(s2 + 0x0036);
-  v0 = 76; // 0x004C
-  temp = v1 != v0;
-  sw(s2 + 0x0014, a0);
-  if (temp) goto label8003C668;
-  v0 = a0 + 256; // 0x0100
-  sw(s2 + 0x0014, v0);
-label8003C668:
-  v0 = s7 & 0xFF;
-  sb(s2 + 0x0046, s7);
-  sh(s2 + 0x0038, v0);
-  v1 = lbu(s4 + 0x0049);
-  v0 = s3 << 3;
-  sb(s2 + 0x0049, v0);
-  v0 = 2; // 0x0002
-  sb(s2 + 0x004F, v0);
-  sb(s2 + 0x0048, v1);
-label8003C68C:
-  a0 = sp + 48; // 0x0030
-  a1 = a0;
-  a2 = sp + 32; // 0x0020
-  ra = 0x8003C69C;
-  spyro_vec3_sub(a0, a1, a2);
-  s5 -= 4; // 0xFFFFFFFC
-  s3++;
-  v0 = (int32_t)s3 < (int32_t)fp;
-  temp = v0 != 0;
-  s6++;
-  if (temp) goto label8003C544;
-label8003C6B0:
-  ra = lw(sp + 0x007C);
-  fp = lw(sp + 0x0078);
-  s7 = lw(sp + 0x0074);
-  s6 = lw(sp + 0x0070);
-  s5 = lw(sp + 0x006C);
-  s4 = lw(sp + 0x0068);
-  s3 = lw(sp + 0x0064);
-  s2 = lw(sp + 0x0060);
-  s1 = lw(sp + 0x005C);
-  s0 = lw(sp + 0x0058);
-  sp += 128; // 0x0080
-  temp = ra;
-  if (temp == return_address) return;
-  switch (temp)
-  {
-  default:
-    JR(temp, 0x8003C6DC);
-    return;
+
+  if (s3) {
+    s7 = lbu(s4 + 0x46);
+    s2 = lw(0x8006F7F0 + lw(lw(s4))*4); // &0x80075578
+    s0 = s7 & 0xFF;
+  } else {
+    s2 = lw(0x8006F880); // &0x80010078
+    s7 = spyro_atan2(pos.x - lw(s4 + 0x0C), pos.y - lw(s4 + 0x10), 0);
+    s0 = s7 & 0xFF;
   }
+
+  sw(sp + 0x10,  cos_lut[s0]*3/16);
+  sw(sp + 0x14,  sin_lut[s0]*3/16);
+  sw(sp + 0x18,  0);
+  sw(sp + 0x20, -sin_lut[s0]/32);
+  sw(sp + 0x24,  cos_lut[s0]/32);
+  sw(sp + 0x28, 0);
+  if (s3) {
+    if (lbu(s4 + 0x49)) {
+      s7 = lbu(s4 + 0x46);
+      s0 = sp + 0x30;
+      spyro_vec3_clear(s0);
+      spyro_vec3_sub(sp + 0x10, s0, sp + 0x10);
+      spyro_vec3_sub(sp + 0x20, s0, sp + 0x20);
+    } else {
+      s7 = lbu(s4 + 0x46) - 0x80;
+    }
+  }
+  s0 = sp + 0x20;
+  fp = spyro_strlen(s2);
+  s1 = fp - 1;
+  spyro_vec3_mul(sp + 0x30, s0, s1);
+  spyro_vec3_shift_left(s0, 1);
+  s5 = s1*2;
+  s0 = (s5 & 0xFF) << 4;
+  sw(sp + 0x38, lw(sp + 0x38) + spyro_cos(s0)*3/8);
+  sw(sp + 0x40, lw(sp + 0x10)*spyro_cos(s0));
+  sw(sp + 0x48, 0);
+  sw(sp + 0x44, lw(sp + 0x14)*spyro_cos(s0));
+  s3 = 0;
+  s6 = s2;
+  for (int i = 0; i < fp; i++) {
+    char ch = lbu(s6);
+    uint32_t modelID;
+    if (ch != ' ') {
+      if (ch >= 'A' && ch <= 'Z')
+        modelID = 0x1AA + ch - 'A';
+      else
+        modelID = 0x4C;
+      a0 = modelID;
+      a1 = s4;
+      ra = 0x8003C584;
+      redirect_func_800758CC();
+      s2 = v0;
+      s1 = (s5 & 0xFF) << 4;
+      sw(lw(s2 + 0x00) + 0, s4);
+      sh(lw(s2 + 0x00) + 4, fp);
+      sh(lw(s2 + 0x00) + 6, s3);
+      s0 = s2 + 0x0C;
+      sw(s0 + 0, lw(sp + 0x10)*spyro_cos(s1));
+      sw(s0 + 4, lw(sp + 0x14)*spyro_cos(s1));
+      sw(s0 + 8, 0);
+      spyro_vec3_sub(s0, s0, sp + 0x40);
+      spyro_vec3_shift_right(s0, 10);
+      spyro_vec3_add(s0, s0, sp + 0x10);
+      spyro_vec3_add(s0, s0, s4 + 0x0C);
+      spyro_vec3_sub(s0, s0, sp + 0x30);
+      a0 = lw(s0 + 8) + spyro_cos(s1)*3/8;
+      v1 = lh(s2 + 0x36);
+      if (v1 == 0x4C) // ','
+        sw(s0 + 8, a0 + 0x100);
+      else
+        sw(s0 + 8, a0);
+      sb(s2 + 0x46, s7);
+      sh(s2 + 0x38, s7 & 0xFF);
+      v1 = lbu(s4 + 0x49);
+      sb(s2 + 0x49, s3*8);
+      sb(s2 + 0x4F, 2);
+      sb(s2 + 0x48, v1);
+    }
+    spyro_vec3_sub(sp + 0x30, sp + 0x30, sp + 0x20);
+    s5 -= 4;
+    s3++;
+    s6++;
+  }
+  ra = lw(sp + 0x7C);
+  fp = lw(sp + 0x78);
+  s7 = lw(sp + 0x74);
+  s6 = lw(sp + 0x70);
+  s5 = lw(sp + 0x6C);
+  s4 = lw(sp + 0x68);
+  s3 = lw(sp + 0x64);
+  s2 = lw(sp + 0x60);
+  s1 = lw(sp + 0x5C);
+  s0 = lw(sp + 0x58);
+  sp += 0x80;
+}
+
+// size: 0x000001C8
+struct game_object *create_3d_text2(char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata)
+{
+  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
+
+  for (uint8_t ch = *str++; ch; ch = *str++) {
+    if (ch == ' ') {
+      pos->x += spacing;
+      continue;
+    }
+
+    game_object--;
+    *game_object = (struct game_object){0};
+    game_object->p = *pos;
+    if (ch >= '0' && ch <= '9') {
+      game_object->modelID = 0x104 + ch - '0';
+    } else if (ch >= 'A' && ch <= 'Z') {
+      game_object->modelID = 0x1AA + ch - 'A';
+    } else if (ch == '/') {
+      game_object->modelID = 0x115;
+    } else if (ch == '?') {
+      game_object->modelID = 0x116;
+    } else if (ch == '%') {
+      game_object->modelID = 0x110;
+    } else if (ch == '^') {
+      game_object->modelID = 0x141;
+    } else if (ch == '+') {
+      game_object->modelID = 0x13D;
+    } else {
+      game_object->modelID = 0x147;
+    }
+    game_object->unknown47 = 0x7F;
+    game_object->unknown4F = unknown_metadata;
+    game_object->render_distance = 0xFF;
+    pos->x += spacing;
+  }
+  sw(gameobject_stack_ptr, pointer_to_addr(game_object));
+  return game_object;
+}
+
+// size: 0x000001C8
+void function_80017FE4(void)
+{
+  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
 }
 
 // size: 0x000002A0
@@ -554,7 +381,7 @@ struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint3
     }
     game_object->unknown47 = 0x7F;
     game_object->unknown4F = unknown_metadata;
-    game_object->unknown50 = 0xFF;
+    game_object->render_distance = 0xFF;
 
     if (s2)
       pos->x += unknown_spacing;
@@ -571,58 +398,6 @@ struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint3
 void function_800181AC(void)
 {
   v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)));
-}
-
-// size: 0x000001DC
-void function_8001EB80(void)
-{
-  uint32_t temp, return_address = ra;
-  sp -= 64; // 0xFFFFFFC0
-  sw(sp + 0x3C, ra);
-  sw(sp + 0x38, s0);
-
-  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
-  sb(0x80076EF9, 0);
-  sb(0x80076EFA, 0);
-  sb(0x80076EFB, 0);
-  sb(0x80076F7D, 0);
-  sb(0x80076F7E, 0);
-  sb(0x80076F7F, 0);
-
-  create_3d_text1("RETURNING HOME...", (vec3_32[]){{0x76, 0x6E, 0x1100}}, (vec3_32){0x10, 1, 0x1400}, 18, 11);
-
-  struct game_object *game_object_end = addr_to_pointer(lw(gameobject_stack_ptr));
-
-  game_object--;
-  uint32_t rot = 0;
-  while (game_object >= game_object_end) {
-    v0 = lhu(spyro_cos_lut + ((lw(0x800756F8)*2 + rot) & 0xFF)*2);
-    game_object->unknown46 = v0 / 128;
-    game_object--;
-    rot += 12;
-  }
-
-  sw(0x8006FCF4 + 0x2400, 0);
-  function_80018880();
-  spyro_memset32(0x8006FCF4, 0, 0x900);
-  function_80022A2C();
-  DrawSync(0);
-
-  int32_t num1 = lw(drawn_frame);
-  while (1) {
-    uint32_t frame = VSync(-1);
-    sw(current_frame, frame);
-    if ((int32_t)(frame-num1) >= 2) break;
-    VSync(0);
-  }
-  sw(drawn_frame, VSync(-1));
-  PutDispEnv(addr_to_pointer(lw(0x80075888) + 0x5C));
-  PutDrawEnv(addr_to_pointer(lw(0x80075888) + 0x00));
-  DrawOTag(spyro_combine_all_command_buffers(0x800));
-
-  ra = lw(sp + 0x3C);
-  s0 = lw(sp + 0x38);
-  sp += 0x40;
 }
 
 // size: 0x00000068
@@ -789,10 +564,11 @@ void function_80012D58(void)
   return;
 }
 
+// contains bug
 // size: 0x0000026C
 uint32_t func_800133E0(uint32_t param1)
 {
-  int32_t len = lw(param1 + 0x00);
+  const int32_t len = lw(param1 + 0x00);
   if (len < 0) {
     sw(param1 + 0x04, lw(param1 + 0x04) + param1);
     sw(param1 + 0x08, lw(param1 + 0x08) + param1);
@@ -805,14 +581,14 @@ uint32_t func_800133E0(uint32_t param1)
     if (v0) sw(param1 + i*4 + 0x14, v0 + (param1 & 0x7FFFFFFF));
   }
 
-  uint32_t ptr_list = param1 + 0x38;
+  const uint32_t ptr_list = param1 + 0x38;
   
-  uint32_t num1 = lw(param1 + 0x34) + param1;
+  const uint32_t num1 = lw(param1 + 0x34) + param1;
   sw(param1 + 0x34, num1);
   for (int i = 0; i < len; i++) {
-    uint32_t struct_ptr = ptr_list + i*4;
+    const uint32_t struct_ptr = ptr_list + i*4;
     if (lw(struct_ptr) == -1) continue;
-    uint32_t struct_addr = lw(struct_ptr) + param1;
+    const uint32_t struct_addr = lw(struct_ptr) + param1;
     sw(struct_ptr, struct_addr);
 
     int32_t struct_len = lh(struct_addr);
@@ -842,12 +618,12 @@ uint32_t func_800133E0(uint32_t param1)
   }
   return param1;
 }
-
+/*
 // size: 0x0000026C
 void function_800133E0(void)
 {
   v0 = func_800133E0(a0);
-}
+}*/
 
 // size: 0x0000007C
 void new_game_object(struct game_object *game_object)
@@ -865,9 +641,9 @@ void new_game_object(struct game_object *game_object)
   game_object->unknown41 = 0x20;
 
   game_object->unknown43 = 0xFF;
-  game_object->unknown44 = 0;
-  game_object->unknown45 = 0;
-  game_object->unknown46 = 0;
+  game_object->rotx = 0;
+  game_object->roty = 0;
+  game_object->rotz = 0;
   game_object->unknown47 = 4;
   game_object->unknown48 = 0;
   game_object->unknown49 = 0;
@@ -879,7 +655,7 @@ void new_game_object(struct game_object *game_object)
   game_object->unknown4E = 0;
   game_object->unknown4F = 0;
 
-  game_object->unknown50 = 0x10;
+  game_object->render_distance = 0x10;
 
   game_object->unknown52 = 0xFF;
   game_object->unknown53 = 0xFF;
@@ -891,6 +667,7 @@ void new_game_object(struct game_object *game_object)
 // size: 0x0000007C
 void function_8003A720(void)
 {
+  BREAKPOINT;
   new_game_object(addr_to_pointer(a0));
 }
 
@@ -1002,7 +779,7 @@ void function_80014564(void)
     sw(0x80075864, 8);
   } else if (v1 == 8) {
     for (int i = 0; (int32_t)lw(WAD_nested_header + 0x50 + i*4) > 0; i++)
-      sw(0x8007637C + i*4, func_800133E0(lw(WAD_nested_header + 0x50 + i*4) - lw(WAD_nested_header + 0x10) + lw(0x800785E0)));
+      sw(0x80076378 + 4 + i*4, func_800133E0(lw(WAD_nested_header + 0x50 + i*4) + lw(0x800785E0) - lw(WAD_nested_header + 0x10)));
     v1 = lw(0x8007566C);
     sw(0x800785E4, lw(WAD_nested_header + 0x14) + lw(0x800785E0));
     sw(0x80078604, lw(WAD_nested_header + 0x1C));
@@ -1029,7 +806,7 @@ void function_80014564(void)
     for (int32_t i = 0; i < num1; i++) {
       struct game_object *game_object = game_objects + i;
       new_game_object(game_object);
-      game_object->unknown50 = 0x20;
+      game_object->render_distance = 0x20;
       game_object->modelID = i+1;
     }
     (game_objects + num1)->unknown48 = 0xFF;
@@ -1934,6 +1711,7 @@ uint32_t completion_percentage(void)
 // size: 0x000000C0
 void function_8002BB20(void)
 {
+  BREAKPOINT;
   v0 = completion_percentage();
 }
 

@@ -1,6 +1,6 @@
 #include "psx_mem.h"
 #include "spyro_string.h"
-#include "psx_ops.h"
+#include "not_renamed.h"
 #include "psx_bios.h"
 #include "main.h"
 #include "decompilation.h"

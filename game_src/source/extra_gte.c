@@ -14,6 +14,15 @@ vec3 load_vec3(uint32_t addr)
   };
 }
 
+vec3_32 load_vec3_32(uint32_t addr)
+{
+  return (vec3_32){
+    lw(addr + 0),
+    lw(addr + 4),
+    lw(addr + 8)
+  };
+}
+
 void load_RTM(uint32_t addr)
 {
   cop2.RTM0 = lw(addr + 0x00);

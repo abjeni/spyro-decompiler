@@ -4,6 +4,61 @@
 #include "decompilation.h"
 #include "spyro_string.h"
 #include "spyro_psy.h"
+#include "spyro_game.h"
+
+#include <string.h>
+
+// size: 0x0000002C
+void function_8006BAE8(void)
+{
+  if (lhu(a0 + 0xE6)) {
+    if (lbu(a0 + 0x46) == 0xFF) {
+      v0 = 1;
+    } else {
+      v0 = 0;
+    }
+  } else {
+    v0 = 1;
+  }
+}
+
+// size: 0x00000020
+void set_timer(uint32_t duration)
+{
+  sw(timeout1_duration, duration);
+  sw(timeout1_start, lhu(TIMER2));
+}
+
+void function_8006BB20(void)
+{
+  BREAKPOINT;
+  set_timer(a0);
+}
+
+// size: 0x000000A0
+uint32_t get_timer(void)
+{
+  a0 = lhu(TIMER2);
+  if (a0 < lw(timeout1_start)) {
+    if (lhu(TIMER2_TARGET)) {
+      a0 += lhu(TIMER2_TARGET);
+    } else {
+      a0 += 0x10000;
+    }
+  }
+  v0 = a0 - lw(timeout1_start);
+  if ((lhu(TIMER2_MODE) & 0x200) == 0) {
+    v0 /= 8;
+  }
+  return v0 >= lw(timeout1_duration);
+}
+
+
+void function_8006BB40(void)
+{
+  BREAKPOINT;
+  v0 = get_timer();
+}
 
 // size: 0x000000B8
 void function_8002D170(void)
@@ -39,6 +94,7 @@ void do_literally_nothing(void)
 
 void function_8005C720(void)
 {
+  BREAKPOINT;
   do_literally_nothing();
 }
 
@@ -103,6 +159,7 @@ uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
 // size: 0x000000A8
 void function_8005E804(void)
 {
+  BREAKPOINT;
   v0 = dma_callback(a0, a1);
 }
 
@@ -168,4 +225,26 @@ uint32_t func_80067628(uint32_t async, uint32_t a1, uint32_t a2)
 void function_80067628(void)
 {
   v0 = func_80067628(a0, a1, a2);
+}
+
+
+
+// size: 0x000000AC
+void function_8005B8E0(void)
+{
+  memset(addr_to_pointer(0x80075640), 0, 0x8007AA38-0x80075640);
+
+  sp = (lw(0x800755A8)-8) | 0x80000000;
+  a0 = 0x8007AA38 & 0x1FFFFFFF;
+  v1 = lw(0x800755A4);
+  a1 = v0 - v1 - a0;
+  sw(0x800730C4, a1);
+  a0 = a0 | 0x80000000;
+  sw(0x800730C0, a0);
+  gp = 0x80075264;
+  fp = sp;
+  a0 += 4;
+  InitHeap(a0, a1);
+  game_loop();
+  BREAKPOINT;
 }
