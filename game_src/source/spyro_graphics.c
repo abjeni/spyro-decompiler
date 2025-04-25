@@ -944,11 +944,16 @@ void function_80062350(void)
 }
 
 // size: 0x00000020
+void mat3x4setTR(uint32_t mat3x4)
+{
+  load_TR(mat3x4 + 0x14);
+}
+
+// size: 0x00000020
 void function_800625F8(void)
 {
-  cop2.TRX = lw(a0 + 0x14);
-  cop2.TRY = lw(a0 + 0x18);
-  cop2.TRZ = lw(a0 + 0x1C);
+  BREAKPOINT;
+  mat3x4setTR(a0);
 }
 
 // size: 0x00000018

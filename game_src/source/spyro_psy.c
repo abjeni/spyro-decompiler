@@ -33,6 +33,7 @@ void spyro_srand(int32_t seed)
 // size: 0x00000010
 void function_8006275C(void)
 {
+  BREAKPOINT;
   spyro_srand(a0);
 }
 
@@ -46,6 +47,7 @@ int spyro_rand(void)
 // size: 0x00000030
 void function_8006272C(void)
 {
+  BREAKPOINT;
   v0 = spyro_rand();
 }
 
@@ -636,59 +638,6 @@ void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw)
 // size: 0x00000058
 void function_80060670(void)
 {
+  BREAKPOINT;
   SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)));
-}
-
-// size: 0x000001E4
-void MemCardStart(void)
-{
-  uint32_t crit = EnterCriticalSection();
-  sw(memcard_events, OpenEvent(0xF4000001, 4, 0x1000, 0x80067DD0));
-  sw(0x80075B10, OpenEvent(0xF4000001, 0x8000, 0x1000, 0x80067DE4));
-  sw(0x80075B14, OpenEvent(0xF4000001, 0x100, 0x1000, 0x80067DF8));
-  sw(0x80075B18, OpenEvent(0xF4000001, 0x2000, 0x1000, 0x80067E0C));
-  sw(0x80075B1C, OpenEvent(0xF0000011, 4, 0x1000, 0x80067E20));
-  sw(0x80075B20, OpenEvent(0xF0000011, 0x8000, 0x1000, 0x80067E34));
-  sw(0x80075B24, OpenEvent(0xF0000011, 0x100, 0x1000, 0x80067E48));
-  sw(0x80075B28, OpenEvent(0xF0000011, 0x2000, 0x1000, 0x80067E5C));
-  EnableEvent(lw(memcard_events));
-  EnableEvent(lw(0x80075B10));
-  EnableEvent(lw(0x80075B14));
-  EnableEvent(lw(0x80075B18));
-  EnableEvent(lw(0x80075B1C));
-  EnableEvent(lw(0x80075B20));
-  EnableEvent(lw(0x80075B24));
-  EnableEvent(lw(0x80075B28));
-
-  ra = 0x8006805C;
-  function_8006815C();
-  
-  if (crit == 1) ExitCriticalSection();
-}
-
-// size: 0x000001E4
-void function_80067EA0(void)
-{
-  MemCardStart();
-}
-
-// size: 0x000000B8
-void MemCardStop(void)
-{
-  uint32_t crit = EnterCriticalSection();
-  CloseEvent(lw(memcard_events));
-  CloseEvent(lw(0x80075B10));
-  CloseEvent(lw(0x80075B14));
-  CloseEvent(lw(0x80075B18));
-  CloseEvent(lw(0x80075B1C));
-  CloseEvent(lw(0x80075B20));
-  CloseEvent(lw(0x80075B24));
-  CloseEvent(lw(0x80075B28));
-  if (crit == 1) ExitCriticalSection(); 
-}
-
-// size: 0x000000B8
-void function_800680A4(void)
-{
-  MemCardStop();
 }

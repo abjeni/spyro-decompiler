@@ -1567,9 +1567,9 @@ struct segment {
 };
 
 struct segment segments[] = {
-  {LEVEL_ID, 4, MASK_WRITE},
-  {0x80074A10, 4, MASK_READONLY},
-  {0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
+  //{LEVEL_ID, 4, MASK_WRITE},
+  //{0x80074A10, 4, MASK_READONLY},
+  //{0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
   {0x80010000, 0x5BBDC, MASK_READONLY}
 };
 
@@ -1623,6 +1623,12 @@ void print_access(uint32_t addr)
   file_loc loc = get_access(addr);
 
   printf("0x%.8X (0x%.2X) written by: %s:%u\n", addr, lbu(addr, LOC), loc.file, loc.line);
+}
+
+void set_access(uint32_t addr, uint32_t size, file_loc loc)
+{
+  for (int i = 0; i < size; i++)
+    psx_mem.mem_access[(addr+i)&0x001FFFFF] = loc;
 }
 
 uint32_t translate_addr(uint32_t addr)

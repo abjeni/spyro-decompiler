@@ -4,6 +4,7 @@
 #include "spyro_vsync.h"
 #include "spyro_system.h"
 #include "decompilation.h"
+#include "not_renamed.h"
 
 uint8_t to_hexnum(uint8_t num)
 {
@@ -41,7 +42,6 @@ void function_80064094(void)
 // size: 0x00000080
 uint32_t parse_cdrom_header(char header[])
 {
-  uint32_t temp, return_address = ra;
   const uint32_t sector = from_hexnum(header[0]);
   const uint32_t second = from_hexnum(header[1]);
   const uint32_t minute = from_hexnum(header[2]);

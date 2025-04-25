@@ -1,5 +1,6 @@
 #include "psx_mem.h"
 #include "spyro_string.h"
+#include "spyro_system.h"
 #include "not_renamed.h"
 #include "psx_bios.h"
 #include "main.h"
@@ -14,6 +15,7 @@ void function_8005375C(void)
   sw(a0 + 0x24, 0);
   sw(a0 + 0x28, 0x7F7F7F7F);
 }
+
 
 // size: 0x000001B0
 void function_80053790(void)
@@ -86,6 +88,7 @@ void set_controller_interrupt_chain_node(void)
 
 void function_80069608(void)
 {
+  BREAKPOINT;
   set_controller_interrupt_chain_node();
 }
 
@@ -176,6 +179,7 @@ void stop_registering_gamepads_internal(void)
 
 void function_800698E8(void)
 {
+  BREAKPOINT;
   stop_registering_gamepads_internal();
 }
 
@@ -188,6 +192,7 @@ void stop_registering_gamepads(void)
 // size: 0x00000020
 void function_80069080(void)
 {
+  BREAKPOINT;
   stop_registering_gamepads();
 }
 
@@ -229,6 +234,7 @@ void start_registering_gamepads_internal(void)
 
 void function_8006981C(void)
 {
+  BREAKPOINT;
   start_registering_gamepads_internal();
 }
 
@@ -241,6 +247,7 @@ void start_registering_gamepads(void)
 // size: 0x00000020
 void function_80069060(void)
 {
+  BREAKPOINT;
   start_registering_gamepads();
 }
 
@@ -281,8 +288,37 @@ void init_controller(void)
   sp += 0x18;
 }
 
+// size: 0x00000028
+void controller_wait_for_data(void)
+{
+  v1 = lw(JOY_BASE_ptr);
+  while ((lhu(v1 + 4) & 2) == 0);
+}
+
+// size: 0x00000028
+void function_8006A0A4(void)
+{
+  BREAKPOINT;
+  controller_wait_for_data();
+}
+
 // size: 0x00000098
 void function_800123C8(void)
 {
+  BREAKPOINT;
   init_controller();
+}
+
+// size: 0x00000090
+void function_8006A014(void)
+{
+  uint32_t joy_base = lw(JOY_BASE_ptr);
+  sw(lw(I_STAT2_ptr), ~0x80);
+  while (lhu(joy_base + 0x04) & 0x80) {
+    v0 = 0;
+    if (get_timer()) return;
+  }
+  sh(joy_base + 0x0A, lhu(joy_base + 0x0A) | 0x10);
+  v0 = 1;
+  return;
 }

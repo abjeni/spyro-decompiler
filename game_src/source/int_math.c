@@ -171,7 +171,7 @@ mat3 mat3rotX(uint32_t a)
   uint32_t c = spyro_cos(a);
   uint32_t s = spyro_sin(a);
   return mat3_c(
-    4096, 0, 0,
+    0x1000, 0, 0,
     0, c, -s,
     0, s, c
   );
@@ -183,7 +183,7 @@ mat3 mat3rotY(uint32_t a)
   uint32_t s = spyro_sin(a);
   return mat3_c(
     c, 0, s,
-    0, 4096, 0,
+    0, 0x1000, 0,
     -s, 0, c
   );
 }
@@ -195,7 +195,7 @@ mat3 mat3rotZ(uint32_t a)
   return mat3_c(
     c, s, 0,
     -s, c, 0,
-    0, 0, 4096
+    0, 0, 0x1000
   );
 }
 

@@ -2,7 +2,9 @@
 
 #include <stdint.h>
 
-void spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst);
+uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst);
+uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2);
+
 int16_t spyro_atan(int32_t x, int32_t y);
 int16_t spyro_atan2(int32_t x, int32_t y, uint32_t a3);
 int16_t spyro_cos(int32_t angle);
@@ -43,6 +45,8 @@ void spyro_vec_16_add(uint32_t dst, uint32_t a, uint32_t b);
 void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst);
 uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol);
 
+int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2);
+int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2);
 
 extern int16_t cos_lut[256];
 extern int16_t sin_lut[256];

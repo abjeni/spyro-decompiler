@@ -34,9 +34,10 @@ int main(int argc, char *argv[])
   if (argc > 1)
   {
 
+    printf("%d\n", -2%3);
     //wad_main();
     
-    print_psx_string_array("dragon_names", 0x8006F694, 80);
+    //print_psx_string_array("dragon_names", 0x8006F694, 80);
 
     //read_disk1(lw(WAD_sector), 0x80100000, 0x800, 0, 0x256);
     return 0;

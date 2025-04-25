@@ -135,7 +135,7 @@ void redirect_func_800758CC()
 void function_80051FEC(void)
 {
   memset(addr_to_pointer(0x80077868), 0, 32);
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position_x);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position);
   t6 = 0x8006FCF4 + 0x400;
   for (struct game_object *object = addr_to_pointer(lw(0x80075828)); object->unknown48 != -1; object++) {
     if ((int32_t)object->unknown48 < 0) continue;
@@ -192,7 +192,7 @@ void function_8003C358(void)
   sw(sp + 0x5C, s1);
   sw(sp + 0x58, s0);
 
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position_x);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position);
 
   s4 = a0;
   s3 = a1;
@@ -397,6 +397,7 @@ struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint3
 // size: 0x000002A0
 void function_800181AC(void)
 {
+  BREAKPOINT;
   v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)));
 }
 
@@ -517,6 +518,7 @@ void function_80012D58(void)
   uint32_t element = struct7_elements;
   for (int i = 0; i < struct7_len; i++) {
     const uint32_t element_struct1 = element + 0x04;
+    (void)element_struct1;
     const uint32_t element_struct1_len = lw(element + 0x04);
     const uint32_t element_struct1_elements = element + 0x08;
 
@@ -812,6 +814,75 @@ void function_80014564(void)
     (game_objects + num1)->unknown48 = 0xFF;
     sw(0x80075864, 10);
   }
+}
+
+// size: 0x00000078
+void function_8003FDC8(void)
+{
+  function_8003EA68();
+  a0 = lw(0x80078AD0);
+  v1 = lbu(0x8006C470 + a0);
+  sb(0x80078A76, 0);
+  sb(0x80078A70, v1);
+  sb(0x80078A77, 1);
+  sb(0x80078A7C, 0);
+  sw(0x80078AAC, 0);
+  sw(0x80078AB4, a0);
+  sb(0x80078A71, v1);
+}
+
+// size: 0x0000015C
+void function_80056B28(void)
+{
+  a0 = a0 ^ 0x00FFFFFF;
+  for (int i = 0; i < 24; i++) {
+    if (lhu(0x80075F3E + i*0x1C) & 0x83) {
+      if ((a0 >> i) & 1) {
+        v1 = 1 << i;
+        sw(0x8007623C, lw(0x8007623C) | v1);
+        v1 = lhu(0x80075F3E + i*0x1C) & 0x1C;
+        if (v1 != 8) {
+          if (v1 == 4) {
+            v0 = lw(0x80075F30 + i*0x1C);
+            if (v0) sb(v0 + 0x02A0, 0x7F);
+          }
+        } else {
+          v0 = lw(0x80075F30 + i*0x1C);
+          if (v0) sb(v0 + 0x54, 0x7F);
+        }
+        v0 = i*0x1C;
+        sh(0x80075F3E + i*0x1C, 0x40);
+        sw(0x80075F30 + i*0x1C, 0);
+        sw(0x80075F48 + i*0x1C, 0);
+        sb(0x80075F3D + i*0x1C, 0xFF);
+      }
+    }
+  }
+  sw(0x80076238, 0);
+  a0 = 0;
+  a1 = 4;
+  function_800567F4();
+}
+
+// size: 0x0000009C
+void function_800144C8(void)
+{
+  a0 = 0;
+  function_80056B28();
+  read_disk1(
+    lw(WAD_sector),
+    lw(0x800785E4),
+    lw(0x80078604),
+    lw(0x80078600) + lw(WAD_header + 0x50 + lw(CONTINUOUS_LEVEL_ID)*16),
+    0x258
+  );
+  a0 = 1;
+  function_8001364C();
+  a0 = 0;
+  if (lw(0x80075690))
+    a0 = 0x20;
+  function_8003FDC8();
+  sw(0x80078BBC, 3);
 }
 
 // size: 0x00001074
@@ -1599,11 +1670,11 @@ label800160C8:
   temp = v1 != v0;
   a0 = s1;
   if (temp) goto label80016284;
-  v0 = lw(spyro_position_z);
+  v0 = lw(spyro_position + 8);
   a2 = lbu(0x80078A66);
   v0 -= 5632; // 0xFFFFEA00
   a2 = a2 << 1;
-  sw(spyro_position_z, v0);
+  sw(spyro_position + 8, v0);
   v1 = lh(spyro_cos_lut + a2);
   a1 = a0;
   v0 = v1 << 2;
@@ -1615,10 +1686,10 @@ label800160C8:
   v1 = lh(spyro_sin_lut + a2);
   v0 = v1 << 2;
   v0 += v1;
-  v1 = lw(spyro_position_y);
+  v1 = lw(spyro_position + 4);
   v0 = (int32_t)v0 >> 1;
   v1 -= v0;
-  sw(spyro_position_y, v1);
+  sw(spyro_position + 4, v1);
   a2 = s2;
   ra = 0x80016238;
   spyro_vec3_add(a0, a1, a2);
@@ -1748,5 +1819,54 @@ void game_loop(void)
 // size: 0x00000088
 void function_80012204(void)
 {
+  BREAKPOINT;
   game_loop();
+}
+
+// size: 0x00000178
+void function_80012604(void)
+{
+  for (int i = 0; i < 36; i++) {
+    sw(0x80076FE8 + i*4, 0);
+    sw(0x800772D8 + i*4, 0);
+    if ((int32_t)i < 18)
+      sw(0x80077420 + i*4, 0);
+    
+    sb(0x80078E78 + i, 0);
+    sb(0x8007A6A8 + i, 0);
+  }
+
+  for (int i = 0; i < 6; i++) // loop over worlds?
+    sb(0x800758D5 + i, 0);
+
+  sb(0x800758D0, 2);
+  for (int i = 0; i < 6; i++) { // loop over worlds?
+    sw(0x80078618+i*4, 0);
+    for (int j = 0; j < 5; j++) // loop over levels?
+      sb(0x80078680+i*5+j, 0);
+  }
+
+  sw(0x80078BBC, 3);
+  sw(0x8007582C, 4);
+  sw(total_found_gems, 0);
+  sw(total_found_dragons, 0);
+  sw(total_found_eggs, 0);
+  sw(0x8007587C, 0);
+  sw(0x800756C8, 0);
+  sw(0x80075830, 0);
+  sw(0x800758E8, 0);
+  sw(0x8007580C, -1);
+  sw(0x80075838, 0);
+  sw(0x8007583C, 0);
+  spyro_memset32(0x80077888, 0, 0x68);
+  spyro_memset32(0x80077908, 0, 0x480);
+}
+
+// size: 0x00000044
+void function_8001277C(void)
+{
+  sw(LEVEL_ID, 10);
+  sw(0x800757A4, 1);
+  sw(CAMERA_MODE, 0x52);
+  function_80012604();
 }

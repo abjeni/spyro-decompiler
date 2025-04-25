@@ -38,6 +38,8 @@ void gpu_start_timeout(void);
 
 void GP1_cmd(uint32_t cmd);
 
+void mat3x4setTR(uint32_t mat3x4);
+
 void SetGeomOffset(uint32_t ofx, uint32_t ofy);
 void SetGeomScreen(uint32_t h);
 

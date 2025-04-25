@@ -16,6 +16,7 @@
 #include "spyro_constants.h"
 #include "level_loading.h"
 #include "triangle.h"
+#include "extra_gte.h"
 
 #include <stdint.h>
 #include <string.h>
@@ -96,6 +97,7 @@ void gui_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 
 void function_8001844C(void)
 {
+  BREAKPOINT;
   gui_line(a0, a1, a2, a3);
 }
 
@@ -446,7 +448,7 @@ label80018EF4:
 void function_80018F30(void)
 {
   uint32_t temp;
-  v0 = lw(0x8007570C); // &0x00000000
+  v0 = lw(0x8007570C);
   sp -= 40; // 0xFFFFFFD8
   sw(sp + 0x20, ra);
   sw(sp + 0x1C, s3);
@@ -455,43 +457,43 @@ void function_80018F30(void)
   temp = v0 == 0;
   sw(sp + 0x10, s0);
   if (temp) goto label80018FB0;
-  v1 = lw(0x800756C0); // &0x00000000
+  v1 = lw(0x800756C0);
   v0 = (int32_t)v1 < 22;
   temp = v0 == 0;
   if (temp) goto label80018F84;
-  v0 = lw(0x800756CC); // &0x00000000
+  v0 = lw(0x800756CC);
   v0 += v1;
-  sw(0x800756C0, v0); // &0x00000000
+  sw(0x800756C0, v0);
 label80018F84:
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   v0 = (int32_t)v0 < 23;
   temp = v0 != 0;
   s3 = 0x05000000;
   if (temp) goto label80018FF8;
   v0 = 22; // 0x0016
-  sw(0x800756C0, v0); // &0x00000000
+  sw(0x800756C0, v0);
   s2 = 40; // 0x0028
   goto label80018FFC;
 label80018FB0:
-  v1 = lw(0x800756C0); // &0x00000000
+  v1 = lw(0x800756C0);
   temp = (int32_t)v1 <= 0;
   if (temp) goto label80018FDC;
-  v0 = lw(0x800756CC); // &0x00000000
+  v0 = lw(0x800756CC);
   v0 = v1 - v0;
-  sw(0x800756C0, v0); // &0x00000000
+  sw(0x800756C0, v0);
 label80018FDC:
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   temp = (int32_t)v0 >= 0;
   s3 = 0x05000000;
   if (temp) goto label80018FF8;
-  sw(0x800756C0, 0); // &0x00000000
+  sw(0x800756C0, 0);
 label80018FF8:
   s2 = 40; // 0x0028
 label80018FFC:
   s0 = lw(allocator1_ptr);
   s1 = 512; // 0x0200
   sb(s0 + 0x07, s2);
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   a0 = s0;
   sw(s0 + 0x00, s3);
   sh(s0 + 0x08, 0);
@@ -511,7 +513,7 @@ label80018FFC:
   a0 = s0;
   sw(allocator1_ptr, s0);
   sb(s0 + 0x07, s2);
-  v1 = lw(0x800756C0); // &0x00000000
+  v1 = lw(0x800756C0);
   v0 = 240; // 0x00F0
   sh(s0 + 0x12, v0);
   sh(s0 + 0x16, v0);
@@ -674,7 +676,7 @@ label800191F0:
 void function_80019300(void)
 {
   uint32_t temp;
-  v0 = lw(0x80075690); // &0x00000000
+  v0 = lw(0x80075690);
   sp -= 88; // 0xFFFFFFA8
   sw(sp + 0x50, ra);
   sw(sp + 0x4C, s3);
@@ -1019,7 +1021,7 @@ label80019A70:
   v0 -= v1;
 label80019AB4:
   sw(sp + 0x1C, v0);
-  v0 = lw(0x800756AC); // &0x00000000
+  v0 = lw(0x800756AC);
   v0 = (int32_t)v0 < 224;
   if (v0 == 0) goto label80019AE8;
   sprintf(buf, "TREASURE FOUND");
@@ -1043,10 +1045,10 @@ label80019B0C:
   
   text_wave_effect1(object, lw(0x800756AC)*2, 12, 1, 128);
   
-  v1 = lw(0x800756AC); // &0x00000000
+  v1 = lw(0x800756AC);
   v0 = (int32_t)v1 < 128;
   if (v0 == 0) goto label80019BD8;
-  v0 = lw(0x80075688); // &0x00000000
+  v0 = lw(0x80075688);
   v0 = v0 << 2;
   v1 = lw(0x80077420 + v0);
   v0 = lw(0x8007587C);
@@ -1055,7 +1057,7 @@ label80019B0C:
 label80019BD8:
   v0 = (int32_t)v1 < 224;
   if (v0 == 0) goto label80019C90;
-  v0 = lw(0x800756C8); // &0x00000000
+  v0 = lw(0x800756C8);
   v0++;
   a0 = v0 << 1;
   if ((int32_t)a0 < 65) goto label80019C04;
@@ -1108,7 +1110,7 @@ label80019D04:
   if (v0 == 0) goto label80019D10;
   a1 = a0;
 label80019D10:
-  v0 = lw(0x80075688); // &0x00000000
+  v0 = lw(0x80075688);
   v1 = lw(0x8007587C);
   v0 = v0 << 2;
   v0 = lw(0x80077420 + v0);
@@ -1190,7 +1192,6 @@ label8001A01C:
 // size: 0x000003BC
 void function_8001A050(void)
 {
-  uint32_t temp;
   sp -= 96; // 0xFFFFFFA0
   v0 = lbu(SKYBOX_DATA + 0x10);
   v1 = lbu(SKYBOX_DATA + 0x11);
@@ -1205,165 +1206,35 @@ void function_8001A050(void)
   sb(0x80076F7E, v1);
   sb(0x80076F7F, a3);
   spyro_memset32(0x8006FCF4, 0, 0x900);
-  v0 = lw(0x800756B0); // &0x00000000
-  temp = v0 == 0;
-  if (temp) goto label8001A0D8;
-  ra = 0x8001A0D8;
-  function_8001973C();
-label8001A0D8:
+  if (lw(0x800756B0)) {
+    ra = 0x8001A0D8;
+    function_8001973C();
+  }
   ra = 0x8001A0E0;
   function_80023AC4();
-  v0 = lw(SKYBOX_DATA + 0x00);
-  temp = v0 == 0;
-  if (temp) goto label8001A334;
-  v0 = lw(0x80075910);
-  v0 -= 2; // 0xFFFFFFFE
-  sw(0x80075910, v0);
-  temp = (int32_t)v0 >= 0;
-  if (temp) goto label8001A11C;
-  sw(0x80075910, 0);
-label8001A11C:
-  v0 = lw(0x80075910);
-  temp = v0 == 0;
-  a1 = 0;
-  if (temp) goto label8001A31C;
-  a0 = sp + 16; // 0x0010
-  a2 = 32; // 0x0020
-  ra = 0x8001A13C;
-  spyro_memset32(a0, a1, a2);
-  a0 = sp + 16; // 0x0010
-  ra = 0x8001A144;
-  function_800625F8();
-  s0 = 0x80076E1E;
-  v0 = lh(s0 + 0x00);
-  a0 = lw(0x80075910);
-  s1 = 4096; // 0x1000
-  sh(sp + 0x10, s1);
-  a0 = v0 - a0;
-  ra = 0x8001A168;
-  v0 = spyro_cos(a0);
-  v1 = lh(s0 + 0x00);
-  a0 = lw(0x80075910);
-  sh(sp + 0x18, v0);
-  a0 = v1 - a0;
-  ra = 0x8001A180;
-  v0 = spyro_sin(a0);
-  v1 = lh(s0 + 0x00);
-  a0 = lw(0x80075910);
-  sh(sp + 0x1E, v0);
-  a0 = v1 - a0;
-  ra = 0x8001A198;
-  v0 = spyro_sin(a0);
-  v1 = lh(s0 + 0x00);
-  a0 = lw(0x80075910);
-  v0 = -v0;
-  sh(sp + 0x1A, v0);
-  a0 = v1 - a0;
-  ra = 0x8001A1B4;
-  v0 = spyro_cos(a0);
-  s0 = sp + 48; // 0x0030
-  a0 = s0;
-  a1 = 0;
-  a2 = 32; // 0x0020
-  sh(sp + 0x20, v0);
-  ra = 0x8001A1CC;
-  spyro_memset32(a0, a1, a2);
-  a0 = lh(0x80076E20);
-  ra = 0x8001A1DC;
-  v0 = spyro_cos(a0);
-  a0 = lh(0x80076E20);
-  sh(sp + 0x30, v0);
-  ra = 0x8001A1EC;
-  v0 = spyro_sin(a0);
-  a0 = lh(0x80076E20);
-  v0 = -v0;
-  sh(sp + 0x3C, v0);
-  sh(sp + 0x38, s1);
-  ra = 0x8001A204;
-  v0 = spyro_sin(a0);
-  a0 = lh(0x80076E20);
-  sh(sp + 0x34, v0);
-  ra = 0x8001A214;
-  v0 = spyro_cos(a0);
-  a0 = sp + 16; // 0x0010
-  a1 = s0;
-  sh(sp + 0x40, v0);
-  ra = 0x8001A224;
-  function_800624E8();
-  a0 = s0;
-  a1 = 0;
-  a2 = 32; // 0x0020
-  ra = 0x8001A234;
-  spyro_memset32(a0, a1, a2);
-  a0 = lh(0x80076E1C);
-  ra = 0x8001A244;
-  v0 = spyro_cos(a0);
-  a0 = lh(0x80076E1C);
-  sh(sp + 0x30, v0);
-  ra = 0x8001A254;
-  v0 = spyro_sin(a0);
-  a0 = lh(0x80076E1C);
-  v0 = -v0;
-  sh(sp + 0x36, v0);
-  ra = 0x8001A268;
-  v0 = spyro_sin(a0);
-  a0 = lh(0x80076E1C);
-  sh(sp + 0x32, v0);
-  ra = 0x8001A278;
-  v0 = spyro_cos(a0);
-  a0 = sp + 16; // 0x0010
-  a1 = s0;
-  sh(sp + 0x38, v0);
-  sh(sp + 0x40, s1);
-  ra = 0x8001A28C;
-  function_800624E8();
-  a0 = s0;
-  a1 = sp + 16; // 0x0010
-  a2 = 20; // 0x0014
-  ra = 0x8001A29C;
-  spyro_memcpy32(a0, a1, a2);
-  v1 = lh(sp + 0x16);
-  v0 = v1 << 2;
-  v0 += v1;
-  v0 = v0 << 6;
-  temp = (int32_t)v0 >= 0;
-  if (temp) goto label8001A2BC;
-  v0 += 511; // 0x01FF
-label8001A2BC:
-  v1 = lh(sp + 0x18);
-  v0 = (int32_t)v0 >> 9;
-  sh(sp + 0x36, v0);
-  v0 = v1 << 2;
-  v0 += v1;
-  v0 = v0 << 6;
-  temp = (int32_t)v0 >= 0;
-  if (temp) goto label8001A2E0;
-  v0 += 511; // 0x01FF
-label8001A2E0:
-  v1 = lh(sp + 0x1A);
-  v0 = (int32_t)v0 >> 9;
-  sh(sp + 0x38, v0);
-  v0 = v1 << 2;
-  v0 += v1;
-  v0 = v0 << 6;
-  temp = (int32_t)v0 >= 0;
-  if (temp) goto label8001A304;
-  v0 += 511; // 0x01FF
-label8001A304:
-  v0 = (int32_t)v0 >> 9;
-  sh(sp + 0x3A, v0);
-  a0 = -1; // 0xFFFFFFFF
-  a1 = sp + 16; // 0x0010
-  a2 = s0;
-  goto label8001A32C;
-label8001A31C:
-  a0 = -1; // 0xFFFFFFFF
-  a1 = 0x80076DE4;
-  a2 = a1 - 20; // 0xFFFFFFEC
-label8001A32C:
-  ra = 0x8001A334;
-  draw_skybox(a0, a1, a2);
-label8001A334:
+  if (lw(SKYBOX_DATA)) {
+    sw(0x80075910, max_int(lw(0x80075910)-2, 0));
+    if (lw(0x80075910)) {
+      spyro_memset32(sp + 0x10, 0, 0x20);
+      mat3x4setTR(sp + 0x10);
+
+      save_mat3(sp + 0x10, mat3_mul(mat3_mul(
+        mat3rotX(lh(0x80076E1E) - lw(0x80075910)),
+        mat3rotY(lh(0x80076E20))
+      ),mat3rotZ(lh(0x80076E1C))));
+
+      spyro_memcpy32(sp + 0x30, sp + 0x10, 0x14);
+      sh(sp + 0x36, (int32_t)lh(sp + 0x16)*320/512);
+      sh(sp + 0x38, (int32_t)lh(sp + 0x18)*320/512);
+      sh(sp + 0x3A, (int32_t)lh(sp + 0x1A)*320/512);
+      a1 = sp + 0x10;
+      a2 = s0;
+    } else {
+      a1 = 0x80076DE4;
+      a2 = 0x80076DD0;
+    }
+    draw_skybox(-1, a1, a2);
+  }
   wait_two_vsyncs();
 
   PutDispEnv(&backbuffer_disp->disp);
@@ -1401,6 +1272,7 @@ void rgb_to_grey(uint32_t *buf, uint32_t len)
 
 void function_80017E98(void)
 {
+  BREAKPOINT;
   rgb_to_grey(addr_to_pointer(a0), a1);
 }
 
@@ -1419,8 +1291,9 @@ void function_8001A40C(void)
   sw(sp + 0x0134, s3);
   sw(sp + 0x0130, s2);
   sw(sp + 0x012C, s1);
-  temp = v0 != 0;
   sw(sp + 0x0128, s0);
+
+  temp = v0 != 0;
   if (temp) goto label8001A5E0;
   s3 = 0;
   ra = 0x8001A44C;
@@ -1510,7 +1383,7 @@ label8001A5E0:
   v1 += 0x1C000;
   v0 -= 0x1C200;
   sw(allocator1_end, v1);
-  sw(0x800756FC, v0); // &0x00000000
+  sw(0x800756FC, v0);
   sw(gameobject_stack_ptr, v0);
 label8001A658:
   v1 = s3 << 7;
@@ -1578,7 +1451,7 @@ label8001A658:
   sb(s0 + 0x2E, 0);
   append_gpu_command_block(addr_to_pointer(a0));
   a0 = s0 + 56; // 0x0038
-  v1 = lw(0x800757D8); // &0x00000000
+  v1 = lw(0x800757D8);
   v0 = 2; // 0x0002
   sw(allocator1_ptr, a0);
   temp = v1 != v0;
@@ -1599,7 +1472,7 @@ label8001A658:
   sb(s0 + 0x48, s4);
   sb(s0 + 0x49, s4);
   sb(s0 + 0x4A, s4);
-  v1 = lw(0x800757C8); // &0x00000000
+  v1 = lw(0x800757C8);
   sh(s0 + 0x4E, v0);
   sh(s0 + 0x52, v0);
   v0 = 1; // 0x0001
@@ -1608,7 +1481,7 @@ label8001A658:
   if (temp) goto label8001A82C;
   v0 = 84; // 0x0054
   sh(s0 + 0x4C, v0);
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   v1 = 428; // 0x01AC
   sh(s0 + 0x50, v1);
   v0 = 0 < v0;
@@ -1656,9 +1529,9 @@ label8001A848:
   sw(sp + 0x44, 0x52);
   sw(sp + 0x48, 0xC00);
   create_3d_text2("PAUSED", addr_to_pointer(s0), 28, 11);
-  v0 = lw(0x800757C8); // &0x00000000
+  v0 = lw(0x800757C8);
   fp = 2; // 0x0002
-  temp = v0 != fp;
+  temp = v0 != 2;
   s6 = 1; // 0x0001
   if (temp) goto label8001AAF0;
   s1 = sp + 80; // 0x0050
@@ -1681,7 +1554,7 @@ label8001A848:
   sw(sp + 0x44, 0x94);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("YES", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720); // &0x00000000
+  v0 = lw(0x80075720);
   temp = v0 != 0;
   if (temp) goto label8001AA40;
   s2 = lw(gameobject_stack_ptr);
@@ -1691,7 +1564,7 @@ label8001AA40:
   sw(sp + 0x44, s6);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("NO", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720); // &0x00000000
+  v0 = lw(0x80075720);
   temp = v0 != s7;
   a1 = s5 & 0xFF;
   if (temp) goto label8001AA90;
@@ -1724,19 +1597,19 @@ label8001AAA4:
   if (temp) goto label8001AAA4;
   goto label8001C53C;
 label8001AAF0:
-  temp = v0 != s6;
+  temp = v0 != 1;
   if (temp) goto label8001B3AC;
   s1 = sp + 0x60;
   sw(sp + 0x60, 0x0F);
   s7 = 107; // 0x006B
-  sw(sp + 0x64, s6);
+  sw(sp + 0x64, 1);
   sw(sp + 0x68, 0x1600);
 
   sw(sp + 0x40, s7);
   sw(sp + 0x44, 0x6C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("SOUND EFFECTS", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v0 = lw(0x80075720); // &0x00000000
+  v0 = lw(0x80075720);
   temp = v0 != 0;
   if (temp) goto label8001AB64;
   s2 = lw(gameobject_stack_ptr);
@@ -1746,8 +1619,8 @@ label8001AB64:
   sw(sp + 0x44, 0x7C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("MUSIC VOLUME", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v0 = lw(0x80075720); // &0x00000000
-  temp = v0 != s6;
+  v0 = lw(0x80075720);
+  temp = v0 != 1;
   if (temp) goto label8001ABB4;
   s2 = lw(gameobject_stack_ptr);
   s5 = 11; // 0x000B
@@ -1756,13 +1629,13 @@ label8001ABB4:
   sw(sp + 0x44, 0x8C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("SPEAKER SETUP", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v0 = lw(0x80075720); // &0x00000000
-  temp = v0 != fp;
+  v0 = lw(0x80075720);
+  temp = v0 != 2;
   if (temp) goto label8001AC00;
   s2 = lw(gameobject_stack_ptr);
   s5 = 12; // 0x000C
 label8001AC00:
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   temp = v0 == 0;
   a1 = s0;
   if (temp) goto label8001AC60;
@@ -1770,7 +1643,7 @@ label8001AC00:
   sw(sp + 0x44, 0x9C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("VIBRATION", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 3; // 0x0003
   temp = v1 != v0;
   if (temp) goto label8001AC60;
@@ -1785,7 +1658,7 @@ label8001AC60:
   sw(sp + 0x44, s0 + 0x9C);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("CAMERA", addr_to_pointer(s3), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 4; // 0x0004
   temp = v1 != v0;
   if (temp) goto label8001ACC8;
@@ -1796,7 +1669,7 @@ label8001ACC8:
   sw(sp + 0x44, s0 + 0xAC);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("DONE", addr_to_pointer(s3), *(vec3_32 *)addr_to_pointer(s1), 16, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 5; // 0x0005
   temp = v1 != v0;
   a1 = s5 & 0xFF;
@@ -1829,7 +1702,7 @@ label8001AD30:
   s2 += 88; // 0x0058
   if (temp) goto label8001AD30;
 label8001AD74:
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   temp = v0 != 0;
   a1 = sp + 0x40;
   if (temp) goto label8001AE30;
@@ -1837,7 +1710,7 @@ label8001AD74:
   sw(sp + 0x44, 0x6C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("OFF", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
-  v0 = lw(0x80075720); // &0x00000000
+  v0 = lw(0x80075720);
   temp = v0 != 0;
   a0 = 0;
   if (temp) goto label8001AF28;
@@ -1906,14 +1779,14 @@ label8001AEDC:
   v1 = lw(gameobject_stack_ptr);
   v0 = 255; // 0x00FF
   sb(v1 + 0x50, v0);
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   s3++;
   v0 = (int32_t)s3 < (int32_t)v0;
   temp = v0 != 0;
   s0 += 10; // 0x000A
   if (temp) goto label8001AE48;
 label8001AF28:
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   temp = v0 != 0;
   a1 = sp + 0x40;
   if (temp) goto label8001AFE4;
@@ -1921,7 +1794,7 @@ label8001AF28:
   sw(sp + 0x44, 0x7C);
   sw(sp + 0x48, 0x1400);
   create_3d_text1("OFF", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 1; // 0x0001
   temp = v1 != v0;
   a0 = 0;
@@ -1994,7 +1867,7 @@ label8001B094:
   v1 = lw(gameobject_stack_ptr);
   v0 = 255; // 0x00FF
   sb(v1 + 0x50, v0);
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   s3++;
   v0 = (int32_t)s3 < (int32_t)v0;
   temp = v0 != 0;
@@ -2011,7 +1884,7 @@ label8001B0E0:
     create_3d_text1("STEREO", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
     a1 = 6; // 0x0006
   }
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 2; // 0x0002
   temp = v1 != v0;
   if (temp) goto label8001B1C4;
@@ -2040,10 +1913,10 @@ label8001B180:
   s2 += 88; // 0x0058
   if (temp) goto label8001B180;
 label8001B1C4:
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   temp = v0 == 0;
   if (temp) goto label8001B2B8;
-  v1 = lw(0x800757A4); // &0x00000000
+  v1 = lw(0x800757A4);
   sw(sp + 0x40, 0x142);
   sw(sp + 0x44, 0x9C);
   sw(sp + 0x48, 0x1400);
@@ -2056,7 +1929,7 @@ label8001B220:
   create_3d_text1("OFF", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
   a1 = 3; // 0x0003
 label8001B244:
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 3; // 0x0003
   temp = v1 != v0;
   if (temp) goto label8001B2B8;
@@ -2098,7 +1971,7 @@ label8001B310:
   create_3d_text1("PASSIVE", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
   a1 = 7; // strlen("PASSIVE")
 label8001B330:
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 4; // 0x0004
   temp = v1 != v0;
   if (temp) goto label8001C53C;
@@ -2132,11 +2005,11 @@ label8001B3AC:
   sw(sp + 0x70, 0x10);
   sw(sp + 0x78, 0x1400);
   sw(sp + 0x40, 0xC7);
-  sw(sp + 0x74, s6);
+  sw(sp + 0x74, 1);
   sw(sp + 0x44, 0x6E);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("CONTINUE", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720); // &0x00000000
+  v0 = lw(0x80075720);
   temp = v0 != 0;
   if (temp) goto label8001B418;
   s2 = lw(gameobject_stack_ptr);
@@ -2146,8 +2019,8 @@ label8001B418:
   sw(sp + 0x44, 0x80);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("OPTIONS", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720); // &0x00000000
-  temp = v0 != s6;
+  v0 = lw(0x80075720);
+  temp = v0 != 1;
   if (temp) goto label8001B468;
   s2 = lw(gameobject_stack_ptr);
   s5 = 7; // 0x0007
@@ -2158,20 +2031,20 @@ label8001B468:
   sw(sp + 0x44, 0x92);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("INVENTORY", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720); // &0x00000000
-  temp = v0 != fp;
+  v0 = lw(0x80075720);
+  temp = v0 != 2;
   if (temp) goto label8001B4B8;
   s2 = lw(gameobject_stack_ptr);
   s5 = 9; // 0x0009
 label8001B4B8:
-  v0 = lw(0x80075690); // &0x00000000
+  v0 = lw(0x80075690);
   temp = v0 == 0;
   if (temp) goto label8001B51C;
   sw(sp + 0x40, 0xE7);
   sw(sp + 0x44, 0xA4);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("QUIT", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 3; // 0x0003
   temp = v1 != v0;
   a1 = s5 & 0xFF;
@@ -2197,7 +2070,7 @@ label8001B51C:
   sw(sp + 0x44, 0xA4);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("EXIT LEVEL", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 3; // 0x0003
   temp = v1 != v0;
   a1 = s5 & 0xFF;
@@ -2210,7 +2083,7 @@ label8001B5A0:
   sw(sp + 0x44, 0xA4);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("QUIT GAME", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 3; // 0x0003
   temp = v1 != v0;
   a1 = s5 & 0xFF;
@@ -2498,7 +2371,7 @@ label8001B9F8:
     if (lbu(0x80078E7E + v1*6))
       blinking_arrow((vec3_32){0x1D7, 0x48, 0x1100}, lw(0x800758B8)*2, 0);
 
-  v0 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x80075744);
   s3 = 0;
   v1 = v0 << 2;
   v0 = (int32_t)v0 < 3;
@@ -2521,7 +2394,7 @@ label8001B9F8:
   v1 = v0 << 2;
   v1 += v0;
   v1 = v1 << 1;
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   v1 -= 158; // 0xFFFFFF62
   sw(sp + 0x94, a3);
   v0 -= v1;
@@ -2530,7 +2403,7 @@ label8001B9F8:
 
   a0 = lw(0x8006F7D4 + lw(0x80075744)*4); // &0x8001006C
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), 23, 2);
-  v0 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x80075744);
   a1 = 0x8007555C; // &0x0B0D0C08
   v0 = lbu(0x8007555C + v0); // &0x0B0D0C08
   s0 = lw(gameobject_stack_ptr);
@@ -2551,7 +2424,7 @@ label8001BC44:
   v0 += v1;
   v0 = (int32_t)v0 >> 9;
   sb(s0 + 0x46, v0);
-  v0 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x80075744);
   a0 += 12; // 0x000C
   v0 += a1;
   v0 = lbu(v0 + 0x00);
@@ -2570,7 +2443,7 @@ label8001BCA0:
   a0 = lw(gameobject_stack_ptr);
   v0 = 471; // 0x01D7
   sh(a0 + 0x36, v0);
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   v1 = s7 + 346; // 0x015A
   v0 += v1;
   sw(a0 + 0x0C, v0);
@@ -2605,7 +2478,7 @@ label8001BCA0:
   a2 = 88; // 0x0058
   ra = 0x8001BD8C;
   spyro_memset32(a0, a1, a2);
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   a0 = lw(gameobject_stack_ptr);
   v0 += 465; // 0x01D1
   sw(a0 + 0x0C, v0);
@@ -2630,7 +2503,7 @@ label8001BCA0:
   s5 = 123; // 0x007B
   sb(v0 + 0x50, s2);
 label8001BE14:
-  v0 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x80075744);
   v1 = v0 << 1;
   v1 += v0;
   v1 = v1 << 1;
@@ -2658,7 +2531,7 @@ label8001BE14:
   sb(s1 + 0x10, v0);
   sb(s1 + 0x11, v0);
   sb(s1 + 0x12, v0);
-  v1 = lw(0x800757CC); // &0x00000000
+  v1 = lw(0x800757CC);
   v0 = s5 - 10; // 0xFFFFFFF6
   sh(s1 + 0x16, v0);
   sh(s1 + 0x1A, v0);
@@ -2675,7 +2548,7 @@ label8001BE14:
   s0 = s5 - 11; // 0xFFFFFFF5
   a1 = s0;
   a3 = s0;
-  a2 = lw(0x800757CC); // &0x00000000
+  a2 = lw(0x800757CC);
   v0 = s1 + 36; // 0x0024
   sw(allocator1_ptr, v0);
   a0 = a2 + 112; // 0x0070
@@ -2685,7 +2558,7 @@ label8001BE14:
   v0 = lw(0x800757CC);
   gui_line(s7 + 0x13A + v0, s0, s7 + 0x13A + 0x40, s0);
   a1 = s0;
-  a2 = lw(0x800757CC); // &0x00000000
+  a2 = lw(0x800757CC);
   a3 = a1;
   a0 = a2 + 430; // 0x01AE
   a2 += 494; // 0x01EE
@@ -2693,7 +2566,7 @@ label8001BE14:
   a1 = s4;
   a2 = sp + 144; // 0x0090
   t1 = 4352; // 0x1100
-  v1 = lw(0x800757CC); // &0x00000000
+  v1 = lw(0x800757CC);
   v0 = 16; // 0x0010
   sw(sp + 0x90, v0);
   v0 = 1; // 0x0001
@@ -2702,7 +2575,7 @@ label8001BE14:
   sw(sp + 0x98, v0);
   v1 += 36; // 0x0024
   sw(sp + 0x40, v1);
-  v1 = lw(0x80075744); // &0x00000000
+  v1 = lw(0x80075744);
   v0 = 2; // 0x0002
   sw(sp + 0x44, s5);
   sw(sp + 0x48, t1);
@@ -2717,8 +2590,8 @@ label8001BE14:
   a3 = 18; // 0x0012
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(s4), *(vec3_32 *)addr_to_pointer(sp + 0x90), 18, 2);
   a0 = s7 + 275; // 0x0113
-  v0 = lw(0x800757CC); // &0x00000000
-  v1 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x800757CC);
+  v1 = lw(0x80075744);
   a0 += v0;
   v0 = v1 << 1;
   v0 += v1;
@@ -2756,15 +2629,15 @@ label8001C04C:
   a0 = s6;
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s6), addr_to_pointer(s4), 18, 2);
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   v1 = s7 + 346; // 0x015A
   sw(sp + 0x48, 0x1800);
   v0 += v1;
   sw(sp + 0x40, v0);
   create_3d_text2("/", addr_to_pointer(s4), 18, 2);
   t1 = 4352; // 0x1100
-  v0 = lw(0x800757CC); // &0x00000000
-  v1 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x800757CC);
+  v1 = lw(0x80075744);
   a1 = s7 + 363; // 0x016B
   sw(sp + 0x48, t1);
   v0 += a1;
@@ -2779,7 +2652,7 @@ label8001C04C:
   a0 = s6;
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s6), addr_to_pointer(s4), 18, 2);
-  v1 = lw(0x80075744); // &0x00000000
+  v1 = lw(0x80075744);
   t1 = 0x8006F414; // &0x04030404
   v0 = v1 << 1;
   v0 += v1;
@@ -2790,7 +2663,7 @@ label8001C04C:
   temp = v0 == 0;
   a1 = s4;
   if (temp) goto label8001C228;
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   v0 += 445; // 0x01BD
   sw(sp + 0x40, v0);
   v0 = v1 << 2;
@@ -2826,7 +2699,7 @@ label8001C228:
   a0 = 0x8007561C; // &0x0000002F
   a2 = 18; // 0x0012
   a3 = 2; // 0x0002
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   t1 = 6144; // 0x1800
   sw(sp + 0x48, t1);
   v0 += 462; // 0x01CE
@@ -2836,7 +2709,7 @@ label8001C228:
   v0 = 41; // 0x0029
   sb(v1 + 0x44, v0);
 label8001C264:
-  v0 = lw(0x80075744); // &0x00000000
+  v0 = lw(0x80075744);
   v1 = v0 << 1;
   v1 += v0;
   v1 = v1 << 1;
@@ -2873,7 +2746,7 @@ label8001C304:
   v0 = lw(total_found_eggs);
   temp = (int32_t)v0 <= 0;
   if (temp) goto label8001C4D4;
-  v1 = lw(0x80075744); // &0x00000000
+  v1 = lw(0x80075744);
   v0 = (int32_t)v1 < 3;
   temp = v0 == 0;
   v0 = v1 << 1;
@@ -2890,7 +2763,7 @@ label8001C304:
   fp = s2 + 1324; // 0x052C
   s1 = 0;
 label8001C36C:
-  v0 = lw(0x800757CC); // &0x00000000
+  v0 = lw(0x800757CC);
   v0 += 232; // 0x00E8
   a0 = v0 + s1;
   v0 = v1 << 1;
@@ -2905,7 +2778,7 @@ label8001C36C:
   if (temp) goto label8001C3A8;
   t0 = a0 + 24; // 0x0018
 label8001C3A8:
-  v1 = lw(0x80075744); // &0x00000000
+  v1 = lw(0x80075744);
   v0 = s5 - 8; // 0xFFFFFFF8
   sh(sp + 0x8A, v0);
   v0 = 24; // 0x0018
@@ -2959,7 +2832,7 @@ label8001C490:
   s1 += 24; // 0x0018
   ra = 0x8001C498;
   function_8001919C();
-  v1 = lw(0x80075744); // &0x00000000
+  v1 = lw(0x80075744);
   s0++;
   v0 = v1 << 1;
   v0 += v1;
@@ -2979,33 +2852,33 @@ label8001C4D8:
   s0 = s5 - 11; // 0xFFFFFFF5
   if (temp) goto label8001BE14;
   a1 = s0;
-  a2 = lw(0x800757CC); // &0x00000000
+  a2 = lw(0x800757CC);
   a3 = s0;
   a0 = a2 + 112; // 0x0070
   a2 += 208; // 0x00D0
   ra = 0x8001C504;
   gui_line(a0, a1, a2, a3);
   a1 = s0;
-  a2 = lw(0x800757CC); // &0x00000000
+  a2 = lw(0x800757CC);
   a3 = s0;
   a0 = a2 + 320; // 0x0140
   a2 += 384; // 0x0180
   ra = 0x8001C520;
   gui_line(a0, a1, a2, a3);
   a1 = s0;
-  a2 = lw(0x800757CC); // &0x00000000
+  a2 = lw(0x800757CC);
   a3 = a1;
   a0 = a2 + 430; // 0x01AE
   a2 += 494; // 0x01EE
   ra = 0x8001C53C;
   gui_line(a0, a1, a2, a3);
 label8001C53C:
-  v1 = lw(0x800757D8); // &0x00000000
+  v1 = lw(0x800757D8);
   v0 = 2; // 0x0002
   sw(0x8006FCF4 + 0x2400, 0); // "H^^^oooooofffOOO((("
   temp = v1 != v0;
   if (temp) goto label8001C574;
-  v0 = lw(0x80075690); // &0x00000000
+  v0 = lw(0x80075690);
   temp = v0 != 0;
   if (temp) goto label8001C574;
   ra = 0x8001C574;
@@ -3154,11 +3027,11 @@ label8001C760:
   goto label8001C950;
 label8001C8A4:
   a0 = lw(SKYBOX_DATA + 0x10);
-  v0 = lw(0x8007568C); // &0x00000000
-  sw(0x800757D4, 0); // &0x00000000
+  v0 = lw(0x8007568C);
+  sw(0x800757D4, 0);
   a2 -= v0;
   a2 = a2 << 7;
-  sw(0x8007575C, a2); // &0x00000000
+  sw(0x8007575C, a2);
   a1 = 0;
   ra = 0x8001C8D4;
   v0 = interpolate_color(a0, a1, a2);
@@ -3780,10 +3653,10 @@ label8001D4B8:
   ra = 0x8001D4D8;
   function_800573C8();
 label8001D4D8:
-  v0 = lw(0x8007570C); // &0x00000000
+  v0 = lw(0x8007570C);
   temp = v0 != 0;
   if (temp) goto label8001D500;
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   temp = v0 == 0;
   if (temp) goto label8001D644;
 label8001D500:
@@ -3848,10 +3721,10 @@ label8001D5CC:
   function_80050BD0();
   ra = 0x8001D5F4;
   function_800573C8();
-  v0 = lw(0x8007570C); // &0x00000000
+  v0 = lw(0x8007570C);
   temp = v0 != 0;
   if (temp) goto label8001D61C;
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   temp = v0 == 0;
   if (temp) goto label8001D624;
 label8001D61C:
@@ -3894,7 +3767,7 @@ void function_8001D718(void)
   
   if (lw(0x800756FC) == lw(0x800785F0)) {
     v0 = lw(allocator1_ptr) + 0x1BA00;
-    sw(0x800756FC, v0); // &0x00000000
+    sw(0x800756FC, v0);
     sw(gameobject_stack_ptr, v0);
   }
   s0 = lw(0x80078D00);
@@ -4148,7 +4021,7 @@ void function_8001D718(void)
 void function_ptr_800758D8(void)
 {
   char buf[0x20];
-  uint32_t temp, return_address = ra;
+  uint32_t temp;
   sp -= 248; // 0xFFFFFF08
   sw(sp + 0xE8, s2);
   sw(sp + 0xF4, ra);
@@ -4442,20 +4315,8 @@ label8007D570:
   temp = v0 != 0;
   v0 = 0x66660000;
   if (temp) goto label8007D478;
-  a0 = 224; // 0x00E0
-  a1 = 472; // 0x01D8
-  a2 = 25; // 0x0019
-  a3 = s2 << 4;
-  a3 -= s2;
-  a3 += 51; // 0x0033
-  ra = 0x8007D59C;
-  gui_box_balloonist(a0, a1, a2, a3);
-  a0 = 240; // 0x00F0
-  a1 = 46; // 0x002E
-  a2 = 416; // 0x01A0
-  a3 = 46; // 0x002E
-  ra = 0x8007D5B0;
-  function_8001844C();
+  gui_box_balloonist(0xE0, 0x1D8, 0x19, s2*15 + 0x33);
+  gui_line(0xF0, 0x2E, 0x1A0, 0x2E);
   a0 = sp + 120; // 0x0078
   a2 = 0;
   a1 = lw(0x800777EC);
@@ -4475,19 +4336,9 @@ label8007D5F4:
   v0 = v1 - 31; // 0xFFFFFFE1
   v0 = v0 < 2;
   temp = v0 == 0;
-  a0 = 72; // 0x0048
   if (temp) goto label8007D8F8;
-  a1 = 440; // 0x01B8
-  a2 = 28; // 0x001C
-  a3 = 102; // 0x0066
-  ra = 0x8007D610;
-  gui_box_balloonist(a0, a1, a2, a3);
-  a0 = 100; // 0x0064
-  a1 = 55; // 0x0037
-  a2 = 388; // 0x0184
-  a3 = 55; // 0x0037
-  ra = 0x8007D624;
-  function_8001844C();
+  gui_box_balloonist(0x48, 0x1B8, 0x1C, 0x66);
+  gui_line(0x64, 0x37, 0x184, 0x37);
   s2 = sp + 152; // 0x0098
   a0 = s2;
   a2 = 0;
@@ -4792,7 +4643,7 @@ label8001E468:
   v0 = 0x00400000;
   if (temp) goto label8001E5DC;
   v0 = v0 | 0x1010;
-  sw(0x800757D4, v0); // &0x00000000
+  sw(0x800757D4, v0);
   v0 = 4; // 0x0004
   temp = v1 != v0;
   v0 = 256; // 0x0100
@@ -4805,29 +4656,29 @@ label8001E4EC:
   v0 -= v1;
   v0 = v0 << 4;
 label8001E500:
-  sw(0x8007575C, v0); // &0x00000000
-  v0 = lw(0x8007575C); // &0x00000000
+  sw(0x8007575C, v0);
+  v0 = lw(0x8007575C);
   temp = (int32_t)v0 >= 0;
   v0 = (int32_t)v0 < 4097;
   if (temp) goto label8001E534;
-  sw(0x8007575C, 0); // &0x00000000
-  v0 = lw(0x8007575C); // &0x00000000
+  sw(0x8007575C, 0);
+  v0 = lw(0x8007575C);
   v0 = (int32_t)v0 < 4097;
 label8001E534:
   temp = v0 != 0;
   v0 = 4096; // 0x1000
   if (temp) goto label8001E544;
-  sw(0x8007575C, v0); // &0x00000000
+  sw(0x8007575C, v0);
 label8001E544:
   a0 = lw(SKYBOX_DATA + 0x10);
-  a1 = lw(0x800757D4); // &0x00000000
-  a2 = lw(0x8007575C); // &0x00000000
+  a1 = lw(0x800757D4);
+  a2 = lw(0x8007575C);
   ra = 0x8001E564;
   v0 = interpolate_color(a0, a1, a2);
   sw(sp + 0x78, v0);
   v1 = lbu(sp + 0x78);
   a0 = lbu(sp + 0x79);
-  v0 = lw(0x8007575C); // &0x00000000
+  v0 = lw(0x8007575C);
   a1 = lbu(sp + 0x7A);
   v0 = (int32_t)v0 < 4096;
   sb(0x80076EF9, v1);
@@ -5145,11 +4996,11 @@ void function_8001ED5C(void)
   sw(ordered_linked_list, v1);
   sw(linked_list1, a0);
   sw(allocator1_end, v0);
-  sw(0x800756FC, v0); // &0x00000000
+  sw(0x800756FC, v0);
   sw(gameobject_stack_ptr, v0);
   ra = 0x8001EDE0;
   function_80033C50();
-  v1 = lw(0x800757D8); // &0x00000000
+  v1 = lw(0x800757D8);
   temp = v1 == 0;
   v0 = 1; // 0x0001
   if (temp) goto label8001EF80;
@@ -5184,7 +5035,7 @@ label8001EE44:
   temp = v1 != v0;
   v0 = 8; // 0x0008
   if (temp) goto label8001EE68;
-  v0 = lw(0x8007567C); // &0x00000000
+  v0 = lw(0x8007567C);
   temp = v0;
   ra = 0x8001EE60;
   switch (temp)
@@ -5212,7 +5063,7 @@ label8001EE88:
   function_8001A050();
   goto label8001F144;
 label8001EE98:
-  v1 = lw(0x800757D8); // &0x00000000
+  v1 = lw(0x800757D8);
   temp = v1 != v0;
   v0 = 11; // 0x000B
   if (temp) goto label8001EEBC;
@@ -5258,7 +5109,7 @@ label8001EF28:
 label8001EF40:
   temp = v1 != v0;
   if (temp) goto label8001F144;
-  v0 = lw(0x80075704); // &0x00000000
+  v0 = lw(0x80075704);
   v0 = (int32_t)v0 < 99;
   temp = v0 == 0;
   if (temp) goto label8001EF70;
@@ -5281,13 +5132,13 @@ label8001EF80:
   sb(0x80076F7F, a0);
   ra = 0x8001EFD0;
   function_800521C0();
-  v0 = lw(0x80075690); // &0x00000000
+  v0 = lw(0x80075690);
   temp = v0 != 0;
   if (temp) goto label8001EFEC;
   ra = 0x8001EFEC;
   function_80019300();
 label8001EFEC:
-  v0 = lw(IS_DEMO_MODE); // &0x00000000
+  v0 = lw(IS_DEMO_MODE);
   temp = v0 == 0;
   if (temp) goto label8001F008;
   ra = 0x8001F008;
@@ -5311,10 +5162,10 @@ label8001F008:
   ra = 0x8001F04C;
   function_800190D4();
 label8001F04C:
-  v0 = lw(0x8007570C); // &0x00000000
+  v0 = lw(0x8007570C);
   temp = v0 != 0;
   if (temp) goto label8001F074;
-  v0 = lw(0x800756C0); // &0x00000000
+  v0 = lw(0x800756C0);
   temp = v0 == 0;
   if (temp) goto label8001F07C;
 label8001F074:
@@ -5704,7 +5555,7 @@ label8007BA7C:
   s1 = sp + 24; // 0x0018
   if (temp) goto label8007BAB0;
   v0 = lw(0x8007AA6C); // "QUIT"
-  v1 = lb(0x8007AA70); // &0x00000000
+  v1 = lb(0x8007AA70);
   sw(sp + 0x18, v0);
   sb(sp + 0x1C, v1);
   goto label8007BB14;
@@ -5863,7 +5714,7 @@ label8007BD84:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007BE14;
-  a1 = spyro_position_x;
+  a1 = spyro_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -5966,7 +5817,7 @@ label8007BF80:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C010;
-  a1 = spyro_position_x;
+  a1 = spyro_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -6076,7 +5927,7 @@ label8007C178:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C208;
-  a1 = spyro_position_x;
+  a1 = spyro_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -6187,7 +6038,7 @@ label8007C374:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C404;
-  a1 = spyro_position_x;
+  a1 = spyro_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -6210,8 +6061,7 @@ label8007C404:
   v0 = lw(0x80075744);
   v0 = (int32_t)v0 < 9;
   temp = v0 != 0;
-  a0 = 416; // 0x01A0
-  if (temp) goto label8007C5C4;
+  if (temp) goto label8007C5C0;
   v0 = lw(0x80078630);
   v1 = lw(0x80078634);
   v0 += v1;
@@ -6277,7 +6127,7 @@ label8007C530:
   v0 = (int32_t)v0 < 9;
   temp = v0 == 0;
   if (temp) goto label8007C5C0;
-  a1 = spyro_position_x;
+  a1 = spyro_position;
   v0 = lw(0x800761D4);
   a2 = 16; // 0x0010
   v0 += s1;
@@ -6285,28 +6135,15 @@ label8007C530:
   a3 = 0;
   ra = 0x8007C5B4;
   function_80055A78();
-  v0 = 9; // 0x0009
-  sw(0x8007569C, v0);
+  sw(0x8007569C, 9);
 label8007C5C0:
-  a0 = 416; // 0x01A0
-label8007C5C4:
-  a1 = 150; // 0x0096
-  a2 = 470; // 0x01D6
-  a3 = 150; // 0x0096
-  ra = 0x8007C5D4;
-  gui_line(a0, a1, a2, a3);
-  a0 = 0x8007AAA8; // "TOTAL"
-  s2 = sp + 56; // 0x0038
-  a1 = s2;
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v0 = 100; // 0x0064
-  s1 = 160; // 0x00A0
+  gui_line(0x1A0, 0x96, 0x1D6, 0x96);
+  s1 = 160; // 0xA0
   s3 = 4352; // 0x1100
-  sw(sp + 0x38, v0);
-  sw(sp + 0x3C, s1);
-  sw(sp + 0x40, s3);
-  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), 18, 11);
+  sw(sp + 0x38, 0x64);
+  sw(sp + 0x3C, 0xA0);
+  sw(sp + 0x40, 0x1100);
+  create_3d_text2("TOTAL", addr_to_pointer(sp + 0x38), 18, 11);
   s0 = sp + 24; // 0x0018
   a0 = s0;
   a1 = 0x8007AA94; // "%d"
@@ -6314,19 +6151,11 @@ label8007C5C4:
   ra = 0x8007C620;
   spyro_sprintf();
   a0 = s0;
-  ra = 0x8007C628;
-  v0 = spyro_strlen(a0);
   a0 = s0;
-  a1 = s2;
-  v1 = v0 << 3;
-  v1 += v0;
-  v1 = v1 << 1;
-  v0 = 480; // 0x01E0
-  v0 -= v1;
-  sw(sp + 0x38, v0);
-  sw(sp + 0x3C, s1);
-  sw(sp + 0x40, s3);
-  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), 18, 11);
+  sw(sp + 0x38, 0x1E0 - spyro_strlen(s0)*18);
+  sw(sp + 0x3C, 0xA0);
+  sw(sp + 0x40, 0x1100);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(sp + 0x38), 18, 11);
   a0 = 60; // 0x003C
   a1 = 176; // 0x00B0
   a2 = 452; // 0x01C4
@@ -6346,20 +6175,19 @@ label8007C6B8:
   sw(sp + 0x38, 0x50);
   sw(sp + 0x3C, 0xD2);
   sw(sp + 0x40, s3);
-  create_3d_text2("PRESS   TO CONTINUE", addr_to_pointer(s2), 18, 11);
+  create_3d_text2("PRESS   TO CONTINUE", addr_to_pointer(sp + 0x38), 18, 11);
   sw(sp + 0x38, 0xBC);
-  create_3d_text2("X", addr_to_pointer(s2), 18, 10);
+  create_3d_text2("X", addr_to_pointer(sp + 0x38), 18, 10);
   goto label8007C8A4;
 label8007C70C:
-  s0 = 190; // 0x00BE
+  s0 = 190; // 0xBE
   sw(sp + 0x38, 0x8C);
   sw(sp + 0x3C, 0xBE);
   sw(sp + 0x40, s3);
-  create_3d_text2("TRY AGAIN?", addr_to_pointer(s2), 18, 11);
+  create_3d_text2("TRY AGAIN?", addr_to_pointer(sp + 0x38), 18, 11);
   a3 = 0;
   sw(sp + 0x38, 0x15C);
   v0 = lw(0x80075720);
-  a1 = s2;
   sw(sp + 0x3C, 0xBE);
   temp = v0 != 0;
   sw(sp + 0x40, s3);
@@ -6380,7 +6208,7 @@ label8007C770:
 label8007C78C:
   a3 = a3 << 1;
   a3 += 10; // 0x000A
-  create_3d_text2("YES", addr_to_pointer(a1), 18, a3);
+  create_3d_text2("YES", addr_to_pointer(sp + 0x38), 18, a3);
   s2 = 3; // 0x0003
   a3 = 0;
   v0 = 348; // 0x015C
@@ -6609,96 +6437,38 @@ label8007CB60:
   sw(sp + 0x3C, 0x96);
   sw(sp + 0x40, 0xC00);
   create_3d_text2(addr_to_pointer(s0), addr_to_pointer(sp + 0x38), 24, 11);
-  s0 = lw(gameobject_stack_ptr);
-  temp = (int32_t)s2 <= 0;
-  s1 = 0;
-  if (temp) goto label8007CCD0;
-  a1 = spyro_cos_lut;
-  a0 = 0;
-label8007CBC4:
-  v0 = lw(0x800758B8);
-  s1++;
-  v0 = v0 << 3;
-  v0 += a0;
-  v0 = v0 & 0xFF;
-  v0 = v0 << 1;
-  v0 += a1;
-  v1 = lh(v0 + 0x00);
-  a0 += 12; // 0x000C
-  v0 = v1 << 1;
-  v0 += v1;
-  v0 = (int32_t)v0 >> 9;
-  sb(s0 + 0x46, v0);
-  v0 = (int32_t)s1 < (int32_t)s2;
-  temp = v0 != 0;
-  s0 += 88; // 0x0058
-  if (temp) goto label8007CBC4;
-  a0 = 60; // 0x003C
-  goto label8007CCD4;
+
+  text_wave_effect2(s2, lw(0x800758B8)*8, 12, 3, 512);
+  goto label8007CCD0;
 label8007CC10:
-  v0 = lw(WORLD_ID);
   v1 = lw(0x800758F4);
-  v0 = v0 << 2;
-  v0 = lw(0x80078618 + v0);
+  v0 = lw(0x80078618 + lw(WORLD_ID)*4);
   v0 = (int32_t)v0 < (int32_t)v1;
   temp = v0 != 0;
-  a0 = 60; // 0x003C
-  if (temp) goto label8007CCD4;
-  a1 = sp + 56; // 0x0038
-  v0 = 148; // 0x0094
-  sw(sp + 0x38, v0);
-  v0 = 150; // 0x0096
-  sw(sp + 0x3C, v0);
-  v0 = 3072; // 0x0C00
-  sw(sp + 0x40, v0);
-  create_3d_text2("NEW RECORD", addr_to_pointer(a1), 24, 8);
-  s2 = 10; // 0x000A
-  s1 = 0;
-  a1 = spyro_cos_lut;
-  a0 = 0;
-  s0 = lw(gameobject_stack_ptr);
-label8007CC8C:
-  v0 = lw(0x800758B8);
-  s1++;
-  v0 = v0 << 3;
-  v0 += a0;
-  v0 = v0 & 0xFF;
-  v0 = v0 << 1;
-  v0 += a1;
-  v1 = lh(v0 + 0x00);
-  a0 += 12; // 0x000C
-  v0 = v1 << 1;
-  v0 += v1;
-  v0 = (int32_t)v0 >> 9;
-  sb(s0 + 0x46, v0);
-  v0 = (int32_t)s1 < (int32_t)s2;
-  temp = v0 != 0;
-  s0 += 88; // 0x0058
-  if (temp) goto label8007CC8C;
+  if (temp) goto label8007CCD0;
+  sw(sp + 0x38, 0x94);
+  sw(sp + 0x3C, 0x96);
+  sw(sp + 0x40, 0xC00);
+  create_3d_text2("NEW RECORD", addr_to_pointer(sp + 0x38), 24, 8);
+
+  text_wave_effect2(10, lw(0x800758B8)*8, 12, 3, 512);
 label8007CCD0:
-  a0 = 60; // 0x003C
-label8007CCD4:
-  a1 = 171; // 0x00AB
-  a2 = 452; // 0x01C4
-  a3 = 171; // 0x00AB
-  ra = 0x8007CCE4;
-  gui_line(a0, a1, a2, a3);
-  s2 = sp + 56; // 0x0038
-  v0 = 140; // 0x008C
-  s1 = 190; // 0x00BE
-  s0 = 4352; // 0x1100
+  gui_line(0x3C, 0xAB, 0x1C4, 0xAB);
+  s2 = sp + 0x38;
+  v0 = 0x8C;
+  s0 = 0x1100;
   sw(sp + 0x38, v0);
-  sw(sp + 0x3C, s1);
-  sw(sp + 0x40, s0);
+  sw(sp + 0x3C, 0xBE);
+  sw(sp + 0x40, 0x1100);
   create_3d_text2("TRY AGAIN", addr_to_pointer(s2), 18, 11);
   a3 = 0;
-  v0 = 340; // 0x0154
-  sw(sp + 0x38, v0);
+  v0 = 340; // 0x154
+  sw(sp + 0x38, 0x154);
   v0 = lw(0x80075720);
   a1 = s2;
-  sw(sp + 0x3C, s1);
+  sw(sp + 0x3C, 0xBE);
+  sw(sp + 0x40, 0x1100);
   temp = v0 != 0;
-  sw(sp + 0x40, s0);
   if (temp) goto label8007CD70;
   v1 = lw(0x8007568C);
   temp = (int32_t)v1 >= 0;

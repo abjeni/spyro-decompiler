@@ -64,5 +64,3 @@ void DrawOTag(uint32_t *of);
 DRAWENV *PutDrawEnv(DRAWENV *env);
 DISPENV *PutDispEnv(DISPENV *env);
 void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw);
-void MemCardStart(void);
-void MemCardStop(void);

@@ -16,6 +16,8 @@ struct function_name function_names[] = {
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))"},
+  {0x800168A0, "append_gpu_command_block_depth_slot(a0, a1)"},
+  {0x800168DC, "append_gpu_command_block(addr_to_pointer(a0))"},
   {0x80016914, "spyro_memset32(a0, a1, a2)"},
   {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)"},
   {0x80016958, "spyro_memcpy32(a0, a1, a2)"},
@@ -59,7 +61,13 @@ struct function_name function_names[] = {
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
+  {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))"},
+  {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))"},
+  {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
+  {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
   {0x8002BB20, "v0 = completion_percentage()"},
+  {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
+  {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8004EBA8, "draw_skybox(a0, a1, a2)","void draw_skybox(int32_t index, uint32_t matrix1, uint32_t matrix2)"},
   {0x8005C720, "do_literally_nothing()"},
@@ -79,7 +87,7 @@ struct function_name function_names[] = {
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
   {0x8005DF44, "v0 = set_I_MASK(a0)"},
-  {0x8005E4AC, "spyro_memclr32(a0, a1)", "void spyro_memclr32(uint32_t dst, uint32_t len)"},
+  {0x8005E4AC, "spyro_memclr32(a0, a1)"},
   {0x8005E4D8, "ReturnFromException()"},
   {0x8005E4E8, "ResetEntryInt(a0)"},
   {0x8005E4F8, "HookEntryInt(a0)"},
@@ -110,24 +118,28 @@ struct function_name function_names[] = {
   {0x800616F4, "GP1_command(a0)"},
   {0x80061780, "execute_gpu_linked_list(addr_to_pointer(a0))"},
   {0x800617CC, "v0 = gpu_internal_register(a0)"},
+  {0x80061B00, "v0 = command_queue_advance()"},
   {0x80062090, "gpu_start_timeout()"},
   {0x800620C4, "v0 = gpu_check_timeout()"},
-  {0x8006230C, "spyro_memset8(a0, a1, a2)","void spyro_memset8(uint32_t dst, uint8_t set, uint32_t len)"},
+  {0x8006230C, "spyro_memset8(a0, a1, a2)"},
   {0x80062338, "GPU_cw(a0)"},
-  {0x800623D8, "spyro_mat_mul(a0, a1, a2)"},
+  {0x800623D8, "v0 = spyro_mat_mul(a0, a1, a2)"},
+  {0x800624E8, "v0 = spyro_mat_mul_2(a0, a1)"},
+  {0x800625F8, "mat3x4setTR(a0)"},
   {0x80062618, "SetGeomOffset(a0, a1)"},
   {0x80062638, "SetGeomScreen(a0)"},
   {0x800626E8, "FlushCache()"},
   {0x8006272C, "v0 = spyro_rand()"},
   {0x8006275C, "spyro_srand(a0)"},
   {0x8006276C, "v0 = spyro_strlen(a0)","uint32_t spyro_strlen(uint32_t str)"},
-  {0x8006279C, "spyro_printf(a0, a1, a2, a3)","void spyro_printf(uint32_t fmt, uint32_t param1, uint32_t param2, uint32_t param3)"},
-  {0x80062EC0, "v0 = spyro_strchr(a0, a1, a2)","uint32_t spyro_strchr(uint32_t str, uint32_t chr, uint32_t len)"},
+  {0x8006279C, "spyro_printf(a0, a1, a2, a3)"},
+  {0x80062EC0, "v0 = spyro_strchr(a0, a1, a2)"},
   {0x80062F10, "spyro_putchar(a0)","void spyro_putchar(uint32_t chr)"},
   {0x80062FD4, "spyro_sprintf()","void spyro_sprintf(void)"},
-  {0x80062FC4, "v0 = psx_write(a0, addr_to_pointer(a1), a2)","uint32_t psx_write(int fd, char *str, uint32_t len)"},
+  {0x80062FC4, "v0 = psx_write(a0, addr_to_pointer(a1), a2)"},
   {0x8006389C, "spyro_puts(a0)","void spyro_puts(uint32_t str)"},
   {0x8006396C, "psx_exit(a0)"},
+  {0x8006397C, "v0 = CdInit()"},
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
   {0x80064094, "v0 = pointer_to_addr(write_cdrom_header(a0, addr_to_pointer(a1)))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
@@ -148,7 +160,10 @@ struct function_name function_names[] = {
   {0x80068D60, "SysDeqIntRP(a0, a1)"},
   {0x80068E80, "InitCARD2(a0)"},
   {0x80068E90, "StartCARD2()"},
+  {0x8006A0A4, "controller_wait_for_data()"},
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
+  {0x8006BB20, "set_timer(a0)"},
+  {0x8006BB40, "v0 = get_timer()"}
 };
 
 struct address_name address_names[] = {
@@ -158,6 +173,11 @@ struct address_name address_names[] = {
   {0x800113A0, "exe_end_ptr"},
   {0x8006CBF8, "spyro_sin_lut"},
   {0x8006CC78, "spyro_cos_lut"},
+  {0x8006F694, "DRAGON_NAMES", 4*80},
+  {0x8006F7D4, "HOMEWORLD_NAMES", 4*7},
+  {0x8006F7F0, "LEVEL_NAMES", 36*4},
+  {0x8006F880, "BALLOONIST_NAMES", 4*7},
+  {0x8006FCF4, NULL, 0x2C00},
   {0x800730E8, "spu_event"},
   {0x80073554, "spu_registers_base_ptr"},
   {0x80073558, "DMA_SPU_address_ptr"},
@@ -207,6 +227,7 @@ struct address_name address_names[] = {
   {0x80075254, "JOY_BASE2_ptr"},
   {0x80075238, "JOY_BASE3_ptr"},
   {0x80075710, "gameobject_stack_ptr"},
+  {0x80075714, "IS_DEMO_MODE"},
   {0x8007572C, "level_frame_counter"},
   {0x80075750, "total_found_dragons"},
   {0x80075780, "allocator1_end"},
@@ -215,26 +236,38 @@ struct address_name address_names[] = {
   {0x8007581C, "linked_list1"},
   {0x80075820, "ordered_linked_list"},
   {0x80075860, "total_found_gems"},
-  {0x8007596C, "LEVEL_ID"},
+  {0x80075888, "BACKBUFFER_DISP"},
+  {0x80075914, "CAMERA_MODE"},
+  {0x80075950, "drawn_frame"},
+  {0x80075954, "current_frame"},
   {0x8007595C, "WORLD_ID"},
   {0x80075964, "CONTINUOUS_LEVEL_ID"},
+  {0x8007596C, "LEVEL_ID"},
+  {0x800759BC, NULL, 0x100},
   {0x80075AC0, "rng_seed"},
   {0x80075B0C, "memcard_events"},
+  {0x80075F30, NULL, 0x280},
   {0x80076B78, "timeout1_start"},
   {0x80076B90, "WAD_sector"},
   {0x80076C00, "WAD_nested_header", 0x1D0},
+  {0x80076EE0, "DISP1", 0x84},
+  {0x80076F64, "DISP2", 0x84},
   {0x80077378, "buttons_press"},
   {0x8007737C, "buttons_unpress"},
   {0x80077380, "buttons"},
+  {0x80077888, NULL, 0x68},
+  {0x80077FEC, NULL, 0x420},
+  {0x8007840C, NULL, 0x100},
   {0x800785D8, "lib_end_ptr"},
+  {0x800786C8, NULL, 0x138},
   {0x80078A40, "SKYBOX_DATA", 0x14},
-  {0x80078A58, "spyro_position_x"},
-  {0x80078A5C, "spyro_position_y"},
-  {0x80078A60, "spyro_position_z"},
+  {0x80078A58, "spyro_position", 0x0C},
+  {0x80078D78, NULL, 0x5C},
   {0x80078E9C, "timeout1_duration"},
-  {0x80075950, "drawn_frame"},
-  {0x80075954, "current_frame"},
+  {0x80078EA0, NULL, 0x1800},
   {0x8007A6D0, "WAD_header", 0x330},
+  {0x8007AA10, NULL, 0x28},
+  {0x80600000, NULL, 0x4000},
 };
 
 uint32_t jump_list_get_jump_list(struct program prog, struct jump_list jump_list, uint32_t list[static jump_list.num_jumps])
@@ -324,13 +357,22 @@ char *get_address_name(struct program prog, uint32_t addr)
       same_id = (an.id == NULL) || (strcmp(an.id, prog.id) == 0);
 
     if (same_id) {
-      if (an.size == 0) {
-        if (addr == an.addr)
+      if (addr == an.addr) {
+        if (an.name != NULL) {
           return an.name;
+        } else {
+          snprintf(buf, 256, "0x%.8X", an.addr);
+          return buf;
+        }
       } else {
         if (addr >= an.addr && addr < an.addr + an.size) {
-          snprintf(buf, 256, "%s + 0x%.4hX", an.name, addr - an.addr);
-          return buf;
+          if (an.name != NULL) {
+            snprintf(buf, 256, "%s + 0x%.4hX", an.name, addr - an.addr);
+            return buf;
+          } else {
+            snprintf(buf, 256, "0x%.8X + 0x%.4hX", an.addr, addr - an.addr);
+            return buf;
+          }
         }
       }
     }
@@ -887,6 +929,7 @@ int read_instructions(struct program prog)
   fprintf(prog.output, "#include \"decompilation.h\"\n");
   fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
   fprintf(prog.output, "#include \"spyro_controller.h\"\n");
+  fprintf(prog.output, "#include \"spyro_memory_card.h\"\n");
   fprintf(prog.output, "#include \"spyro_game.h\"\n");
   fprintf(prog.output, "#include \"spyro_graphics.h\"\n");
   fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
@@ -926,7 +969,7 @@ int read_instructions(struct program prog)
     else
       same_id = (an.id != NULL) && (strcmp(an.id, prog.id) == 0);
 
-    if (same_id)
+    if (same_id && an.name != NULL)
       fprintf(prog.header, "#define %s 0x%.8X\n", an.name, an.addr);
   }
 

@@ -25,6 +25,7 @@ uint32_t set_I_MASK(uint32_t i_mask)
 // size: 0x0000001C
 void function_8005DF44(void)
 {
+  BREAKPOINT;
   v0 = set_I_MASK(a0);
 }
 
@@ -71,6 +72,7 @@ void wait_until_frame(int32_t frame, uint32_t timeout_time)
 
 void function_8005DD0C(void)
 {
+  BREAKPOINT;
   wait_until_frame(a0, a1);
 }
 
@@ -97,5 +99,6 @@ int VSync(int mode)
 // size: 0x00000148
 void function_8005DBC4(void)
 {
+  BREAKPOINT;
   v0 = VSync(a0);
 }

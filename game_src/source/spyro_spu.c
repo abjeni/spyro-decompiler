@@ -181,6 +181,7 @@ void dma_spu_callback(uint32_t callback)
 // size: 0x00000024
 void function_8005C788(void)
 {
+  BREAKPOINT;
   dma_spu_callback(a0);
 }
 
@@ -202,6 +203,7 @@ void spu_enable_irq(void)
 // size: 0x0000007C
 void function_8005BB78(void)
 {
+  BREAKPOINT;
   spu_enable_irq();
 }
 
@@ -331,5 +333,6 @@ void init_spu(void)
 
 void function_8005595C(void)
 {
+  BREAKPOINT;
   init_spu();
 }

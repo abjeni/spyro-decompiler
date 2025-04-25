@@ -8,15 +8,28 @@
 #include "spyro_math.h"
 
 // size: 0x0000010C
-void spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst)
+uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst)
 {
   save_mat3(dst, mat3_mul(load_mat3(m1), load_mat3(m2)));
+  return dst;
 }
 
 void function_800623D8(void)
 {
   BREAKPOINT;
-  spyro_mat_mul(a0, a1, a2);
+  v0 = spyro_mat_mul(a0, a1, a2);
+}
+
+uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2)
+{
+  return spyro_mat_mul(m1, m2, m1);
+}
+
+// size: 0x0000010C
+void function_800624E8(void)
+{
+  BREAKPOINT;
+  v0 = spyro_mat_mul_2(a0, a1);
 }
 
 int16_t spyro_atan(int32_t x, int32_t y)
@@ -1242,4 +1255,33 @@ void function_80017E54(void)
 {
   BREAKPOINT;
   v0 = interpolate_color(a0, a1, a2);
+}
+
+int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2)
+{
+  return (a0 + a1) % 0x100;
+}
+
+// size: 0x00000024
+void function_80038074(void)
+{
+  BREAKPOINT;
+  v0 = spyro_two_angle_add(a0, a1);
+}
+
+int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2)
+{
+  int32_t angle = angle1 -= angle2;
+  if ((int32_t)angle >  0x80)
+    angle -= 0x100;
+  if ((int32_t)angle < -0x80)
+    angle += 0x100;
+  return angle;
+}
+
+// size: 0x0000002C
+void function_800381BC(void)
+{
+  BREAKPOINT;
+  v0 = spyro_two_angle_diff_8bit2(a0, a1);
 }

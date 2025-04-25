@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 
 #include "decompilation.h"
+#include "not_renamed.h"
 #include "main.h"
 #include "psx_mem.h"
 #include "spyro_vsync.h"

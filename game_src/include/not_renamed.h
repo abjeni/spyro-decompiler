@@ -13,3 +13,14 @@ void function_8006397C(void);
 
 void function_8007BFD0_credits(void);
 void function_8007CEE4_title_screen(void);
+
+void function_80067DD0(void);
+void function_80067DE4(void);
+void function_80067DF8(void);
+void function_80067E0C(void);
+void function_80067E20(void);
+void function_80067E34(void);
+void function_80067E48(void);
+void function_80067E5C(void);
+
+void function_80066254(void);

@@ -44,7 +44,10 @@ int read_from_cd(struct exe_file exe, addr_list *external_calls)
   int err;
 
   FILE *file = fopen(filename, "rb");
-  if (file == NULL) return 1;
+  if (file == NULL) {
+    printf("%s %m\n", filename);
+    return 1;
+  }
 
   char *psx_mem = malloc(0x00200000);
 
@@ -115,7 +118,7 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x8007ABAC,
-        0x8007CEE4
+        0x8007CD38,
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -156,8 +159,7 @@ int decompile_everything()
         0x80086134,
         0x8007AEA0,
         0x8007AFDC,
-        0x8007B020,
-        0x8007CFC0
+        0x8007B020
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -198,8 +200,7 @@ int decompile_everything()
         0x80088098,
         0x8007AF50,
         0x8007B08C,
-        0x8007B0D0,
-        0x8007D070
+        0x8007B0D0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -278,8 +279,7 @@ int decompile_everything()
         0x80087E20,
         0x8007AF2C,
         0x8007B068,
-        0x8007B0AC,
-        0x8007D04C
+        0x8007B0AC
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -346,7 +346,7 @@ int decompile_everything()
 
         CUSTOM_LIST(ARR_U32(0x80080E80, 0x80081374), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008249C,
@@ -356,8 +356,8 @@ int decompile_everything()
         0x8007AE08,
         0x8007AEDC,
         0x8007B1FC,
-        0x8007B68C,
-        0x8007B4B0
+        //0x8007B68C,
+        //0x8007B4B0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -405,8 +405,7 @@ int decompile_everything()
         0x8008AE28,
         0x8007B878,
         0x8007B9B4,
-        0x8007B9F8,
-        0x8007D998
+        0x8007B9F8
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -454,8 +453,7 @@ int decompile_everything()
         0x8008B1C0,
         0x8007B718,
         0x8007B854,
-        0x8007B898,
-        0x8007D838
+        0x8007B898
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -499,8 +497,7 @@ int decompile_everything()
         0x80089714,
         0x8007B718,
         0x8007B854,
-        0x8007B898,
-        0x8007D838
+        0x8007B898
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -602,7 +599,7 @@ int decompile_everything()
         ), ARR_U32(0x80082F58)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080974, 0x80080E68), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x800819BC,
@@ -612,8 +609,8 @@ int decompile_everything()
         0x8007AE08,
         0x8007AEDC,
         0x8007B1FC,
-        0x8007B68C,
-        0x8007B4B0
+        //0x8007B68C,
+        //0x8007B4B0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -662,8 +659,7 @@ int decompile_everything()
         0x8008BE98,
         0x8007B870,
         0x8007B9AC,
-        0x8007B9F0,
-        0x8007D990
+        0x8007B9F0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -863,7 +859,7 @@ int decompile_everything()
         ), ARR_U32(0x800836F8)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080DF0, 0x800812E4), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x80081F0C,
@@ -873,8 +869,8 @@ int decompile_everything()
         0x8007AE08,
         0x8007AEDC,
         0x8007B1FC,
-        0x8007B68C,
-        0x8007B4B0
+        //0x8007B68C,
+        //0x8007B4B0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -921,8 +917,7 @@ int decompile_everything()
         0x800888F8,
         0x8007B664,
         0x8007B7A0,
-        0x8007B7E4,
-        0x8007D784
+        0x8007B7E4
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -1113,7 +1108,7 @@ int decompile_everything()
         ), ARR_U32(0x80083BAC)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80081044, 0x80081538), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008223C,
@@ -1123,8 +1118,8 @@ int decompile_everything()
         0x8007AE08,
         0x8007AEDC,
         0x8007B1FC,
-        0x8007B68C,
-        0x8007B4B0
+        //0x8007B68C,
+        //0x8007B4B0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -1173,8 +1168,7 @@ int decompile_everything()
         0x800897FC,
         0x8007B898,
         0x8007B9D4,
-        0x8007BA18,
-        0x8007D9B8
+        0x8007BA18
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -1360,7 +1354,7 @@ int decompile_everything()
         ), ARR_U32(0x80083B8C)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080A04, 0x80080EF8), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x80082028,
@@ -1370,8 +1364,8 @@ int decompile_everything()
         0x8007AE08,
         0x8007AEDC,
         0x8007B1FC,
-        0x8007B68C,
-        0x8007B4B0
+        //0x8007B68C,
+        //0x8007B4B0
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -1409,8 +1403,7 @@ int decompile_everything()
         0x80083ED8,
         0x8007AE10,
         0x8007AF4C,
-        0x8007AF90,
-        0x8007CF30
+        0x8007AF90
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -1534,7 +1527,10 @@ int decompile_everything()
       .jumps = JUMP_LIST_LIST(ARR_JUMP_LIST(
         PSXMEM_LIST(ARR_U32(0x8007BC5C), 5, 0x8007AA3C),
       )),
-      .entries = ENTRIES(ARR_U32(0x8007AA50, 0x8007BFD0)),
+      .entries = ENTRIES(ARR_U32(
+        0x8007AA50,
+        //0x8007BFD0
+      )),
       .skips = SKIPS(ARR_U32()),
     },
     {
