@@ -399,7 +399,6 @@ void spyro_printf(uint32_t fmt, uint32_t param1, uint32_t param2, uint32_t param
   a1 = fmt;
   a2 = sp + 0x1C;
 
-  ra = 0x800627C8;
   function_800627D8();
 
   ra = lw(sp + 0x10);

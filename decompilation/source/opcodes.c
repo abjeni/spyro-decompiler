@@ -923,7 +923,6 @@ void print_cop2_instruction(FILE *fd, instruction inst)
 
 void print_function_call(struct program prog, instruction inst, uint32_t addr)
 {
-  fprintf(prog.output, "  ra = 0x%.8X;\n  ", inst.addr + 8);
   print_func_name(prog, addr);
   fprintf(prog.output, ";\n");
 }
@@ -936,8 +935,16 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
   {
     return 0;
   }
+  
+  if (inst.inst == 0x03E00008)
+  {
+    assert(double_inst != -1);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
+    fprintf(prog.output, "  return;\n");
+    return 1;
+  }
 
-  int32_t branch_jmp = ((int32_t)(int16_t)inst.i16type.imm+1)*4;;
+  int32_t branch_jmp = ((int32_t)(int16_t)inst.i16type.imm+1)*4;
   uint32_t addr = (inst.i26type.imm<<2) | (inst.addr & 0xF0000000);
 
   int16_t num;

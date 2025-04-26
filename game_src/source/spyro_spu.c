@@ -86,7 +86,6 @@ void function_8005BBF4(void)
   sh(v0 + 0x0182, 0);
   sh(v0 + 0x01AA, 0);
 
-  ra = 0x8005BC54;
   do_literally_nothing();
 
   v0 = lw(spu_registers_base_ptr);
@@ -132,7 +131,6 @@ void function_8005BBF4(void)
 
     a0 = 0x80073594;
     a1 = 0x10;
-    ra = 0x8005BD94;
     function_8005BE88();
 
     v1 = lw(spu_registers_base_ptr);
@@ -224,10 +222,8 @@ void function_8005BA80(void)
   sw(sp + 0x14, ra);
   s0 = a0;
 
-  ra = 0x8005BA94;
   function_8005DDC8();
   a0 = s0;
-  ra = 0x8005BA9C;
   function_8005BBF4();
   if (s0 == 0) {
     v0 = 0x8007314A;
@@ -246,7 +242,6 @@ void function_8005BA80(void)
   a0 = 209;
   a1 = lw(0x800735BC);
   a2 = 0;
-  ra = 0x8005BB1C;
   function_8005C540();
   sw(0x800735B0, 0);
   sw(0x800735B4, 0);
@@ -284,7 +279,6 @@ void init_spu(void)
   sw(sp + 0x5C, ra);
   sw(sp + 0x58, s0);
 
-  ra = 0x8005596C;
   function_8005BA60();
   s0 = 0x80075F08;
   sw(s0, 195);
@@ -297,7 +291,6 @@ void init_spu(void)
   sh(0x80075F1A, 0x5000);
   sw(0x800761D8, -1);
   a0 = s0;
-  ra = 0x800559D8;
   function_8005CC58();
   a0 = sp + 0x18;
   sw(sp + 0x1C, 0xFF13);
@@ -313,14 +306,11 @@ void init_spu(void)
   sh(sp + 0x4C, 0);
   sh(sp + 0x4E, 0);
   sh(sp + 0x50, 15);
-  ra = 0x80055A34;
   function_8005C7AC();
   a0 = 0;
   a1 = 0x00FFFFFF;
-  ra = 0x80055A44;
   function_8005C7D4();
   a0 = 0;
-  ra = 0x80055A4C;
   function_8005CB7C();
   spyro_memset32(0x80075F30, 0, 0x2A0);
   sw(0x80076240, 0);

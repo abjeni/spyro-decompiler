@@ -9,7 +9,6 @@
 void function_8005DEBC(void)
 {
   if (lw(lw(0x800749AC) + 0x10) != 0x8005E378) BREAKPOINT;
-  ra = 0x8005DEDC;
   // function_8005E378();
   BREAKPOINT;
 }
@@ -42,7 +41,6 @@ void function_8005DE58(void)
   a1 = a0;
   a0 = 4;
   if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) BREAKPOINT;
-  ra = 0x8005DE7C;
   function_8005E5D8();
 }
 
@@ -50,7 +48,6 @@ void function_8005DE58(void)
 void function_8005DE8C(void)
 {
   if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) BREAKPOINT;
-  ra = 0x8005DEAC;
   function_8005E5D8();
 }
 

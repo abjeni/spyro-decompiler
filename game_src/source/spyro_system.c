@@ -74,7 +74,6 @@ void function_8002D170(void)
   sw(0x80078DC4, lw(0x800785E8) - 0x2000);
   a0 = 0x80075F08;
   sw(a0, 0xC0);
-  ra = 0x8002D1FC;
   function_8005CC58();
   sw(0x8007591C, 0);
   sw(lw(0x80075680), 0);

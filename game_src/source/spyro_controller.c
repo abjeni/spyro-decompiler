@@ -32,7 +32,6 @@ void function_80053790(void)
     a2 = lbu(s0 + i + 0x20);
     if (a2 + 0x30 >= lbu(s0 + i + 0x28) || lbu(s0 + i + 0x24) >= (int32_t)(a2 - 0x30)) {
       a0 = s0;
-      ra = 0x800537E0;
       function_8005375C();
       t1 = 0;
       break;
@@ -277,10 +276,8 @@ void init_controller(void)
   
   start_registering_gamepads();
   
-  ra = 0x8001243C;
   function_80053C68();
   a0 = 0x80053C68;
-  ra = 0x8001244C;
   function_8005DE58();
 
   ra = lw(sp + 0x14);

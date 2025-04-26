@@ -85,11 +85,9 @@ void function_80065364(void)
   sw(0x80074E34, 0);
   sw(0x80074E48, 0);
   sw(0x80074E44, 0);
-  ra = 0x80065394;
   function_8005DDC8();
   a1 = 0x8006590C;
   a0 = 2; // 0x0002
-  ra = 0x800653A4;
   function_8005DDF8();
 }
 
@@ -128,19 +126,16 @@ void function_80063ACC(void)
 {
   uint32_t s0 = a0;
   if (s0 == 2) {
-    ra = 0x80063AEC;
     function_80065364();
     v0 = 1;
     return;
   }
-  ra = 0x80063AFC;
   function_800653B4();
   if (v0) {
     v0 = 0;
     return;
   }
   if (s0 == 1) {
-    ra = 0x80063B18;
     function_80065270();
     if (v0) {
       v0 = 0;
@@ -156,21 +151,16 @@ uint32_t CdInit(void)
   uint32_t s0 = 4;
   while (1) {
     a0 = 1;
-    ra = 0x80063994;
     function_80063ACC();
     s0--;
     if (v0 == 1) {
       a0 = 0x80063A14;
-      ra = 0x800639B0;
       function_80063C18();
       a0 = 0x80063A3C;
-      ra = 0x800639C0;
       function_80063C30();
       a0 = 0x80063A64;
-      ra = 0x800639D0;
       function_8006623C();
       a0 = 0;
-      ra = 0x800639D8;
       function_80066254();
       return 1;
     }
@@ -199,11 +189,9 @@ void init_cdrom(void)
   a0 = 14;
   a1 = sp + 0x10;
   a2 = 0;
-  ra = 0x800124A4;
   function_80063C48();
 
   a0 = 0x80016490;
-  ra = 0x800124B4;
   function_8006623C();
   
   sw(0x800774B4, 0x40);
@@ -216,7 +204,6 @@ void init_cdrom(void)
   sb(0x800776D1, 0);
 
   a0 = 0x800776D0;
-  ra = 0x800124FC;
   function_80063FF0();
 
   sp += 0x20;

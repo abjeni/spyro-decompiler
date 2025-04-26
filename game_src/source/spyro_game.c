@@ -247,7 +247,6 @@ void function_8003C358(void)
         modelID = 0x4C;
       a0 = modelID;
       a1 = s4;
-      ra = 0x8003C584;
       redirect_func_800758CC();
       s2 = v0;
       s1 = (s5 & 0xFF) << 4;
@@ -676,14 +675,12 @@ void function_8003A720(void)
 // size: 0x0000060C
 void function_80014564(void)
 {
-  ra = 0x8001457C;
   function_800163E4();
 
   if (lw(0x80076BB8)) return;
 
   a0 = 1;
   a1 = 0;
-  ra = 0x8001459C;
 
   // CdReady -> 2
   function_80063BD8();
@@ -727,11 +724,9 @@ void function_80014564(void)
     sw(0x80075864, 4);
   } else if (v1 == 4) {
     a0 = 0x1010;
-    ra = 0x80014764;
     function_8005CB24();
     a0 = lw(lib_end_ptr);
     a1 = 0x0007EFF0;
-    ra = 0x80014778;
     function_8005CAC4();
     while (test_spu_event(0) == 0);
     v1 = lw(0x8007566C);
@@ -746,7 +741,6 @@ void function_80014564(void)
   } else if (v1 == 5) {
     a0 = lw(0x800785DC);
     a1 = 1;
-    ra = 0x800147F0;
     function_80012D58();
     sw(0x800785E0, v0);
     
@@ -900,13 +894,11 @@ void function_80015370(void)
 
   s0 = a0;
   if ((int32_t)lw(0x80075864) >= 2) {
-    ra = 0x800153AC;
     function_800163E4();
     if (lw(0x80076BB8)) goto label800163BC;
 
     a1 = 0;
     a0 = 1;
-    ra = 0x800153CC;
     function_80063BD8();
 
     if (v0 != 2) goto label800163BC; // CdReady
@@ -971,7 +963,6 @@ void function_80015370(void)
   }
 label80015420:
   a0 = 0;
-  ra = 0x80015428;
   function_80056B28();
   v0 = lw(0x8007576C);
   if ((int32_t)v0 < 0) goto label800154E8;
@@ -1022,7 +1013,6 @@ label800154E8:
   s0 = v1 - s1;
   a0 = s0;
   a2 = s1;
-  ra = 0x8001551C;
   spyro_memcpy32(a0, a1, a2);
   a0 = s0;
   s0 += 8; // 0x0008
@@ -1052,11 +1042,9 @@ label8001556C:
   v0 -= s1;
   s0 = v0 - a2;
   a0 = s0;
-  ra = 0x80015594;
   spyro_memcpy32(a0, a1, a2);
   a0 = s0;
   a1 = 0;
-  ra = 0x800155A0;
   function_80012CF0();
   v0 = -1; // 0xFFFFFFFF
   sw(0x80076E24, v0);
@@ -1064,7 +1052,6 @@ label8001556C:
   goto label800163B4;
 label800155B4:
   a0 = 0;
-  ra = 0x800155BC;
   function_80056B28();
   sw(SKYBOX_DATA, 0);
   sw(0x80076E24, -1);
@@ -1072,7 +1059,6 @@ label800155B4:
 label800155E4:
   v0 = lw(0x800758B4);
   sw(LEVEL_ID, v0);
-  ra = 0x800155FC;
   function_8005A470();
   a1 = lw(LEVEL_ID);
   a0 = (int32_t)a1 / 10;
@@ -1097,7 +1083,6 @@ label800156B4:
   a3 = lw(WAD_header + 0x0050 + v0);
   v0 = 600; // 0x0258
   sw(sp + 0x0010, v0);
-  ra = 0x800156EC;
   read_disk2(a0, a1, a2, a3, lw(sp+0x10));
   v0 = lw(0x80075864);
   v0++;
@@ -1143,16 +1128,13 @@ label80015770:
   sw(0x80075864, v0);
   t0 += v1;
   a3 = 0x00080000 + t0;
-  ra = 0x80015834;
   read_disk2(a0, a1, a2, a3, 0x0258);
   goto label800163BC;
 label8001583C:
   a0 = 0x1010;
-  ra = 0x80015844;
   function_8005CB24();
   a0 = lw(0x800785DC);
   a1 = 0x0007EFF0;
-  ra = 0x80015858;
   function_8005CAC4();
   v0 = lw(0x80075864);
   v0++;
@@ -1175,7 +1157,6 @@ label80015888:
 label800158E0:
   a0 = lw(0x800785DC);
   a1 = 0;
-  ra = 0x800158F0;
   function_80012D58();
   a2 = SKYBOX_DATA;
   v1 = lw(a2 + 0x0000);
@@ -1247,7 +1228,6 @@ label800159FC:
   v0 = 600; // 0x0258
   sw(sp + 0x0010, v0);
   a3 += v1;
-  ra = 0x80015A44;
   read_disk2(a0, a1, a2, a3, lw(sp+0x10));
   v0 = lw(0x80075864);
   v0++;
@@ -1261,7 +1241,6 @@ label80015A54:
   v1 = lw(0x800785E0);
   a0 -= v0;
   a0 += v1;
-  ra = 0x80015A80;
   function_80013230();
   s0 = 0;
 label80015A84:
@@ -1298,7 +1277,6 @@ label80015AE8:
   v0 = lw(0x800785E0);
   a0 = v1 - a0;
   a0 += v0;
-  ra = 0x80015B14;
   function_800133E0();
   v1 = lh(s2 + 0x0000);
   v1 = v1 << 2;
@@ -1332,7 +1310,6 @@ label80015B80:
   v0 = 600; // 0x0258
   sw(sp + 0x0010, v0);
   a3 += v1;
-  ra = 0x80015BC8;
   read_disk2(a0, a1, a2, a3, lw(sp+0x10));
   v0 = lw(0x80075864);
   v0++;
@@ -1411,7 +1388,6 @@ label80015CF0:
   v0 = 1; // 0x0001
   sb(0x80078E78 + v1, v0);
   a2 = 104; // 0x0068
-  ra = 0x80015D40;
   spyro_memset32(a0, a1, a2);
   v0 = lw(CONTINUOUS_LEVEL_ID);
   v0 = v0 << 2;
@@ -1420,7 +1396,6 @@ label80015CF0:
   sw(0x800756C8, 0);
   sw(0x8007587C, v0);
   a0 = s0;
-  ra = 0x80015D7C;
   function_8001364C();
   v0 = lw(0x800756D0);
   temp = v0 == 0;
@@ -1433,7 +1408,6 @@ label80015CF0:
   a0 = s1;
   s0 = 0x80078AD4;
   sw(s0 + 0x0000, v0);
-  ra = 0x80015DC0;
   function_80033F08();
   s0 -= 124; // 0xFFFFFF84
   a0 = s0;
@@ -1442,7 +1416,6 @@ label80015CF0:
   v0 += v1;
   sw(0x80076E60, v0);
   a1 = s3 + 80; // 0x0050
-  ra = 0x80015DF0;
   spyro_vec3_copy(a0, a1);
   a1 = 0x80076E60;
   a0 = 0x80076E48;
@@ -1469,22 +1442,17 @@ label80015CF0:
   v1 -= v0;
   sw(0x80076E48, v1);
   a0 = s1;
-  ra = 0x80015E78;
   function_80034204();
   a0 = s1;
   a1 = s1;
   a2 = s0;
-  ra = 0x80015E88;
   spyro_vec3_add(a0, a1, a2);
-  ra = 0x80015E90;
   function_800342F8();
   s0 = 0x8006EBE4;
   a0 = s0;
   a1 = s1;
-  ra = 0x80015EA4;
   spyro_vec3_copy(a0, a1);
   a0 = s0 - 24; // 0xFFFFFFE8
-  ra = 0x80015EAC;
   function_80037714();
   v0 = 9; // 0x0009
   goto label800162C4;
@@ -1519,12 +1487,10 @@ label80015EF8:
   v0 += v1;
   s0 = lw(v0 + 0x0000);
   a0 = 15; // 0x000F
-  ra = 0x80015F50;
   function_8003EA68();
   a0 = s4;
   v0 = 9; // 0x0009
   sw(s1 + 0x006E, v0);
-  ra = 0x80015F60;
   function_80033F08();
   v0 = lw(0x80076E60);
   v1 = lw(s1 + 0x010E);
@@ -1536,12 +1502,10 @@ label80015EF8:
   if (temp) goto label80015FC8;
   a1 = lw(s0 + 0x0000);
   a1 += 8; // 0x0008
-  ra = 0x80015F98;
   spyro_vec3_copy(a0, a1);
   a1 = lw(s0 + 0x0000);
   a0 = s1 + 490; // 0x01EA
   a1 += 24; // 0x0018
-  ra = 0x80015FA8;
   spyro_vec3_copy(a0, a1);
   v0 = lw(s0 + 0x0000);
   a3 = lw(v0 + 0x0018);
@@ -1553,12 +1517,10 @@ label80015EF8:
 label80015FC8:
   a1 = lw(s0 + 0x0000);
   a1 += 24; // 0x0018
-  ra = 0x80015FD4;
   spyro_vec3_copy(a0, a1);
   a1 = lw(s0 + 0x0000);
   a0 = s1 + 490; // 0x01EA
   a1 += 8; // 0x0008
-  ra = 0x80015FE4;
   spyro_vec3_copy(a0, a1);
   v0 = lw(s0 + 0x0000);
   a2 = 0;
@@ -1569,7 +1531,6 @@ label80015FC8:
 label80015FFC:
   a0 = a3 - a0;
   a1 = v1 - a1;
-  ra = 0x80016008;
   v0 = spyro_atan2(a0, a1, a2);
   sb(s1 + 0x0000, v0);
   v0 = lw(s3 + 0x0018);
@@ -1593,14 +1554,11 @@ label80015FFC:
   v0 = v0 << 4;
   v1 -= v0;
   sw(s3 + 0x0000, v1);
-  ra = 0x80016064;
   function_80034204();
   a0 = s4;
   a1 = a0;
   a2 = s2 - 284; // 0xFFFFFEE4
-  ra = 0x80016074;
   spyro_vec3_add(a0, a1, a2);
-  ra = 0x8001607C;
   function_800342F8();
   v1 = lbu(s2 - 0x010E); // 0xFFFFFEF2
   v0 = 127; // 0x007F
@@ -1619,11 +1577,9 @@ label800160A8:
   goto label80016314;
 label800160C8:
   a0 = 15; // 0x000F
-  ra = 0x800160D0;
   function_8003EA68();
   s1 = 0x80076DF8;
   a0 = s1;
-  ra = 0x800160E0;
   function_80033F08();
   s0 = 0x80078B74;
   s2 = s0 - 284; // 0xFFFFFEE4
@@ -1657,13 +1613,10 @@ label800160C8:
   v1 -= v0;
   sw(0x80076E48, v1);
   a1 = s3 + 80; // 0x0050
-  ra = 0x80016190;
   spyro_vec3_copy(a0, a1);
   a0 = s1;
-  ra = 0x80016198;
   function_80034204();
   a0 = s0 - 16; // 0xFFFFFFF0
-  ra = 0x800161A0;
   spyro_vec3_clear(a0);
   v1 = lw(0x80076EA8);
   v0 = 0x8006CA84;
@@ -1691,9 +1644,7 @@ label800160C8:
   v1 -= v0;
   sw(spyro_position + 4, v1);
   a2 = s2;
-  ra = 0x80016238;
   spyro_vec3_add(a0, a1, a2);
-  ra = 0x80016240;
   function_800342F8();
   v0 = lw(0x80078AD0);
   v1 = lbu(0x8006C588 + v0);
@@ -1707,17 +1658,13 @@ label800160C8:
 label80016284:
   a1 = s1;
   a2 = s2;
-  ra = 0x80016290;
   spyro_vec3_add(a0, a1, a2);
-  ra = 0x80016298;
   function_800342F8();
   s0 = 0x8006EBE4;
   a0 = s0;
   a1 = s1;
-  ra = 0x800162AC;
   spyro_vec3_copy(a0, a1);
   a0 = s0 - 24; // 0xFFFFFFE8
-  ra = 0x800162B4;
   function_80037714();
   v0 = 10; // 0x000A
   sw(0x80078AD4, v0);
@@ -1737,7 +1684,6 @@ label800162F8:
   temp = v1 == v0;
   if (temp) goto label80016314;
   a0 = 0;
-  ra = 0x80016314;
   function_8003EA68();
 label80016314:
   spyro_memcpy32(SKYBOX_DATA, 0x80077780, 5*4);
@@ -1796,7 +1742,6 @@ void game_loop(void)
   while (1) {
     sb(gp + 0x0604, 0);
 
-    ra = 0x80012238;
     function_8003385C();
 
     sb(gp + 0x0604, 1);
@@ -1810,7 +1755,6 @@ void game_loop(void)
     
     sw(gp + 0x04FC, 0);
     if (lw(gp + 0x0538) == 0) {
-      ra = 0x80012284;
       function_8001ED5C();
     }
   }

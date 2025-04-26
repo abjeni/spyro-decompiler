@@ -18,15 +18,11 @@ void function_80017FD4(void)
 void function_8002BA68(void)
 {
   SetDispMask(0);
-  ra = 0x8002BA80;
   function_8006397C();
   a0 = 0;
-  ra = 0x8002BA88;
   function_8006623C();
   a0 = 0;
-  ra = 0x8002BA90;
   function_8005DE58();
-  ra = 0x8002BA98;
   function_80069080();
   ResetGraph(3);
   function_8005DEBC();

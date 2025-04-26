@@ -505,7 +505,7 @@ void function_800171FC(void)
 // size: 0x00000094
 void function_8001729C(void)
 {
-  uint32_t temp, return_address = ra;
+  uint32_t temp;
   cop2.IR1 = lw(a0 + 0);
   cop2.IR3 = 0;
   cop2.IR2 = lw(a0 + 4);
@@ -537,25 +537,11 @@ void function_8001729C(void)
   mult(at, a1);
   at=lo;
   at = (int32_t)at >> v1;
-  temp = ra;
   v0 = a1 + at;
-  if (temp == return_address) return;
-  switch (temp)
-  {
-  default:
-    JR(temp, 0x80017320);
-    return;
-  }
+  return;
 label80017328:
-  temp = ra;
   v0 = a1;
-  if (temp == return_address) return;
-  switch (temp)
-  {
-  default:
-    JR(temp, 0x80017328);
-    return;
-  }
+  return;
 }
 
 // size: 0x000000F8
@@ -588,7 +574,6 @@ void function_80017330(void)
 // size: 0x00000120
 void function_80017428(void)
 {
-  uint32_t temp, return_address = ra;
   at = (int32_t)lw(a1 + 0) >> 4;
   v0 = (int32_t)lw(a1 + 4) >> 4;
   v1 = (int32_t)lw(a1 + 8) >> 4;
@@ -644,15 +629,7 @@ void function_80017428(void)
   sw(a2 + 0x0000, at);
   sw(a2 + 0x0004, v0);
   sw(a2 + 0x0008, v1);
-  temp = ra;
   v0 = 1; // 0x0001
-  if (temp == return_address) return;
-  switch (temp)
-  {
-  default:
-    JR(temp, 0x80017540);
-    return;
-  }
 }
 
 void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul)
@@ -1147,7 +1124,7 @@ void function_80017CB8(void)
 // size: 0x000000D8
 void function_80017D7C(void)
 {
-  uint32_t temp, return_address = ra;
+  uint32_t temp;
   t0 = lw(a0 + 0x0000);
   t1 = lw(a1 + 0x0000);
   t2 = lw(a0 + 0x0004);
@@ -1210,15 +1187,7 @@ label80017DF0:
   t2 = (int32_t)t2 >> 12;
   sw(a2 + 0x0004, t1);
 label80017E4C:
-  temp = ra;
   sw(a2 + 0x0008, t2);
-  if (temp == return_address) return;
-  switch (temp)
-  {
-  default:
-    JR(temp, 0x80017E4C);
-    return;
-  }
 }
 
 uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol)

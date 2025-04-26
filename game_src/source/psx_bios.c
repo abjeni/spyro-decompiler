@@ -260,14 +260,7 @@ void interrupt2(uint32_t type)
   a1 = 1;
   v0 = 1;
 
-  switch (ra) {
-  case 0x8005DFC8:
-    function_8005E03C();
-    return;
-  default:
-    printf("%.8X\n", ra);
-    BREAKPOINT;
-  }
+  function_8005E03C();
 
   //interrupt_entry_hook();
 }

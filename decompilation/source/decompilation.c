@@ -575,7 +575,7 @@ int read_function_instructions(struct program prog, function_list *func_list, ui
     }
 end_loop4:
 
-    if (inst.opcode == JR)
+    if (inst.opcode == JR && inst.inst != 0x03E00008)
     {
       for (int i = 0; i < prog.jumpss.n; i++)
       {
@@ -667,7 +667,7 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
   if (no_declaration != FUNC_NOT_RENAMED)
     printf("Error function 0x%.8X renamed but not skipped\n", func.address);
   fprintf(prog.output, "\n{\n");
-  fprintf(prog.output, "  uint32_t temp, return_address = ra;\n");
+  fprintf(prog.output, "  uint32_t temp;\n");
 
   assert(func_set.funcs[0].address == func.address);
 
@@ -734,9 +734,8 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
 end_loop2:
         fprintf(prog.output, "  default:\n    JALR(temp, 0x%.8X);\n  }\n", inst1.addr);
       }
-      else if (inst1.opcode == JR)
+      else if (inst1.opcode == JR && inst1.inst != 0x03E00008)
       {
-        fprintf(prog.output, "  if (temp == return_address) return;\n");
         fprintf(prog.output, "  switch (temp)\n  {\n");
         for (int i = 0; i < prog.jumpss.n; i++)
         {
