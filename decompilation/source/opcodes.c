@@ -923,6 +923,7 @@ void print_cop2_instruction(FILE *fd, instruction inst)
 
 void print_function_call(struct program prog, instruction inst, uint32_t addr)
 {
+  fprintf(prog.output, "  ");
   print_func_name(prog, addr);
   fprintf(prog.output, ";\n");
 }
@@ -1196,7 +1197,6 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     fprintf(prog.output, "  temp = %s;\n", registers_nospace[inst.rtype.r1]);
     assert(double_inst != -1);
     output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
-    fprintf(prog.output, "  %s = 0x%.8X;\n", registers_nospace[inst.rtype.r3], inst.addr + 8);
     assert(inst.rtype.r3 == 31);
     //fprintf(prog.output, "  JALR(temp, 0x%.8X);\n", inst.addr);
     //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: calling function %%.8X\\n\", __LINE__, temp); BREAKPOINT;\n");
