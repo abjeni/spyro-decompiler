@@ -34,8 +34,6 @@ void function_8007B9F0(void);
 void function_8007B9F8(void);
 void function_8007BA18(void);
 void function_8007BB00(void);
-void function_8007BFD0(void);
-void function_8007CEE4(void);
 void function_8007CF30(void);
 void function_8007CFB4(void);
 void function_8007CFC0(void);

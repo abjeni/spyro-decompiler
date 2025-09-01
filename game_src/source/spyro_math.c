@@ -1,5 +1,6 @@
 #include "extra_gte.h"
 #include "int_math.h"
+#include "psx_mem.h"
 #include "psx_ops.h"
 #include "decompilation.h"
 #include "gte.h"
@@ -82,7 +83,7 @@ int16_t spyro_atan(int32_t x, int32_t y)
         v0 = 0xC0;
       }
 
-  const int arr[64] = {
+  const int lut[64] = {
     0x00, 0x01, 0x01, 0x02,
     0x03, 0x03, 0x04, 0x04,
     0x05, 0x06, 0x06, 0x07,
@@ -101,7 +102,7 @@ int16_t spyro_atan(int32_t x, int32_t y)
     0x1f, 0x1f, 0x1f, 0x20
   };
 
-  uint32_t tmp = arr[lo];
+  uint32_t tmp = lut[lo];
   if (at == 0) {
     at = v0 + tmp;
   } else {
@@ -456,28 +457,28 @@ void function_800170C0(void)
   spyro_mat_mirrored_vec_multiply(a0, a1);
 }
 
-void spyro_camera_mat_vec_multiply(uint32_t vec_src, uint32_t vec_dst)
+void spyro_camera_mat_vec_multiply(vec3_32 *src, vec3_32 *dst)
 {
   load_RTM(0x80076DD0 + 0x14);
   mat3 m = get_RTM();
 
   vec3_32 v = {
-    .z =  lw(vec_src + 0),
-    .x = -lw(vec_src + 4),
-    .y = -lw(vec_src + 8)
+    .z =  src->x,
+    .x = -src->y,
+    .y = -src->z
   };
 
   v = vec3_32_mat_mul(v, m);
-  sw(vec_dst + 0, v.x);
-  sw(vec_dst + 4, v.y);
-  sw(vec_dst + 8, v.z);
+  dst->x = v.x;
+  dst->y = v.y;
+  dst->z = v.z;
 }
 
 // size: 0x00000078
 void function_80017110(void)
 {
   BREAKPOINT;
-  spyro_camera_mat_vec_multiply(a0, a1);
+  spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
 // size: 0x000000A0
@@ -813,7 +814,7 @@ void function_80017894(void)
 
 uint32_t spyro_two_angle_diff_8bit(uint32_t a, uint32_t b)
 {
-  uint32_t diff = a0 - a1;
+  uint32_t diff = a - b;
   diff = diff & 0xFF;
   if (diff >= 0x80)
     diff = 0x100 - diff;
@@ -925,6 +926,7 @@ void function_800179F0(void)
 // size: 0x0000006C
 uint32_t spyro_sqrt(uint32_t a)
 {
+  uint32_t a1, at, a3, t0, v0;
   if (a == 0)
     return 0;
   cop2.LZCS = a;
@@ -1054,18 +1056,18 @@ void function_80017C4C(void)
   spyro_vec_16_to_32(a0, a1);
 }
 
-void spyro_vec_32_to_16(uint32_t dst, uint32_t src)
+void spyro_vec_32_to_16(vec3 *dst, vec3_32 *src)
 {
-  sh(dst + 0, lw(src + 0));
-  sh(dst + 2, lw(src + 4));
-  sh(dst + 4, lw(src + 8));
+  dst->x = src->x;
+  dst->y = src->y;
+  dst->z = src->z;
 }
 
 // size: 0x0000001C
 void function_80017C68(void)
 {
   BREAKPOINT;
-  spyro_vec_32_to_16(a0, a1);
+  spyro_vec_32_to_16(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
 void spyro_vec_16_add(uint32_t dst, uint32_t a, uint32_t b)
@@ -1240,7 +1242,7 @@ void function_80038074(void)
 
 int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2)
 {
-  int32_t angle = angle1 -= angle2;
+  int32_t angle = angle1 - angle2;
   if ((int32_t)angle >  0x80)
     angle -= 0x100;
   if ((int32_t)angle < -0x80)
@@ -1253,4 +1255,718 @@ void function_800381BC(void)
 {
   BREAKPOINT;
   v0 = spyro_two_angle_diff_8bit2(a0, a1);
+}
+
+
+
+int32_t spyro_two_angle_idk(uint32_t a, uint32_t b, uint32_t c)
+{
+  return spyro_two_angle_add(b, spyro_two_angle_diff_8bit2(b, a)*(c & 0xFF) >> 8);
+}
+
+// size: 0x00000058
+void function_80038120(void)
+{
+  v0 = spyro_two_angle_idk(a0, a1, a2);
+}
+
+// size: 0x00000324
+void function_800526A8(void)
+{
+  uint32_t temp;
+  at = lhu(a0 + 0x0036);
+  v0 = 0x80076378;
+  at = at << 2;
+  at += v0;
+  v0 = lbu(a0 + 0x003C);
+  at = lw(at + 0x0000);
+  v0 = v0 << 2;
+  v0 += at;
+  v1 = lbu(a0 + 0x003E);
+  v0 = lw(v0 + 0x0038);
+  v1 = v1 << 3;
+  a1 = lbu(v0 + 0x000C);
+  v0 += v1;
+  v1 = lw(v0 + 0x0024);
+  sb(a0 + 0x0041, a1);
+  v1 = v1 >> 19;
+  v1 = v1 & 0x1C;
+  v0 = at + v1;
+  v0 = lw(v0 + 0x0014);
+  at = lw(at + 0x0014);
+  sw(a0 + 0x0008, v0);
+  v0 = -1; // 0xFFFFFFFF
+  temp = at == 0;
+  sh(a0 + 0x0034, v0);
+  if (temp) goto label80052758;
+  v0 = lw(a0 + 0x000C);
+  v1 = lw(a0 + 0x0010);
+  a1 = 0x80075778; // &0x00000000
+  a1 = lw(a1 + 0x0000);
+  v0 = v0 >> 13;
+  v1 = v1 >> 13;
+  v1 = v1 << 5;
+  v0 += v1;
+  temp = (int32_t)at < 0;
+  a2 = 0;
+  if (temp) goto label8005273C;
+  a2 = 1024; // 0x0400
+label8005273C:
+  v0 += a2;
+  sh(a0 + 0x0034, v0);
+  v0 = v0 << 2;
+  v0 += a1;
+  v1 = lw(v0 + 0x0000);
+  sw(v0 + 0x0000, a0);
+  sw(a0 + 0x0004, v1);
+label80052758:
+  t7 = a0;
+  at = lw(t7 + 0x0044);
+  v0 = spyro_sin_lut;
+  v1 = spyro_cos_lut;
+  t2 = 4096; // 0x1000
+  t3 = 0;
+  t4 = 4096; // 0x1000
+  t5 = 0;
+  t6 = 4096; // 0x1000
+  cop2.RTM0 = t2;
+  cop2.RTM1 = t3;
+  cop2.RTM2 = t4;
+  cop2.RTM3 = t5;
+  cop2.RTM4 = t6;
+  cop2.TRX = 0;
+  cop2.TRY = 0;
+  cop2.TRZ = 0;
+  a0 = at >> 15;
+  a0 = a0 & 0x1FE;
+  temp = a0 == 0;
+  a1 = a0 + v1;
+  if (temp) goto label80052858;
+  a0 += v0;
+  a1 = lhu(a1 + 0x0000);
+  a0 = lhu(a0 + 0x0000);
+  a1 = a1 & 0xFFFF;
+  cop2.VXY0 = a1;
+  cop2.VZ0 = a0;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a0 = -a0;
+  a0 = a0 & 0xFFFF;
+  a1 = a1 & 0xFFFF;
+  a3 = cop2.IR1;
+  t0 = cop2.IR2;
+  t1 = cop2.IR3;
+  cop2.VXY0 = a0;
+  cop2.VZ0 = a1;
+  a2 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  t2 = t2 & a2;
+  a3 = a3 & 0xFFFF;
+  t2 += a3;
+  t5 = t5 & a2;
+  t1 = t1 & 0xFFFF;
+  t5 += t1;
+  t0 = t0 << 16;
+  t4 = t4 & 0xFFFF;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  a0 = a0 & 0xFFFF;
+  t3 = a0 + t0;
+  a1 = a1 << 16;
+  t4 += a1;
+  t6 = a2 & 0xFFFF;
+  cop2.RTM0 = t2;
+  cop2.RTM1 = t3;
+  cop2.RTM2 = t4;
+  cop2.RTM3 = t5;
+  cop2.RTM4 = t6;
+label80052858:
+  a0 = at & 0xFF00;
+  temp = a0 == 0;
+  a0 = a0 >> 8;
+  if (temp) goto label8005290C;
+  a0 = a0 << 1;
+  a1 = a0 + v1;
+  a0 += v0;
+  a1 = lhu(a1 + 0x0000);
+  a0 = lhu(a0 + 0x0000);
+  a2 = a1 << 16;
+  cop2.VXY0 = a2;
+  cop2.VZ0 = a0;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a2 = a0 << 16;
+  a2 = -a2;
+  a3 = cop2.IR1;
+  t0 = cop2.IR2;
+  t1 = cop2.IR3;
+  cop2.VXY0 = a2;
+  cop2.VZ0 = a1;
+  a2 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  t2 = t2 & 0xFFFF;
+  a3 = a3 << 16;
+  t2 += a3;
+  t5 = t5 & 0xFFFF;
+  t1 = t1 << 16;
+  t5 += t1;
+  t0 = t0 & 0xFFFF;
+  t3 = t3 & a2;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  a0 = a0 & 0xFFFF;
+  t3 += a0;
+  a1 = a1 << 16;
+  t4 = a1 + t0;
+  t6 = a2 & 0xFFFF;
+  cop2.RTM0 = t2;
+  cop2.RTM1 = t3;
+  cop2.RTM2 = t4;
+  cop2.RTM3 = t5;
+  cop2.RTM4 = t6;
+label8005290C:
+  a0 = at & 0xFF;
+  if (a0) {
+    a0 = a0 << 1;
+    a1 = a0 + v1;
+    a0 += v0;
+    a1 = lhu(a1 + 0x0000);
+    a0 = lhu(a0 + 0x0000);
+    cop2.VZ0 = 0;
+    a2 = a0 << 16;
+    a2 += a1;
+    cop2.VXY0 = a2;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    a0 = -a0;
+    a0 = a0 & 0xFFFF;
+    a1 = a1 << 16;
+    a0 += a1;
+    a3 = cop2.IR1;
+    t0 = cop2.IR2;
+    t1 = cop2.IR3;
+    cop2.VXY0 = a0;
+    cop2.VZ0 = 0;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    t0 = t0 << 16;
+    t3 = t3 & 0xFFFF;
+    t3 += t0;
+    a3 = a3 & 0xFFFF;
+    t1 = t1 & 0xFFFF;
+    t4 = t4 & 0xFFFF0000;
+    a0 = cop2.IR1 << 16;
+    t2 = a0 + a3;
+    a2 = cop2.IR3 << 16;
+    t5 = a2 + t1;
+    a1 = cop2.IR2 & 0xFFFF;
+    t4 += a1;
+  }
+
+  sw(t7 + 0x20, t2);
+  sw(t7 + 0x24, t3);
+  sw(t7 + 0x28, t4);
+  sw(t7 + 0x2C, t5);
+  sw(t7 + 0x30, t6);
+  return;
+}
+
+// size: 0x00000380
+void function_800529E4(void)
+{
+  uint32_t temp;
+  at = a1 & 0x1;
+  temp = at == 0;
+  if (temp) goto label80052A64;
+  at = lhu(a0 + 0x0036);
+  v0 = 0x80076378;
+  at = at << 2;
+  at += v0;
+  v0 = lbu(a0 + 0x0040);
+  v1 = lw(a0 + 0x003C);
+  at = lw(at + 0x0000);
+  temp = (int32_t)v0 > 0;
+  v0 = v1 & 0xFF;
+  if (temp) goto label80052A24;
+  v1 = v1 >> 16;
+  v1 = v1 & 0xFF;
+  goto label80052A30;
+label80052A24:
+  v0 = v1 >> 8;
+  v0 = v0 & 0xFF;
+  v1 = v1 >> 24;
+label80052A30:
+  v0 = v0 << 2;
+  v0 += at;
+  v0 = lw(v0 + 0x0038);
+  v1 = v1 << 3;
+  v0 += v1;
+  v1 = lw(v0 + 0x0024);
+  v1 = v1 >> 19;
+  v1 = v1 & 0x1C;
+  v0 = at + v1;
+  v0 = lw(v0 + 0x0014);
+  sw(a0 + 0x0008, v0);
+label80052A64:
+  at = a1 & 0x2;
+  temp = at == 0;
+  if (temp) goto label80052AEC;
+  at = lw(a0 + 0x000C);
+  v0 = lw(a0 + 0x0010);
+  v1 = 0x80075778; // &0x00000000
+  v1 = lw(v1 + 0x0000);
+  at = at >> 13;
+  v0 = v0 >> 13;
+  v0 = v0 << 5;
+  a2 = lh(a0 + 0x0034);
+  at += v0;
+  a3 = a2 & 0x400;
+  at = at | a3;
+  temp = at == a2;
+  a2 = a2 << 2;
+  if (temp) goto label80052AEC;
+  temp = (int32_t)a2 < 0;
+  a2 += v1;
+  if (temp) goto label80052AEC;
+  v0 = a2 - 4; // 0xFFFFFFFC
+label80052AB4:
+  a2 = v0 + 4; // 0x0004
+  v0 = lw(a2 + 0x0000);
+  temp = v0 != a0;
+  if (temp) goto label80052AB4;
+  v0 = lw(a0 + 0x0004);
+  sw(a2 + 0x0000, v0);
+  sh(a0 + 0x0034, at);
+  at = v1 + at*4;
+  v0 = lw(at + 0x0000);
+  sw(at + 0x0000, a0);
+  sw(a0 + 0x0004, v0);
+label80052AEC:
+  at = a1 & 0x4;
+  temp = at == 0;
+  t7 = a0;
+  if (temp) goto label80052D5C;
+  t4 = lw(t7 + 0x0044);
+  set_RTM(mat3_identity());
+  a3 = cop2.RTM0;
+  t0 = cop2.RTM1;
+  t1 = cop2.RTM2;
+  t2 = cop2.RTM3;
+  t3 = cop2.RTM4;
+  cop2.TRX = 0;
+  cop2.TRY = 0;
+  cop2.TRZ = 0;
+  at = t4 >> 15;
+  at = at & 0x1FE;
+  temp = at == 0;
+  if (temp) goto label80052BF0;
+  v0 = at + spyro_cos_lut;
+  at = at + spyro_sin_lut;
+  v0 = lhu(v0 + 0x0000);
+  at = lhu(at + 0x0000);
+  v0 = v0 & 0xFFFF;
+  cop2.VXY0 = v0;
+  cop2.VZ0 = at;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  at = -at;
+  at = at & 0xFFFF;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = at;
+  cop2.VZ0 = v0;
+  v1 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a3 = a3 & v1;
+  a0 = a0 & 0xFFFF;
+  a3 += a0;
+  t2 = t2 & v1;
+  a2 = a2 & 0xFFFF;
+  t2 += a2;
+  a1 = a1 << 16;
+  t1 = t1 & 0xFFFF;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  v1 = cop2.IR3;
+  at = at & 0xFFFF;
+  t0 = at + a1;
+  v0 = v0 << 16;
+  t1 += v0;
+  t3 = v1 & 0xFFFF;
+  cop2.RTM0 = a3;
+  cop2.RTM1 = t0;
+  cop2.RTM2 = t1;
+  cop2.RTM3 = t2;
+  cop2.RTM4 = t3;
+label80052BF0:
+  at = t4 & 0xFF00;
+  temp = at == 0;
+  at = at >> 8;
+  if (temp) goto label80052CA4;
+  at = at << 1;
+  v0 = at + spyro_cos_lut;
+  at = at + spyro_sin_lut;
+  v0 = lhu(v0 + 0x0000);
+  at = lhu(at + 0x0000);
+  v1 = v0 << 16;
+  cop2.VXY0 = v1;
+  cop2.VZ0 = at;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = -(at << 16);
+  cop2.VZ0 = v0;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a3 = a3 & 0xFFFF;
+  a0 = a0 << 16;
+  a3 += a0;
+  t2 = t2 & 0xFFFF;
+  a2 = a2 << 16;
+  t2 += a2;
+  a1 = a1 & 0xFFFF;
+  t0 = t0 & 0xFFFF0000;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  at = at & 0xFFFF;
+  t0 += at;
+  v0 = v0 << 16;
+  t1 = v0 + a1;
+  t3 = cop2.IR3 & 0xFFFF;
+  cop2.RTM0 = a3;
+  cop2.RTM1 = t0;
+  cop2.RTM2 = t1;
+  cop2.RTM3 = t2;
+  cop2.RTM4 = t3;
+label80052CA4:
+  at = t4 & 0xFF;
+  temp = at == 0;
+  at = at << 1;
+  if (temp) goto label80052D48;
+  v0 = at + spyro_cos_lut;
+  at = at + spyro_sin_lut;
+  v0 = lhu(v0 + 0x0000);
+  at = lhu(at + 0x0000);
+  cop2.VZ0 = 0;
+  cop2.VXY0 = (at << 16) + v0;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  at = -at;
+  at = at & 0xFFFF;
+  v0 = v0 << 16;
+  at += v0;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = at;
+  cop2.VZ0 = 0;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a1 = a1 << 16;
+  t0 = t0 & 0xFFFF;
+  t0 += a1;
+  a0 = a0 & 0xFFFF;
+  a2 = a2 & 0xFFFF;
+  t1 = t1 & 0xFFFF0000;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  v1 = cop2.IR3;
+  at = at << 16;
+  a3 = at + a0;
+  v1 = v1 << 16;
+  t2 = v1 + a2;
+  v0 = v0 & 0xFFFF;
+  t1 += v0;
+label80052D48:
+  sw(t7 + 0x0020, a3);
+  sw(t7 + 0x0024, t0);
+  sw(t7 + 0x0028, t1);
+  sw(t7 + 0x002C, t2);
+  sw(t7 + 0x0030, t3);
+label80052D5C:
+  return;
+}
+
+// size: 0x000001D4
+void function_80052D64(void)
+{
+  uint32_t temp;
+  t8 = a0;
+  t7 = a1;
+  t9 = a2;
+  at = lw(t8 + 0x0020);
+  v0 = lw(t8 + 0x0024);
+  v1 = lw(t8 + 0x0028);
+  a0 = lw(t8 + 0x002C);
+  a1 = lw(t8 + 0x0030);
+  cop2.RTM0 = at;
+  cop2.RTM1 = v0;
+  cop2.RTM2 = v1;
+  cop2.RTM3 = a0;
+  cop2.RTM4 = a1;
+  cop2.TRX = 0;
+  cop2.TRY = 0;
+  cop2.TRZ = 0;
+  at = lhu(t8 + 0x0036);
+  a1 = lw(t8 + 0x003C);
+  v0 = 0x80076378;
+  at = at << 2;
+  at += v0;
+  at = lw(at + 0x0000);
+  a2 = lbu(t8 + 0x0040);
+  v0 = a1 << 2;
+  v0 = v0 & 0x3FC;
+  v0 += at;
+  v1 = a1 >> 6;
+  v1 = v1 & 0x3FC;
+  v1 += at;
+  v0 = lw(v0 + 0x0038);
+  a0 = a1 >> 13;
+  a0 = a0 & 0x7F8;
+  a1 = a1 >> 21;
+  a1 = a1 & 0x7F8;
+  a0 += v0;
+  a0 = lw(a0 + 0x0024);
+  at = lb(v0 + 0x0005);
+  a0 = a0 << 11;
+  a0 = a0 >> 11;
+  t7 = t7 << 2;
+  a0 += t7;
+  temp = (int32_t)a2 > 0;
+  v0 = lw(a0 + 0x0000);
+  if (temp) goto label80052E3C;
+  a1 = v0 << 20;
+  a1 = (int32_t)a1 >> 19;
+  a0 = v0 << 10;
+  a0 = (int32_t)a0 >> 21;
+  v1 = (int32_t)v0 >> 21;
+  v1 = v1 << at;
+  a0 = a0 << at;
+  a1 = a1 << at;
+  goto label80052EE8;
+label80052E3C:
+  v1 = lw(v1 + 0x0038);
+  t1 = v0 << 20;
+  t1 = (int32_t)t1 >> 19;
+  t0 = v0 << 10;
+  t0 = (int32_t)t0 >> 21;
+  a3 = (int32_t)v0 >> 21;
+  a1 += v1;
+  a1 = lw(a1 + 0x0024);
+  a3 = a3 << at;
+  t0 = t0 << at;
+  t1 = t1 << at;
+  v1 = 64; // 0x0040
+  v1 -= a2;
+  a1 = a1 << 11;
+  a1 = a1 >> 11;
+  cop2.IR0 = v1;
+  cop2.IR1 = a3;
+  cop2.IR2 = t0;
+  cop2.IR3 = t1;
+  a1 += t7;
+  v1 = lw(a1 + 0x0000);
+  GPF(SF_OFF, LM_OFF);
+  a1 = v1 << 20;
+  a1 = (int32_t)a1 >> 19;
+  a0 = v1 << 10;
+  a0 = (int32_t)a0 >> 21;
+  v1 = (int32_t)v1 >> 21;
+  v1 = v1 << at;
+  a0 = a0 << at;
+  a1 = a1 << at;
+  cop2.IR0 = a2;
+  cop2.IR1 = v1;
+  cop2.IR2 = a0;
+  cop2.IR3 = a1;
+  GPL(SF_OFF, LM_OFF);
+  v1 = cop2.MAC1;
+  a0 = cop2.MAC2;
+  a1 = cop2.MAC3;
+  v1 = (int32_t)v1 >> 6;
+  a0 = (int32_t)a0 >> 6;
+  a1 = (int32_t)a1 >> 6;
+label80052EE8:
+  a1 = a1 << 16;
+  a0 += a1;
+  cop2.VZ0 = v1;
+  cop2.VXY0 = a0;
+  RTPS();
+  at = lw(t8 + 0x000C);
+  v0 = lw(t8 + 0x0010);
+  v1 = lw(t8 + 0x0014);
+  a0 = cop2.IR3;
+  a1 = cop2.IR1;
+  a2 = cop2.IR2;
+  a0 += at;
+  a1 = v0 - a1;
+  a2 = v1 - a2;
+  sw(t9 + 0x0000, a0);
+  sw(t9 + 0x0004, a1);
+  sw(t9 + 0x0008, a2);
+  return;
+}
+
+// size: 0x00000188
+void function_80052F38(void)
+{
+  uint32_t temp;
+  t8 = a0;
+  t9 = a1;
+  at = a2;
+  v0 = a3;
+  t7 = spyro_position;
+  t6 = 0x80076378;
+  t6 = lw(t6 + 0x0000);
+  at = at << 2;
+  at += t6;
+  at = lw(at + 0x0038);
+  v0 = v0 << 2;
+  v0 += at;
+  v0 = lw(v0 + 0x0024);
+  a3 = v0 >> 21;
+  a3 = a3 & 0x1;
+  v0 = v0 << 11;
+  v0 = v0 >> 10;
+  a0 = lw(at + 0x0010);
+  a1 = lw(v0 + 0x0008);
+  a2 = v0 + 24; // 0x0018
+  a1 = a1 >> 20;
+  a1 += a2;
+  at = 0;
+  v0 = 0;
+  v1 = 0;
+  t6 = 0x8006D614; // &0xFE9FD3FA
+label80052FB0:
+  temp = (int32_t)a3 > 0;
+  t8--;
+  if (temp) goto label80053010;
+  t0 = lbu(a1 + 0x0000);
+  t1 = lw(a0 + 0x0000);
+  a1++;
+  a0 += 4; // 0x0004
+  a3 = t0 & 0x1;
+  t0 = t0 << 1;
+  t0 = t0 & 0x1FC;
+  t0 += t6;
+  t0 = lw(t0 + 0x0000);
+  t0 += t1;
+  t1 = (int32_t)t0 >> 21;
+  at += t1;
+  t1 = t0 << 11;
+  t1 = (int32_t)t1 >> 21;
+  v0 += t1;
+  t1 = t0 << 22;
+  t1 = (int32_t)t1 >> 21;
+  temp = t8 != 0;
+  v1 += t1;
+  if (temp) goto label80052FB0;
+  goto label800530B0;
+label80053010:
+  t0 = lh(a2 + 0x0000);
+  a2 += 2; // 0x0002
+  temp = (int32_t)t0 < 0;
+  a3 = t0 & 0x4000;
+  if (temp) goto label80053078;
+  t1 = lw(a0 + 0x0000);
+  a0 += 4; // 0x0004
+  t2 = t0 << 18;
+  t2 = (int32_t)t2 >> 25;
+  at += t2;
+  t2 = t0 << 23;
+  t2 = (int32_t)t2 >> 25;
+  v0 += t2;
+  t2 = t0 << 28;
+  t2 = (int32_t)t2 >> 25;
+  v1 += t2;
+  t0 = (int32_t)t1 >> 21;
+  at += t0;
+  t0 = t1 << 11;
+  t0 = (int32_t)t0 >> 21;
+  v0 += t0;
+  t0 = t1 << 22;
+  t0 = (int32_t)t0 >> 21;
+  temp = t8 != 0;
+  v1 += t0;
+  if (temp) goto label80052FB0;
+  goto label800530B0;
+label80053078:
+  t1 = lhu(a2 + 0x0000);
+  a2 += 2; // 0x0002
+  a0 += 4; // 0x0004
+  t2 = t0 << 18;
+  at = (int32_t)t2 >> 21;
+  t2 = t0 << 28;
+  t0 = t1 << 12;
+  t0 = t0 | t2;
+  v0 = (int32_t)t0 >> 21;
+  t2 = t1 << 22;
+  temp = t8 != 0;
+  v1 = (int32_t)t2 >> 21;
+  if (temp) goto label80052FB0;
+  goto label800530B0;
+label800530B0:
+  sw(t9 + 0x0000, at);
+  sw(t9 + 0x0004, v0);
+  sw(t9 + 0x0008, v1);
+  return;
+}
+
+// size: 0x000001A0
+void function_800533D0(void)
+{
+  a3 = lw(a0 + 0x1C);
+  if ((int32_t)a3 >= 0) {
+    sw(a0 + 0x1C, a3);
+    return;
+  }
+  v1 = 0x80077368;
+  at = lw(v1 + 0);
+  v0 = lw(v1 + 4);
+  v1 = lw(v1 + 8);
+  a1 = spyro_sqrt(at*at + v1*v1);
+
+  if ((int32_t)(a1 - v0) < 0) {
+    if ((int32_t)(a1 + v0) < 0) {
+      div_psx(v0 << 5, a1);
+      a3 = 0x80;
+    } else {
+      div_psx(a1 << 5, -v0);
+      a3 = 0x40;
+    }
+  } else {
+    if ((int32_t)(a1 + v0) < 0) {
+      div_psx(a1 << 5, -v0);
+      a3 = 0xC0;
+    } else {
+      div_psx(v0 << 5, a1);
+      a3 = 0x00;
+    }
+  }
+  v0=lo;
+  v0 += a3;
+
+  if ((int32_t)(v1 - at) < 0) {
+    if ((int32_t)(v1 + at) < 0) {
+      div_psx(at << 5, v1);
+      a3 = 0x80;
+    } else {
+      div_psx(v1 << 5, -at);
+      a3 = 0x40;
+    }
+  } else {
+    if ((int32_t)(v1 + at) < 0) {
+      div_psx(v1 << 5, -at);
+      a3 = 0xC0;
+    } else {
+      div_psx(at << 5, v1);
+      a3 = 0;
+    }
+  }
+
+  a1 = lw(0x80076B80 + 8);
+  at = lo + a3;
+
+  a3 = 0x80000000
+    | ((((-at) >> 2) & 0x3F) << 16)
+    | ((((-v0) >> 2) & 0x3F) << 22)
+    | (a1 >> 2);
+  sw(a0 + 0x1C, a3);
+  return;
 }

@@ -3,7 +3,8 @@
 #include <stdint.h>
 
 #define FUNCTION_CALLED 1
-#define FUNCTION_INCOMPLETE 1
+#define FUNCTION_INCOMPLETE 2
+#define FUNCTION_HAS_TEMP 4
 
 typedef struct {
     uint32_t *addrs;
@@ -18,6 +19,7 @@ typedef struct {
   addr_list jumps;
   addr_list calls;
   uint32_t function_info;
+  uint32_t has_temp;
 } function;
 
 typedef struct {

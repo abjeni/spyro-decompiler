@@ -1,10 +1,14 @@
+
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 #include <stdbool.h>
-#define SDL_DISABLE_IMMINTRIN_H
-#include <SDL2/SDL.h>
 #include <assert.h>
+
+#define SDL_DISABLE_IMMINTRIN_H
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_events.h>
+
 #include "debug.h"
 
 #define WIDTH (512)
@@ -17,7 +21,7 @@ int resy = HEIGHT;
 int create_window(SDL_Window** window, SDL_Surface **screen_surface, int x, int y)
 {
   //Create window
-  *window = SDL_CreateWindow("spyro", x, y, WIDTH*SCALE, HEIGHT*SCALE, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+  *window = SDL_CreateWindow("spyro", WIDTH*SCALE, HEIGHT*SCALE, SDL_WINDOW_OPENGL);
   if (*window == NULL)
   {
     printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -105,47 +109,47 @@ uint16_t keys = 0xFFFF;
 
 uint32_t get_key_mask(SDL_Keycode key)
 {
-  if (key == SDLK_RETURN)
+  if (key == SDLK_RETURN) // 0x0800
     return 1 << 3;
 
-  if (key == SDLK_w)
+  if (key == SDLK_W) // 0x1000
     return 1 << 4;
 
-  if (key == SDLK_d)
+  if (key == SDLK_D) // 0x2000
     return 1 << 5;
 
-  if (key == SDLK_s)
+  if (key == SDLK_S) // 0x4000
     return 1 << 6;
 
-  if (key == SDLK_a)
+  if (key == SDLK_A) // 0x8000
     return 1 << 7;
 
 
 
-  if (key == SDLK_y)
+  if (key == SDLK_Y) // 0x0001
     return 1 << 8;
 
-  if (key == SDLK_u)
+  if (key == SDLK_U) // 0x0002
     return 1 << 9;
 
-  if (key == SDLK_h)
+  if (key == SDLK_H) // 0x0004
     return 1 << 10;
 
-  if (key == SDLK_j)
+  if (key == SDLK_J) // 0x0008
     return 1 << 11;
 
 
 
-  if (key == SDLK_q)
+  if (key == SDLK_Q) // 0x0010
     return 1 << 12;
 
-  if (key == SDLK_e)
+  if (key == SDLK_E) // 0x0020
     return 1 << 13;
 
-  if (key == SDLK_SPACE)
+  if (key == SDLK_SPACE) // 0x0040
     return 1 << 14;
 
-  if (key == SDLK_LSHIFT)
+  if (key == SDLK_LSHIFT) // 0x0080
     return 1 << 15;
 
   return 0;
@@ -153,25 +157,26 @@ uint32_t get_key_mask(SDL_Keycode key)
 
 uint32_t fast_forward = 0;
 
-void handle_input()
+int handle_input()
 {
   SDL_Event e;
   while (SDL_PollEvent(&e)) {
     switch (e.type) {
-    case SDL_QUIT:
-      exit(0);
+    case SDL_EVENT_QUIT:
+      return 1;
       break;
-    case SDL_KEYDOWN:
-      if (e.key.keysym.sym == SDLK_t) fast_forward = 1;
-      if (e.key.keysym.sym == SDLK_p) exit(0);
-      keys &= ~get_key_mask(e.key.keysym.sym);
+    case SDL_EVENT_KEY_DOWN:
+      if (e.key.key == SDLK_T) fast_forward = 1;
+      if (e.key.key == SDLK_P) assert(0);
+      keys &= ~get_key_mask(e.key.key);
       break;
-    case SDL_KEYUP:
-      if (e.key.keysym.sym == SDLK_t) fast_forward = 0;
-      keys |= get_key_mask(e.key.keysym.sym);
+    case SDL_EVENT_KEY_UP:
+      if (e.key.key == SDLK_T) fast_forward = 0;
+      keys |= get_key_mask(e.key.key);
       break;
     }
   }
+  return 0;
 }
 
 uint16_t get_input()
@@ -189,7 +194,7 @@ void wait_frame(void)
     do {
       current_ticks = SDL_GetTicks();
       diff = current_ticks-last_ticks;
-    } while (diff < 1000/60);
+    } while (diff < 1000/30);
   }
   last_ticks = current_ticks;
 }
@@ -208,10 +213,10 @@ void init_game_window()
   SDL_Surface *screen_surface = NULL;
 
 
-  struct sigaction action;
-  sigaction(SIGINT, NULL, &action);
-  assert(SDL_Init(SDL_INIT_EVERYTHING) >= 0);
-  sigaction(SIGINT, &action, NULL);
+  //struct sigaction action;
+  //sigaction(SIGINT, NULL, &action);
+  assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
+  //sigaction(SIGINT, &action, NULL);
 
   create_window(&window, &screen_surface, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 

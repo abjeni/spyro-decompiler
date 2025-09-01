@@ -266,7 +266,7 @@ void interrupt2(uint32_t type)
 }
 
 int interrupt_depth = 0;
-struct __jmp_buf_tag env;
+jmp_buf env;
 
 void interrupt(uint32_t type)
 {
@@ -283,7 +283,7 @@ void interrupt(uint32_t type)
 
   int_save_regs();
 
-  if (setjmp(&env) == 0)
+  if (setjmp(&(env[0])) == 0)
     interrupt2(type);
 
   int_load_regs();
@@ -297,7 +297,7 @@ void interrupt(uint32_t type)
 
 void ReturnFromException(void)
 {
-  longjmp(&env, 1);
+  longjmp(&(env[0]), 1);
   BREAKPOINT;
 }
 

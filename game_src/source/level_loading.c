@@ -2,11 +2,12 @@
 #include "psx_mem.h"
 #include "level_loading.h"
 #include "decompilation.h"
+#include "function_chooser.h"
 
 uint32_t lib_num = LIB_TITLE_SCREEN;
 
 // size: 0x00001288
-void function_8005A470(void)
+uint32_t update_level_functions(void)
 {
   v1 = lw(LEVEL_ID);
   switch (v1)
@@ -427,5 +428,339 @@ void function_8005A470(void)
   }
   v0 = lw(0x800785D8);
   sw(0x800785DC, v0);
-  return;
+  return v0;
+}
+
+// size: 0x00001288
+void function_8005A470(void)
+{
+  BREAKPOINT;
+  v0 = update_level_functions();
+}
+
+void function_loaded_80075734(void)
+{
+  switch (lw(0x80075734))
+  {
+  case 0x8007D9C8:
+    function_8007D9C8();
+    break;
+  case 0x8007DA78:
+    function_8007DA78();
+    break;
+  case 0x8007AE40:
+    function_8007AE40();
+    break;
+  case 0x8007DA54:
+    function_8007DA54();
+    break;
+  case 0x8007AF94:
+    function_8007AF94();
+    break;
+  case 0x8007CFB4:
+    function_8007CFB4();
+    break;
+  case 0x8007E3A0:
+    function_8007E3A0();
+    break;
+  case 0x8007E240:
+    function_8007E240();
+    break;
+  case 0x8007B4C8:
+    function_8007B4C8();
+    break;
+  case 0x8007AEB8:
+    function_8007AEB8();
+    break;
+  case 0x8007E398:
+    function_8007E398();
+    break;
+  case 0x8007BB00:
+    function_8007BB00();
+    break;
+  case 0x8007B64C:
+    function_8007B64C();
+    break;
+  case 0x8007B7A8:
+    function_8007B7A8();
+    break;
+  case 0x8007AF28:
+    function_8007AF28();
+    break;
+  case 0x8007E18C:
+    function_8007E18C();
+    break;
+  case 0x8007B5DC:
+    function_8007B5DC();
+    break;
+  case 0x8007AFBC:
+    function_8007AFBC();
+    break;
+  case 0x8007B698:
+    function_8007B698();
+    break;
+  case 0x8007B770:
+    function_8007B770();
+    break;
+  case 0x8007E3C0:
+    function_8007E3C0();
+    break;
+  case 0x8007B4F8:
+    function_8007B4F8();
+    break;
+  case 0x8007B4DC:
+    function_8007B4DC();
+    break;
+  case 0x8007B510:
+    function_8007B510();
+    break;
+  case 0x8007AF50:
+    function_8007AF50();
+    break;
+  case 0x8007D938:
+    function_8007D938();
+    break;
+  case 0x8007B528:
+    function_8007B528();
+    break;
+  case 0x8007AE5C:
+    function_8007AE5C();
+    break;
+  case 0x8007AD64:
+    function_8007AD64();
+    break;
+  case 0x8007AD4C:
+    function_8007AD4C();
+    break;
+  default:
+    BREAKPOINT;
+  }
+}
+
+void function_loaded_800758CC(void)
+{
+  switch (lw(0x800758CC))
+  {
+  case 0x800857CC:
+    function_800857CC();
+    break;
+  case 0x8008772C:
+    function_8008772C();
+    break;
+  case 0x80082960:
+    function_80082960();
+    break;
+  case 0x800872A4:
+    function_800872A4();
+    break;
+  case 0x80081DA8:
+    function_80081DA8();
+    break;
+  case 0x8008249C:
+    function_8008249C();
+    break;
+  case 0x8008A258:
+    function_8008A258();
+    break;
+  case 0x8008A4D0:
+    function_8008A4D0();
+    break;
+  case 0x80088B88:
+    function_80088B88();
+    break;
+  case 0x80083608:
+    function_80083608();
+    break;
+  case 0x800845F0:
+    function_800845F0();
+    break;
+  case 0x800819BC:
+    function_800819BC();
+    break;
+  case 0x8008B2C0:
+    function_8008B2C0();
+    break;
+  case 0x8008A36C:
+    function_8008A36C();
+    break;
+  case 0x8008883C:
+    function_8008883C();
+    break;
+  case 0x80086DD8:
+    function_80086DD8();
+    break;
+  case 0x80083AB4:
+    function_80083AB4();
+    break;
+  case 0x80081F0C:
+    function_80081F0C();
+    break;
+  case 0x80087EF0:
+    function_80087EF0();
+    break;
+  case 0x8008465C:
+    function_8008465C();
+    break;
+  case 0x80084718:
+    function_80084718();
+    break;
+  case 0x80086B38:
+    function_80086B38();
+    break;
+  case 0x800874FC:
+    function_800874FC();
+    break;
+  case 0x8008223C:
+    function_8008223C();
+    break;
+  case 0x80088E24:
+    function_80088E24();
+    break;
+  case 0x80084B94:
+    function_80084B94();
+    break;
+  case 0x80084620:
+    function_80084620();
+    break;
+  case 0x8008590C:
+    function_8008590C();
+    break;
+  case 0x800836A8:
+    function_800836A8();
+    break;
+  case 0x80082028:
+    function_80082028();
+    break;
+  case 0x80083568:
+    function_80083568();
+    break;
+  case 0x80085664:
+    function_80085664();
+    break;
+  case 0x80083108:
+    function_80083108();
+    break;
+  case 0x80082F24:
+    function_80082F24();
+    break;
+  case 0x80083690:
+    function_80083690();
+    break;
+  default:
+    BREAKPOINT;
+  }
+}
+
+void function_loaded_800756BC(void)
+{
+  switch (lw(0x800756BC))
+  {
+  case 0x80086134:
+    function_80086134();
+    break;
+  case 0x80088098:
+    function_80088098();
+    break;
+  case 0x80083274:
+    function_80083274();
+    break;
+  case 0x80087E20:
+    function_80087E20();
+    break;
+  case 0x800826F0:
+    function_800826F0();
+    break;
+  case 0x80083330:
+    function_80083330();
+    break;
+  case 0x8008AE28:
+    function_8008AE28();
+    break;
+  case 0x8008B1C0:
+    function_8008B1C0();
+    break;
+  case 0x80089714:
+    function_80089714();
+    break;
+  case 0x80083F2C:
+    function_80083F2C();
+    break;
+  case 0x80084EF0:
+    function_80084EF0();
+    break;
+  case 0x80082300:
+    function_80082300();
+    break;
+  case 0x8008BE98:
+    function_8008BE98();
+    break;
+  case 0x8008AF54:
+    function_8008AF54();
+    break;
+  case 0x80089454:
+    function_80089454();
+    break;
+  case 0x80087B40:
+    function_80087B40();
+    break;
+  case 0x80084830:
+    function_80084830();
+    break;
+  case 0x80082AA0:
+    function_80082AA0();
+    break;
+  case 0x800888F8:
+    function_800888F8();
+    break;
+  case 0x800853AC:
+    function_800853AC();
+    break;
+  case 0x80085084:
+    function_80085084();
+    break;
+  case 0x80087400:
+    function_80087400();
+    break;
+  case 0x80088178:
+    function_80088178();
+    break;
+  case 0x80082F54:
+    function_80082F54();
+    break;
+  case 0x800897FC:
+    function_800897FC();
+    break;
+  case 0x800857FC:
+    function_800857FC();
+    break;
+  case 0x800850A0:
+    function_800850A0();
+    break;
+  case 0x80086754:
+    function_80086754();
+    break;
+  case 0x80084028:
+    function_80084028();
+    break;
+  case 0x80082D94:
+    function_80082D94();
+    break;
+  case 0x80083ED8:
+    function_80083ED8();
+    break;
+  case 0x80086144:
+    function_80086144();
+    break;
+  case 0x80083B4C:
+    function_80083B4C();
+    break;
+  case 0x800836F0:
+    function_800836F0();
+    break;
+  case 0x800840FC:
+    function_800840FC();
+    break;
+  default:
+    BREAKPOINT;
+  }
 }

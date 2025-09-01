@@ -937,7 +937,7 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     return 0;
   }
   
-  if (inst.inst == 0x03E00008)
+  if (inst.inst == INSTRUCTION_RETURN)
   {
     assert(double_inst != -1);
     output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);

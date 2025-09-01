@@ -319,3 +319,41 @@ void function_8006A014(void)
   v0 = 1;
   return;
 }
+
+// size: 0x00000054
+void function_80053708(void)
+{
+  sp -= 0x18;
+  sw(sp + 0x10, s0);
+  sw(sp + 0x14, ra);
+
+  s0 = a0;
+
+  sb(0x80075944, 1-lbu(0x80075944));
+  spyro_memcpy32(a1, s0, 0xA4);
+
+  a0 = s0;
+  function_800536A4();
+  
+  ra = lw(sp + 0x0014);
+  s0 = lw(sp + 0x0010);
+  sp += 0x18;
+}
+
+// size: 0x00000064
+void function_800536A4(void)
+{
+  sw(a0 + 0x00, 0);
+  sw(a0 + 0x04, 0);
+  sw(a0 + 0x08, 0);
+  sw(a0 + 0x14, 0x7F7F7F7F);
+  sw(a0 + 0x18, 1);
+  sw(a0 + 0x1C, 1);
+  for (int i = 0; i < 4; i++) {
+    sw(a0 + 0x44 + i*0x18 + 0x00, lw(a0 + 0x0C));
+    sw(a0 + 0x44 + i*0x18 + 0x04, 0);
+    sw(a0 + 0x44 + i*0x18 + 0x08, 0);
+    sw(a0 + 0x44 + i*0x18 + 0x0C, 0);
+    sw(a0 + 0x44 + i*0x18 + 0x14, 0x7F7F7F7F);
+  }
+}

@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "int_math.h"
+
 uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst);
 uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2);
 
@@ -14,7 +16,7 @@ void spyro_mat3_rotation(uint32_t rot_addr, uint32_t dst, uint32_t src);
 void spyro_mat3_transpose(uint32_t dst, uint32_t src);
 void spyro_set_mat_mirrored_vec_multiply(uint32_t mat, uint32_t vec_src, uint32_t vec_dst);
 void spyro_mat_mirrored_vec_multiply(uint32_t vec_src, uint32_t vec_dst);
-void spyro_camera_mat_vec_multiply(uint32_t vec_src, uint32_t vec_dst);
+void spyro_camera_mat_vec_multiply(vec3_32 *src, vec3_32 *dst);
 uint32_t spyro_vec_length(uint32_t vec, uint32_t is_vec3);
 void spyro_set_vec3_length(uint32_t vec, int32_t len);
 void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul);
@@ -40,7 +42,7 @@ void spyro_world_to_screen_projection_with_right_shift(uint32_t dst, uint32_t ve
 void spyro_vec_32_to_16_div_4(uint32_t dst, uint32_t src);
 void spyro_vec_16_to_32_mul_4(uint32_t dst, uint32_t src);
 void spyro_vec_16_to_32(uint32_t dst, uint32_t src);
-void spyro_vec_32_to_16(uint32_t dst, uint32_t src);
+void spyro_vec_32_to_16(vec3 *dst, vec3_32 *src);
 void spyro_vec_16_add(uint32_t dst, uint32_t a, uint32_t b);
 void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst);
 uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol);

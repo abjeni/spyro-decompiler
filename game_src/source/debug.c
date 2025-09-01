@@ -1,13 +1,12 @@
 #include <main.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <execinfo.h>
 
 #include "debug.h"
 
 void print_trace(void)
 {
-  void *array[10];
+  /*void *array[10];
   char **strings;
   int size, i;
 
@@ -21,7 +20,7 @@ void print_trace(void)
       printf ("%s\n", strings[i]);
   }
 
-  free (strings);
+  free (strings);*/
 }
 
 void print_all_regs()

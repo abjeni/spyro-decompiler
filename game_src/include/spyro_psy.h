@@ -41,9 +41,9 @@ typedef struct __attribute__((packed)) {
 typedef struct __attribute__((packed)) {
   DRAWENV draw;
   DISPENV disp;
-  uint32_t unknown1;
-  uint32_t unknown2;
-  uint32_t unknown3;
+  uint32_t memory_arena;
+  uint32_t memory_ordered_link_list;
+  uint32_t memory_link_list;
   uint32_t unknown4;
   uint32_t unknown5;
 } DISP;
@@ -57,8 +57,8 @@ void SetDispMask(int32_t mask);
 uint32_t DrawSync(uint32_t mode);
 int32_t SetGraphDebug(int32_t level);
 int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b);
-int32_t LoadImage(RECT *recp, uint32_t *p);
-int32_t StoreImage(RECT *recp, uint32_t *p);
+int32_t LoadImage(RECT *recp, void *p);
+int32_t StoreImage(RECT *recp, void *p);
 int32_t MoveImage(RECT *recp, int32_t x, int32_t y);
 void DrawOTag(uint32_t *of);
 DRAWENV *PutDrawEnv(DRAWENV *env);

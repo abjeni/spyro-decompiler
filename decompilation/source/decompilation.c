@@ -30,7 +30,7 @@ struct function_name function_names[] = {
   {0x80016FD0, "spyro_mat3_transpose(a0, a1)"},
   {0x80017048, "spyro_set_mat_mirrored_vec_multiply(a0, a1, a2)"},
   {0x800170C0, "spyro_mat_mirrored_vec_multiply(a0, a1)"},
-  {0x80017110, "spyro_camera_mat_vec_multiply(a0, a1)"},
+  {0x80017110, "spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1))"},
   {0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
   {0x80017330, "spyro_set_vec3_length(a0, a1)"},
   {0x800175B8, "vec3_mul_div(a0, a1, a2)"},
@@ -56,7 +56,7 @@ struct function_name function_names[] = {
   {0x80017BFC, "spyro_vec_32_to_16_div_4(a0, a1)"},
   {0x80017C24, "spyro_vec_16_to_32_mul_4(a0, a1)"},
   {0x80017C4C, "spyro_vec_16_to_32(a0, a1)"},
-  {0x80017C68, "spyro_vec_32_to_16(a0, a1)"},
+  {0x80017C68, "spyro_vec_32_to_16(addr_to_pointer(a0), addr_to_pointer(a1))"},
   {0x80017C84, "spyro_vec_16_add(a0, a1, a2)"},
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
@@ -65,11 +65,14 @@ struct function_name function_names[] = {
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))"},
   {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
   {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
+  {0x800190D4, "fade_in(a0, a1, a2, a3)"},
+  {0x8001919C, "draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2))"},
   {0x8002BB20, "v0 = completion_percentage()"},
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
-  {0x8004EBA8, "draw_skybox(a0, a1, a2)","void draw_skybox(int32_t index, uint32_t matrix1, uint32_t matrix2)"},
+  {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
+  {0x8005A470, "v0 = update_level_functions()"},
   {0x8005C720, "do_literally_nothing()"},
   {0x8005CBB0, "v0 = test_spu_event(a0)"},
   {0x8005DB14, "InitHeap(a0, a1)"},
@@ -131,15 +134,16 @@ struct function_name function_names[] = {
   {0x800626E8, "FlushCache()"},
   {0x8006272C, "v0 = spyro_rand()"},
   {0x8006275C, "spyro_srand(a0)"},
-  {0x8006276C, "v0 = spyro_strlen(a0)","uint32_t spyro_strlen(uint32_t str)"},
+  {0x8006276C, "v0 = spyro_strlen(a0)"},
   {0x8006279C, "spyro_printf(a0, a1, a2, a3)"},
   {0x80062EC0, "v0 = spyro_strchr(a0, a1, a2)"},
-  {0x80062F10, "spyro_putchar(a0)","void spyro_putchar(uint32_t chr)"},
-  {0x80062FD4, "spyro_sprintf()","void spyro_sprintf(void)"},
+  {0x80062F10, "spyro_putchar(a0)"},
+  {0x80062FD4, "spyro_sprintf()"},
   {0x80062FC4, "v0 = psx_write(a0, addr_to_pointer(a1), a2)"},
-  {0x8006389C, "spyro_puts(a0)","void spyro_puts(uint32_t str)"},
+  {0x8006389C, "spyro_puts(a0)"},
   {0x8006396C, "psx_exit(a0)"},
   {0x8006397C, "v0 = CdInit()"},
+  {0x80063BD8, "v0 = CdSync(a0, addr_to_pointer(a1))"},
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
   {0x80064094, "v0 = pointer_to_addr(write_cdrom_header(a0, addr_to_pointer(a1)))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
@@ -252,12 +256,14 @@ struct address_name address_names[] = {
   {0x80076C00, "WAD_nested_header", 0x1D0},
   {0x80076EE0, "DISP1", 0x84},
   {0x80076F64, "DISP2", 0x84},
+  {0x800770E0, "view_matrix", 2*9},
   {0x80077378, "buttons_press"},
   {0x8007737C, "buttons_unpress"},
   {0x80077380, "buttons"},
   {0x80077888, NULL, 0x68},
   {0x80077FEC, NULL, 0x420},
   {0x8007840C, NULL, 0x100},
+  {0x80078560, NULL, 0x48},
   {0x800785D8, "lib_end_ptr"},
   {0x800786C8, NULL, 0x138},
   {0x80078A40, "SKYBOX_DATA", 0x14},
@@ -514,7 +520,7 @@ int read_function_instructions(struct program prog, function_list *func_list, ui
 
   function func = function_alloc();
 
-  if (called) func.function_info = FUNCTION_CALLED;
+  if (called) func.function_info |= FUNCTION_CALLED;
 
   func.address = addr;
 
@@ -545,6 +551,8 @@ int read_function_instructions(struct program prog, function_list *func_list, ui
     if (inst.opcode == BLTZ || inst.opcode == BGEZ || inst.opcode == BLTZAL || inst.opcode == BGEZAL
      || inst.opcode == BEQ  || inst.opcode == BNE  || inst.opcode == BLEZ   || inst.opcode == BGTZ)
     {
+      func.function_info |= FUNCTION_HAS_TEMP;
+
       uint32_t jmp = inst.addr+(int16_t)(inst.i16type.imm+1)*4;
 
       //if (jmp >= func.address)
@@ -553,6 +561,8 @@ int read_function_instructions(struct program prog, function_list *func_list, ui
 
     if (inst.opcode == JALR)
     {
+      func.function_info |= FUNCTION_HAS_TEMP;
+
       for (int i = 0; i < prog.jumpss.n; i++)
       {
         struct jump_list jump = prog.jumpss.jumps[i];
@@ -575,8 +585,10 @@ int read_function_instructions(struct program prog, function_list *func_list, ui
     }
 end_loop4:
 
-    if (inst.opcode == JR && inst.inst != 0x03E00008)
+    if (inst.opcode == JR && inst.inst != INSTRUCTION_RETURN)
     {
+      func.function_info |= FUNCTION_HAS_TEMP;
+
       for (int i = 0; i < prog.jumpss.n; i++)
       {
         struct jump_list jump = prog.jumpss.jumps[i];
@@ -612,20 +624,16 @@ end_loop3:
     for (int j = 0; j < func.jumps.size; j++)
     {
       uint32_t jump = func.jumps.addrs[j];
-      if (!function_list_contains_address(func_list, jump)) {
-        //printf("jump: ");
+      if (!function_list_contains_address(func_list, jump))
         read_function_instructions(prog, func_list, jump, depth_limit-1, 0, single_function);
-      }
     }
 
     if (!single_function)
       for (int j = 0; j < func.calls.size; j++)
       {
         uint32_t jump = func.calls.addrs[j];
-        if (!function_list_contains_address(func_list, jump)) {
-          //printf("function: ");
+        if (!function_list_contains_address(func_list, jump))
           read_function_instructions(prog, func_list, jump, depth_limit-1, 1, single_function);
-        }
       }
   }
 
@@ -667,7 +675,15 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
   if (no_declaration != FUNC_NOT_RENAMED)
     printf("Error function 0x%.8X renamed but not skipped\n", func.address);
   fprintf(prog.output, "\n{\n");
-  fprintf(prog.output, "  uint32_t temp;\n");
+
+  for (int i = 0; i < func_set.size; i++)
+  {
+    function func = func_set.funcs[i];
+    if (func.function_info & FUNCTION_HAS_TEMP) {
+      fprintf(prog.output, "  uint32_t temp;\n");
+      break;
+    }
+  }
 
   assert(func_set.funcs[0].address == func.address);
 
@@ -680,7 +696,6 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
 
     for (uint32_t i = 0; i < func.size-1; i++)
     {
-
       instruction inst1 = load_instruction(prog.psx_mem, addr + i*4 + 0);
       instruction inst2 = load_instruction(prog.psx_mem, addr + i*4 + 4);
       instruction inst3 = load_instruction(prog.psx_mem, addr + i*4 + 8);
@@ -734,7 +749,7 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
 end_loop2:
         fprintf(prog.output, "  default:\n    JALR(temp, 0x%.8X);\n  }\n", inst1.addr);
       }
-      else if (inst1.opcode == JR && inst1.inst != 0x03E00008)
+      else if (inst1.opcode == JR && inst1.inst != INSTRUCTION_RETURN)
       {
         fprintf(prog.output, "  switch (temp)\n  {\n");
         for (int i = 0; i < prog.jumpss.n; i++)
@@ -781,45 +796,6 @@ end_loop1:
 
 void output_function_list(struct program prog, function_list *func_list)
 {
-
-  int i = 0;
-  int j = 0;
-
-  while (i < prog.skips.n && j < func_list->size)
-  {
-    uint32_t addr1 = prog.skips.funcs[i];
-    uint32_t addr2 = func_list->funcs[j].address;
-
-    if (addr1 < addr2)
-    {
-      if (addr_in_range(prog, prog.skips.funcs[i]))
-        if (print_func_declaration(prog.header, prog, prog.skips.funcs[i]))
-          fprintf(prog.header, ";\n");
-      i++;
-    } else {
-      if (addr_in_range(prog, func_list->funcs[j].address))
-        if (func_list->funcs[j].function_info & FUNCTION_CALLED)
-          if (print_func_declaration(prog.header, prog, func_list->funcs[j].address))
-            fprintf(prog.header, ";\n");
-      j++;
-    }
-  }
-
-  for (; i < prog.skips.n; i++)
-  {
-    if (addr_in_range(prog, prog.skips.funcs[i]))
-      if (print_func_declaration(prog.header, prog, prog.skips.funcs[i]))
-        fprintf(prog.header, ";\n");
-  }
-
-  for (; j < func_list->size; j++) {
-    if (addr_in_range(prog, func_list->funcs[j].address))
-      if (func_list->funcs[j].function_info & FUNCTION_CALLED)
-      {
-        if (print_func_declaration(prog.header, prog, func_list->funcs[j].address))
-          fprintf(prog.header, ";\n");
-      }
-  }
 
   for (int i = 0; i < func_list->size; i++)
   {
@@ -877,53 +853,8 @@ void output_function_list_graphviz(struct program prog, function_list *func_list
   }
 }
 
-int read_instructions(struct program prog)
+void include_headers(struct program prog)
 {
-  if (prog.output == NULL)
-    prog.output = stdout;
-
-  used_skips = calloc(prog.skips.n, sizeof(char));
-
-  function_list func_list = function_list_alloc();
-
-  for (int i = 0; i < prog.entries.n; i++)
-  {
-    if (is_skipped(prog, prog.entries.entries[i]))
-      printf("function_%.8X is both skipped and entry\n", prog.entries.entries[i]);
-
-    for (int j = 0; j < prog.entries2n; j++)
-      if (prog.entries.entries[i] == prog.entries2[j])
-        printf("function_%.8X is already included\n", prog.entries.entries[i]);
-
-    if (read_function_instructions(prog, &func_list, prog.entries.entries[i], 10000, 1, 0))
-      return 1;
-  }
-
-  for (int i = 0; i < prog.entries2n; i++)
-    if (!is_skipped(prog, prog.entries2[i]))
-      if (read_function_instructions(prog, &func_list, prog.entries2[i], 10000, 1, 0))
-        return 1;
-
-  function_list_sort(&func_list);
-
-  uint32_t unused_skips = 0;
-  for (int i = 0; i < prog.skips.n; i++)
-    if (!used_skips[i])
-    {
-      printf("unused skip  0x%.8X,\n", prog.skips.funcs[i]);
-      unused_skips = 1;
-    }
-  
-
-  if (unused_skips) {
-    printf("used skips for %s:\n", prog.id);
-    for (int i = 0; i < prog.skips.n; i++)
-      if (used_skips[i])
-        printf("  0x%.8X,\n", prog.skips.funcs[i]);
-  }
-
-  //output_function_list_graphviz(prog, &func_list);
-
   fprintf(prog.output, "#include <stdint.h>\n\n");
   fprintf(prog.output, "#include \"decompilation.h\"\n");
   fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
@@ -950,13 +881,53 @@ int read_instructions(struct program prog)
     fprintf(prog.output, "#include \"%s.h\"\n\n", prog.id);
   else
     fprintf(prog.output, "#include \"function_chooser.h\"\n\n");
+}
 
+void write_header_file(struct program prog, function_list func_list)
+{
   fprintf(prog.header, "#pragma once\n\n");
   fprintf(prog.header, "#include <stdint.h>\n\n");
 
-  output_function_list(prog, &func_list);
-
   fprintf(prog.header, "\n");
+
+  int i = 0;
+  int j = 0;
+
+  while (i < prog.skips.n && j < func_list.size)
+  {
+    uint32_t addr1 = prog.skips.funcs[i];
+    uint32_t addr2 = func_list.funcs[j].address;
+
+    if (addr1 < addr2)
+    {
+      if (addr_in_range(prog, prog.skips.funcs[i]))
+        if (print_func_declaration(prog.header, prog, prog.skips.funcs[i]))
+          fprintf(prog.header, ";\n");
+      i++;
+    } else {
+      if (addr_in_range(prog, func_list.funcs[j].address))
+        if (func_list.funcs[j].function_info & FUNCTION_CALLED)
+          if (print_func_declaration(prog.header, prog, func_list.funcs[j].address))
+            fprintf(prog.header, ";\n");
+      j++;
+    }
+  }
+
+  for (; i < prog.skips.n; i++)
+  {
+    if (addr_in_range(prog, prog.skips.funcs[i]))
+      if (print_func_declaration(prog.header, prog, prog.skips.funcs[i]))
+        fprintf(prog.header, ";\n");
+  }
+
+  for (; j < func_list.size; j++) {
+    if (addr_in_range(prog, func_list.funcs[j].address))
+      if (func_list.funcs[j].function_info & FUNCTION_CALLED)
+      {
+        if (print_func_declaration(prog.header, prog, func_list.funcs[j].address))
+          fprintf(prog.header, ";\n");
+      }
+  }
 
   for (int i = 0; i < sizeof(address_names)/sizeof(address_names[0]); i++)
   {
@@ -971,8 +942,79 @@ int read_instructions(struct program prog)
     if (same_id && an.name != NULL)
       fprintf(prog.header, "#define %s 0x%.8X\n", an.name, an.addr);
   }
+}
+
+void check_unused_skips(struct program prog) {
+  uint32_t unused_skips = 0;
+  for (int i = 0; i < prog.skips.n; i++)
+    if (!used_skips[i])
+    {
+      printf("unused skip  0x%.8X,\n", prog.skips.funcs[i]);
+      unused_skips = 1;
+    }
+  
+
+  if (unused_skips) {
+    printf("used skips for %s:\n", prog.id);
+    for (int i = 0; i < prog.skips.n; i++)
+      if (used_skips[i])
+        printf("  0x%.8X,\n", prog.skips.funcs[i]);
+  }
+}
+
+int init_function_list(struct program prog, function_list *func_list)
+{
+  for (int i = 0; i < prog.entries.n; i++)
+  {
+    if (is_skipped(prog, prog.entries.entries[i]))
+      printf("function_%.8X is both skipped and entry\n", prog.entries.entries[i]);
+
+    for (int j = 0; j < prog.entries2n; j++)
+      if (prog.entries.entries[i] == prog.entries2[j])
+        printf("function_%.8X is already included\n", prog.entries.entries[i]);
+
+    int err = read_function_instructions(prog, func_list, prog.entries.entries[i], 10000, 1, 0);
+    if (err)
+      return err;
+  }
+
+  for (int i = 0; i < prog.entries2n; i++)
+    if (!is_skipped(prog, prog.entries2[i]))
+    {
+      int err = read_function_instructions(prog, func_list, prog.entries2[i], 10000, 1, 0);
+      if (err)
+        return err;
+    }
+  
+  return 0;
+}
+
+int read_instructions(struct program prog)
+{
+  if (prog.output == NULL)
+    prog.output = stdout;
+
+  used_skips = calloc(prog.skips.n, sizeof(char));
+
+  function_list func_list = function_list_alloc();
+
+  int err = init_function_list(prog, &func_list);
+  if (err)
+    return err;
+
+  function_list_sort(&func_list);
+
+  check_unused_skips(prog);
+
+  include_headers(prog);
+
+  output_function_list(prog, &func_list);
+
+  write_header_file(prog, func_list);
 
   function_list_free(func_list);
 
   return 0;
 }
+
+

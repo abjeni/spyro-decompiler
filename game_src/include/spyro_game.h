@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 struct game_object {
-  uint32_t unknown00; // 0x00 - 0x04
+  uint32_t unknown00; // 0x00 - 0x04 // pointer
   uint8_t unknown04[0x08]; // 0x04 - 0x0C
   vec3_32 p; // 0x0C - 0x18
   uint32_t unknown18; // 0x18 - 0x1C

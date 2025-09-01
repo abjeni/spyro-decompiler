@@ -47,25 +47,31 @@
 // which functions are currently in memory from address 0x8007AA38 onwards?
 // it depends, and this is the workaround to get the colliding function addresses to work.
 
+/*
 void function_8007AA50(void)
 {
   function_8007AA50_credits();
 }
+*/
 
-void function_8007BFD0(void)
+/*void function_8007BFD0(void)
 {
   function_8007BFD0_credits();
-}
+}*/
 
+/*
 void function_8007ABAC(void)
 {
   function_8007ABAC_title_screen();
 }
+*/
 
+/*
 void function_8007CEE4(void)
 {
   function_8007CEE4_title_screen();
 }
+*/
 
 void function_800857CC(void)
 {

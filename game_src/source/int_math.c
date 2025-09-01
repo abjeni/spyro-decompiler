@@ -54,6 +54,31 @@ mat3 mat3_c(int16_t x00, int16_t x01, int16_t x02,
   }};
 }
 
+mat3 mat3_cv(vec3 v1, vec3 v2, vec3 v3)
+{
+  return (mat3){{
+    {v1.x, v1.y, v1.z},
+    {v2.x, v2.y, v2.z},
+    {v3.x, v3.y, v3.z},
+  }};
+}
+
+vec3 vec3_32_to_vec3(vec3_32 v) {
+  return (vec3){
+    .x = v.x,
+    .y = v.y,
+    .z = v.z
+  };
+}
+
+vec3_32 vec3_to_vec3_32(vec3 v) {
+  return (vec3_32){
+    .x = v.x,
+    .y = v.y,
+    .z = v.z
+  };
+}
+
 vec3_32 vec3_32_shift_right(vec3_32 v, int32_t shift)
 {
   return (vec3_32){
@@ -249,4 +274,54 @@ mat3 mat3_transpose(mat3 m)
   m.m[1][2] = tmp;
   
   return m;
+}
+
+int32_t signed16extend(uint32_t x)
+{
+  return ((int32_t)(x << 16)) >> 16;
+}
+
+int32_t upper16signed(uint32_t x)
+{
+  return ((int32_t)x) >> 16;
+}
+
+vec2 vec2_from_32(uint32_t x)
+{
+  return (vec2){
+    .x = signed16extend(x),
+    .y = upper16signed(x),
+  };
+}
+
+vec2 vec2_add(vec2 a, vec2 b)
+{
+  return (vec2){
+    .x = a.x + b.x,
+    .y = a.y + b.y
+  };
+}
+
+vec2 vec2_sub(vec2 a, vec2 b)
+{
+  return (vec2){
+    .x = a.x - b.x,
+    .y = a.y - b.y
+  };
+}
+
+vec2 vec2_mult(vec2 a, vec2 b)
+{
+  return (vec2){
+    .x = a.x * b.x,
+    .y = a.y * b.y
+  };
+}
+
+vec2 vec2_div(vec2 a, vec2 b)
+{
+  return (vec2){
+    .x = a.x / b.x,
+    .y = a.y / b.y
+  };
 }

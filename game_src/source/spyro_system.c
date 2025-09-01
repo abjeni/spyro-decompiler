@@ -245,5 +245,4 @@ void function_8005B8E0(void)
   a0 += 4;
   InitHeap(a0, a1);
   game_loop();
-  BREAKPOINT;
 }

@@ -44,3 +44,5 @@ void SetGeomOffset(uint32_t ofx, uint32_t ofy);
 void SetGeomScreen(uint32_t h);
 
 void initial_loading_screen(void);
+
+void draw_skybox(int32_t index, uint32_t matrix1, uint32_t matrix2);

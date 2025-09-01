@@ -151,6 +151,9 @@ typedef struct {
 #define BLTZAL  130
 #define BGEZAL  131
 
+// encoding for JR ra, which jumps to the return address.
+#define INSTRUCTION_RETURN 0x03E00008
+
 uint32_t get_opcode(instruction inst);
 uint32_t validate_opcode(uint32_t opcode);
 int validate_instruction(instruction inst);

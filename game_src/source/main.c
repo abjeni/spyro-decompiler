@@ -1,4 +1,4 @@
-#include <execinfo.h>
+//#include <execinfo.h>
 #include <assert.h>
 #include <stdint.h>
 #include <unistd.h>
@@ -38,11 +38,16 @@ int main(int argc, char *argv[])
     //wad_main();
     
     //print_psx_string_array("dragon_names", 0x8006F694, 80);
+    
+    print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
+    print_psx_string_array("cd_status_str", 0x80074EDC, 8);
 
     //read_disk1(lw(WAD_sector), 0x80100000, 0x800, 0, 0x256);
     return 0;
   }
 
   function_8005B8E0();
+
+  printf("closing\n");
   return 0;
 }

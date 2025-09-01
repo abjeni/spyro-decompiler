@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include "debug.h"
 
+#define TRANSPARENCY_AVERAGE 0
+#define TRANSPARENCY_ADD 1
+#define TRANSPARENCY_SUBTRACT 2
+#define TRANSPARENCY_QUARTER_ADD 3
+
 struct controller {
   uint16_t joy_baud;
 
@@ -511,9 +516,11 @@ struct psx_mem {
   struct cdrom cdrom;
 };
 
+extern struct psx_mem psx_mem;
+
 union gpustat psx_gpustat(void);
 
-void start_frame(void);
+int start_frame(void);
 void init_psx_mem(void);
 
 void enable_timer(void);
@@ -557,8 +564,12 @@ void psx_test_render(uint32_t cmd_ptr, uint32_t depth, file_loc loc);
 #define lhu(addr) lhu(addr, LOC)
 #define lbu(addr) lbu(addr, LOC)
 
-void *addr_to_pointer(uint32_t addr);
-uint32_t pointer_to_addr(void *ptr);
-uint32_t pointer_to_addr_maybe(void *ptr);
+void *addr_to_pointer(uint32_t addr, file_loc loc);
+uint32_t pointer_to_addr(void *ptr, file_loc loc);
+uint32_t pointer_to_addr_maybe(void *ptr, file_loc loc);
+
+#define addr_to_pointer(addr) addr_to_pointer(addr, LOC)
+#define pointer_to_addr(addr) pointer_to_addr(addr, LOC)
+#define pointer_to_addr_maybe(addr) pointer_to_addr_maybe(addr, LOC)
 
 void inter(int type);

@@ -12,16 +12,16 @@ inline static color mix_colors(color c1, color c2, int a, int b)
   };
 }
 
-inline static color_int mix_colors2(color c1, color c2, int a, int b, int b2)
+inline static color_big mix_colors2(color c1, color c2, int a, int b, int b2)
 {
-  return (color_int){
+  return (color_big){
     ((int)c1.r*b+((int)c2.r-(int)c1.r)*a)*b2,
     ((int)c1.g*b+((int)c2.g-(int)c1.g)*a)*b2,
     ((int)c1.b*b+((int)c2.b-(int)c1.b)*a)*b2
   };
 }
 
-inline static color mix_colors3(color_int c1, color_int c2, int a, int b, int b2)
+inline static color mix_colors3(color_big c1, color_big c2, int a, int b, int b2)
 {
   return (color){
     (c1.r*b+(c2.r-c1.r)*a)/(b*b2),
@@ -30,25 +30,25 @@ inline static color mix_colors3(color_int c1, color_int c2, int a, int b, int b2
   };
 }
 
-inline static vec2 mix_vec2(vec2 uv1, vec2 uv2, int a, int b)
+inline static vec2t mix_vec2t(vec2t uv1, vec2t uv2, int a, int b)
 {
-  return (vec2){
+  return (vec2t){
     uv1.x+(uv2.x-uv1.x)*a/b,
     uv1.y+(uv2.y-uv1.y)*a/b
   };
 }
 
-inline static vec2_64 mix_vec22(vec2 uv1, vec2 uv2, int a, int b, int b2)
+inline static vec2t_64 mix_vec2t2(vec2t uv1, vec2t uv2, int a, int b, int b2)
 {
-  return (vec2_64){
+  return (vec2t_64){
     (uv1.x*b+(uv2.x-uv1.x)*a)*b2,
     (uv1.y*b+(uv2.y-uv1.y)*a)*b2
   };
 }
 
-inline static vec2 mix_vec23(vec2_64 uv1, vec2_64 uv2, int a, int b, int b2)
+inline static vec2t mix_vec2t3(vec2t_64 uv1, vec2t_64 uv2, int a, int b, int b2)
 {
-  return (vec2){
+  return (vec2t){
     (uv1.x*b+(uv2.x-uv1.x)*a)/(b*b2),
     (uv1.y*b+(uv2.y-uv1.y)*a)/(b*b2)
   };
@@ -59,7 +59,7 @@ inline static vertex mix_vertices(vertex v1, vertex v2, int a, int b)
   return (vertex){
     .v.x = v1.v.x+(v2.v.x-v1.v.x)*a/b,
     .c = mix_colors(v1.c, v2.c, a, b),
-    .uv = mix_vec2(v1.uv, v2.uv, a, b)
+    .uv = mix_vec2t(v1.uv, v2.uv, a, b)
   };
 }
 
@@ -67,7 +67,7 @@ inline static vertex mix_vertices2(vertex v1, vertex v2, int a, int b)
 {
   return (vertex){
     .c = mix_colors(v1.c, v2.c, a, b),
-    .uv = mix_vec2(v1.uv, v2.uv, a, b)
+    .uv = mix_vec2t(v1.uv, v2.uv, a, b)
   };
 }
 
@@ -76,7 +76,7 @@ inline static vertex_int mix_vertices3(vertex v1, vertex v2, int a, int b, int b
   return (vertex_int){
     .v.x = v1.v.x+(v2.v.x-v1.v.x)*a/b,
     .c = mix_colors2(v1.c, v2.c, a, b, b2),
-    .uv = mix_vec22(v1.uv, v2.uv, a, b, b2)
+    .uv = mix_vec2t2(v1.uv, v2.uv, a, b, b2)
   };
 }
 
@@ -84,7 +84,7 @@ inline static vertex mix_vertices4(vertex_int v1, vertex_int v2, int a, int b, i
 {
   return (vertex){
     .c = mix_colors3(v1.c, v2.c, a, b, b2),
-    .uv = mix_vec23(v1.uv, v2.uv, a, b, b2)
+    .uv = mix_vec2t3(v1.uv, v2.uv, a, b, b2)
   };
 }
 
@@ -114,9 +114,8 @@ inline static void draw_triangle_half(int which_half, int x1, int x2, int y1, in
 
   for (int i = top; i < bottom; i++)
   {
-    // Wmaybe-uninitialized complaining :(
-    vertex_int v1 = {};
-    vertex_int v2 = {};
+    vertex_int v1;
+    vertex_int v2;
     int b = 0;
     if (which_half == 0) {
       v1 = mix_vertices3(v[0], v[1], i-v[0].v.y, d[0], d[1]);
@@ -141,7 +140,7 @@ inline static void draw_triangle_half(int which_half, int x1, int x2, int y1, in
     for (int j = left; j < right; j++)
     {
       vertex v = mix_vertices4(v1, v2, j-v1.v.x, v2.v.x-v1.v.x, b);
-      v.v = (vec2){j, i};
+      v.v = (vec2t){j, i};
       set_pixel(v);
     }
   }
@@ -172,7 +171,7 @@ void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pi
     for (int i = v[0].v.y; i < v[1].v.y; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.y, dy);
-      vert.v = (vec2){v[0].v.x+dx*(i - v[0].v.y)/dy, i};
+      vert.v = (vec2t){v[0].v.x+dx*(i - v[0].v.y)/dy, i};
       set_pixel(vert);
     }
   }
@@ -188,7 +187,7 @@ void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pi
     for (int i = v[0].v.x; i < v[1].v.x; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.x, dx);
-      vert.v = (vec2){i, v[0].v.y+dy*(i - v[0].v.x)/dx};
+      vert.v = (vec2t){i, v[0].v.y+dy*(i - v[0].v.x)/dx};
       set_pixel(vert);
     }
   }

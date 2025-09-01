@@ -15,8 +15,8 @@ OBJS = $(patsubst $(SOURCE_DIR)%,$(BUILD_DIR)%,$(SRCS:.c=.o))
 DESRCS = $(wildcard $(DECOMPILE_DIR)/*.c)
 DEOBJS = $(patsubst $(DECOMPILE_DIR)%,$(BUILD_DIR)%,$(DESRCS:.c=.o))
 
-#CFLAGS := -Wall -march=native -Ofast -pipe -ggdb -rdynamic
-CFLAGS := -Wall -march=native -Ofast -pipe
+CFLAGS := -Wall -march=native -Ofast -pipe -ggdb
+#CFLAGS := -Wall -march=native -Ofast -pipe
 all: $(BUILD_DIR) $(PROGRAM) $(MEMCARD_DIR)
 
 $(MEMCARD_DIR):
@@ -32,7 +32,7 @@ $(BUILD_DIR):
 	mkdir --parents $(BUILD_DIR)
 
 $(PROGRAM): $(OBJS) $(DEOBJS)
-	$(CC1) $(CFLAGS) -lSDL2 -L../disassembly/program $^ -o $@
+	$(CC1) $(CFLAGS) -lSDL3 -L../disassembly/program $^ -o $@
 
 .PHONY: clean run test
 

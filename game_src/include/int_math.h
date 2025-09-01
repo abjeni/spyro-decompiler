@@ -9,6 +9,10 @@ typedef struct {
 } mat3;
 
 typedef struct {
+  int16_t x, y;
+} vec2;
+
+typedef struct {
   int16_t x, y, z;
 } vec3;
 
@@ -19,6 +23,10 @@ typedef struct {
 typedef struct {
   int32_t x, y, z;
 } vec3_32;
+
+typedef struct {
+  int64_t r, g, b;
+} color_int;
 
 int32_t fixed_multi(int32_t a, int32_t b);
 uint32_t fixed_multu(uint32_t a, uint32_t b);
@@ -33,11 +41,15 @@ uint32_t to_rgb(uint32_t r, uint32_t g, uint32_t b);
 mat3 mat3_c(int16_t x00, int16_t x01, int16_t x02,
             int16_t x10, int16_t x11, int16_t x12, 
             int16_t x20, int16_t x21, int16_t x22);
+mat3 mat3_cv(vec3 v1, vec3 v2, vec3 v3);
 
 mat3 list_to_mat3(uint32_t list[5]);
 void mat3_to_list(mat3 m, uint32_t list[5]);
 
 mat3 mat3_mul(mat3 a, mat3 b);
+
+vec3 vec3_32_to_vec3(vec3_32 v);
+vec3_32 vec3_to_vec3_32(vec3 v);
 
 vec3_32 vec_mat_mul_gte(vec3 v, mat3 m);
 vec3_32 vec3_32_shift_right(vec3_32 v, int32_t shift);
@@ -55,3 +67,12 @@ mat3 mat3rotY(uint32_t a);
 mat3 mat3rotZ(uint32_t a);
 mat3 mat3_identity(void);
 mat3 mat3_transpose(mat3 m);
+
+int32_t signed16extend(uint32_t x);
+int32_t upper16signed(uint32_t x);
+
+vec2 vec2_from_32(uint32_t x);
+vec2 vec2_add(vec2 a, vec2 b);
+vec2 vec2_sub(vec2 a, vec2 b);
+vec2 vec2_mult(vec2 a, vec2 b);
+vec2 vec2_div(vec2 a, vec2 b);

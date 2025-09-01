@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/time.h>
-#include <sys/mman.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
@@ -16,7 +15,6 @@
 #include "triangle.h"
 #include "debug.h"
 #include "../../config.h"
-#include "decompilation.h"
 
 //#define LOG_DISK_READ
 
@@ -74,7 +72,11 @@ char *filename = "root/SCUS_942.28;1";
 
 struct psx_mem psx_mem;
 
-void *addr_to_pointer(uint32_t addr)
+#undef addr_to_pointer
+#undef pointer_to_addr
+#undef pointer_to_addr_maybe
+
+void *addr_to_pointer(uint32_t addr, file_loc loc)
 {
   if (addr == 0) return NULL;
 
@@ -92,12 +94,12 @@ void *addr_to_pointer(uint32_t addr)
     addr -= 0x1F800000;
     return psx_mem.scratchpad+addr;
   }
-  printf("addr 0x%.8X is not mapped to physical memory\n", addr);
+  printf("file %s:%u: addr 0x%.8X is not mapped to physical memory\n", loc.file, loc.line, addr);
   BREAKPOINT;
   return NULL;
 }
 
-uint32_t pointer_to_addr(void *ptr)
+uint32_t pointer_to_addr(void *ptr, file_loc loc)
 {
   uintptr_t addr = (uintptr_t)ptr - (uintptr_t)psx_mem.mem;
 
@@ -107,12 +109,12 @@ uint32_t pointer_to_addr(void *ptr)
 
   if (addr_scratchpad < 0x400) return ((uint32_t)addr_scratchpad) + 0x1F800000;
 
-  printf("pointer_to_addr: addr %.16lX or %.16lX incompatible\n", addr, addr_scratchpad);
+  printf("file %s:%u: pointer_to_addr: addr %.16lX or %.16lX incompatible\n", loc.file, loc.line, addr, addr_scratchpad);
   BREAKPOINT;
   return 0;
 }
 
-uint32_t pointer_to_addr_maybe(void *ptr)
+uint32_t pointer_to_addr_maybe(void *ptr, file_loc loc)
 {
   uintptr_t addr = (uintptr_t)ptr - (uintptr_t)psx_mem.mem;
 
@@ -131,7 +133,7 @@ void psx_read_sectors_direct(uint32_t dst, uint32_t sector, uint32_t sector_len)
   for (int i = 0; i < sector_len; i++) {
     uint32_t s = sector+i;
     uint32_t *ptr = (uint32_t *)(psx_mem.cdrom.disc + s*0x930 + 24);
-    uint32_t *dst_ptr = addr_to_pointer(dst + i*0x800);
+    uint32_t *dst_ptr = addr_to_pointer(dst + i*0x800, LOC);
     for (int j = 0; j < 0x200; j++)
       *dst_ptr++ = *ptr++;
   }
@@ -167,10 +169,6 @@ void inter(int type)
     interrupt(type);
     debug_printf(DEBUG_MASK_INTERRUPT, "interrupt end %d\n", type);
     enable_timer();
-
-    if (type == 0) {
-      start_frame();
-    }
   }
 }
 
@@ -702,11 +700,11 @@ void set_pixel(vertex v)
       case 0: { //4 bits
         uvx = v.uv.x + pagex * 256;
         uvy = v.uv.y + pagey * 256;
-        uint16_t texel_pack = texels[uvx/4 + uvy * 1024];
+        uint16_t texel_pack = texels[(uvx/4 + uvy * 1024) % 0x100000];
 
         uint16_t texel = (texel_pack >> ((uvx & 3) * 4)) & 0xF;
 
-        colcol = texels[(texel + cx + cy * 1024)];
+        colcol = texels[(texel + cx + cy * 1024) % 0x100000];
 
         tex_trans = (colcol >> 15);
         break;
@@ -1590,7 +1588,7 @@ void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_
         printf("---------- file %s:%u: %s(0x%.8X, 0x%.8X)\n", loc.file, loc.line, func, addr, value);
 
       if (func[0] == 'l')
-        printf("---------- file %s:%u: %s(0x%.8X) -> 0x%.8X\n", loc.file, loc.line, func, addr, *(uint32_t*)addr_to_pointer(addr));
+        printf("---------- file %s:%u: %s(0x%.8X) -> 0x%.8X\n", loc.file, loc.line, func, addr, *(uint32_t*)addr_to_pointer(addr, loc));
 
       if (segment.operation_mask & MASK_PANIC) {
         BREAKPOINT;
@@ -1992,7 +1990,7 @@ void sw_unaligned(uint32_t addr, uint32_t value, file_loc loc)
   }
 
   check_addr(addr, 4, loc, "sw", value);
-  uint32_t *ptr = addr_to_pointer(addr);
+  uint32_t *ptr = addr_to_pointer(addr, loc);
   *ptr = value;
 }
 
@@ -2203,7 +2201,7 @@ void sh_unaligned(uint32_t addr, uint16_t value, file_loc loc)
   }
 
   check_addr(addr, 2, loc, "sh", value);
-  uint16_t *ptr = addr_to_pointer(addr);
+  uint16_t *ptr = addr_to_pointer(addr, loc);
   *ptr = value;
 }
 
@@ -2440,7 +2438,7 @@ void sb(uint32_t addr, uint8_t value, file_loc loc)
   switch (addr) {
   default:
     check_addr(addr, 1, loc, "sb", value);
-    uint8_t *ptr = addr_to_pointer(addr);
+    uint8_t *ptr = addr_to_pointer(addr, loc);
     *ptr = value;
   }
 }
@@ -2617,7 +2615,7 @@ uint32_t lw_unaligned(uint32_t addr, file_loc loc)
     break;
   default:
     check_addr(addr, 4, loc, "lw", 0);
-    uint32_t *ptr = addr_to_pointer(addr);
+    uint32_t *ptr = addr_to_pointer(addr, loc);
     value = *ptr;
   }
   return value;
@@ -2744,7 +2742,7 @@ uint32_t lbu(uint32_t addr, file_loc loc)
   }
 
   check_addr(addr, 1, loc, "lb", 0);
-  uint8_t *ptr = addr_to_pointer(addr);
+  uint8_t *ptr = addr_to_pointer(addr, loc);
   return *ptr;
 }
 
@@ -2812,7 +2810,7 @@ uint32_t lhu(uint32_t addr, file_loc loc)
     break;
   default:
     check_addr(addr, 2, loc, "lh", 0);
-    uint16_t *ptr = addr_to_pointer(addr);
+    uint16_t *ptr = addr_to_pointer(addr, loc);
 
     value = *ptr;
   }
@@ -2853,7 +2851,7 @@ void psx_read_sectors(uint32_t dst, uint32_t sector, uint32_t sector_len)
   }
 }
 
-void start_frame()
+int start_frame()
 {
 
   set_resolution((int[]){256, 320, 512, 640}[psx_mem.gpu.display_mode.res_horiz_1], (int[]){240, 480}[psx_mem.gpu.display_mode.res_vert]);
@@ -2864,5 +2862,5 @@ void start_frame()
 
   wait_frame();
 
-  handle_input();
+  return handle_input();
 }

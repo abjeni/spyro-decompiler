@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "debug.h"
+#include "int_math.h"
 #include "main.h"
 #include "psx_mem.h"
 #include "psx_bios.h"
@@ -172,7 +173,7 @@ int32_t SetGraphDebug(int32_t level)
   // level 2: function calls
   //printf("SetGraphDebug level set to %d i am setting it to level 2 instead\n", level);
   //level = 2;
-  level = 0;
+  level = 1;
 
   uint32_t previous_debug_level = lbu(psy_debug_level_ptr);
   sb(psy_debug_level_ptr, level);
@@ -255,9 +256,9 @@ void function_8005F8F8(void)
 }
 
 // size: 0x00000064
-int32_t LoadImage(RECT *recp, uint32_t *p)
+int32_t LoadImage(RECT *recp, void *p)
 {
-  psyq_check_box("LoadImage", *recp); // "LoadImage"
+  psyq_check_box("LoadImage", *recp);
 
   if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x20), pointer_to_addr(recp), 8, pointer_to_addr(p));
@@ -275,7 +276,7 @@ void function_8005FA28(void)
 }
 
 // size: 0x00000064
-int32_t StoreImage(RECT *recp, uint32_t *p)
+int32_t StoreImage(RECT *recp, void *p)
 {
   psyq_check_box("StoreImage", *recp);
 
@@ -427,10 +428,8 @@ DISPENV *PutDispEnv(DISPENV *env)
     function_8005EBA0();
     env->pad0 = v0;
     v0 = v0 & 0xFF;
-    v1 = env->screen.x*10;
-    
+    v1 = env->screen.x*10 + 608;
     a0 = env->screen.y;
-    v1 += 608; // 0x0260
     if (v0 == 0) goto label800601A0;
     s1 = a0 + 0x13;
     goto label800601A4;
@@ -438,11 +437,8 @@ DISPENV *PutDispEnv(DISPENV *env)
     s1 = a0 + 0x10;
   label800601A4:
     a1 = env->screen.w;
-    if (a1 == 0) {
-      v0 = a1 << 2;
-      goto label800601C4;
-    }
     v0 = a1 << 2;
+    if (a1 == 0) goto label800601C4;
     v0 += a1;
     v0 = v0 << 1;
     a2 = v1 + v0;
@@ -451,47 +447,17 @@ DISPENV *PutDispEnv(DISPENV *env)
     a2 = v1 + 2560; // 0x0A00
   label800601C8:
     v0 = env->screen.h;
-    if (v0 != 0) {
-      s2 = s1 + v0;
-      goto label800601DC;
-    }
     s2 = s1 + v0;
+    if (v0 != 0) goto label800601DC;
     s2 = s1 + 240; // 0x00F0
   label800601DC:
-    v0 = (int32_t)v1 < 500;
-    if (v0 != 0) {
-      v0 = (int32_t)v1 < 3291;
-      goto label800601F8;
-    }
-    v0 = (int32_t)v1 < 3291;
-    if (v0 == 0) {
-      a1 = 3290; // 0x0CDA
-      goto label800601FC;
-    }
-    a1 = 3290; // 0x0CDA
-    a1 = v1;
-    goto label800601FC;
-  label800601F8:
-    a1 = 500; // 0x01F4
-  label800601FC:
-    v1 = a1;
-    a1 = v1 + 80; // 0x0050
-    v0 = (int32_t)a2 < (int32_t)a1;
-    if (v0 != 0) {
-      v0 = (int32_t)s1 < 16;
-      goto label80060224;
-    }
+    v1 = clamp_int(v1, 500, 3290);
+    a1 = v1 + 80;
+    
+    if ((int32_t)a2 >= (int32_t)a1)
+      a1 = min_int(a2, 3290);
+
     v0 = (int32_t)s1 < 16;
-    v0 = (int32_t)a2 < 3291;
-    if (v0 == 0) {
-      a1 = 3290; // 0x0CDA
-      goto label80060220;
-    }
-    a1 = 3290; // 0x0CDA
-    a1 = a2;
-  label80060220:
-    v0 = (int32_t)s1 < 16;
-  label80060224:
     if (v0 != 0) {
       a2 = a1;
       goto label80060278;

@@ -8,3 +8,4 @@ program
 .cache
 compile_commands.json
 .clangd
+.vscode
