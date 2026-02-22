@@ -211,6 +211,20 @@ struct entries entries = ENTRIES(ARR_U32(
 ));
 
 struct skips skips = SKIPS(ARR_U32(
+  0x80016914,
+  0x80016930,
+  0x800626F8,
+  0x80016958,
+  0x8005E4AC,
+  0x8005E604,
+  0x8005E8AC,
+  0x8006230C,
+  0x8006276C,
+  0x8006279C,
+  0x80062FC4,
+  0x80062FD4,
+  0x8006389C,
+  0x8006B670,
   0x800653B4,
   0x80063C48,
   0x80063FF0,
@@ -225,7 +239,7 @@ struct skips skips = SKIPS(ARR_U32(
   0x80062648,
   0x800530C0,
   0x80053570,
-  0x80067628
+  0x80067628,
 ));
 
 
