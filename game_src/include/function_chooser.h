@@ -1,5 +1,10 @@
 #pragma once
 
+
+void function_8007AA50(void);
+void function_8007BFD0(void);
+void function_8007ABAC(void);
+void function_8007CEE4(void);
 void function_8007AA50(void);
 void function_8007ABAC(void);
 void function_8007AD4C(void);

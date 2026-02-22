@@ -2,9 +2,10 @@
 #include <assert.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <engine.h>
 
 #include "psx_mem.h"
-#include "not_renamed.h"
+#include "decompilation.h"
 
 uint32_t v0, v1, k0, k1, a0, a1, a2, a3;
 uint32_t t0, t1, t2, t3, t4, t5, t6, t7, t8, t9;
@@ -24,8 +25,7 @@ void print_psx_string_array(char *name, uint32_t base, uint32_t n) {
 
 int main(int argc, char *argv[])
 {
-  int err = chdir("..");
-  if (err) return err;
+  platform_init();
   
   init_psx_mem();
 
@@ -33,7 +33,6 @@ int main(int argc, char *argv[])
 
   if (argc > 1)
   {
-
     printf("%d\n", -2%3);
     //wad_main();
     

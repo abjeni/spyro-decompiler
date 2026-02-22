@@ -1,4 +1,4 @@
-#include "main.h"
+#include "debug.h"
 #include "psx_mem.h"
 #include "level_loading.h"
 #include "decompilation.h"
@@ -7,14 +7,13 @@
 uint32_t lib_num = LIB_TITLE_SCREEN;
 
 // size: 0x00001288
-uint32_t update_level_functions(void)
+void update_level_functions(void)
 {
-  v1 = lw(LEVEL_ID);
-  switch (v1)
+  switch (lw(LEVEL_ID))
   {
   case 0:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x80082068);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x80082068);
     sw(0x800758CC, 0x80080548);
     sw(0x80075734, 0x8007D8E0);
     sw(0x800758E4, 0x80081568);
@@ -25,48 +24,48 @@ uint32_t update_level_functions(void)
     sw(0x800758D8, 0x8007CED8);
     break;
   case 1:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007BFF0);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007BFF0);
     sw(0x800758CC, 0x8007B070);
     sw(0x80075734, 0x8007AC8C);
     sw(0x800758E4, 0x8007B8AC);
     sw(0x800756BC, 0x8007B144);
     break;
   case 2:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007F490);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007F490);
     sw(0x800758CC, 0x8007D970);
     sw(0x80075734, 0x8007AD08);
     sw(0x800758E4, 0x8007E990);
     sw(0x800756BC, 0x8007DE34);
     break;
   case 3:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007C7B0);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007C7B0);
     sw(0x800758CC, 0x8007B0AC);
     sw(0x80075734, 0x8007ACC8);
     sw(0x800758E4, 0x8007BC50);
     sw(0x800756BC, 0x8007B180);
     break;
   case 4:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007C204);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007C204);
     sw(0x800758CC, 0x8007B08C);
     sw(0x80075734, 0x8007ACA8);
     sw(0x800758E4, 0x8007B9F0);
     sw(0x800756BC, 0x8007B160);
     break;
   case 7:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007F2F4);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007F2F4);
     sw(0x800758CC, 0x8007D970);
     sw(0x80075734, 0x8007AD08);
     sw(0x800758E4, 0x8007E8E4);
     sw(0x800756BC, 0x8007DE34);
     break;
   case 9:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007C204);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007C204);
     sw(0x800758CC, 0x8007B08C);
     sw(0x80075734, 0x8007ACA8);
     sw(0x800758E4, 0x8007B9F0);
@@ -74,7 +73,7 @@ uint32_t update_level_functions(void)
     break;
   case 10:
     lib_num = LIB_ARTISANS_HOME;
-    sw(0x800785D8, 0x80088620);
+    sw(lib_end_ptr, 0x80088620);
     sw(0x800758CC, 0x800857CC);
     sw(0x80075734, 0x8007D9C8);
     sw(0x800758E4, 0x800873E0);
@@ -86,7 +85,7 @@ uint32_t update_level_functions(void)
     break;
   case 11:
     lib_num = LIB_STONE_HILL;
-    sw(0x800785D8, 0x8008A3B8);
+    sw(lib_end_ptr, 0x8008A3B8);
     sw(0x800758CC, 0x8008772C);
     sw(0x80075734, 0x8007DA78);
     sw(0x800758E4, 0x800892C4);
@@ -98,7 +97,7 @@ uint32_t update_level_functions(void)
     break;
   case 12:
     lib_num = LIB_DARK_HOLLOW;
-    sw(0x800785D8, 0x80085594);
+    sw(lib_end_ptr, 0x80085594);
     sw(0x800758CC, 0x80082960);
     sw(0x80075734, 0x8007AE40);
     sw(0x800758E4, 0x800844A0);
@@ -106,7 +105,7 @@ uint32_t update_level_functions(void)
     break;
   case 13:
     lib_num = LIB_TOWN_SQUARE;
-    sw(0x800785D8, 0x80089ECC);
+    sw(lib_end_ptr, 0x80089ECC);
     sw(0x800758CC, 0x800872A4);
     sw(0x80075734, 0x8007DA54);
     sw(0x800758E4, 0x80088F68);
@@ -118,7 +117,7 @@ uint32_t update_level_functions(void)
     break;
   case 14:
     lib_num = LIB_TOASTY;
-    sw(0x800785D8, 0x80084A10);
+    sw(lib_end_ptr, 0x80084A10);
     sw(0x800758CC, 0x80081DA8);
     sw(0x80075734, 0x8007AF94);
     sw(0x800758E4, 0x8008391C);
@@ -126,7 +125,7 @@ uint32_t update_level_functions(void)
     break;
   case 15:
     lib_num = LIB_SUNNY_FLIGHT;
-    sw(0x800785D8, 0x80084ED0);
+    sw(lib_end_ptr, 0x80084ED0);
     sw(0x800758CC, 0x8008249C);
     sw(0x80075734, 0x8007CFB4);
     sw(0x800758E4, 0x80084128);
@@ -139,7 +138,7 @@ uint32_t update_level_functions(void)
     break;
   case 20:
     lib_num = LIB_PEACEKEEPERS_HOME;
-    sw(0x800785D8, 0x8008CFA4);
+    sw(lib_end_ptr, 0x8008CFA4);
     sw(0x800758CC, 0x8008A258);
     sw(0x80075734, 0x8007E3A0);
     sw(0x800758E4, 0x8008BFF0);
@@ -151,7 +150,7 @@ uint32_t update_level_functions(void)
     break;
   case 21:
     lib_num = LIB_DRY_CANYON;
-    sw(0x800785D8, 0x8008D600);
+    sw(lib_end_ptr, 0x8008D600);
     sw(0x800758CC, 0x8008A4D0);
     sw(0x80075734, 0x8007E240);
     sw(0x800758E4, 0x8008C540);
@@ -163,7 +162,7 @@ uint32_t update_level_functions(void)
     break;
   case 22:
     lib_num = LIB_CLIFF_TOWN;
-    sw(0x800785D8, 0x8008BAF8);
+    sw(lib_end_ptr, 0x8008BAF8);
     sw(0x800758CC, 0x80088B88);
     sw(0x80075734, 0x8007E240);
     sw(0x800758E4, 0x8008A9A8);
@@ -175,7 +174,7 @@ uint32_t update_level_functions(void)
     break;
   case 23:
     lib_num = LIB_ICE_CAVERN;
-    sw(0x800785D8, 0x80086260);
+    sw(lib_end_ptr, 0x80086260);
     sw(0x800758CC, 0x80083608);
     sw(0x80075734, 0x8007B4C8);
     sw(0x800758E4, 0x80085184);
@@ -183,7 +182,7 @@ uint32_t update_level_functions(void)
     break;
   case 24:
     lib_num = LIB_DR_SHEMP;
-    sw(0x800785D8, 0x80087210);
+    sw(lib_end_ptr, 0x80087210);
     sw(0x800758CC, 0x800845F0);
     sw(0x80075734, 0x8007AEB8);
     sw(0x800758E4, 0x8008611C);
@@ -191,7 +190,7 @@ uint32_t update_level_functions(void)
     break;
   case 25:
     lib_num = LIB_NIGHT_FLIGHT;
-    sw(0x800785D8, 0x80083BF0);
+    sw(lib_end_ptr, 0x80083BF0);
     sw(0x800758CC, 0x800819BC);
     sw(0x80075734, 0x8007CFB4);
     sw(0x800758E4, 0x80082F58);
@@ -204,7 +203,7 @@ uint32_t update_level_functions(void)
     break;
   case 30:
     lib_num = LIB_MAGICCRAFTERS_HOME;
-    sw(0x800785D8, 0x8008E608);
+    sw(lib_end_ptr, 0x8008E608);
     sw(0x800758CC, 0x8008B2C0);
     sw(0x80075734, 0x8007E398);
     sw(0x800758E4, 0x8008D2D0);
@@ -216,7 +215,7 @@ uint32_t update_level_functions(void)
     break;
   case 31:
     lib_num = LIB_ALPINE_RIDGE;
-    sw(0x800785D8, 0x8008DEC0);
+    sw(lib_end_ptr, 0x8008DEC0);
     sw(0x800758CC, 0x8008A36C);
     sw(0x80075734, 0x8007BB00);
     sw(0x800758E4, 0x8008C9D8);
@@ -224,7 +223,7 @@ uint32_t update_level_functions(void)
     break;
   case 32:
     lib_num = LIB_HIGH_CAVES;
-    sw(0x800785D8, 0x8008C73C);
+    sw(lib_end_ptr, 0x8008C73C);
     sw(0x800758CC, 0x8008883C);
     sw(0x80075734, 0x8007B64C);
     sw(0x800758E4, 0x8008B0B0);
@@ -232,7 +231,7 @@ uint32_t update_level_functions(void)
     break;
   case 33:
     lib_num = LIB_WIZARD_PEAK;
-    sw(0x800785D8, 0x8008A8A0);
+    sw(lib_end_ptr, 0x8008A8A0);
     sw(0x800758CC, 0x80086DD8);
     sw(0x80075734, 0x8007B7A8);
     sw(0x800758E4, 0x80089450);
@@ -240,7 +239,7 @@ uint32_t update_level_functions(void)
     break;
   case 34:
     lib_num = LIB_BLOWHARD;
-    sw(0x800785D8, 0x8008749C);
+    sw(lib_end_ptr, 0x8008749C);
     sw(0x800758CC, 0x80083AB4);
     sw(0x80075734, 0x8007AF28);
     sw(0x800758E4, 0x80085F40);
@@ -248,7 +247,7 @@ uint32_t update_level_functions(void)
     break;
   case 35:
     lib_num = LIB_CRYSTAL_FLIGHT;
-    sw(0x800785D8, 0x80084390);
+    sw(lib_end_ptr, 0x80084390);
     sw(0x800758CC, 0x80081F0C);
     sw(0x80075734, 0x8007CFB4);
     sw(0x800758E4, 0x800836F8);
@@ -261,7 +260,7 @@ uint32_t update_level_functions(void)
     break;
   case 40:
     lib_num = LIB_BEASTMAKERS_HOME;
-    sw(0x800785D8, 0x8008AB70);
+    sw(lib_end_ptr, 0x8008AB70);
     sw(0x800758CC, 0x80087EF0);
     sw(0x80075734, 0x8007E18C);
     sw(0x800758E4, 0x80089AB8);
@@ -273,7 +272,7 @@ uint32_t update_level_functions(void)
     break;
   case 41:
     lib_num = LIB_TERRACE_VILLAGE;
-    sw(0x800785D8, 0x80087944);
+    sw(lib_end_ptr, 0x80087944);
     sw(0x800758CC, 0x8008465C);
     sw(0x80075734, 0x8007B5DC);
     sw(0x800758E4, 0x800866D8);
@@ -281,7 +280,7 @@ uint32_t update_level_functions(void)
     break;
   case 42:
     lib_num = LIB_MISTY_BOG;
-    sw(0x800785D8, 0x80087130);
+    sw(lib_end_ptr, 0x80087130);
     sw(0x800758CC, 0x80084718);
     sw(0x80075734, 0x8007AFBC);
     sw(0x800758E4, 0x800861CC);
@@ -289,7 +288,7 @@ uint32_t update_level_functions(void)
     break;
   case 43:
     lib_num = LIB_TREE_TOPS;
-    sw(0x800785D8, 0x80089848);
+    sw(lib_end_ptr, 0x80089848);
     sw(0x800758CC, 0x80086B38);
     sw(0x80075734, 0x8007B698);
     sw(0x800758E4, 0x8008869C);
@@ -297,7 +296,7 @@ uint32_t update_level_functions(void)
     break;
   case 44:
     lib_num = LIB_METALHEAD;
-    sw(0x800785D8, 0x8008A69C);
+    sw(lib_end_ptr, 0x8008A69C);
     sw(0x800758CC, 0x800874FC);
     sw(0x80075734, 0x8007B770);
     sw(0x800758E4, 0x800894B0);
@@ -305,7 +304,7 @@ uint32_t update_level_functions(void)
     break;
   case 45:
     lib_num = LIB_WILD_FLIGHT;
-    sw(0x800785D8, 0x80084844);
+    sw(lib_end_ptr, 0x80084844);
     sw(0x800758CC, 0x8008223C);
     sw(0x80075734, 0x8007CFB4);
     sw(0x800758E4, 0x80083BAC);
@@ -318,7 +317,7 @@ uint32_t update_level_functions(void)
     break;
   case 50:
     lib_num = LIB_DREAMWEAVERS_HOME;
-    sw(0x800785D8, 0x8008BB38);
+    sw(lib_end_ptr, 0x8008BB38);
     sw(0x800758CC, 0x80088E24);
     sw(0x80075734, 0x8007E3C0);
     sw(0x800758E4, 0x8008AA24);
@@ -330,7 +329,7 @@ uint32_t update_level_functions(void)
     break;
   case 51:
     lib_num = LIB_DARK_PASSAGE;
-    sw(0x800785D8, 0x800880D4);
+    sw(lib_end_ptr, 0x800880D4);
     sw(0x800758CC, 0x80084B94);
     sw(0x80075734, 0x8007B4F8);
     sw(0x800758E4, 0x80086D38);
@@ -338,7 +337,7 @@ uint32_t update_level_functions(void)
     break;
   case 52:
     lib_num = LIB_LOFTY_CASTLE;
-    sw(0x800785D8, 0x8008771C);
+    sw(lib_end_ptr, 0x8008771C);
     sw(0x800758CC, 0x80084620);
     sw(0x80075734, 0x8007B4DC);
     sw(0x800758E4, 0x80086438);
@@ -346,7 +345,7 @@ uint32_t update_level_functions(void)
     break;
   case 53:
     lib_num = LIB_HAUNTED_TOWERS;
-    sw(0x800785D8, 0x80089820);
+    sw(lib_end_ptr, 0x80089820);
     sw(0x800758CC, 0x8008590C);
     sw(0x80075734, 0x8007B510);
     sw(0x800758E4, 0x800881D8);
@@ -354,7 +353,7 @@ uint32_t update_level_functions(void)
     break;
   case 54:
     lib_num = LIB_JACQUES;
-    sw(0x800785D8, 0x80086348);
+    sw(lib_end_ptr, 0x80086348);
     sw(0x800758CC, 0x800836A8);
     sw(0x80075734, 0x8007AF50);
     sw(0x800758E4, 0x80085254);
@@ -362,7 +361,7 @@ uint32_t update_level_functions(void)
     break;
   case 55:
     lib_num = LIB_ICY_FLIGHT;
-    sw(0x800785D8, 0x80084934);
+    sw(lib_end_ptr, 0x80084934);
     sw(0x800758CC, 0x80082028);
     sw(0x80075734, 0x8007CFB4);
     sw(0x800758E4, 0x80083B8C);
@@ -375,7 +374,7 @@ uint32_t update_level_functions(void)
     break;
   case 60:
     lib_num = LIB_GNASTYS_WORLD;
-    sw(0x800785D8, 0x80085CE0);
+    sw(lib_end_ptr, 0x80085CE0);
     sw(0x800758CC, 0x80083568);
     sw(0x80075734, 0x8007D938);
     sw(0x800758E4, 0x80084EA0);
@@ -387,7 +386,7 @@ uint32_t update_level_functions(void)
     break;
   case 61:
     lib_num = LIB_GNORC_COVE;
-    sw(0x800785D8, 0x80088668);
+    sw(lib_end_ptr, 0x80088668);
     sw(0x800758CC, 0x80085664);
     sw(0x80075734, 0x8007B528);
     sw(0x800758E4, 0x8008747C);
@@ -395,7 +394,7 @@ uint32_t update_level_functions(void)
     break;
   case 62:
     lib_num = LIB_TWILIGHT_HARBOR;
-    sw(0x800785D8, 0x80086004);
+    sw(lib_end_ptr, 0x80086004);
     sw(0x800758CC, 0x80083108);
     sw(0x80075734, 0x8007AE5C);
     sw(0x800758E4, 0x80084EAC);
@@ -403,7 +402,7 @@ uint32_t update_level_functions(void)
     break;
   case 63:
     lib_num = LIB_GNASTY_GNORC;
-    sw(0x800785D8, 0x800854B4);
+    sw(lib_end_ptr, 0x800854B4);
     sw(0x800758CC, 0x80082F24);
     sw(0x80075734, 0x8007AD64);
     sw(0x800758E4, 0x80084634);
@@ -411,31 +410,29 @@ uint32_t update_level_functions(void)
     break;
   case 64:
     lib_num = LIB_GNASTYS_LOOT;
-    sw(0x800785D8, 0x80086264);
+    sw(lib_end_ptr, 0x80086264);
     sw(0x800758CC, 0x80083690);
     sw(0x80075734, 0x8007AD4C);
     sw(0x800758E4, 0x80085230);
     sw(0x800756BC, 0x800840FC);
     break;
   case 99:
-    lib_num = (uint32_t)-1;BREAKPOINT;
-    sw(0x800785D8, 0x8007C654);
+    lib_num = (uint32_t)-1;UNREACHABLE;
+    sw(lib_end_ptr, 0x8007C654);
     sw(0x800758CC, 0x8007B0C0);
     sw(0x80075734, 0x8007ACDC);
     sw(0x800758E4, 0x8007BC44);
     sw(0x800756BC, 0x8007B194);
     break;
   }
-  v0 = lw(0x800785D8);
-  sw(0x800785DC, v0);
-  return v0;
+  sw(lib_end_ptr2, lw(lib_end_ptr));
 }
 
 // size: 0x00001288
 void function_8005A470(void)
 {
-  BREAKPOINT;
-  v0 = update_level_functions();
+  UNREACHABLE;
+  update_level_functions();
 }
 
 void function_loaded_80075734(void)
@@ -533,7 +530,7 @@ void function_loaded_80075734(void)
     function_8007AD4C();
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -647,7 +644,121 @@ void function_loaded_800758CC(void)
     function_80083690();
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
+  }
+}
+
+void function_loaded_800758E4(void)
+{
+  switch (lw(0x800758E4))
+  {
+  case 0x800873E0:
+    function_800873E0();
+    break;
+  case 0x800892C4:
+    function_800892C4();
+    break;
+  case 0x800844A0:
+    function_800844A0();
+    break;
+  case 0x80088F68:
+    function_80088F68();
+    break;
+  case 0x8008391C:
+    function_8008391C();
+    break;
+  case 0x80084128:
+    function_80084128();
+    break;
+  case 0x8008BFF0:
+    function_8008BFF0();
+    break;
+  case 0x8008C540:
+    function_8008C540();
+    break;
+  case 0x8008A9A8:
+    function_8008A9A8();
+    break;
+  case 0x80085184:
+    function_80085184();
+    break;
+  case 0x8008611C:
+    function_8008611C();
+    break;
+  case 0x80082F58:
+    function_80082F58();
+    break;
+  case 0x8008D2D0:
+    function_8008D2D0();
+    break;
+  case 0x8008C9D8:
+    function_8008C9D8();
+    break;
+  case 0x8008B0B0:
+    function_8008B0B0();
+    break;
+  case 0x80089450:
+    function_80089450();
+    break;
+  case 0x80085F40:
+    function_80085F40();
+    break;
+  case 0x800836F8:
+    function_800836F8();
+    break;
+  case 0x80089AB8:
+    function_80089AB8();
+    break;
+  case 0x800866D8:
+    function_800866D8();
+    break;
+  case 0x800861CC:
+    function_800861CC();
+    break;
+  case 0x8008869C:
+    function_8008869C();
+    break;
+  case 0x800894B0:
+    function_800894B0();
+    break;
+  case 0x80083BAC:
+    function_80083BAC();
+    break;
+  case 0x8008AA24:
+    function_8008AA24();
+    break;
+  case 0x80086D38:
+    function_80086D38();
+    break;
+  case 0x80086438:
+    function_80086438();
+    break;
+  case 0x800881D8:
+    function_800881D8();
+    break;
+  case 0x80085254:
+    function_80085254();
+    break;
+  case 0x80083B8C:
+    function_80083B8C();
+    break;
+  case 0x80084EA0:
+    function_80084EA0();
+    break;
+  case 0x8008747C:
+    function_8008747C();
+    break;
+  case 0x80084EAC:
+    function_80084EAC();
+    break;
+  case 0x80084634:
+    function_80084634();
+    break;
+  case 0x80085230:
+    function_80085230();
+    break;
+  default:
+    UNREACHABLE;
   }
 }
 
@@ -761,6 +872,6 @@ void function_loaded_800756BC(void)
     function_800840FC();
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }

@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "from_cd.h"
+#include "psx_exe.h"
 
 int main(int argc, char *argv[])
 {

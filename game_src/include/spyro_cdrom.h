@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-char *write_cdrom_header(uint32_t sector_num, char header[]);
+void write_cdrom_header(uint32_t sector_num, char header[]);
 uint32_t parse_cdrom_header(char header[]);
 
 uint32_t dma_cdrom_callback(uint32_t callback);

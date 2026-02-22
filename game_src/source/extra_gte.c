@@ -133,11 +133,25 @@ void set_FC_vec3(vec3 fc)
   cop2.BFC = fc.z;
 }
 
+void set_FC(uint32_t r, uint32_t g, uint32_t b)
+{
+  cop2.RFC = r;
+  cop2.GFC = g;
+  cop2.BFC = b;
+}
+
 void set_BK_vec3(vec3 bk)
 {
   cop2.RBK = bk.x;
   cop2.GBK = bk.y;
   cop2.BBK = bk.z;
+}
+
+void set_BK(uint32_t r, uint32_t g, uint32_t b)
+{
+  cop2.RBK = r;
+  cop2.GBK = g;
+  cop2.BBK = b;
 }
 
 vec3 get_MAC_vec3(void)

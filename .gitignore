@@ -1,4 +1,5 @@
 *.bin
+/decompilation/graph.dot
 /game_src/decompiled
 /game_src/objdump
 /root

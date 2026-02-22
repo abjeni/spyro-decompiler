@@ -96,6 +96,7 @@ struct function_name {
   char *func_call;
   char *declaration;
   char *id;
+  char *name;
 };
 
 

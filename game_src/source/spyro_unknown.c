@@ -1,113 +1,55 @@
 #include "main.h"
 #include "psx_mem.h"
+#include "psx_ops.h"
 #include "decompilation.h"
 #include "gte.h"
-#include "spyro_psy.h"
-#include "psx_ops.h"
+#include "extra_gte.h"
 
-// size: 0x000000D8
-void function_800562A4(void)
-{
-  t3 = 0;
-  for (int i = 0; i < 24; i++)
-  {
-    if (lw(0x80075F30 + i*0x1C) == a0
-      && (a1 == 1 || (a1 == 2
-      && lhu(0x80075F30 + i*0x1C + 0x0E) & 0x100))) 
-    {
-      t3 |= 1 << i;
-
-      v1 = lw(0x80075F30 + i*0x1C + 0x18);
-      if (v1)
-        sb(v1, 0x7F);
-      
-      sw(0x80075F30 + i*0x1C + 0x00, 0);
-      sb(0x80075F30 + i*0x1C + 0x0D, 0xFF);
-      sh(0x80075F30 + i*0x1C + 0x0E, 0x40);
-      sw(0x80075F30 + i*0x1C + 0x14, 0);
-      sw(0x80075F30 + i*0x1C + 0x18, 0);
-    }
-  }
-  sw(0x8007623C, lw(0x8007623C) | t3);
-}
-
-// size: 0x00000310
+// different return instruction (not JR RA)
 void function_800530C0(void)
 {
   uint32_t temp;
   t7 = a0;
   cop2.RBK = a1;
-  at = lw(t7 + 0x0020);
-  v0 = lw(t7 + 0x0024);
-  v1 = lw(t7 + 0x0028);
-  a0 = lw(t7 + 0x002C);
-  a1 = lw(t7 + 0x0030);
-  cop2.RTM0 = at;
-  cop2.RTM1 = v0;
-  cop2.RTM2 = v1;
-  cop2.RTM3 = a0;
-  cop2.RTM4 = a1;
-  at = lw(t7 + 0x000C);
-  v0 = lw(t7 + 0x0010);
-  v1 = lw(t7 + 0x0014);
-  at = at >> 2;
-  v0 = v0 >> 2;
-  v1 = v1 >> 2;
-  cop2.TRX = at;
-  cop2.TRY = v0;
-  cop2.TRZ = v1;
-  at = lhu(t7 + 0x0036);
-  v1 = lw(t7 + 0x003C);
-  v0 = 0x80076378;
-  at = at << 2;
-  at += v0;
-  at = lw(at + 0x0000);
-  v0 = v1 << 2;
-  v0 = v0 & 0x3FC;
-  v0 += at;
-  v0 = lw(v0 + 0x0038);
-  v1 = v1 >> 13;
-  v1 = v1 & 0x7F8;
-  v1 += 36; // 0x0024
-  v1 += v0;
-  at = lw(v1 + 0x0000);
-  v1 = lw(v1 + 0x0004);
-  a0 = lbu(v0 + 0x0008);
-  a1 = lbu(v0 + 0x0005);
-  a2 = lbu(v0 + 0x0006);
-  t8 = lw(v0 + 0x0014);
-  t9 = lw(v0 + 0x0018);
-  at = at << 11;
-  at = at >> 11;
-  v1 = v1 >> 24;
-  v1 = v1 << 2;
-  v0 = at + v1;
+  load_RTM(t7 + 0x20);
+  cop2.TRX = lw(t7 + 0x0C) >> 2;
+  cop2.TRY = lw(t7 + 0x10) >> 2;
+  cop2.TRZ = lw(t7 + 0x14) >> 2;
+  at = lhu(t7 + 0x36);
+  v1 = lw(t7 + 0x3C);
+  at = lw(0x80076378 + at*4);
+  v0 = lw(at + (v1 & 0xFF)*4 + 0x38);
+  v1 = v0 + ((v1 >> 16) & 0xFF)*8 + 0x24;
+  at = lw(v1 + 0x00);
+  v1 = lw(v1 + 0x04);
+  a0 = lbu(v0 + 0x08);
+  a1 = lbu(v0 + 0x05);
+  a2 = lbu(v0 + 0x06);
+  t8 = lw(v0 + 0x14);
+  t9 = lw(v0 + 0x18);
+  at = at & 0x1FFFFF;
+  v0 = at + (v1 >> 24)*4;
   v1 = 0x1F800000;
-  t3 = 1; // 0x0001
+  t3 = 1;
   a0 = a0 >> 1;
   a0 = a0 << 3;
-  a0 += v1;
+  a0 += 0x1F800000;
   t2 = 0;
-  a2++;
-  a2 += a1;
+  a2 += a1 + 1;
 label800531A0:
   temp = t2 != 0;
   if (temp) goto label800531D8;
-  t1 = lw(at + 0x0000);
-  at += 4; // 0x0004
-  t2 = t1 & 0x1;
-  a3 = (int32_t)t1 >> 21;
-  t0 = t1 << 10;
-  t0 = (int32_t)t0 >> 21;
-  t1 = t1 << 20;
-  t1 = (int32_t)t1 >> 19;
-  a3 = a3 << a1;
-  t0 = t0 << a1;
-  t1 = t1 << a1;
+  t1 = lw(at);
+  at += 4;
+  t2 = t1 & 1;
+  a3 = (int32_t)(t1 <<  0) >> 21 << a1;
+  t0 = (int32_t)(t1 << 10) >> 21 << a1;
+  t1 = (int32_t)(t1 << 20) >> 19 << a1;
   goto label80053210;
 label800531D8:
   t4 = lh(v0 + 0x0000);
   v0 += 2; // 0x0002
+  t2 = t4 & 1;
   t5 = (int32_t)t4 >> 11;
   t5 = t5 << a2;
   a3 += t5;
@@ -119,7 +61,6 @@ label800531D8:
   t5 = (int32_t)t5 >> 27;
   t5 = t5 << a2;
   t1 -= t5;
-  t2 = t4 & 0x1;
 label80053210:
   temp = (int32_t)t3 < 0;
   t3 = -t3;
@@ -142,7 +83,7 @@ label80053210:
   t8 = 0x1F800000;
   t9 = a0 - 8; // 0xFFFFFFF8
 label80053260:
-  v0 = spyro_rand();
+  function_8006272C();
   t6 = v0;
   a0 = 2; // 0x0002
   function_80053570();
@@ -235,46 +176,8 @@ label80053350:
   return;
 }
 
-// size: 0x000000A4
-void function_800524C4(void)
-{
-  at = 0x800756A4;
-  sw(at, lw(at)+1);
-  
-  at = 0x8007573C;
-  v0 = lw(at);
-  a0 = lb(v0 + 0x48);
-  sb(v0 + 0x48, 0);
-  v1 = v0 + 88;
 
-  if (a0 == -1)
-    sb(v1 + 0x48, a0);
-  else
-    while ((int32_t)lb(v1 + 0x48) >= 0)
-      v1 += 88;
-
-  sw(at, v1);
-
-  at = 0x80075930;
-  v1 = lw(at);
-  a1 = lb(v1 - 1);
-  sb(v1 - 1, 0);
-  a0 = v1 - 24;
-  if (a1 == -1)
-    sb(a0 - 1, a1);
-  else
-    while ((int32_t)lb(a0 - 1) >= 0)
-      a0 -= 24;
-    
-  v1 -= 24;
-  sw(v0, v1);
-  sw(at, a0);
-  return;
-}
-
-
-
-// size: 0x00000098
+// different return instruction (not JR RA)
 void function_80053570(void)
 {
   uint32_t temp;
@@ -287,7 +190,8 @@ void function_80053570(void)
   if (temp) goto label800535C0;
   a3 = ra;
   a2 = a0;
-  mult((spyro_rand() & 0xFF)+1, 0x20);
+  function_8006272C();
+  mult((v0 & 0xFF)+1, 0x20);
   v0=lo;
   v0 = a1 - v0;
   temp = a3;
@@ -319,53 +223,27 @@ label80053600:
   return;
 }
 
-// size: 0x000000F8
-void function_800333DC(void)
+// patched out spinlock
+uint32_t func_80067628(uint32_t async, uint32_t a1, uint32_t a2)
 {
-  a0 = 3;
-  function_80058CC0();
-  v1 = lw(0x80075704);
-  if (v1 == 99) {
-    sw(0x80075864, 1);
-    v0 = lw(0x80075818);
-    if (v0 != -1) {
-      sw(0x800758B4, v0);
-      sw(0x80075818, -1);
-    } else
-      if (lw(total_found_gems) == 14000)
-        sw(0x800758B4, 10);
-      else
-        sw(0x800758B4, 60);
-    
-    sw(0x800758AC, 0);
-    sw(0x800756D0, 0);
-    sw(0x800756F8, 0);
-    sw(0x80075704, lw(0x80075704)+1);
-  } else if (v1 == 100) {
-    sw(0x800756F8, lw(0x800756F8)+lw(0x800756CC));
-    a0 = 1;
-    function_80015370();
+  if (lw(0x80075B50) == 0 && lw(0x80075B58) == 0) return -1;
+  
+  if (!async) while (lw(0x80075B58) == 0) inter(0);
+  
+  if (lw(0x80075B58) || !async) {
+    if (a2) sw(a2, lw(0x80075B98));
+    if (a1) sw(a1, lw(0x80075B94));
+    sw(0x80075B58, 0);
+    return 1;
+  } else {
+    if (a2) sw(a2, lw(0x80075B54));
+    if (a1) sw(a1, lw(0x80075B50));
+    return 0;
   }
 }
 
-uint32_t func_80056DC4(uint32_t a, uint32_t b)
+// size: 0x000000F0
+void function_80067628(void)
 {
-  for (int i = 0; i < 24; i++)
-  {
-    if (lw(0x80075F30 + i*0x1C + 0x00) == a
-     && lbu(0x80075F30 + i*0x1C + 0x0D) == b)
-    {
-      if (lhu(0x80075F30 + i*0x1C + 0x0E) & 0x100) 
-        return 2;
-      else
-        return 1;
-    }
-  }
-  return 0;
-}
-
-// size: 0x00000078
-void function_80056DC4(void)
-{
-  v0 = func_80056DC4(a0, a1);
+  v0 = func_80067628(a0, a1, a2);
 }
