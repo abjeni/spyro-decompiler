@@ -206,33 +206,14 @@ void int_load_regs(void)
   lo = int_ret_regs[33];
 }
 
-// just directly putting this here
-void function_80069634(void)
+uint32_t function_80069634(void)
 {
-  uint32_t temp;
-  v1 = lw(I_STAT2_ptr);
-  sp -= 24; // 0xFFFFFFE8
-  sw(sp + 0x0010, ra);
-  v0 = lw(v1 + 0x0004);
-  v0 = v0 & 0x1;
-  temp = v0 == 0;
-  v0 = 0;
-  if (temp) goto label8006968C;
-  v0 = lw(v1 + 0x0000);
-  v0 = v0 & 0x1;
-  temp = v0 == 0;
-  v0 = 0;
-  if (temp) goto label8006968C;
-  v0 = lw(0x800751E4); // &0x00000000
-  temp = v0 == 0;
-  if (temp) goto label80069688;
-  UNREACHABLE;
-label80069688:
-  v0 = 1; // 0x0001
-label8006968C:
-  ra = lw(sp + 0x0010);
-  sp += 24; // 0x0018
-  return;
+  if ((lw(lw(I_MASK_ptr)) & 1) == 0) return 0;
+  if ((lw(lw(I_STAT_ptr)) & 1) == 0) return 0;
+  if (lw(0x800751E4))
+    UNREACHABLE;
+  
+  return 1;
 }
 
 void function_8006969C(void);
@@ -247,17 +228,10 @@ void interrupt2(uint32_t type)
     if(SysIntRP[i])
     {
       uint32_t addr = lw(SysIntRP[i]+8);
-      switch(addr)
-      {
-      case 0x80069634:
-        function_80069634();
-        break;
-      default:
-        printf("unknown interrupt address %.8X\n", addr);
-        UNREACHABLE;
-      }
 
-      if (v0)
+      if (addr != 0x80069634) UNREACHABLE;
+
+      if (function_80069634())
       {
         uint32_t addr = lw(SysIntRP[i]+4);
         switch(addr)

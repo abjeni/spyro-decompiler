@@ -100,13 +100,15 @@ struct function_name function_names[] = {
   {0x8005DB94, "v0 = EnableEvent(a0)"},
   {0x8005DBA4, "v0 = EnterCriticalSection()"},
   {0x8005DBB4, "ExitCriticalSection()"},
-  {0x8005DBC4, "v0 = VSync(a0)"},
   */
+  {0x8005DBC4, "v0 = VSync(a0)"},
   {0x8005DD0C, "wait_until_frame(a0, a1)"},
   /*
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
+  */
   {0x8005DF44, "v0 = set_I_MASK(a0)"},
+  /*
   {0x8005DF60, "v0 = init_hook_entry_int()"},
   */
   {0x8005E4AC, "spyro_memclr32(a0, a1)"},
@@ -120,6 +122,9 @@ struct function_name function_names[] = {
   {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
   */
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
+
+
+
   /*
   {0x8005F2A4, "v0 = ResetGraph(a0)"},
   {0x8005F53C, "v0 = SetGraphDebug(a0)"},

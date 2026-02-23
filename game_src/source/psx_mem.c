@@ -1559,6 +1559,9 @@ struct segment segments[] = {
   //{0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
   {0x80010000, 0x5BBDC, MASK_READONLY},
   //{player_movestate, 4, MASK_WRITE}
+
+  {VSync_last_vsync_time, 4 + 4, MASK_FORBIDDEN},
+  //{VSync_last_frame_num, 4, MASK_FORBIDDEN},
 };
 
 void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
