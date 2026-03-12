@@ -229,7 +229,7 @@ struct address_name address_names[] = {
   {0x80074B78, "saved_I_STAT2"},
   {0x80074B7C, "gpu_frame_limit"},
   {0x80074B80, "gpu_retry_counter"},
-  {0x80074B84, "sqrt_lookup_ptr"},
+  {0x80074B84, "sqrt_lookup_ptr", 0xC0*2},
   {0x800750FC, "CDROM_INDEX_ptr"},
   {0x80075100, "CDROM_REG_1_ptr"},
   {0x80075104, "CDROM_REG_2_ptr"},
