@@ -14,7 +14,7 @@ uint32_t at, gp, sp, fp, ra, pc, hi, lo;
 
 void wad_main(void);
 
-void print_psx_string_array(char *name, uint32_t base, uint32_t n) {
+void print_psx_string_array(const char *name, uint32_t base, uint32_t n) {
   printf("char *%s[] = {\n", name);
   for (int i = 0; i < n; i++)
   {

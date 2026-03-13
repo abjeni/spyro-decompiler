@@ -13,7 +13,7 @@
 
 #define WIDTH (512)
 #define HEIGHT (240)
-#define SCALE 4
+#define SCALE 3
 
 int resx = WIDTH;
 int resy = HEIGHT;

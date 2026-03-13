@@ -10,7 +10,7 @@ SOURCE_DIR := source
 DECOMPILE_DIR := decompiled
 MEMCARD_DIR := ../mem_card
 
-CFLAGS := -Wall -O2 -ggdb -pipe -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
+CFLAGS := -Werror -Wwrite-strings -Wimplicit-function-declaration -Wall -O2 -ggdb -pipe -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
 #CFLAGS := -Wall -march=native -Ofast -pipe
 
 sdl : CFLAGS += -I$(SOURCE_DIR)/platform/sdl/ -march=native

@@ -472,10 +472,8 @@ void OP(uint32_t sf, uint32_t lm)
   clamp_REGS(min);
 }
 
-uint32_t lzcr(uint32_t num)
+uint32_t ulzcr(uint32_t num)
 {
-  if (num&0x80000000) num = ~num;
-
   if (num == 0) return 32;
 
   for (int i = 0; i < 32; i++)
@@ -486,6 +484,13 @@ uint32_t lzcr(uint32_t num)
 
   UNREACHABLE;
   return -1;
+}
+
+uint32_t lzcr(uint32_t num)
+{
+  if (num&0x80000000) num = ~num;
+
+  return ulzcr(num);
 }
 
 uint32_t LZCR(void)

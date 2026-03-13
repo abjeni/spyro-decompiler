@@ -32,15 +32,15 @@ void _card_write(uint32_t port, uint32_t sector, uint32_t src);
 uint32_t _card_info(uint32_t port);
 uint32_t _card_load(uint32_t port);
 
-uint32_t psx_open(char *file_name, uint32_t mode);
+uint32_t psx_open(const char *file_name, uint32_t mode);
 uint32_t psx_lseek(uint32_t fd, uint32_t offset, uint32_t seektype);
 uint32_t psx_read(uint32_t fd, char *dst, uint32_t len);
-uint32_t psx_write(int fd, char *src, uint32_t len);
+uint32_t psx_write(int fd, const char *src, uint32_t len);
 uint32_t psx_close(uint32_t fd);
 
 uint32_t GetC0Table(void);
 void FlushCache(void);
 
-void LoadExec(char *filename, uint32_t stackbase, uint32_t stack_offset);
+void LoadExec(const char *filename, uint32_t stackbase, uint32_t stack_offset);
 void psx_exit(uint32_t code);
 uint32_t format(uint32_t devicename);

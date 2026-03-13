@@ -1,6 +1,7 @@
 #include "main.h"
 #include "psx_mem.h"
 #include "psx_bios.h"
+#include "psx_ops.h"
 #include "decompilation.h"
 #include "int_math.h"
 #include <stdio.h>

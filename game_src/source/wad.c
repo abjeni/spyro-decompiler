@@ -317,7 +317,7 @@ int is_subwad(uint32_t entry, uint32_t offset)
   return 1;
 }
 
-void wad_header_info(char *name, uint32_t offset, uint32_t entries)
+void wad_header_info(const char *name, uint32_t offset, uint32_t entries)
 {
   read_disk1(0x25, 0x80100000, 0x800, offset, 0x258);
 

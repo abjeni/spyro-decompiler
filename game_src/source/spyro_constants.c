@@ -1,4 +1,6 @@
-char *balloonist_names[] = { // 0x8006F880
+
+
+const char *balloonist_names[] = { // 0x8006F880
   "RETURN HOME",
   "MARCO",
   "GOSNOLD",
@@ -8,7 +10,7 @@ char *balloonist_names[] = { // 0x8006F880
   "HAK",
 };
 
-char *homeworld_names[] = { // 0x8006F7D4
+const char *homeworld_names[] = { // 0x8006F7D4
   "ARTISANS",
   "PEACE KEEPERS",
   "MAGIC CRAFTERS",
@@ -18,7 +20,7 @@ char *homeworld_names[] = { // 0x8006F7D4
   "THIGH MASTERS",
 };
 
-char *level_names[] = { // 0x8006F7F0
+const char *level_names[] = { // 0x8006F7F0
   "HOME",
   "STONE HILL",
   "DARK HOLLOW",
@@ -57,7 +59,7 @@ char *level_names[] = { // 0x8006F7F0
   "A",
 };
 
-char *dragon_names[] = {
+const char *dragon_names[] = {
   "SILVUS",
   "ARGUS",
   "DELBIN",
@@ -177,7 +179,7 @@ union color15 colors[] = { // 0x8006F310
 };
 */
 
-char *cd_cmd_str[] = {
+const char *cd_cmd_str[] = {
   "CdlSync",
   "CdlNop",
   "CdlSetloc",
@@ -212,7 +214,7 @@ char *cd_cmd_str[] = {
   "?",
 };
 
-char *cd_status_str[] = {
+const char *cd_status_str[] = {
   "NoIntr",
   "DataReady",
   "Complete",

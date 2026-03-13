@@ -502,9 +502,9 @@ union mode {
 // buffer overflow warning
 char memcard_path[256];
 
-char *get_memcard_path(char *file_name)
+char *get_memcard_path(const char *file_name)
 {
-  char *prefix = "mem_card/";
+  const char *prefix = "mem_card/";
   char *buf = memcard_path;
 
   uint32_t available = 256-9;
@@ -621,7 +621,7 @@ uint32_t psx_lseek(uint32_t fd, uint32_t offset, uint32_t seektype)
   return cursor;
 }
 
-uint32_t psx_write(int fd, char *str, uint32_t len)
+uint32_t psx_write(int fd, const char *str, uint32_t len)
 {
   if (fd == 1) {
     printf("%.*s", len, str);

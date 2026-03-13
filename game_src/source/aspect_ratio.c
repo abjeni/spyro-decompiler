@@ -1,10 +1,14 @@
+/*
+
 #include <stdint.h>
 
 #include "psx_mem.h"
+#include "psx_ops.h"
 #include "main.h"
 #include "decompilation.h"
 #include "spyro_string.h"
 #include "spyro_vsync.h"
+#include "spyro_math.h"
 
 //#define WIDESCREEN
 
@@ -19,12 +23,12 @@ static void adjust_mat(uint32_t mat)
     uint32_t addr = sp + 0x10 + 3*2*1 + i*2;
     sh(addr, ((int32_t)lh(addr))*320/512);
   }
-#else /* WIDESCREEN */
+#else // WIDESCREEN
   for (int i = 0; i < 3; i++) {
     uint32_t addr = sp + 0x10 + 3*2*1 + i*2;
     sh(addr, ((int32_t)lh(addr))*320/512);
   }
-#endif /* WIDESCREEN */
+#endif // WIDESCREEN
 }
 
 // size: 0x000003BC
@@ -40,15 +44,15 @@ void function_8001A050(void)
   v1 = lbu(SKYBOX_DATA + 0x11);
   a3 = lbu(SKYBOX_DATA + 0x12);
 
-  sb(DISP1 + 0x0019, v0);
-  sb(DISP1 + 0x001A, v1);
-  sb(DISP1 + 0x001B, a3);
-  sb(DISP2 + 0x0019, v0);
-  sb(DISP2 + 0x001A, v1);
-  sb(DISP2 + 0x001B, a3);
+  sb(DISP1 + 0x19, v0);
+  sb(DISP1 + 0x1A, v1);
+  sb(DISP1 + 0x1B, a3);
+  sb(DISP2 + 0x19, v0);
+  sb(DISP2 + 0x1A, v1);
+  sb(DISP2 + 0x1B, a3);
 
   spyro_memset32(0x8006FCF4, 0, 0x900);
-  v0 = lw(0x800756B0); // &0x00000000
+  v0 = lw(0x800756B0);
   temp = v0 == 0;
   if (temp) goto label8001A0D8;
   function_8001973C();
@@ -79,23 +83,23 @@ label8001A11C:
   s1 = 4096; // 0x1000
   sh(sp + 0x0010, s1);
   a0 = v0 - a0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x80075910);
   sh(sp + 0x0018, v0);
   a0 = v1 - a0;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x80075910);
   sh(sp + 0x001E, v0);
   a0 = v1 - a0;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x80075910);
   v0 = -v0;
   sh(sp + 0x001A, v0);
   a0 = v1 - a0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   s0 = sp + 48; // 0x0030
   a0 = s0;
   a1 = 0;
@@ -103,18 +107,18 @@ label8001A11C:
   sh(sp + 0x0020, v0);
   spyro_memset32(a0, a1, a2);
   a0 = lh(0x80076E20);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(0x80076E20);
   sh(sp + 0x0030, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E20);
   v0 = -v0;
   sh(sp + 0x003C, v0);
   sh(sp + 0x0038, s1);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E20);
   sh(sp + 0x0034, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0040, v0);
@@ -124,22 +128,22 @@ label8001A11C:
   a2 = 32; // 0x0020
   spyro_memset32(a0, a1, a2);
   a0 = lh(0x80076E1C);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0030, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   v0 = -v0;
   sh(sp + 0x0036, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0032, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0038, v0);
   sh(sp + 0x0040, s1);
-  function_800624E8();
+  function_800624E8();;
   a0 = s0;
   a1 = sp + 16; // 0x0010
   a2 = 20; // 0x0014
@@ -211,7 +215,6 @@ label8001A3B4:
 // size: 0x000001F0
 void function_80033C50(void)
 {
-  uint32_t temp;
   sp -= 96; // 0xFFFFFFA0
   a0 = sp + 16; // 0x0010
   a1 = 0;
@@ -227,17 +230,17 @@ void function_80033C50(void)
   a0 = lh(s2 + 0x0000);
   s1 = 4096; // 0x1000
   sh(sp + 0x0010, s1);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(s2 + 0x0000);
   sh(sp + 0x0018, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(s2 + 0x0000);
   sh(sp + 0x001E, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(s2 + 0x0000);
   v0 = -v0;
   sh(sp + 0x001A, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   s0 = sp + 48; // 0x0030
   a0 = s0;
   a1 = 0;
@@ -245,43 +248,43 @@ void function_80033C50(void)
   sh(sp + 0x0020, v0);
   spyro_memset32(a0, a1, a2);
   a0 = lh(0x80076E20);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(0x80076E20);
   sh(sp + 0x0030, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E20);
   v0 = -v0;
   sh(sp + 0x003C, v0);
   sh(sp + 0x0038, s1);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E20);
   sh(sp + 0x0034, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0040, v0);
-  function_800624E8();
+  function_800624E8();;
   a0 = s0;
   a1 = 0;
   a2 = 32; // 0x0020
   spyro_memset32(a0, a1, a2);
   a0 = lh(0x80076E1C);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0030, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   v0 = -v0;
   sh(sp + 0x0036, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0032, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0038, v0);
   sh(sp + 0x0040, s1);
-  function_800624E8();
+  function_800624E8();;
   a0 = s2 - 58; // 0xFFFFFFC6
   a1 = sp + 16; // 0x0010
   a2 = 20; // 0x0014
@@ -349,23 +352,23 @@ label80050C60:
   s1 = 4096; // 0x1000
   sh(sp + 0x0010, s1);
   a0 = v0 - a0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x800758FC);
   sh(sp + 0x0018, v0);
   a0 = v1 - a0;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x800758FC);
   sh(sp + 0x001E, v0);
   a0 = v1 - a0;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(s0 + 0x0000);
   a0 = lw(0x800758FC);
   v0 = -v0;
   sh(sp + 0x001A, v0);
   a0 = v1 - a0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   s0 = sp + 48; // 0x0030
   a0 = s0;
   a1 = 0;
@@ -375,49 +378,49 @@ label80050C60:
   v0 = lh(0x80076E20);
   a0 = lw(0x80075858);
   a0 += v0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   v1 = lh(0x80076E20);
   a0 = lw(0x80075858);
   sh(sp + 0x0030, v0);
   a0 += v1;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(0x80076E20);
   a0 = lw(0x80075858);
   v0 = -v0;
   sh(sp + 0x003C, v0);
   sh(sp + 0x0038, s1);
   a0 += v1;
-  function_80016C58();
+  v0 = spyro_sin(a0);
   v1 = lh(0x80076E20);
   a0 = lw(0x80075858);
   sh(sp + 0x0034, v0);
   a0 += v1;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0040, v0);
-  function_800624E8();
+  function_800624E8();;
   a0 = s0;
   a1 = 0;
   a2 = 32; // 0x0020
   spyro_memset32(a0, a1, a2);
   a0 = lh(0x80076E1C);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0030, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   v0 = -v0;
   sh(sp + 0x0036, v0);
-  function_80016C58();
+  v0 = spyro_sin(a0);
   a0 = lh(0x80076E1C);
   sh(sp + 0x0032, v0);
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a0 = sp + 16; // 0x0010
   a1 = s0;
   sh(sp + 0x0038, v0);
   sh(sp + 0x0040, s1);
-  function_800624E8();
+  function_800624E8();;
   a0 = s0;
   a1 = sp + 16; // 0x0010
   a2 = 20; // 0x0014
@@ -452,7 +455,7 @@ label80050EC0:
   v0 = v0 << 4;
   a0 = t4 << 9;
   a0 += v0;
-  function_80016CB0();
+  v0 = spyro_cos(a0);
   a1 = 0x00FF0000;
   v1 = lw(s5 + 0x0000);
   temp = (int32_t)v0 >= 0;
@@ -465,13 +468,13 @@ label80050EFC:
   sw(sp + 0x00B8, a2);
   a0 = lw(v0 + 0x0010);
   a1 = a1 | 0xFFFF;
-  function_80017E54();
+  function_80017E54();;
   a0 = lw(sp + 0x0140);
   a1 = lw(s5 + 0x0000);
   a2 = 0x80076DF8;
   sw(sp + 0x00B8, v0);
   a1 += 32; // 0x0020
-  function_8001778C();
+  spyro_vec3_sub(a0, a1, a2);
   v1 = lw(sp + 0x0050);
   v0 = lw(sp + 0x0054);
   a0 = lw(sp + 0x0058);
@@ -489,7 +492,7 @@ label80050F54:
   a0 = -a0;
 label80050F64:
   a0 += v1;
-  function_80016D08();
+  v0 = spyro_log2_uint(a0);
   s4 = v0;
   v0 = (int32_t)s4 < 15;
   temp = v0 != 0;
@@ -497,20 +500,20 @@ label80050F64:
   if (temp) goto label80050F9C;
   a0 = lw(sp + 0x0140);
   a1 = s4;
-  function_800176C8();
+  spyro_vec3_shift_right(a0, a1);
   a0 = lw(sp + 0x0140);
   a1 = 1; // 0x0001
-  function_800171FC();
+  v0 = spyro_vec_length(a0, a1);
   v0 = v0 << s4;
   goto label80050FA8;
 label80050F9C:
   a0 = lw(sp + 0x0140);
   a1 = 1; // 0x0001
-  function_800171FC();
+  v0 = spyro_vec_length(a0, a1);
 label80050FA8:
   sw(sp + 0x0138, v0);
   a0 = lw(sp + 0x0138);
-  function_80016D08();
+  v0 = spyro_log2_uint(a0);
   s4 = v0 - 13; // 0xFFFFFFF3
   temp = (int32_t)s4 >= 0;
   if (temp) goto label80050FC8;
@@ -539,11 +542,11 @@ label80051014:
   a0 = lw(SKYBOX_DATA + 0x0010);
   a1 = lw(sp + 0x00B8);
   a2 = s2;
-  function_80017E54();
+  function_80017E54();;
   sw(sp + 0x00B8, v0);
 label8005102C:
   a0 = sp + 96; // 0x0060
-  function_800176F0();
+  spyro_vec3_clear(a0);
   v0 = lw(s5 + 0x0000);
   v0 = lw(v0 + 0x0004);
   temp = (int32_t)v0 <= 0;
@@ -563,7 +566,7 @@ label8005105C:
   a2 = lw(s5 + 0x0000);
   a1 = s3;
   a2 += s0;
-  function_80017758();
+  spyro_vec3_add(a0, a1, a2);
   v0 = lw(s5 + 0x0000);
   s2++;
   v0 = lw(v0 + 0x0004);
@@ -630,10 +633,10 @@ label80051164:
   a2 = lw(s5 + 0x0000);
   a0 = lw(sp + 0x0140);
   a2 += 44; // 0x002C
-  function_8001778C();
+  spyro_vec3_sub(a0, a1, a2);
   a0 = lw(sp + 0x0140);
   a1 = s4;
-  function_800176C8();
+  spyro_vec3_shift_right(a0, a1);
   a0 = lw(s5 + 0x0000);
   v0 = lw(sp + 0x0050);
   v1 = lw(a0 + 0x0008);
@@ -958,7 +961,7 @@ label800516F8:
   if (temp) goto label800517DC;
   a2 = 0x80076DF8;
   a1 = sp + 96; // 0x0060
-  function_8001778C();
+  spyro_vec3_sub(a0, a1, a2);
   a0 = sp + 144; // 0x0090
   s0 = sp + 152; // 0x0098
   a1 = s0;
@@ -976,11 +979,11 @@ label800516F8:
   sb(sp + 0x0090, a3);
   sb(sp + 0x0091, v0);
   sb(sp + 0x0092, v1);
-  function_80016D2C();
+  spyro_mat3_rotation(a0, a1, a2);
   a0 = s0;
   a1 = sp + 112; // 0x0070
   a2 = a1;
-  function_80017048();
+  spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
   v1 = lw(sp + 0x0070);
   v0 = lw(sp + 0x0080);
   mult(v1, v0);
@@ -1044,7 +1047,7 @@ label80051814:
   v0 = lw(v0 + 0x0000);
   sw(0x8007575C, a2); // &0x00000000
   a0 = lw(v0 + 0x0010);
-  function_80017E54();
+  function_80017E54();;
   a0 = 0x800757D4; // &0x00000000
   sw(0x800757D4, v0); // &0x00000000
   goto label800518C4;
@@ -1326,7 +1329,7 @@ label80051D8C:
   if (temp) goto label80051E70;
   a2 = 0x80076DF8;
   a1 = sp + 96; // 0x0060
-  function_8001778C();
+  spyro_vec3_sub(a0, a1, a2);
   a0 = sp + 224; // 0x00E0
   s0 = sp + 232; // 0x00E8
   a1 = s0;
@@ -1344,11 +1347,11 @@ label80051D8C:
   sb(sp + 0x00E0, a3);
   sb(sp + 0x00E1, v0);
   sb(sp + 0x00E2, v1);
-  function_80016D2C();
+  spyro_mat3_rotation(a0, a1, a2);
   a0 = s0;
   a1 = sp + 192; // 0x00C0
   a2 = a1;
-  function_80017048();
+  spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
   v1 = lw(sp + 0x00C0);
   v0 = lw(sp + 0x00D0);
   mult(v1, v0);
@@ -1410,7 +1413,7 @@ label80051EA8:
   a2 = t4 - 12288; // 0xFFFFD000
   sw(0x8007575C, a2); // &0x00000000
   a0 = lw(v0 + 0x0010);
-  function_80017E54();
+  function_80017E54();;
   v1 = lw(s5 + 0x0000);
   a1 = sp + 16; // 0x0010
   a0 = lw(v1 + 0x0000);
@@ -1460,3 +1463,5 @@ label80051FB0:
   sp += 416; // 0x01A0
   return;
 }
+
+*/

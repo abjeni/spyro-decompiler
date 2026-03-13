@@ -54,7 +54,7 @@
 
 uint32_t joy_state[] = {STATE_NONE, STATE_NONE};
 
-char *dmas[] = {
+const char *dmas[] = {
   "MDECin",
   "MDECout",
   "GPU",
@@ -69,7 +69,7 @@ char *dmas[] = {
 #define SYNC_BLOCKS 1
 #define SYNC_LINK_LIST 2
 
-char *filename = "root/SCUS_942.28;1";
+const char *filename = "root/SCUS_942.28;1";
 
 struct psx_mem psx_mem;
 
@@ -1470,7 +1470,7 @@ void gpu_info(uint32_t info_type)
   }
 }
 
-char *dma_directions[] = {
+const char *dma_directions[] = {
   "Off", "FIFO", "CPUtoGP0", "GPUREADtoCPU"
 };
 
@@ -1486,7 +1486,7 @@ void GP1_cmd(uint32_t value, file_loc loc)
     break;
   case 0x03:
   {
-    char *onoff[] =  {
+    const char *onoff[] =  {
       "on", "off"
     };
     debug_printf(DEBUG_MASK_GPU, "file %s:%u: GP1 display enable %s\n", loc.file, loc.line, onoff[value&1]);
@@ -1564,7 +1564,7 @@ struct segment segments[] = {
   //{VSync_last_frame_num, 4, MASK_FORBIDDEN},
 };
 
-void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
+void report_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, uint32_t value)
 {
   for (int i = 0; i < sizeof(segments)/sizeof(struct segment); i++)
   {
@@ -1590,7 +1590,7 @@ void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_
   }
 }
 
-void check_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
+void check_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, uint32_t value)
 {
   report_addr(addr, size, loc, func, value);
   
