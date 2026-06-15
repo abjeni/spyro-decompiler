@@ -2,25 +2,14 @@
 #include "psx_mem.h"
 #include "psx_bios.h"
 #include "decompilation.h"
+#include "not_renamed.h"
 #include "spyro_string.h"
 #include "spyro_psy.h"
 #include "spyro_game.h"
+#include "psx_ops.h"
+#include "spyro_print.h"
 
 #include <string.h>
-
-// size: 0x0000002C
-void function_8006BAE8(void)
-{
-  if (lhu(a0 + 0xE6)) {
-    if (lbu(a0 + 0x46) == 0xFF) {
-      v0 = 1;
-    } else {
-      v0 = 0;
-    }
-  } else {
-    v0 = 1;
-  }
-}
 
 // size: 0x00000020
 void set_timer(uint32_t duration)
@@ -31,7 +20,7 @@ void set_timer(uint32_t duration)
 
 void function_8006BB20(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   set_timer(a0);
 }
 
@@ -56,7 +45,7 @@ uint32_t get_timer(void)
 
 void function_8006BB40(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = get_timer();
 }
 
@@ -93,7 +82,7 @@ void do_literally_nothing(void)
 
 void function_8005C720(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   do_literally_nothing();
 }
 
@@ -141,7 +130,7 @@ void function_8005E224(void)
 uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
 {
   uint32_t DMA_interrupt_register = lw(DMA_interrupt_register_ptr);
-  v1 = 0x800749EC + dma_num*4;
+  v1 = DMA_callbacks + dma_num*4;
   a3 = lw(v1);
   if (callback != a3) {
     if (callback) {
@@ -158,21 +147,21 @@ uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
 // size: 0x000000A8
 void function_8005E804(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = dma_callback(a0, a1);
 }
 
 // size: 0x00000030
 uint32_t dma_callback2(uint32_t dma_num, uint32_t callback)
 {
-  if (lw(v0 + 0x04) != 0x8005E804) BREAKPOINT;
+  if (lw(v0 + 0x04) != 0x8005E804) UNREACHABLE;
   return dma_callback(a0, a1);
 }
 
 // size: 0x00000030
 void function_8005DE28(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = dma_callback2(a0, a1);
 }
 
@@ -197,7 +186,7 @@ void spyro_patch_bios(void)
 // size: 0x00000068
 void function_80062648(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_patch_bios();
 }
 
@@ -229,20 +218,205 @@ void function_80067628(void)
 
 
 // size: 0x000000AC
-void function_8005B8E0(void)
+void spyro_start(void)
 {
-  memset(addr_to_pointer(0x80075640), 0, 0x8007AA38-0x80075640);
+  memset(addr_to_pointer(0x80075640), 0, 0x53F8);  // [0x80075640 - 0x8007AA38]
 
-  sp = (lw(0x800755A8)-8) | 0x80000000;
-  a0 = 0x8007AA38 & 0x1FFFFFFF;
-  v1 = lw(0x800755A4);
-  a1 = v0 - v1 - a0;
-  sw(0x800730C4, a1);
-  a0 = a0 | 0x80000000;
-  sw(0x800730C0, a0);
-  gp = 0x80075264;
+  uint32_t sp_num = (0x200000-8);
+
+  sp = sp_num | 0x80000000;
   fp = sp;
-  a0 += 4;
-  InitHeap(a0, a1);
+  gp = 0x80075264;
+  v1 = lw(0x800755A4);
+  sw(heap_base, lib_begin);
+  sw(heap_size, sp_num - 0x800 - 0x7AA38); // 0x184DC0
+  InitHeap(0x8007AA3C, sp_num - 0x800 - 0x7AA38); // do not use this heap!!!
   game_loop();
+}
+
+// size: 0x00000030
+void function_8005DDF8(void)
+{
+  if (lw(lw(0x800749AC) + 0x08) != 0x8005E224) UNREACHABLE;
+  function_8005E224();
+}
+
+// size: 0x00000058
+void function_8005E508(void)
+{
+  a0 = 0x800749C0; // &0x00000000
+  v1 = lw(TIMER_1_horizontal_retrace_counter_mode_ptr);
+  v0 = 263; // 0x0107
+  sw(lw(TIMER_1_horizontal_retrace_counter_mode_ptr), 0x0107);
+  sw(frame_counter, 0);
+  a1 = 8; // 0x0008
+  spyro_memclr32(a0, a1);
+  a1 = 0x8005E560; // &0x3C028007
+  a0 = 0;
+  function_8005DDF8();
+  v0 = 0x8005E5D8; // &0x3C028007
+}
+
+// size: 0x00000050
+void function_8005E630(void)
+{
+  spyro_memclr32(DMA_callbacks, 8);
+  sw(lw(DMA_interrupt_register_ptr), 0);
+  a0 = 3;
+  a1 = 0x8005E680; // &0x3C028007
+  function_8005DDF8();
+  v0 = 0x8005E804; // &0x00803021
+}
+
+// size: 0x000000DC
+uint32_t init_hook_entry_int(void)
+{
+  if (lhu(0x80073924)) return 0;
+  sh(lw(I_MASK_ptr), 0);
+  sh(lw(I_STAT_ptr), 0);
+  sw(lw(DMA_control_register_copy_1_ptr), 0x33333333);
+  spyro_memclr32(0x80073924, 0x41A);
+  a0 = 0x80073924 + 0x38;
+  function_800638EC();
+  if (v0)
+    function_8005E03C();
+  
+  sw(a0 + 4, 0x8007493C);
+  HookEntryInt(0x80073924 + 0x38);
+  sh(0x80073924, 1);
+  function_8005E508();
+  sw(lw(0x800749AC) + 0x14, v0); // &0x8007498C
+  function_8005E630();
+  sw(lw(0x800749AC) + 0x04, v0); // &0x8007498C
+  _96_remove();
+  ExitCriticalSection();
+  return 0x80073924;
+}
+
+void function_8005DF60(void)
+{
+  UNREACHABLE;
+  v0 = init_hook_entry_int();
+}
+
+// size: 0x00000030
+uint32_t init_hook_entry_int2(void)
+{
+  if (lw(lw(0x800749AC) + 0x0C) != 0x8005DF60) UNREACHABLE;
+  return init_hook_entry_int();
+}
+
+// size: 0x00000030
+void function_8005DDC8(void)
+{
+  UNREACHABLE;
+  v0 = init_hook_entry_int2();
+}
+
+// size: 0x000001E8
+void function_8005E03C(void)
+{
+  sp -= 40; // 0xFFFFFFD8
+  sw(sp + 0x0014, s1);
+  sw(sp + 0x0024, ra);
+  sw(sp + 0x0020, s4);
+  sw(sp + 0x001C, s3);
+  sw(sp + 0x0018, s2);
+  sw(sp + 0x0010, s0);
+  if (lhu(0x80073924) == 0) {
+    printf("unexpected interrupt(%04x)\n", lhu(lw(I_STAT_ptr)));
+    //ReturnFromException();
+    goto end;
+  }
+  sh(0x80073926, 1);
+  while ((s0 = lhu(lw(I_MASK_ptr)) & lhu(0x80073954) & lhu(lw(I_STAT_ptr)))) {
+    for (int i = 0; i < 12; i++) {
+      if (!(s0 & 0xFFF)) break;
+      if (s0 & 1) {
+        sh(lw(I_STAT_ptr), ~(1 << i)); // acknowledge interrupt
+        uint32_t callback = lw(0x80073928 + i*4);
+        switch (callback)
+        {
+        case 0:
+          break;
+        case 0x8006590C:
+          function_8006590C();
+          break;
+        case 0x8005E560:
+          function_8005E560();
+          break;
+        default:
+          JALR(callback, 0x8005E11C);
+        }
+      }
+      s0 = s0 >> 1;
+    }
+  }
+  if (!(lhu(lw(I_MASK_ptr)) & lhu(lw(I_STAT_ptr))))
+  {
+    sw(0x800749BC, 0);
+  } else {
+    sw(0x800749BC, lw(0x800749BC) + 1);
+    if ((int32_t)v0 > 2048) {
+      printf("intr timeout(%04x:%04x)\n", lhu(lw(I_STAT_ptr)), lhu(lw(I_MASK_ptr)));
+      sw(0x800749BC, 0);
+      sh(lw(I_STAT_ptr), 0);
+    }
+  }
+  sh(0x80073926, 0);
+  //ReturnFromException();
+end:
+  ra = lw(sp + 0x0024);
+  s4 = lw(sp + 0x0020);
+  s3 = lw(sp + 0x001C);
+  s2 = lw(sp + 0x0018);
+  s1 = lw(sp + 0x0014);
+  s0 = lw(sp + 0x0010);
+  sp += 40; // 0x0028
+  return;
+}
+
+void function_80067CD4(void);
+
+// size: 0x00000078
+void function_8005E560(void)
+{
+  uint32_t temp;
+  v0 = lw(frame_counter);
+  sp -= 32; // 0xFFFFFFE0
+  sw(sp + 0x0014, s1);
+  s1 = 0;
+  sw(sp + 0x0010, s0);
+  s0 = 0x800749C0; // &0x00000000
+  sw(sp + 0x0018, ra);
+  v0++;
+  sw(frame_counter, v0);
+  v0 = lw(frame_counter);
+label8005E598:
+  v0 = lw(s0 + 0x0000);
+  temp = v0 == 0;
+  if (temp) goto label8005E5B0;
+  temp = v0;
+  switch (temp)
+  {
+  case 0x80053C68:
+    function_80053C68();
+    break;
+  case 0x80067CD4:
+    function_80067CD4();
+    break;
+  default:
+    JALR(temp, 0x8005E5A8);
+  }
+label8005E5B0:
+  s1++;
+  v0 = (int32_t)s1 < 8;
+  temp = v0 != 0;
+  s0 += 4; // 0x0004
+  if (temp) goto label8005E598;
+  ra = lw(sp + 0x0018);
+  s1 = lw(sp + 0x0014);
+  s0 = lw(sp + 0x0010);
+  sp += 32; // 0x0020
+  return;
 }

@@ -6,6 +6,7 @@
 #include "gte.h"
 #include "main.h"
 #include "int_math.h"
+#include "spyro_game.h"
 #include "spyro_math.h"
 
 // size: 0x0000010C
@@ -17,7 +18,7 @@ uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst)
 
 void function_800623D8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_mat_mul(a0, a1, a2);
 }
 
@@ -29,9 +30,28 @@ uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2)
 // size: 0x0000010C
 void function_800624E8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_mat_mul_2(a0, a1);
 }
+
+const uint8_t atan_lut[64] = { // 0x8006D908
+  0x00, 0x01, 0x01, 0x02,
+  0x03, 0x03, 0x04, 0x04,
+  0x05, 0x06, 0x06, 0x07,
+  0x08, 0x08, 0x09, 0x09,
+  0x0a, 0x0b, 0x0b, 0x0c,
+  0x0c, 0x0d, 0x0d, 0x0e,
+  0x0f, 0x0f, 0x10, 0x10,
+  0x11, 0x11, 0x12, 0x12,
+  0x13, 0x13, 0x14, 0x14,
+  0x15, 0x15, 0x16, 0x16,
+  0x17, 0x17, 0x18, 0x18,
+  0x19, 0x19, 0x19, 0x1a,
+  0x1a, 0x1b, 0x1b, 0x1b,
+  0x1c, 0x1c, 0x1d, 0x1d,
+  0x1d, 0x1e, 0x1e, 0x1e,
+  0x1f, 0x1f, 0x1f, 0x20
+};
 
 int16_t spyro_atan(int32_t x, int32_t y)
 {
@@ -83,26 +103,7 @@ int16_t spyro_atan(int32_t x, int32_t y)
         v0 = 0xC0;
       }
 
-  const int lut[64] = {
-    0x00, 0x01, 0x01, 0x02,
-    0x03, 0x03, 0x04, 0x04,
-    0x05, 0x06, 0x06, 0x07,
-    0x08, 0x08, 0x09, 0x09,
-    0x0a, 0x0b, 0x0b, 0x0c,
-    0x0c, 0x0d, 0x0d, 0x0e,
-    0x0f, 0x0f, 0x10, 0x10,
-    0x11, 0x11, 0x12, 0x12,
-    0x13, 0x13, 0x14, 0x14,
-    0x15, 0x15, 0x16, 0x16,
-    0x17, 0x17, 0x18, 0x18,
-    0x19, 0x19, 0x19, 0x1a,
-    0x1a, 0x1b, 0x1b, 0x1b,
-    0x1c, 0x1c, 0x1d, 0x1d,
-    0x1d, 0x1e, 0x1e, 0x1e,
-    0x1f, 0x1f, 0x1f, 0x20
-  };
-
-  uint32_t tmp = lut[lo];
+  uint32_t tmp = atan_lut[lo];
   if (at == 0) {
     at = v0 + tmp;
   } else {
@@ -114,7 +115,7 @@ int16_t spyro_atan(int32_t x, int32_t y)
 // size: 0x00000108
 void function_800169AC(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_atan(a0, a1);
 }
 
@@ -243,7 +244,7 @@ int16_t spyro_atan2(int32_t x, int32_t y, uint32_t a3)
 // size: 0x000001A4
 void function_80016AB4(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_atan2(a0, a1, a2);
 }
 
@@ -339,14 +340,14 @@ int16_t spyro_sin(int32_t angle)
 // size: 0x00000058
 void function_80016C58(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_sin(a0);
 }
 
 // size: 0x00000058
 void function_80016CB0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_cos(a0);
 }
 
@@ -360,7 +361,7 @@ uint32_t spyro_log2_uint(uint32_t a)
 // size: 0x00000024
 void function_80016D08(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_log2_uint(a0);
 }
 
@@ -392,7 +393,7 @@ void spyro_mat3_rotation(uint32_t rot_addr, uint32_t dst, uint32_t src)
 // given rotation vector
 void function_80016D2C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_mat3_rotation(a0, a1, a2);
 }
 
@@ -406,7 +407,7 @@ void spyro_mat3_transpose(uint32_t dst, uint32_t src)
 // size: 0x00000078
 void function_80016FD0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_mat3_transpose(a0, a1);
 }
 
@@ -430,7 +431,7 @@ void spyro_set_mat_mirrored_vec_multiply(uint32_t mat, uint32_t vec_src, uint32_
 // size: 0x00000078
 void function_80017048(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
 }
 
@@ -453,7 +454,7 @@ void spyro_mat_mirrored_vec_multiply(uint32_t vec_src, uint32_t vec_dst)
 // size: 0x00000050
 void function_800170C0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_mat_mirrored_vec_multiply(a0, a1);
 }
 
@@ -477,7 +478,7 @@ void spyro_camera_mat_vec_multiply(vec3_32 *src, vec3_32 *dst)
 // size: 0x00000078
 void function_80017110(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -491,58 +492,60 @@ uint32_t spyro_vec_length(uint32_t vec, uint32_t is_vec3)
   if (is_vec3)
     z = lw(vec + 8);
 
-  at = x*x + y*y + z*z;
-  if (at == 0)
+  uint32_t sqr = x*x + y*y + z*z;
+  if (sqr == 0)
     return 0;
-  return spyro_sqrt(at);
+  return spyro_sqrt(sqr);
+}
+
+// vector length
+// should give the same result as spyro_vec_length, but doesnt use uint32_t pointer
+uint32_t vec3_32_length(vec3_32 v)
+{
+  uint32_t sqr = v.x*v.x + v.y*v.y + v.z*v.z;
+  if (sqr == 0)
+    return 0;
+  return spyro_sqrt(sqr);
 }
 
 void function_800171FC(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_vec_length(a0, a1);
+}
+
+// size: 0x00000094
+uint32_t math_func1(vec3_32 *v_src, int32_t n, uint32_t v3)
+{
+  vec3_32 v;
+  v.x = v_src->x;
+  v.y = v_src->y;
+  if (v3) v.z = v_src->z;
+  else    v.z = 0;
+
+  uint32_t n2 = n*n;
+
+  uint32_t d2 = v.x*v.x + v.y*v.y + v.z*v.z;
+
+  uint32_t a = (32 - lzcr(n2))/2;
+
+  uint32_t b = n2 >> a;
+
+  if (a > 6) {
+    int32_t c = d2/b - (1 << a);
+    c /= 2;
+    int32_t d = c*n >> a;
+    return n + d;
+  } else {
+    return b;
+  }
 }
 
 // size: 0x00000094
 void function_8001729C(void)
 {
-  uint32_t temp;
-  cop2.IR1 = lw(a0 + 0);
-  cop2.IR3 = 0;
-  cop2.IR2 = lw(a0 + 4);
-  if (a2)
-    cop2.IR3 = lw(a0 + 8);
-  mult(a1, a1);
-  SQR(SF_OFF);
-  at = cop2.MAC1;
-  v0 = cop2.MAC2;
-  v1 = cop2.MAC3;
-  at += v0;
-  at += v1;
-  v0=lo;
-  cop2.LZCS = v0;
-  v1 = LZCR();
-  a0 = 32; // 0x0020
-  v1 = a0 - v1;
-  v1 = v1 >> 1;
-  a0 = v1 - 6; // 0xFFFFFFFA
-  temp = (int32_t)a0 <= 0;
-  v0 = v0 >> v1;
-  if (temp) goto label80017328;
-  div_psx(at,v0);
-  a0 = 1; // 0x0001
-  a0 = a0 << v1;
-  at=lo;
-  at -= a0;
-  at = (int32_t)at >> 1;
-  mult(at, a1);
-  at=lo;
-  at = (int32_t)at >> v1;
-  v0 = a1 + at;
-  return;
-label80017328:
-  v0 = a1;
-  return;
+  UNREACHABLE;
+  v0 = math_func1(addr_to_pointer(a0), a1, a2);
 }
 
 // size: 0x000000F8
@@ -568,7 +571,7 @@ void spyro_set_vec3_length(uint32_t vec, int32_t len)
 
 void function_80017330(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_set_vec3_length(a0, a1);
 }
 
@@ -588,49 +591,24 @@ void function_80017428(void)
   cop2.IR3 = v1;
   MVMVA(SF_OFF, MX_RT, V_IR, CV_NONE, LM_OFF);
   t2 = cop2.MAC1;
-  cop2.IR1 = at;
-  cop2.IR2 = v0;
-  cop2.IR3 = v1;
-  v0 = 0;
   if ((int32_t)t2 < 0) {
     sw(a2 + 0, -a3);
     sw(a2 + 4, -t0);
     sw(a2 + 8, -t1);
+    v0 = 0;
     return;
   }
-  SQR(SF_OFF);
-  t3 = cop2.MAC1;
-  t4 = cop2.MAC2;
-  t5 = cop2.MAC3;
-  t3 += t4;
-  t3 += t5;
-  t2 = t2 << 6;
-  div_psx(t2,t3);
-  cop2.IR1 = at;
-  cop2.IR2 = v0;
-  cop2.IR3 = v1;
-  cop2.MAC1 = 0;
-  cop2.MAC2 = 0;
-  cop2.MAC3 = 0;
-  t2=lo;
-  cop2.IR0 = t2;
-  GPL(SF_OFF, LM_OFF);
-  at = cop2.MAC1;
-  v0 = cop2.MAC2;
-  v1 = cop2.MAC3;
+  div_psx(t2 << 6,at*at+v0*v0+v1*v1);
+  at *= lo;
+  v0 *= lo;
+  v1 *= lo;
   at = (int32_t)at >> 6;
   v0 = (int32_t)v0 >> 6;
   v1 = (int32_t)v1 >> 6;
-  a3 = at - a3;
-  t0 = v0 - t0;
-  t1 = v1 - t1;
-  at += a3;
-  v0 += t0;
-  v1 += t1;
-  sw(a2 + 0x0000, at);
-  sw(a2 + 0x0004, v0);
-  sw(a2 + 0x0008, v1);
-  v0 = 1; // 0x0001
+  sw(a2 + 0, at*2 - a3);
+  sw(a2 + 4, v0*2 - t0);
+  sw(a2 + 8, v1*2 - t1);
+  v0 = 1;
 }
 
 void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul)
@@ -649,7 +627,7 @@ void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul)
 // size: 0x0000005C
 void function_800175B8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   vec3_mul_div(a0, a1, a2);
 }
 
@@ -682,7 +660,7 @@ void spyro_vec3_multiply_fancy_shift_right(uint32_t vec, uint32_t mult, uint32_t
 
 void function_80017614(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_multiply_fancy_shift_right(a0, a1, a2);
 }
 
@@ -696,7 +674,7 @@ void spyro_vec3_shift_left(uint32_t vec, uint32_t shift)
 // size: 0x00000028
 void function_800176A0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_shift_left(a0, a1);
 }
 
@@ -710,7 +688,7 @@ void spyro_vec3_shift_right(uint32_t vec, uint32_t shift)
 // size: 0x00000028
 void function_800176C8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_shift_right(a0, a1);
 }
 
@@ -724,7 +702,7 @@ void spyro_vec3_clear(uint32_t vec)
 // size: 0x00000010
 void function_800176F0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_clear(a0);
 }
 
@@ -738,7 +716,7 @@ void spyro_vec3_copy(uint32_t dst, uint32_t src)
 // size: 0x0000001C
 void function_80017700(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_copy(a0, a1);
 }
 
@@ -752,7 +730,7 @@ void spyro_vec3_add(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_80017758(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_add(a0, a1, a2);
 }
 
@@ -766,7 +744,7 @@ void spyro_vec3_sub(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_8001778C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_sub(a0, a1, a2);
 }
 
@@ -780,7 +758,7 @@ void spyro_vec3_mul(uint32_t dst, uint32_t src, int32_t mul)
 // size: 0x00000038
 void function_800177C0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_mul(a0, a1, a2);
 }
 
@@ -794,7 +772,7 @@ void spyro_vec3_div(uint32_t dst, uint32_t src, int32_t div)
 // size: 0x0000005C
 void function_800177F8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec3_div(a0, a1, a2);
 }
 
@@ -808,7 +786,7 @@ void spyro_vec_interpolation(uint32_t dst, uint32_t vec1, uint32_t vec2, int32_t
 // size: 0x00000074
 void function_80017894(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_interpolation(a0, a1, a2, a3);
 }
 
@@ -825,7 +803,7 @@ uint32_t spyro_two_angle_diff_8bit(uint32_t a, uint32_t b)
 // zigzag function 0-128-0-128
 void function_80017908(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_diff_8bit(a0, a1);
 }
 
@@ -841,7 +819,7 @@ uint32_t spyro_two_angle_diff_12bit(uint32_t a, uint32_t b)
 // size: 0x00000020
 void function_80017928(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_diff_12bit(a0, a1);
 }
 
@@ -858,7 +836,7 @@ uint32_t spyro_two_angle_signed_diff_8bit(int32_t a, int32_t b)
 // size: 0x00000024
 void function_80017948(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_signed_diff_8bit(a0, a1);
 }
 
@@ -874,7 +852,7 @@ uint32_t spyro_two_angle_signed_diff_12bit(int32_t a, int32_t b)
 // size: 0x00000024
 void function_8001796C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
 }
 
@@ -898,7 +876,7 @@ uint32_t spyro_octagon_distance(uint32_t a, uint32_t b)
 // octagon distance between two points
 void function_80017990(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_octagon_distance(a0, a1);
 }
 
@@ -919,32 +897,58 @@ uint32_t spyro_attract_angle_in_range(uint32_t a, uint32_t b, int32_t attraction
 
 void function_800179F0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_attract_angle_in_range(a0, a1, a2, a3);
 }
+
+int16_t sqrt_lookup[] = { // 0x80074B84
+  0x1000, 0x101F, 0x103F, 0x105E, 0x107E, 0x109C, 0x10BB, 0x10DA, 
+  0x10F8, 0x1116, 0x1134, 0x1152, 0x116F, 0x118C, 0x11A9, 0x11C6, 
+  0x11E3, 0x1200, 0x121C, 0x1238, 0x1254, 0x1270, 0x128C, 0x12A7, 
+  0x12C2, 0x12DE, 0x12F9, 0x1314, 0x132E, 0x1349, 0x1364, 0x137E, 
+  0x1398, 0x13B2, 0x13CC, 0x13E6, 0x1400, 0x1419, 0x1432, 0x144C, 
+  0x1465, 0x147E, 0x1497, 0x14B0, 0x14C8, 0x14E1, 0x14F9, 0x1512, 
+  0x152A, 0x1542, 0x155A, 0x1572, 0x158A, 0x15A2, 0x15B9, 0x15D1, 
+  0x15E8, 0x1600, 0x1617, 0x162E, 0x1645, 0x165C, 0x1673, 0x1689, 
+  0x16A0, 0x16B7, 0x16CD, 0x16E4, 0x16FA, 0x1710, 0x1726, 0x173C, 
+  0x1752, 0x1768, 0x177E, 0x1794, 0x17AA, 0x17BF, 0x17D5, 0x17EA, 
+  0x1800, 0x1815, 0x182A, 0x183F, 0x1854, 0x1869, 0x187E, 0x1893, 
+  0x18A8, 0x18BD, 0x18D1, 0x18E6, 0x18FA, 0x190F, 0x1923, 0x1938, 
+  0x194C, 0x1960, 0x1974, 0x1988, 0x199C, 0x19B0, 0x19C4, 0x19D8, 
+  0x19EC, 0x1A00, 0x1A13, 0x1A27, 0x1A3A, 0x1A4E, 0x1A61, 0x1A75, 
+  0x1A88, 0x1A9B, 0x1AAE, 0x1AC2, 0x1AD5, 0x1AE8, 0x1AFB, 0x1B0E, 
+  0x1B21, 0x1B33, 0x1B46, 0x1B59, 0x1B6C, 0x1B7E, 0x1B91, 0x1BA3, 
+  0x1BB6, 0x1BC8, 0x1BDB, 0x1BED, 0x1C00, 0x1C12, 0x1C24, 0x1C36, 
+  0x1C48, 0x1C5A, 0x1C6C, 0x1C7E, 0x1C90, 0x1CA2, 0x1CB4, 0x1CC6, 
+  0x1CD8, 0x1CE9, 0x1CFB, 0x1D0D, 0x1D1E, 0x1D30, 0x1D41, 0x1D53, 
+  0x1D64, 0x1D76, 0x1D87, 0x1D98, 0x1DAA, 0x1DBB, 0x1DCC, 0x1DDD, 
+  0x1DEE, 0x1E00, 0x1E11, 0x1E22, 0x1E33, 0x1E43, 0x1E54, 0x1E65, 
+  0x1E76, 0x1E87, 0x1E98, 0x1EA8, 0x1EB9, 0x1ECA, 0x1EDA, 0x1EEB, 
+  0x1EFB, 0x1F0C, 0x1F1C, 0x1F2D, 0x1F3D, 0x1F4E, 0x1F5E, 0x1F6E, 
+  0x1F7E, 0x1F8F, 0x1F9F, 0x1FAF, 0x1FBF, 0x1FCF, 0x1FDF, 0x1FEF, 
+};
 
 // size: 0x0000006C
 uint32_t spyro_sqrt(uint32_t a)
 {
-  uint32_t a1, at, a3, t0, v0;
+
+  uint32_t a1, at, a3;
   if (a == 0)
     return 0;
-  cop2.LZCS = a;
-  a1 = LZCR() & ~1;
+  a1 = lzcr(a) & ~1;
   at = (int32_t)(31 - a1)/2;
-  if ((int32_t)a1 >= 24)
+  if ((int32_t)a1 >= 24) {
     a3 = a << (a1 - 24);
-  else
+  } else {
     a3 = (int32_t)a >> (24 - a1);
-  a3 -= 64;
-  t0 = lh(0x80074B84 + a3*2) << at;
-  v0 = t0 >> 12;
-  return v0;
+  }
+
+  return (sqrt_lookup[a3-64] << at) >> 12;
 }
 
 void function_80017A38(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_sqrt(a0);
 }
 
@@ -975,7 +979,7 @@ void spyro_world_to_screen_projection(uint32_t dst, uint32_t vec)
 
 void function_80017AA4(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_world_to_screen_projection(a0, a1);
 }
 
@@ -1010,7 +1014,7 @@ void spyro_world_to_screen_projection_with_right_shift(uint32_t dst, uint32_t ve
 
 void function_80017B48(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_world_to_screen_projection_with_right_shift(a0, a1, a2);
 }
 
@@ -1024,7 +1028,7 @@ void spyro_vec_32_to_16_div_4(uint32_t dst, uint32_t src)
 // size: 0x00000028
 void function_80017BFC(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_32_to_16_div_4(a0, a1);
 }
 
@@ -1038,7 +1042,7 @@ void spyro_vec_16_to_32_mul_4(uint32_t dst, uint32_t src)
 // size: 0x00000028
 void function_80017C24(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_16_to_32_mul_4(a0, a1);
 }
 
@@ -1052,7 +1056,7 @@ void spyro_vec_16_to_32(uint32_t dst, uint32_t src)
 // size: 0x0000001C
 void function_80017C4C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_16_to_32(a0, a1);
 }
 
@@ -1066,7 +1070,7 @@ void spyro_vec_32_to_16(vec3 *dst, vec3_32 *src)
 // size: 0x0000001C
 void function_80017C68(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_32_to_16(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -1080,17 +1084,18 @@ void spyro_vec_16_add(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_80017C84(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_vec_16_add(a0, a1, a2);
 }
 
 // size: 0x000000C4
 void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst)
 {
-  at = lw(lw(0x800785A8 + 0x2C) + 0x10) + index*12;
+  at = lw(lw(0x800785A8 + 0x2C) + 0x10) + index * 0x0C;
   v0 = lw(at + 0);
   v1 = lw(at + 4);
   a0 = lw(at + 8);
+
   t0 = (int32_t)(v0 << 0) >> 23; // 23:31
   a3 = (int32_t)(v0 << 9) >> 23; // 14:22
   a2 = v0 & 0x3FFF; // 0:13
@@ -1099,6 +1104,7 @@ void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst)
   sw(dst + 0x00, a2 << 4);
   sw(dst + 0x0C, a3 << 4);
   sw(dst + 0x18, t0 << 4);
+
   t0 = (int32_t)(v1 << 0) >> 23; // 23:31
   a3 = (int32_t)(v1 << 9) >> 23; // 14:22
   a2 = v1 & 0x3FFF; // 0:13
@@ -1107,6 +1113,7 @@ void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst)
   sw(dst + 0x04, a2 << 4);
   sw(dst + 0x10, a3 << 4);
   sw(dst + 0x1C, t0 << 4);
+
   t0 = (a0 << 0) >> 24; // 24:31
   a3 = (a0 << 8) >> 24; // 16:23
   a2 = a0 & 0x3FFF; // 0:13
@@ -1119,7 +1126,7 @@ void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst)
 
 void function_80017CB8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_unpack_96bit_triangle(a0, a1);
 }
 
@@ -1224,7 +1231,7 @@ uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol)
 // size: 0x00000044
 void function_80017E54(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = interpolate_color(a0, a1, a2);
 }
 
@@ -1236,14 +1243,14 @@ int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2)
 // size: 0x00000024
 void function_80038074(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_add(a0, a1);
 }
 
 int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2)
 {
   int32_t angle = angle1 - angle2;
-  if ((int32_t)angle >  0x80)
+  if ((int32_t)angle >= 0x80)
     angle -= 0x100;
   if ((int32_t)angle < -0x80)
     angle += 0x100;
@@ -1253,7 +1260,7 @@ int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2)
 // size: 0x0000002C
 void function_800381BC(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_two_angle_diff_8bit2(a0, a1);
 }
 
@@ -1269,161 +1276,125 @@ void function_80038120(void)
 }*/
 
 // size: 0x00000324
+// struct game_object *a0
 void function_800526A8(void)
 {
-  uint32_t temp;
-  at = lhu(a0 + 0x0036);
-  v0 = 0x80076378;
-  at = at << 2;
-  at += v0;
-  v0 = lbu(a0 + 0x003C);
-  at = lw(at + 0x0000);
-  v0 = v0 << 2;
-  v0 += at;
-  v1 = lbu(a0 + 0x003E);
-  v0 = lw(v0 + 0x0038);
-  v1 = v1 << 3;
-  a1 = lbu(v0 + 0x000C);
-  v0 += v1;
-  v1 = lw(v0 + 0x0024);
-  sb(a0 + 0x0041, a1);
-  v1 = v1 >> 19;
-  v1 = v1 & 0x1C;
+
+  struct game_object *object = addr_to_pointer(a0);
+
+  at = lw(0x80076378 + object->modelID*4);
+  v0 = lw(at + 0x38 + object->unknown3C*4);
+  v1 = lw(v0 + 0x24 + object->unknown3E*8);
+  object->unknown41 = lbu(v0 + 0x0C);
+  v1 = (v1 >> 19) & 0x1C;
   v0 = at + v1;
   v0 = lw(v0 + 0x0014);
   at = lw(at + 0x0014);
-  sw(a0 + 0x0008, v0);
-  v0 = -1; // 0xFFFFFFFF
-  temp = at == 0;
-  sh(a0 + 0x0034, v0);
-  if (temp) goto label80052758;
-  v0 = lw(a0 + 0x000C);
-  v1 = lw(a0 + 0x0010);
-  a1 = 0x80075778; // &0x00000000
-  a1 = lw(a1 + 0x0000);
-  v0 = v0 >> 13;
-  v1 = v1 >> 13;
-  v1 = v1 << 5;
-  v0 += v1;
-  temp = (int32_t)at < 0;
-  a2 = 0;
-  if (temp) goto label8005273C;
-  a2 = 1024; // 0x0400
-label8005273C:
-  v0 += a2;
-  sh(a0 + 0x0034, v0);
-  v0 = v0 << 2;
-  v0 += a1;
-  v1 = lw(v0 + 0x0000);
-  sw(v0 + 0x0000, a0);
-  sw(a0 + 0x0004, v1);
-label80052758:
+
+  object->unknown08 = v0;
+  object->unknown34 = -1;
+  if (at) {
+    
+    a1 = lw(0x80075778);
+    v0 = (object->p.x >> 13) + (object->p.y >> 13)*32;
+    a2 = 0;
+    if ((int32_t)at >= 0)
+      a2 = 0x400;
+  
+    v0 += a2;
+    sh(a0 + 0x34, v0);
+    v0 = v0 << 2;
+    v0 += a1;
+    v1 = lw(v0 + 0x0000);
+    sw(v0 + 0x0000, a0);
+    sw(a0 + 0x0004, v1);
+  }
   t7 = a0;
   at = lw(t7 + 0x0044);
   v0 = spyro_sin_lut;
   v1 = spyro_cos_lut;
-  t2 = 4096; // 0x1000
-  t3 = 0;
-  t4 = 4096; // 0x1000
-  t5 = 0;
-  t6 = 4096; // 0x1000
-  cop2.RTM0 = t2;
-  cop2.RTM1 = t3;
-  cop2.RTM2 = t4;
-  cop2.RTM3 = t5;
-  cop2.RTM4 = t6;
-  cop2.TRX = 0;
-  cop2.TRY = 0;
-  cop2.TRZ = 0;
-  a0 = at >> 15;
-  a0 = a0 & 0x1FE;
-  temp = a0 == 0;
-  a1 = a0 + v1;
-  if (temp) goto label80052858;
-  a0 += v0;
-  a1 = lhu(a1 + 0x0000);
-  a0 = lhu(a0 + 0x0000);
-  a1 = a1 & 0xFFFF;
-  cop2.VXY0 = a1;
-  cop2.VZ0 = a0;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a0 = -a0;
-  a0 = a0 & 0xFFFF;
-  a1 = a1 & 0xFFFF;
-  a3 = cop2.IR1;
-  t0 = cop2.IR2;
-  t1 = cop2.IR3;
-  cop2.VXY0 = a0;
-  cop2.VZ0 = a1;
-  a2 = 0xFFFF0000;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  t2 = t2 & a2;
-  a3 = a3 & 0xFFFF;
-  t2 += a3;
-  t5 = t5 & a2;
-  t1 = t1 & 0xFFFF;
-  t5 += t1;
-  t0 = t0 << 16;
-  t4 = t4 & 0xFFFF;
-  a0 = cop2.IR1;
-  a1 = cop2.IR2;
-  a2 = cop2.IR3;
-  a0 = a0 & 0xFFFF;
-  t3 = a0 + t0;
-  a1 = a1 << 16;
-  t4 += a1;
-  t6 = a2 & 0xFFFF;
-  cop2.RTM0 = t2;
-  cop2.RTM1 = t3;
-  cop2.RTM2 = t4;
-  cop2.RTM3 = t5;
-  cop2.RTM4 = t6;
-label80052858:
-  a0 = at & 0xFF00;
-  temp = a0 == 0;
-  a0 = a0 >> 8;
-  if (temp) goto label8005290C;
-  a0 = a0 << 1;
-  a1 = a0 + v1;
-  a0 += v0;
-  a1 = lhu(a1 + 0x0000);
-  a0 = lhu(a0 + 0x0000);
-  a2 = a1 << 16;
-  cop2.VXY0 = a2;
-  cop2.VZ0 = a0;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a2 = a0 << 16;
-  a2 = -a2;
-  a3 = cop2.IR1;
-  t0 = cop2.IR2;
-  t1 = cop2.IR3;
-  cop2.VXY0 = a2;
-  cop2.VZ0 = a1;
-  a2 = 0xFFFF0000;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  t2 = t2 & 0xFFFF;
-  a3 = a3 << 16;
-  t2 += a3;
-  t5 = t5 & 0xFFFF;
-  t1 = t1 << 16;
-  t5 += t1;
-  t0 = t0 & 0xFFFF;
-  t3 = t3 & a2;
-  a0 = cop2.IR1;
-  a1 = cop2.IR2;
-  a2 = cop2.IR3;
-  a0 = a0 & 0xFFFF;
-  t3 += a0;
-  a1 = a1 << 16;
-  t4 = a1 + t0;
-  t6 = a2 & 0xFFFF;
-  cop2.RTM0 = t2;
-  cop2.RTM1 = t3;
-  cop2.RTM2 = t4;
-  cop2.RTM3 = t5;
-  cop2.RTM4 = t6;
-label8005290C:
-  a0 = at & 0xFF;
+  set_RTM(mat3_identity());
+  set_TR(0, 0, 0);
+  a0 = (at >> 16) & 0xFF;
+  if (a0) {
+    a1 = cos_lut[a0];
+    a0 = sin_lut[a0];
+    cop2.VXY0 = a1 & 0xFFFF;
+    cop2.VZ0 = a0;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    a0 = (-a0) & 0xFFFF;
+    a1 = a1 & 0xFFFF;
+    a3 = cop2.IR1;
+    t0 = cop2.IR2;
+    t1 = cop2.IR3;
+    cop2.VXY0 = a0;
+    cop2.VZ0 = a1;
+    a2 = 0xFFFF0000;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    t2 = t2 & a2;
+    a3 = a3 & 0xFFFF;
+    t2 += a3;
+    t5 = t5 & a2;
+    t1 = t1 & 0xFFFF;
+    t5 += t1;
+    t0 = t0 << 16;
+    t4 = t4 & 0xFFFF;
+    a0 = cop2.IR1;
+    a1 = cop2.IR2;
+    a2 = cop2.IR3;
+    a0 = a0 & 0xFFFF;
+    t3 = a0 + t0;
+    a1 = a1 << 16;
+    t4 += a1;
+    t6 = a2 & 0xFFFF;
+    cop2.RTM0 = t2;
+    cop2.RTM1 = t3;
+    cop2.RTM2 = t4;
+    cop2.RTM3 = t5;
+    cop2.RTM4 = t6;
+  }
+
+  a0 = (a0 >> 8) & 0xFF;
+  if (a0) {
+    a1 = cos_lut[a0];
+    a0 = sin_lut[a0];
+    a2 = a1 << 16;
+    cop2.VXY0 = a2;
+    cop2.VZ0 = a0;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    a2 = a0 << 16;
+    a2 = -a2;
+    a3 = cop2.IR1;
+    t0 = cop2.IR2;
+    t1 = cop2.IR3;
+    cop2.VXY0 = a2;
+    cop2.VZ0 = a1;
+    a2 = 0xFFFF0000;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    t2 = t2 & 0xFFFF;
+    a3 = a3 << 16;
+    t2 += a3;
+    t5 = t5 & 0xFFFF;
+    t1 = t1 << 16;
+    t5 += t1;
+    t0 = t0 & 0xFFFF;
+    t3 = t3 & a2;
+    a0 = cop2.IR1;
+    a1 = cop2.IR2;
+    a2 = cop2.IR3;
+    a0 = a0 & 0xFFFF;
+    t3 += a0;
+    a1 = a1 << 16;
+    t4 = a1 + t0;
+    t6 = a2 & 0xFFFF;
+    cop2.RTM0 = t2;
+    cop2.RTM1 = t3;
+    cop2.RTM2 = t4;
+    cop2.RTM3 = t5;
+    cop2.RTM4 = t6;
+  }
+
+  a0 = (at >> 0) & 0xFF;
   if (a0) {
     a0 = a0 << 1;
     a1 = a0 + v1;
@@ -1468,19 +1439,20 @@ label8005290C:
 }
 
 // size: 0x00000380
+// struct game_object *a0
 void function_800529E4(void)
 {
   uint32_t temp;
-  at = a1 & 0x1;
+  at = a1 & 1;
   temp = at == 0;
   if (temp) goto label80052A64;
-  at = lhu(a0 + 0x0036);
+  at = lhu(a0 + 0x36);
   v0 = 0x80076378;
   at = at << 2;
   at += v0;
-  v0 = lbu(a0 + 0x0040);
-  v1 = lw(a0 + 0x003C);
-  at = lw(at + 0x0000);
+  v0 = lbu(a0 + 0x40);
+  v1 = lw(a0 + 0x3C);
+  at = lw(at);
   temp = (int32_t)v0 > 0;
   v0 = v1 & 0xFF;
   if (temp) goto label80052A24;
@@ -1492,14 +1464,8 @@ label80052A24:
   v0 = v0 & 0xFF;
   v1 = v1 >> 24;
 label80052A30:
-  v0 = v0 << 2;
-  v0 += at;
-  v0 = lw(v0 + 0x0038);
-  v1 = v1 << 3;
-  v0 += v1;
-  v1 = lw(v0 + 0x0024);
-  v1 = v1 >> 19;
-  v1 = v1 & 0x1C;
+  v0 = lw(at + 0x38 + v0*4) + v1*8;
+  v1 = (lw(v0 + 0x24) >> 19) & 0x1C;
   v0 = at + v1;
   v0 = lw(v0 + 0x0014);
   sw(a0 + 0x0008, v0);
@@ -1507,14 +1473,13 @@ label80052A64:
   at = a1 & 0x2;
   temp = at == 0;
   if (temp) goto label80052AEC;
-  at = lw(a0 + 0x000C);
-  v0 = lw(a0 + 0x0010);
-  v1 = 0x80075778; // &0x00000000
-  v1 = lw(v1 + 0x0000);
+  at = lw(a0 + 0x0C);
+  v0 = lw(a0 + 0x10);
+  v1 = lw(0x80075778);
   at = at >> 13;
   v0 = v0 >> 13;
   v0 = v0 << 5;
-  a2 = lh(a0 + 0x0034);
+  a2 = lh(a0 + 0x34);
   at += v0;
   a3 = a2 & 0x400;
   at = at | a3;
@@ -1552,49 +1517,44 @@ label80052AEC:
   cop2.TRX = 0;
   cop2.TRY = 0;
   cop2.TRZ = 0;
-  at = t4 >> 15;
-  at = at & 0x1FE;
-  temp = at == 0;
-  if (temp) goto label80052BF0;
-  v0 = at + spyro_cos_lut;
-  at = at + spyro_sin_lut;
-  v0 = lhu(v0 + 0x0000);
-  at = lhu(at + 0x0000);
-  v0 = v0 & 0xFFFF;
-  cop2.VXY0 = v0;
-  cop2.VZ0 = at;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  at = -at;
-  at = at & 0xFFFF;
-  a0 = cop2.IR1;
-  a1 = cop2.IR2;
-  a2 = cop2.IR3;
-  cop2.VXY0 = at;
-  cop2.VZ0 = v0;
-  v1 = 0xFFFF0000;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a3 = a3 & v1;
-  a0 = a0 & 0xFFFF;
-  a3 += a0;
-  t2 = t2 & v1;
-  a2 = a2 & 0xFFFF;
-  t2 += a2;
-  a1 = a1 << 16;
-  t1 = t1 & 0xFFFF;
-  at = cop2.IR1;
-  v0 = cop2.IR2;
-  v1 = cop2.IR3;
-  at = at & 0xFFFF;
-  t0 = at + a1;
-  v0 = v0 << 16;
-  t1 += v0;
-  t3 = v1 & 0xFFFF;
-  cop2.RTM0 = a3;
-  cop2.RTM1 = t0;
-  cop2.RTM2 = t1;
-  cop2.RTM3 = t2;
-  cop2.RTM4 = t3;
-label80052BF0:
+  at = (t4 >> 16) & 0xFF;
+  if (at) {
+    v0 = cos_lut[at];
+    at = sin_lut[at];
+    v0 = v0 & 0xFFFF;
+    cop2.VXY0 = v0;
+    cop2.VZ0 = at;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    at = (-at) & 0xFFFF;
+    a0 = cop2.IR1;
+    a1 = cop2.IR2;
+    a2 = cop2.IR3;
+    cop2.VXY0 = at;
+    cop2.VZ0 = v0;
+    v1 = 0xFFFF0000;
+    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+    a3 = a3 & v1;
+    a0 = a0 & 0xFFFF;
+    a3 += a0;
+    t2 = t2 & v1;
+    a2 = a2 & 0xFFFF;
+    t2 += a2;
+    a1 = a1 << 16;
+    t1 = t1 & 0xFFFF;
+    at = cop2.IR1;
+    v0 = cop2.IR2;
+    v1 = cop2.IR3;
+    at = at & 0xFFFF;
+    t0 = at + a1;
+    v0 = v0 << 16;
+    t1 += v0;
+    t3 = v1 & 0xFFFF;
+    cop2.RTM0 = a3;
+    cop2.RTM1 = t0;
+    cop2.RTM2 = t1;
+    cop2.RTM3 = t2;
+    cop2.RTM4 = t3;
+  }
   at = t4 & 0xFF00;
   temp = at == 0;
   at = at >> 8;
@@ -1809,7 +1769,7 @@ void function_80052F38(void)
   t9 = a1;
   at = a2;
   v0 = a3;
-  t7 = spyro_position;
+  t7 = player_position;
   t6 = 0x80076378;
   t6 = lw(t6 + 0x0000);
   at = at << 2;

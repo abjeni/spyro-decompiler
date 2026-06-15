@@ -1,19 +1,19 @@
 
 #include <stdio.h>
-#include <signal.h>
 #include <unistd.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <stdlib.h>
+
+#include "../../../../config.h"
 
 #define SDL_DISABLE_IMMINTRIN_H
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_events.h>
 
-#include "debug.h"
-
 #define WIDTH (512)
 #define HEIGHT (240)
-#define SCALE 2
+#define SCALE 4
 
 int resx = WIDTH;
 int resy = HEIGHT;
@@ -212,17 +212,46 @@ void init_game_window()
   SDL_Window *window = NULL;
   SDL_Surface *screen_surface = NULL;
 
-
-  //struct sigaction action;
-  //sigaction(SIGINT, NULL, &action);
   assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
-  //sigaction(SIGINT, &action, NULL);
 
   create_window(&window, &screen_surface, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
 
-  if (window == NULL) BREAKPOINT;
-  if (screen_surface == NULL) BREAKPOINT;
+  if (window == NULL) assert(0);
+  if (screen_surface == NULL) assert(0);
 
   g_window = window;
   g_screen_surface = screen_surface;
+}
+
+void *platform_aquire_rom(void)
+{
+  FILE *file = fopen(ROM_NAME, "r");
+  assert(file != NULL);
+
+  assert(fseek(file, 0, SEEK_END) != -1);
+  int filesize = ftell(file);
+  assert(filesize != -1);
+  assert(fseek(file, 0, SEEK_SET) != -1);
+
+  uint8_t *ptr = malloc(filesize);
+  int things_read = fread(ptr, filesize, 1, file);
+  assert(things_read == 1);
+  assert(fclose(file) == 0);
+
+  return ptr;
+}
+
+void *platform_allocate(size_t memory_size)
+{
+  return malloc(memory_size);
+}
+
+int platform_init(void)
+{
+  int err = chdir("..");
+  if (err) return err;
+
+  init_game_window();
+
+  return 0;
 }

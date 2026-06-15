@@ -14,7 +14,6 @@
 #include "function_chooser.h"
 
 #include "title_screen.h"
-#include "credits.h"
 
 #include <string.h>
 
@@ -22,7 +21,7 @@
 void function_80051FEC(void)
 {
   memset(addr_to_pointer(0x80077868), 0, 32);
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(player_position);
   t6 = 0x8006FCF4 + 0x400;
   for (struct game_object *object = addr_to_pointer(lw(0x80075828)); object->unknown48 != -1; object++) {
     if ((int32_t)object->unknown48 < 0) continue;
@@ -79,7 +78,7 @@ void function_8003C358(void)
   sw(sp + 0x5C, s1);
   sw(sp + 0x58, s0);
 
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(spyro_position);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(player_position);
 
   s4 = a0;
   s3 = a1;
@@ -283,7 +282,7 @@ struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint3
 // size: 0x000002A0
 void function_800181AC(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)));
 }
 
@@ -309,17 +308,17 @@ void function_80012D58(void)
   const uint32_t struct1 = struct_base + 0x04;
   const int32_t struct1_len = lw(struct1);
   const uint32_t struct1_elements = struct1 + 0x04;
-  sw(0x800785C0, struct1_elements);
-  sw(0x800785C4, struct1_elements + struct1_len*16);
-  sw(0x800785C8, struct1_len);
+  sw(0x800785A8 + 0x18, struct1_elements);
+  sw(0x800785A8 + 0x1C, struct1_elements + struct1_len*16);
+  sw(0x800785A8 + 0x20, struct1_len);
 
   struct_base = struct_base + lw(struct_base);
 
   const uint32_t struct2 = struct_base + 0x04;
   const int32_t struct2_len = lw(struct2);
   const uint32_t struct2_elements = struct2 + 0x04;
-  sw(0x800785A8, struct2_elements);
-  sw(0x800785AC, struct2_len);
+  sw(0x800785A8 + 0x00, struct2_elements);
+  sw(0x800785A8 + 0x04, struct2_len);
   
   for (int i = 0; i < struct2_len; i++)
     sw(struct2_elements + i*4, struct2 + lw(struct2_elements + i*4));
@@ -333,8 +332,8 @@ void function_80012D58(void)
       const uint32_t struct3_1 = struct3 + 0x04;
       const int32_t struct3_1_len = lw(struct3_1);
       const uint32_t struct3_1_elements = struct3_1 + 0x04;
-      sw(0x800785B0, struct3_1_elements);
-      sw(0x800785B4, struct3_1_len);
+      sw(0x800785A8 + 0x08, struct3_1_elements);
+      sw(0x800785A8 + 0x0C, struct3_1_len);
 
       for (int i = 0; i < struct3_1_len; i++)
         sw(struct3_1_elements + i*4, struct3 + lw(struct3_1_elements + i*4));
@@ -350,8 +349,8 @@ void function_80012D58(void)
         sw(struct3_2_elements + i*4, struct3_2 + lw(struct3_2_elements + i*4));
 
     } else {
-      sw(0x800785B0, 0);
-      sw(0x800785B4, 0);
+      sw(0x800785A8 + 0x08, 0);
+      sw(0x800785A8 + 0x0C, 0);
       sw(0x8007778C, 0);
     }
 
@@ -360,8 +359,8 @@ void function_80012D58(void)
     const uint32_t struct4 = struct_base + 0x04;
     const uint32_t struct4_len = lw(struct4);
     const uint32_t struct4_elements = struct4 + 0x04;
-    sw(0x800785B8, struct4_elements);
-    sw(0x800785BC, struct4_len);
+    sw(0x800785A8 + 0x10, struct4_elements);
+    sw(0x800785A8 + 0x14, struct4_len);
     for (int i = 0; i < struct4_len; i++)
       sw(struct4_elements + i*4, lw(struct4_elements + i*4) + struct4);
     
@@ -370,7 +369,7 @@ void function_80012D58(void)
     const uint32_t struct5 = struct_base + 0x04;
     const uint32_t struct5_elements = struct5 + 0x08;
 
-    sw(0x800785D4, struct5);
+    sw(0x800785A8 + 0x2C, struct5);
 
     for (int i = 0; i < 5; i++)
       sw(struct5_elements + i*4, lw(struct5_elements + i*4) + struct5);
@@ -494,15 +493,16 @@ void new_game_object(struct game_object *game_object)
 // size: 0x0000007C
 void function_8003A720(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   new_game_object(addr_to_pointer(a0));
 }
 
 // size: 0x00000078
 void function_8003FDC8(void)
 {
-  function_8003EA68();
-  a0 = lw(0x80078AD0);
+  spyro_change_movestate(a0);
+
+  a0 = lw(player_movestate);
   v1 = lbu(0x8006C470 + a0);
   sb(0x80078A76, 0);
   sb(0x80078A70, v1);
@@ -526,17 +526,17 @@ void function_80056B28(void)
         if (v1 != 8) {
           if (v1 == 4) {
             v0 = lw(0x80075F30 + i*0x1C);
-            if (v0) sb(v0 + 0x02A0, 0x7F);
+            if (v0) sb(v0 + 0x2A0, 0x7F);
           }
         } else {
           v0 = lw(0x80075F30 + i*0x1C);
           if (v0) sb(v0 + 0x54, 0x7F);
         }
         v0 = i*0x1C;
-        sh(0x80075F3E + i*0x1C, 0x40);
-        sw(0x80075F30 + i*0x1C, 0);
-        sw(0x80075F48 + i*0x1C, 0);
-        sb(0x80075F3D + i*0x1C, 0xFF);
+        sh(0x80075F30 + i*0x1C + 0x0E, 0x40);
+        sw(0x80075F30 + i*0x1C + 0x00, 0);
+        sw(0x80075F30 + i*0x1C + 0x18, 0);
+        sb(0x80075F30 + i*0x1C + 0x0D, 0xFF);
       }
     }
   }
@@ -561,7 +561,7 @@ uint32_t completion_percentage(void)
 // size: 0x000000C0
 void function_8002BB20(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = completion_percentage();
 }
 
@@ -575,7 +575,7 @@ void function_8003385C(void)
   function_8005637C();
   function_8002BBE0();
   switch (lw(0x800757D8)) {
-  case 0: 
+  case 0: // in game
     sw(level_frame_counter, lw(level_frame_counter)+1);
     if (lw(IS_DEMO_MODE)) {
       function_800334D4();
@@ -606,7 +606,6 @@ void function_8003385C(void)
     if (lw(0x80076E28) == 0x8000000E) break;
 
     if (lw(0x80077384) < 2 || lw(buttons_press) & 0x800) {
-      BREAKPOINT;
       a0 = 1;
       function_8002C420();
     } else if (lw(buttons_press) & 0x100) {
@@ -614,22 +613,23 @@ void function_8003385C(void)
       function_8002C714();
     }
     break;
-  case 1:
+  case 1: // loading level
     function_8002DF9C();
     break;
-  case 2:
+  case 2: // pause menu
     function_8002E12C();
     break;
-  case 3:
+  case 3: // inventory
     function_8002EB2C();
-  case 4:
+  case 4: // dead
   case 5:
     function_8002EDF0();
     break;
   case 6:
-    function_8002F3C4(); // this does nothing
+    // function_8002F3C4(); // this does nothing
+    UNREACHABLE;
     break;
-  case 7:
+  case 7: // flight level crashed
     v0 = lw(0x800757C0);
     temp = v0;
     switch (temp)
@@ -641,31 +641,31 @@ void function_8003385C(void)
       JALR(temp, 0x8003392C);
     }
     break;
-  case 8:
+  case 8: // freed dragon
     function_8002F3E4();
     break;
-  case 9:
+  case 9: // landing after loading
     function_8002E000();
     break;
-  case 10:
+  case 10: // before loading ?
     function_8002E084();
     break;
-  case 11:
+  case 11: // fairy menu
     function_800314B4();
     break;
-  case 12:
+  case 12: // balloonist
     function_800324D8();
     break;
-  case 13:
+  case 13: // title screen / game intro
     if (lw(0x80078D78) != 3)
       function_8007ABAC_title_screen();
     else
       function_80032B08();
     break;
-  case 14:
+  case 14: // credits
     function_800331AC();
     break;
-  case 15:
+  case 15: // more credits
     if ((int32_t)lw(0x80075704) >= 99)
       function_800333DC();
     else
@@ -676,44 +676,14 @@ void function_8003385C(void)
 }
 
 // size: 0x00000088
-void game_loop(void)
-{
-  function_8005B988();
-  
-  initial_loading_screen();
-  
-  while (1) {
-
-    if (start_frame()) return;
-    
-    sb(gp + 0x0604, 0);
-
-    function_8003385C();
-
-    sb(gp + 0x0604, 1);
-    sw(gp + 0x0468, lw(gp + 0x04FC));
-
-    if (lw(gp + 0x0468) < 2)
-      sw(gp + 0x0468, 2);
-
-    if (lw(gp + 0x0468) > 4)
-      sw(gp + 0x0468, 4);
-    
-    sw(gp + 0x04FC, 0);
-    if (lw(gp + 0x0538) == 0) {
-      function_8001ED5C();
-    }
-  }
-}
-
-// size: 0x00000088
 void function_80012204(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   game_loop();
 }
 
 // size: 0x00000178
+// guessing: create a new game save
 void function_80012604(void)
 {
   for (int i = 0; i < 36; i++) {
@@ -726,13 +696,13 @@ void function_80012604(void)
     sb(0x8007A6A8 + i, 0);
   }
 
-  for (int i = 0; i < 6; i++) // loop over worlds?
+  for (int i = 0; i < 6; i++)
     sb(0x800758D5 + i, 0);
 
   sb(0x800758D0, 2);
-  for (int i = 0; i < 6; i++) { // loop over worlds?
+  for (int i = 0; i < 6; i++) {
     sw(0x80078618+i*4, 0);
-    for (int j = 0; j < 5; j++) // loop over levels?
+    for (int j = 0; j < 5; j++)
       sb(0x80078680+i*5+j, 0);
   }
 
@@ -760,3 +730,785 @@ void function_8001277C(void)
   sw(CAMERA_MODE, 0x52);
   function_80012604();
 }
+
+// spyro movement transitions
+// size: 0x00001360
+void spyro_change_movestate(uint32_t movestate)
+{
+  uint32_t temp;
+  sp -= 80; // 0xFFFFFFB0
+  sw(sp + 0x44, s5);
+  sw(sp + 0x48, ra);
+  sw(sp + 0x40, s4);
+  sw(sp + 0x3C, s3);
+  sw(sp + 0x38, s2);
+  sw(sp + 0x34, s1);
+  sw(sp + 0x30, s0);
+
+  s5 = movestate;
+
+  switch (lw(player_movestate))
+  {
+  case 11:
+  case MOVESTATE_GLIDE:
+  case 32:
+  case 44:
+    a0 = player_position;
+    a1 = 2;
+    function_800562A4();
+    break;
+  case 7:
+    sb(0x80078A83, 0);
+  case 14:
+  case 22:
+  case 27:
+  case 28:
+    a0 = lbu(lw(0x800761D4) + 0x1B);
+    a1 = player_position;
+    a2 = 4;
+    a3 = a1 + 0x2A0;
+    function_80055A78();
+    break;
+  case 25:
+    a0 = lbu(lw(0x800761D4) + 0x20);
+    a1 = player_position;
+    a2 = 4;
+    a3 = a1 + 0x2A0;
+    function_80055A78();
+    break;
+  }
+  
+  switch (s5)
+  {
+  case MOVESTATE_STAND:
+    sw(0x80078AD4, 0);
+    mult(lbu(0x80075274 + (spyro_rand() & 7)), lbu(0x8006C4A2));
+    sw(0x80078BA4, -0x80);
+    sw(0x80078BB4, 1);
+    sh(0x80075788, lo-2); // &0x00000000
+    goto label8003FD50;
+    break;
+  case 1:
+  case 2:
+  case 3:
+  case 21:
+    sw(0x80078AD4, 0);
+    v0 = spyro_atan2(lw(0x80078B64), lw(0x80078B68), 1);
+    s1 = (v0 - lw(0x80078B74)) & 0xFFF;
+    if (s1 > 0x400 && s1 < 0xC00)  {
+      sw(0x80078B70, 0);
+    } else {
+      sw(0x80078B70, spyro_vec_length(0x80078B64, 0));
+    }
+    if (s5 == 3 && (int32_t)lw(0x80078B70) > 5120)
+      sw(0x80078B70, 0x1400);
+    
+    sw(0x80078BA4, -0xC00);
+    function_8003E1AC();
+
+    if (lw(0x80078B08)) {
+      v0 = spyro_atan2(lw(0x80078AFC), lw(0x80078B00), 1);
+      s1 = (lw(0x80078B74) - v0) & 0xFFF;
+      if ((int32_t)s1 > 0x800)
+        s1 -= 0x1000;
+
+      s1 = abs_int(s1);
+      
+      v0 = lw(0x80078B08) << 12;
+      a0 = ((int32_t)v0)/22;
+
+      v0 = (int32_t)s1 < 1025;
+      temp = v0 != 0;
+      if ((int32_t)s1 > 0x400) {
+        v0 = lw(0x8006C5CC);
+        v1 = lw(0x8006C5C0);
+        s1 = 0x800 - s1;
+      } else {
+        v0 = lw(0x8006C5C4);
+        v1 = lw(0x8006C5B8);
+      }
+      v0 = (((int32_t)a0) * ((int32_t)(v0 - v1))) >> 12;
+
+      s2 = v1 + v0;
+      
+      v0 = lw(0x8006C5C8);
+      v1 = lw(0x8006C5BC);
+      v0 = (((int32_t)a0) * ((int32_t)(v0 - v1))) >> 12;
+      a0 = s1;
+      s0 = v1 + v0;
+      v0 = spyro_cos(a0);
+      mult(s2, v0);
+      a0 = s1;
+      v1=lo;
+      s2 = (int32_t)v1 >> 12;
+      v0 = spyro_sin(a0);
+      mult(s0, v0);
+      v1=lo;
+      mult(s2, s2);
+      v0=lo;
+      s0 = (int32_t)v1 >> 12;
+      mult(s0, s0);
+      v1=lo;
+      a0 = v0 + v1;
+      v0 = spyro_sqrt(a0);
+    } else {
+      v0 = lw(0x8006C5B8);
+    }
+    sw(0x80078B9C, v0);
+    v1 = lw(0x80078BEC);
+    sw(0x80078BB4, 1);
+    if (v1) {
+      sw(0x80078B20, 0);
+      sw(0x80078B24, lbu(0x80078C5E)*16);
+    }
+    goto label8003FD50;
+    break;
+  case 4:
+    sw(0x80078AD4, 0);
+    sw(0x80078BA4, -0xC00);
+    function_8003E1AC();
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 5:
+    spyro_vec3_copy(0x80078B4C, 0x80078B64);
+    sw(0x80078B48, 0xDC0);
+    sw(0x80078BA4, -0xC0);
+    sw(0x80078AD4, 0);
+    sw(0x80078BAC, 0);
+    sw(0x80078BB4, 0);
+    sw(0x80078BB0, lw(player_position + 8) + ((int32_t)lw(0x80078B54) >> 6));
+    sw(gp + 0x450, lw(player_movestate) == 0x1D);
+    goto label8003FD50;
+    break;
+  case 6:
+    sw(0x80078AD4, 0);
+    spyro_vec3_copy(0x80078B4C, 0x80078B64);
+    
+    if (lw(0x80078AF0) == 0 && (int32_t)lw(0x80078B08) < 32)
+      function_8003E90C();
+
+    sw(0x80078BA4, -0xC0);
+    sw(0x80078BAC, 0);
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 16:
+    sw(0x80078AD4, 0);
+    sw(0x80078B4C, 0);
+    sw(0x80078B50, 0);
+    sw(0x80078B54, lw(0x80078B6C));
+    
+    if (lw(0x80078AF0) == 0 && (int32_t)lw(0x80078B08) < 32)
+        function_8003E90C();
+
+    sw(0x80078BA4, -0xC0);
+    sw(0x80078BAC, 0);
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 7:
+    sw(0x80078AD4, 0);
+    s1 = 0x80078B4C;
+    spyro_vec3_clear(0x80078B4C);
+    spyro_vec3_sub(0x80078B4C, 0x80078B4C, 0x80078B64);
+
+    a1 = spyro_vec_length(0x80078B4C, 1);
+    if (a1 > 0x1E00)
+      vec3_mul_div(0x80078B4C, a1, 0x1E00);
+
+    sw(0x80078BA4, -0x300);
+    if (lw(0x80078AF4) == 0)
+      function_8003E1AC();
+    
+    sw(0x80078BB4, 1);
+
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    a3 = 0;
+    function_loaded_800758E4();
+    sw(0x80075764, max_int(lw(0x80075764), 45));
+    goto label8003FD50;
+    break;
+  case 8:
+    sw(0x80078AD4, 0);
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 9: 
+  case 10:
+    sw(0x80078AD4, 0);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    sw(0x80078B70, 0);
+    sw(0x80078BA4, -0xC00);
+    function_8003E1AC();
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 11:
+    goto label8003EF84;
+    break;
+  case 12:
+    s2 = spyro_rand() & 0x3F;
+
+    for (int i = 0; i < 4; i++) {
+      sw(sp + 0x20, 0);
+      sw(sp + 0x24, (int32_t)lh(spyro_cos_lut + s2*2) >> 7);
+      sw(sp + 0x28, (int32_t)lh(spyro_sin_lut + s2*2) >> 7);
+      spyro_set_mat_mirrored_vec_multiply(0x80078A8C, sp + 0x20, sp + 0x20);
+
+      a0 = 1;
+      a1 = 0x21;
+      a2 = sp + 0x20;
+      a3 = 1;
+      function_loaded_800758E4();
+
+      s2 = (s2 + 0x40) & 0xFF;
+    }
+
+    sw(0x80078AD4, 0);
+    spyro_vec3_clear(0x80078B40);
+    spyro_vec3_sub(0x80078B4C, 0x80078B40, 0x80078B4C);
+    spyro_vec3_shift_right(0x80078B4C, 2);
+    sw(0x80078BA4, -0x300);
+    sw(0x80078BB4, 1);
+    sw(0x8007584C, max_int(lw(0x8007584C), 120));
+    sw(0x800757D0, max_int(lw(0x800757D0), 15));
+    goto label8003FD50;
+    break;
+  case 13:
+    sw(0x80078BA4, -0xC00);
+    sw(0x80078AD4, 0);
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 14:
+    sw(0x80078AD4, 0);
+    spyro_vec3_clear(0x80078B4C);
+    spyro_vec3_sub(0x80078B4C, 0x80078B4C, 0x80078B64);
+    a1 = spyro_vec_length(0x80078B4C, 1);
+    if (a1 > 0x1E00)
+      vec3_mul_div(0x80078B4C, a1, 0x1E00);
+    
+    sw(0x80078BA4, -0x300);
+    if (lw(0x80078AF4) == 0)
+      function_8003E1AC();
+
+    sw(0x80078BB4, 1);
+
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    a3 = 0;
+    function_loaded_800758E4();
+    sw(0x80075904, max_int(lw(0x80075904), 15));
+    
+    a0 = lbu(lw(0x800761D4) + 0x3B);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078CF8;
+    function_80055A78();
+    goto label8003FD50;
+    break;
+  case MOVESTATE_GLIDE:
+  case 23:
+  case 32:
+  case 33:
+  case 34:
+    s0 = player_movestate;
+    v1 = lw(player_movestate);
+    if (v1 == MOVESTATE_GLIDE
+    || v1 == 23
+    || v1 == 32
+    || v1 == 33
+    || v1 == 34)
+    {
+      sw(0x80078BB4, 0);
+      goto label8003FD50;
+    }
+
+    sw(0x80078AD4, 0);
+    sw(0x80078BA8, 1);
+    sw(0x80078BA0, 0);
+    sw(0x80075960, 0);
+    sw(0x800758A0, 0);
+    sw(0x80075700, 0);
+
+    if ((int32_t)lw(0x80078B6C) > 0)
+      sw(0x80078B6C, 0);
+    
+    sw(0x80078B70, clamp_int(spyro_vec_length(0x80078BC4, 0), 0x780, 0x1900));
+    
+    if (lw(player_movestate) == 6 || lw(0x80075690) == 0
+      || (int32_t)lw(player_position + 8) > (int32_t)lw(0x80078BB0))
+    {
+      sw(0x80078BB0, lw(player_position + 8));
+    }
+    
+    sw(0x80078CAC, (int32_t)lw(0x80078B78) > 0x400);
+    sw(0x80078BA4, -0x80);
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 17:
+    a1 = 0x80078C7C;
+    if (lw(a1)) {
+    spyro_vec3_clear(a1 - 0x130);
+    v1 = lw(0x80078C58);
+    a0 = lw(0x80078B74);
+    v0 = lw(player_position + 8);
+    sw(0x80078BB0, v1);
+    v1 -= v0 + 0x800;
+    sw(gp + 0x4C0, v1);
+    v1 = ((int32_t)(v1 << 10) >> 10) + 0x400;
+    sw(gp + 0x404, v0);
+    sw(gp + 0x528, a0);
+    sw(gp + 0x58C, v1);
+    v1 = (lbu(lw(0x80078C7C) + 0x46)*16 - a0 - v1) & 0xFFF;
+    if ((int32_t)v1 > 0x800)
+      sw(gp + 0x58C, v1 - 0x1000);
+    else
+      sw(gp + 0x58C, v1);
+
+    } else {
+      spyro_vec3_copy(a1 - 0x130, a1 - 0x118);
+    }
+    sw(0x80078BA4, 0x80);
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 18:
+  case 36:
+  case 37:
+  case 38:
+  case 39:
+  case 40:
+  case 41:
+  case 42:
+  case 43:
+    sw(0x80078AD4, 0);
+    sw(0x80078BA4, -0xC00);
+    sh(0x80075788, lbu(0x8006C4A2 + s5*4)*16);
+    goto label8003FD50;
+    break;
+  case 19:
+    sw(0x80078AD4, 0);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+
+    if ((int32_t)lw(0x80078B48) > 0)
+      sw(0x80078B48, 0);
+
+    sw(0x80078BA4, -0x200);
+    function_8003E1AC();
+    function_8003E0B4();
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 20:
+    spyro_vec3_copy(0x80078B4C, 0x80078B64);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    sw(0x80078BA0, 0);
+    if (lw(0x80078CA8)) {
+      if ((lw(0x80078AD4) & 0x80) == 0) {
+        sw(0x80078BB0, lw(player_position + 8));
+        sw(0x80078B20, max_int(spyro_vec_length(0x80078B40, 1), 0x1F80));
+      }
+      sw(0x80078AD4, lw(0x80078AD4) | 0x80);
+    } else {
+      sw(0x80078AD4, 0);
+      sw(0x80078B54, 0);
+      sw(0x80078B48, 0);
+    }
+    sw(0x80078BA4, -0x240);
+    sw(0x80078BAC, 0);
+    sw(0x80078BB4, 0);
+    goto label8003FD50;
+    break;
+  case 22:
+  case 28:
+    sw(0x80078B4C, lw(0x80078C60)*64);
+    sw(0x80078AD4, 0);
+    sw(0x80078B50, lw(0x80078C64)*64);
+    v1 = lw(0x80078C68);
+    if (v1)
+      sw(0x80078B54, v1*64);
+    else
+      sw(0x80078B54, lw(0x80078B6C));
+
+    sw(0x80078BA4, -0x300);
+
+    if (lw(0x80078AF4) == 0)
+      function_8003E1AC();
+
+    sw(0x80078BB4, 1);
+
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    a3 = 0;
+    function_loaded_800758E4();
+
+    a0 = lbu(lw(0x800761D4) + 0x3B);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078CF8;
+    function_80055A78();
+
+    if ((int32_t)lw(0x80075904) < 15)
+      sw(0x80075904, 15);
+
+    goto label8003FD50;
+    break;
+  case 24:
+    spyro_vec3_copy(0x80078B4C, 0x80078B64);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    sw(0x80078BA0, 0);
+    sw(0x80078AD4, 0xC0);
+    sw(0x80078BA4, 0);
+    sw(0x80078BAC, 0);
+    goto label8003FD50;
+    break;
+  case 25:
+    sw(0x80078AD4, 0);
+    spyro_vec3_clear(0x80078B4C);
+
+    sw(0x80078B54, -0xC00);
+    sw(0x80078BB4, 1);
+
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    a3 = 0;
+    function_loaded_800758E4();
+    sw(0x80075904, max_int(lw(0x80075904), 15));
+
+    a0 = lbu(lw(0x800761D4) + 0x3A);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078CF8;
+    function_80055A78();
+    goto label8003FD50;
+    break;
+  case 26:
+    v0 = 0x80078AD4;
+    s0 = v0 + 0x90;
+    sw(0x80078AD4, 0);
+    v0 = (spyro_atan2(lw(0x80078BC4), lw(0x80078B68), 1) - lw(0x80078B74)) & 0xFFF;
+    if (v0 > 0x400 && v0 < 0xC00)
+      sw(0x80078B70, 0);
+    else
+      sw(0x80078B70, spyro_vec_length(s0, 0));
+      
+    sw(0x80078BA4, -0xC00);
+    function_8003E1AC();
+    sw(0x80078B9C, 0x280);
+    sw(0x800758A0, 0);
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 27:
+    sw(0x80078AD4, 0);
+    spyro_vec3_clear(0x80078AD4 + 0x78);
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    sw(0x80078BA4, -0x300);
+    sw(0x80078BB4, 1);
+    a3 = 0;
+    function_loaded_800758E4();
+    
+    if ((int32_t)lw(0x80075904) < 15)
+      sw(0x80075904, 15);
+
+    goto label8003FD50;
+    break;
+  case 29:
+    sw(0x80078AD4, 0);
+    sw(0x80078BA4, -0x80);
+    sw(0x80078BB4, 1);
+    if (lw(0x80078BB8) == 0) {
+      a0 = 5;
+      a1 = 10;
+      a2 = 0;
+      a3 = 0;
+      function_loaded_800758E4();
+    }
+    a0 = lw(0x8006EA34 + lw(0x80075728)*4); // &0x000001DD
+    a1 = 0;
+    function_loaded_800758CC();
+    
+    a0 = lbu(lw(0x800761D4) + 0x1D);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078CF8;
+    function_80055A78();
+
+    a0 = lbu(lw(0x800761D4) + 0x1B);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078CF8;
+    function_80055A78();
+
+    if ((int32_t)lw(0x80075904) < 15)
+      sw(0x80075904, 15);
+
+    goto label8003FD50;
+    break;
+  case 30:
+    sw(0x80078AD4, 0);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    sw(0x80078BA4, -0x300);
+    if (lw(0x80078AF4) == 0)
+      function_8003E1AC();
+
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 31:
+    sw(0x80078AD4, 0);
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    sw(0x80078BA4, -0x300);
+
+    if (lw(0x80078AF4) == 0)
+      function_8003E1AC();
+  
+    sw(0x80078BB4, 1);
+
+    a0 = 5;
+    a1 = 10;
+    a2 = 0;
+    a3 = 0;
+    function_loaded_800758E4();
+    goto label8003FD50;
+    break;
+  case 35:
+    sw(0x80078BA4, -0x80);
+    sw(0x80078AD4, 0);
+    sw(0x80078BB4, 1);
+    goto label8003FD50;
+    break;
+  case 44:
+    spyro_vec3_copy(0x80078B40, 0x80078B64);
+    if ((lw(0x80078AD4) & 0x80) == 0) {
+      sw(0x80078BB0, lw(player_position + 8));
+      sw(0x80078B20, max_int(spyro_vec_length(0x80078B40, 1), 0x1F80));
+    }
+    sw(0x80078AD4, 0xC0);
+    sw(0x80078BA0, 0);
+    sw(0x80078BA4, -0x240);
+    function_8003E1AC();
+    function_8003E0B4();
+    sw(0x80078BB4, 1);
+    sw(0x80075700, 0);
+
+    a0 = lbu(lw(0x800761D4) + 5);
+    a1 = 0x80078A58;
+    a2 = 4;
+    a3 = 0x80078AD4 + 0x225;
+    function_80055A78();
+    goto label8003FD50;
+    break;
+  default:
+    goto label8003FD50;
+    break;
+  }
+label8003EF84:
+  s0 = 0x80078B40;
+  a0 = s0;
+  a1 = s0 + 36; // 0x0024
+  spyro_vec3_copy(a0, a1);
+  v0 = lw(0x80078CA8);
+  temp = v0 == 0;
+  v0 = 1; // 0x0001
+  if (temp) goto label8003F000;
+  v0 = lw(0x80078AD4);
+  v0 = v0 & 0x80;
+  temp = v0 != 0;
+  v0 = 129; // 0x0081
+  if (temp) goto label8003F000;
+  a0 = s0;
+  sw(0x80078BB0, lw(player_position + 8));
+  sw(0x80078B20, max_int(spyro_vec_length(s0, 1), 0x1F80));
+  v0 = 129; // 0x0081
+label8003F000:
+  sw(0x80078AD4, v0);
+  s0 = 0x80078BA0;
+  v0 = -576; // 0xFFFFFDC0
+  sw(s0 + 0x0000, 0);
+  sw(0x80078BA4, v0);
+  s1 = s0 - 328; // 0xFFFFFEB8
+  function_8003E1AC();
+  function_8003E0B4();
+  a1 = s1;
+  a2 = 4; // 0x0004
+  v1 = lw(0x800761D4);
+  v0 = 1; // 0x0001
+  sw(0x80078BB4, v0);
+  a0 = lbu(v1 + 0x0004);
+  a3 = s0 + 345; // 0x0159
+  function_80055A78();
+  v1 = lh(0x80076E20);
+  v0 = lw(0x80078B74);
+  sw(gp + 0x052C, 0);
+  v0 -= v1;
+  v1 = v0 & 0xFFF;
+  v0 = (int32_t)v1 < 2049;
+  temp = v0 != 0;
+  if (temp) goto label8003F084;
+  v1 -= 4096; // 0xFFFFF000
+label8003F084:
+  temp = (int32_t)v1 >= 0;
+  v0 = v1;
+  if (temp) goto label8003F090;
+  v0 = -v0;
+label8003F090:
+  v0 = (int32_t)v0 < 513;
+  temp = v0 != 0;
+  if (temp) goto label8003FD50;
+  s0 = lw(0x80075828);
+  v0 = lw(0x80075890);
+  v0 = s0 < v0;
+  temp = v0 == 0;
+  s3 = 30000; // 0x7530
+  if (temp) goto label8003FD50;
+  s4 = s1;
+  s1 = s0 + 12; // 0x000C
+label8003F0C4:
+  v0 = lbu(s1 + 0x003C);
+  v0 = v0 < 127;
+  temp = v0 == 0;
+  if (temp) goto label8003F1B4;
+  v0 = lw(s1 - 0x0004); // 0xFFFFFFFC
+  temp = v0 == 0;
+  a0 = sp + 16; // 0x0010
+  if (temp) goto label8003F1B4;
+  a1 = s1;
+  a2 = s4;
+  spyro_vec3_sub(a0, a1, a2);
+  a0 = lw(sp + 0x0010);
+  a1 = lw(sp + 0x0014);
+  a2 = 1; // 0x0001
+  v0 = spyro_atan2(a0, a1, a2);
+  v1 = lw(0x80078B74);
+  v0 -= v1;
+  v1 = v0 & 0xFFF;
+  v0 = (int32_t)v1 < 2049;
+  temp = v0 != 0;
+  if (temp) goto label8003F128;
+  v1 -= 4096; // 0xFFFFF000
+label8003F128:
+  s2 = abs_int(v1);
+  if (s2 < 0x200) {
+    if (abs_int(lw(sp + 0x10)) + abs_int(lw(sp + 0x14)) + abs_int(lw(sp + 0x18)) < 0x4000) {
+      a0 = spyro_vec_length(sp + 0x10, 1);
+      if ((int32_t)a0 < 0x1800) {
+        a0 += s2*4;
+        if ((int32_t)a0 < (int32_t)s3) {
+          s3 = a0;
+          sw(gp + 0x52C, s0);
+        }
+      }
+    }
+  }
+label8003F1B4:
+  v0 = lw(0x80075890);
+  s0 += 88; // 0x58
+  v0 = s0 < v0;
+  temp = v0 != 0;
+  s1 += 88; // 0x0058
+  if (temp) goto label8003F0C4;
+  goto label8003FD50;
+label8003FD50:
+
+  sw(player_movestate, s5);
+  sw(0x80078ADC, lw(0x80078AD8));
+  sw(0x80078AD8, 0);
+  sw(0x80078AB0, lbu(0x8006C4A3 + lbu(0x8006C470 + s5)*4));
+
+  ra = lw(sp + 0x48);
+  s5 = lw(sp + 0x44);
+  s4 = lw(sp + 0x40);
+  s3 = lw(sp + 0x3C);
+  s2 = lw(sp + 0x38);
+  s1 = lw(sp + 0x34);
+  s0 = lw(sp + 0x30);
+  sp += 0x50;
+  return;
+}
+
+void function_8003EA68(void)
+{
+  UNREACHABLE;
+  spyro_change_movestate(a0);
+}
+
+#ifdef __wasm__
+
+#include <wasm.h>
+
+WASM_PUBLIC void actual_game_loop(void)
+{
+  if (start_frame()) return;
+
+  sb(gp + 0x0604, 0);
+
+  function_8003385C();
+
+  sb(gp + 0x0604, 1);
+  sw(gp + 0x0468, lw(gp + 0x04FC));
+
+  if (lw(gp + 0x0468) < 2)
+    sw(gp + 0x0468, 2);
+
+  if (lw(gp + 0x0468) > 4)
+    sw(gp + 0x0468, 4);
+
+  sw(gp + 0x04FC, 0);
+  if (lw(gp + 0x0538) == 0) {
+    function_8001ED5C();
+  }
+}
+
+void request_animation_frame(void);
+
+// size: 0x00000088
+void game_loop(void)
+{
+  initial_loading_screen();
+
+  request_animation_frame();
+}
+
+#else // __wasm__
+
+// size: 0x00000088
+void game_loop(void)
+{
+  initial_loading_screen();
+  
+  while (1) {
+
+    if (start_frame()) return;
+    
+    sb(gp + 0x0604, 0);
+
+    function_8003385C();
+
+    sb(gp + 0x0604, 1);
+    sw(gp + 0x0468, lw(gp + 0x04FC));
+
+    if (lw(gp + 0x0468) < 2)
+      sw(gp + 0x0468, 2);
+
+    if (lw(gp + 0x0468) > 4)
+      sw(gp + 0x0468, 4);
+    
+    sw(gp + 0x04FC, 0);
+    if (lw(gp + 0x0538) == 0) {
+      function_8001ED5C();
+    }
+  }
+}
+
+#endif // __wasm__

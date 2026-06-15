@@ -18,6 +18,8 @@ void spyro_set_mat_mirrored_vec_multiply(uint32_t mat, uint32_t vec_src, uint32_
 void spyro_mat_mirrored_vec_multiply(uint32_t vec_src, uint32_t vec_dst);
 void spyro_camera_mat_vec_multiply(vec3_32 *src, vec3_32 *dst);
 uint32_t spyro_vec_length(uint32_t vec, uint32_t is_vec3);
+uint32_t vec3_32_length(vec3_32 v);
+uint32_t math_func1(vec3_32 *v_src, int32_t n, uint32_t v3);
 void spyro_set_vec3_length(uint32_t vec, int32_t len);
 void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul);
 void spyro_vec3_multiply_fancy_shift_right(uint32_t vec, uint32_t mult, uint32_t shift);

@@ -8,7 +8,7 @@
 
 #include "iso9660.h"
 
-//#define CREATE_FILESYSTEM
+#define CREATE_FILESYSTEM
 #define OUTPUT_INFO
 
 void directory_record_extra(directory_record *dir_rec)

@@ -14,14 +14,14 @@ void spyro_memset32(uint32_t dst, uint32_t set, uint32_t len)
 // size: 0x0000001C
 void function_80016914()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memset32(a0, a1, a2);
 }
 
 // size: 0x00000028
 void function_80016930()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   assert((a2%16) == 0);spyro_memset32(a0, a1, a2);
 }
 
@@ -36,7 +36,7 @@ void spyro_memcpy32(uint32_t dst, uint32_t src, uint32_t len)
 // size: 0x00000054
 void function_80016958(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memcpy32(a0, a1, a2);
 }
 
@@ -55,14 +55,14 @@ void spyro_memset8(uint32_t dst, uint8_t set, uint32_t len)
 // size: 0x0000002C
 void function_8006230C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memset8(a0, a1, a2);
 }
 
 // size: 0x00000034
 void function_800626F8()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_memcpy8(a0, a1, a2);
 }
 
@@ -75,7 +75,7 @@ uint32_t spyro_strlen(uint32_t str)
 // size: 0x00000030
 void function_8006276C()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_strlen(a0);
 }
 
@@ -91,7 +91,7 @@ uint32_t spyro_strchr(uint32_t str, uint32_t chr, uint32_t len)
 // size: 0x00000050
 void function_80062EC0()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_strchr(a0, a1, a2);
 }
 
@@ -103,7 +103,7 @@ void spyro_memmove(uint32_t dst, uint32_t src, uint32_t len)
 // size: 0x0000006C
 void function_80063830(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memmove(a0, a1, a2);
 }
 
@@ -125,27 +125,27 @@ uint32_t spyro_memclr8(uint32_t dst, uint32_t len)
 // size: 0x00000030
 void function_8006B670(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_memclr8(a0, a1);
 }
 
 // clear_memory(a0: addr, a1: len)
 void function_8005E4AC()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memclr32(a0, a1);
 }
 
 // another mem zero lmao
 void function_8005E8AC()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memclr32(a0, a1);
 }
 
 // another mem zero lmao
 void function_8005E604()
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_memclr32(a0, a1);
 }

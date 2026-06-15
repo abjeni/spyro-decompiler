@@ -42,8 +42,9 @@
 
 extern uint32_t lib_num;
 
-uint32_t update_level_functions(void);
+void update_level_functions(void);
 
 void function_loaded_80075734(void);
 void function_loaded_800758CC(void);
+void function_loaded_800758E4(void);
 void function_loaded_800756BC(void);

@@ -11,3 +11,8 @@ uint32_t dma_callback(uint32_t dma_num, uint32_t callback);
 uint32_t dma_callback2(uint32_t dma_num, uint32_t callback);
 
 void spyro_patch_bios(void);
+
+void spyro_start(void);
+
+uint32_t init_hook_entry_int(void);
+uint32_t init_hook_entry_int2(void);

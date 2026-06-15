@@ -35,7 +35,7 @@ mat3 get_mat(uint32_t i)
     list[4] = cop2.LCM4;
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   return list_to_mat3(list);
@@ -52,7 +52,7 @@ vec3 xy_z_to_vec(uint32_t xy, uint32_t z)
 
 vec3 get_mul_vec(uint32_t i)
 {
-  uint32_t xy, z;
+  uint32_t xy = 0, z = 0;
 
   switch (i) {
     case 0:
@@ -74,7 +74,7 @@ vec3 get_mul_vec(uint32_t i)
         .z = cop2.IR3
       };
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 
   return xy_z_to_vec(xy, z);
@@ -82,7 +82,7 @@ vec3 get_mul_vec(uint32_t i)
 
 vec3 get_trans_vec(uint32_t i)
 {
-  vec3 vec;
+  vec3 vec = (vec3){0};
 
   switch(i) {
   case 0:
@@ -110,7 +110,7 @@ vec3 get_trans_vec(uint32_t i)
     vec = (vec3){0};
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   return vec;
@@ -472,10 +472,8 @@ void OP(uint32_t sf, uint32_t lm)
   clamp_REGS(min);
 }
 
-uint32_t LZCR(void)
+uint32_t lzcr(uint32_t num)
 {
-  uint32_t num = cop2.LZCS;
-
   if (num&0x80000000) num = ~num;
 
   if (num == 0) return 32;
@@ -486,8 +484,15 @@ uint32_t LZCR(void)
     num = num << 1;
   }
 
-  BREAKPOINT;
+  UNREACHABLE;
   return -1;
+}
+
+uint32_t LZCR(void)
+{
+  uint32_t num = cop2.LZCS;
+
+  return lzcr(num);
 }
 
 

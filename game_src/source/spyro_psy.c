@@ -7,6 +7,7 @@
 #include "psx_mem.h"
 #include "psx_bios.h"
 #include "spyro_string.h"
+#include "spyro_system.h"
 #include "psx_bios.h"
 #include "spyro_vsync.h"
 #include "debug.h"
@@ -34,7 +35,7 @@ void spyro_srand(int32_t seed)
 // size: 0x00000010
 void function_8006275C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   spyro_srand(a0);
 }
 
@@ -48,7 +49,7 @@ int spyro_rand(void)
 // size: 0x00000030
 void function_8006272C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = spyro_rand();
 }
 
@@ -68,7 +69,7 @@ int32_t ResetGraph(int32_t mode)
   case 5:
     s0 = 0x80074A64;
     spyro_memset8(s0, 0, 0x80);
-    function_8005DDC8();
+    init_hook_entry_int2();
     GPU_cw(lw(0x80074A5C) & 0x00FFFFFF);
     a0 = mode;
     function_80061DEC();
@@ -83,12 +84,12 @@ int32_t ResetGraph(int32_t mode)
     break;
   default: // flush
     if (lbu(psy_debug_level_ptr) >= 2) {
-      if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+      if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("ResetGraph(%d)...\n", mode);
     }
     a0 = 1;
     v0 = lw(lw(0x80074A5C) + 0x34);
-    if (v0 != 0x80061DEC) BREAKPOINT;
+    if (v0 != 0x80061DEC) UNREACHABLE;
     function_80061DEC();
     break;
   }
@@ -102,7 +103,7 @@ int32_t ResetGraph(int32_t mode)
 
 void function_8005F2A4(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = ResetGraph(a0);
 }
 
@@ -116,7 +117,7 @@ void SetDispMask(int32_t mask)
 
   s1 = psy_debug_level_ptr;
   if (lbu(psy_debug_level_ptr) >= 2) {
-    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("SetDispMask(%d)...\n", mask);
   }
   if (mask == 0)
@@ -127,7 +128,7 @@ void SetDispMask(int32_t mask)
   else
     a0 = 0x03000001;
 
-  if (lw(lw(0x80074A5C) + 0x10) != 0x800616F4) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x10) != 0x800616F4) UNREACHABLE;
   GP1_command(a0);
 
   ra = lw(sp + 0x18);
@@ -139,7 +140,7 @@ void SetDispMask(int32_t mask)
 
 void function_8005F6C8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   SetDispMask(a0);
 }
 
@@ -148,11 +149,11 @@ uint32_t DrawSync(uint32_t mode)
 {
   if (lbu(psy_debug_level_ptr) >= 2) {
     v0 = lw(0x80074A60);
-    if (v0 != 0x8006279C) BREAKPOINT;
+    if (v0 != 0x8006279C) UNREACHABLE;
     printf("DrawSync(%d)...\n", mode);
   }
   
-  if (lw(lw(0x80074A5C) + 0x3C) != 0x80061F48) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x3C) != 0x80061F48) UNREACHABLE;
   a0 = mode;
   function_80061F48();
 
@@ -161,7 +162,7 @@ uint32_t DrawSync(uint32_t mode)
 
 void function_8005F764(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = DrawSync(a0);
 }
 
@@ -179,7 +180,7 @@ int32_t SetGraphDebug(int32_t level)
   sb(psy_debug_level_ptr, level);
 
   if (level & 0xFF) {
-    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("SetGraphDebug:level:%d,type:%d reverse:%d\n", level, lbu(0x80074A64), lbu(0x80074A67));
   }
 
@@ -188,7 +189,7 @@ int32_t SetGraphDebug(int32_t level)
 
 void function_8005F53C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = SetGraphDebug(a0);
 }
 
@@ -207,7 +208,7 @@ void psyq_check_box(char *str, RECT box)
      || (box.y < 0)
      || (box.w <= 0)
      || (box.h <= 0)) {
-      if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+      if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("%s:bad RECT", str);
       printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
       return;
@@ -215,7 +216,7 @@ void psyq_check_box(char *str, RECT box)
     return;
   }
   if (debug_level == 2) {
-    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("%s:", str);
     printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
     return;
@@ -225,7 +226,7 @@ void psyq_check_box(char *str, RECT box)
 
 void function_8005F7D0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   psyq_check_box(addr_to_pointer(a0), *(RECT*)addr_to_pointer(a1));
 }
 
@@ -234,7 +235,7 @@ int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b)
 {
   psyq_check_box("ClearImage", *rect);
   
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x0C), pointer_to_addr(rect), 8, 
   //   ((b & 0xFF) << 16)
   // | ((g & 0xFF) <<  8)
@@ -251,7 +252,7 @@ int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b)
 
 void function_8005F8F8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3);
 }
 
@@ -260,7 +261,7 @@ int32_t LoadImage(RECT *recp, void *p)
 {
   psyq_check_box("LoadImage", *recp);
 
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x20), pointer_to_addr(recp), 8, pointer_to_addr(p));
 
   ram_to_vram(recp, p);
@@ -271,7 +272,7 @@ int32_t LoadImage(RECT *recp, void *p)
 
 void function_8005FA28(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -280,7 +281,7 @@ int32_t StoreImage(RECT *recp, void *p)
 {
   psyq_check_box("StoreImage", *recp);
 
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   vram_to_ram(recp, p);
   v0 = 0;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x1C), pointer_to_addr(recp), 8, pointer_to_addr(p));
@@ -290,7 +291,7 @@ int32_t StoreImage(RECT *recp, void *p)
 
 void function_8005FA8C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -305,7 +306,7 @@ int32_t MoveImage(RECT *recp, int32_t x, int32_t y)
   sw(0x80074B14, (recp->y << 16) | (recp->x & 0xFFFF));
   sw(0x80074B18, (y << 16) | (x & 0xFFFF));
   sw(0x80074B1C, (recp->h << 16) | (recp->w & 0xFFFF));
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), 0x80074B0C, 0x14, 0);
 
   return v0;
@@ -313,7 +314,7 @@ int32_t MoveImage(RECT *recp, int32_t x, int32_t y)
 
 void function_8005FAF0(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = MoveImage(addr_to_pointer(a0), a1, a2);
 }
 
@@ -321,11 +322,11 @@ void function_8005FAF0(void)
 void DrawOTag(uint32_t *ot)
 {
   if (lbu(psy_debug_level_ptr) >= 2) {
-    if (lw(0x80074A60) != 0x8006279C) BREAKPOINT;
+    if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("DrawOTag(%08x)...\n", pointer_to_addr_maybe(ot));
   }
 
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), pointer_to_addr(ot), 0, 0);
 
   execute_gpu_linked_list(ot);
@@ -333,7 +334,7 @@ void DrawOTag(uint32_t *ot)
 
 void function_8005FD64(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   DrawOTag(addr_to_pointer(a0));
 }
 
@@ -342,14 +343,14 @@ DRAWENV *PutDrawEnv(DRAWENV *env)
 {
   if (lbu(psy_debug_level_ptr) >= 2) {
     uint32_t func = lw(0x80074A60);
-    if (func != 0x8006279C) BREAKPOINT;
+    if (func != 0x8006279C) UNREACHABLE;
     spyro_printf(0x80011910, pointer_to_addr_maybe(env), 0, 0); // "PutDrawEnv(%08x)...\n"
   }
 
   spyro_clear_screen(&env->dr_env, *env);
   env->dr_env.tag = env->dr_env.tag | 0x00FFFFFF;
   
-  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) BREAKPOINT;
+  if (lw(lw(0x80074A5C) + 0x08) != 0x80061820) UNREACHABLE;
   //v0 = command_queue_append(lw(lw(0x80074A5C) + 0x18), pointer_to_addr(&env->dr_env), 0x40, 0);
 
   execute_gpu_linked_list(&env->dr_env);
@@ -361,7 +362,7 @@ DRAWENV *PutDrawEnv(DRAWENV *env)
 
 void function_8005FDD8(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
 }
 
@@ -408,7 +409,7 @@ DISPENV *PutDispEnv(DISPENV *env)
   v0 = lbu(psy_debug_level_ptr);
   if (v0 > 2) {
     v0 = lw(0x80074A60);
-    if (v0 != 0x8006279C) BREAKPOINT;
+    if (v0 != 0x8006279C) UNREACHABLE;
     printf("PutDispEnv(%08x)...\n", pointer_to_addr_maybe(env));
   }
   if (psx_has_2mb_vram()) {
@@ -417,7 +418,7 @@ DISPENV *PutDispEnv(DISPENV *env)
     a0 = 0x05000000 | ((env->disp.y & 0x3FF) << 10) | (env->disp.x & 0x3FF);
   }
   v0 = lw(lw(0x80074A5C) + 0x10);
-  if (v0 != 0x800616F4) BREAKPOINT;
+  if (v0 != 0x800616F4) UNREACHABLE;
   GP1_command(a0);
 
   if (current_env->screen.x != env->screen.x
@@ -518,13 +519,13 @@ DISPENV *PutDispEnv(DISPENV *env)
     a0 = 0x06000000 | ((a2 & 0xFFF) << 12) | (v1 & 0xFFF);
     a1 = lw(0x80074A5C);
     v0 = lw(lw(0x80074A5C) + 0x10);
-    if (v0 != 0x800616F4) BREAKPOINT;
+    if (v0 != 0x800616F4) UNREACHABLE;
     GP1_command(a0);
 
     a0 = 0x07000000 | ((s2 & 0x3FF) << 10) | (s1 & 0x3FF);
     a1 = lw(0x80074A5C);
     v0 = lw(lw(0x80074A5C) + 0x10);
-    if (v0 != 0x800616F4) BREAKPOINT;
+    if (v0 != 0x800616F4) UNREACHABLE;
     GP1_command(a0);
   }
   
@@ -575,7 +576,7 @@ DISPENV *PutDispEnv(DISPENV *env)
     if (v0 == 0) s3 = s3 | 0x24;
     v0 = lw(lw(0x80074A5C) + 0x10);
     a0 = s3;
-    if (v0 != 0x800616F4) BREAKPOINT;
+    if (v0 != 0x800616F4) UNREACHABLE;
     GP1_command(a0);
   }
   *current_env = *env;
@@ -588,7 +589,7 @@ DISPENV *PutDispEnv(DISPENV *env)
 
 void function_80060030(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
 }
 
@@ -604,6 +605,6 @@ void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw)
 // size: 0x00000058
 void function_80060670(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)));
 }

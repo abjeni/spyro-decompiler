@@ -98,7 +98,7 @@ void gui_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 
 void function_8001844C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   gui_line(a0, a1, a2, a3);
 }
 
@@ -124,7 +124,7 @@ void blinking_arrow(vec3_32 p, uint32_t frame, int32_t direction)
 // size: 0x000000D8
 void function_80018534(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2);
 }
 
@@ -166,12 +166,12 @@ void gui_box_balloonist(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 // size: 0x0000011C
 void function_8001860C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   gui_box_balloonist(a0, a1, a2, a3);
 }
 
 // size: 0x00000150
-void function_80018728(void)
+void rescued_dragon_name(void)
 {
   char *dragon_name = dragon_names[lw(lw(lw(0x800770C0)) + 0x38)];
   uint32_t len = strlen(dragon_name);
@@ -179,7 +179,15 @@ void function_80018728(void)
   struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
   create_3d_text2("RESCUED", &(vec3_32){0xB0 - centering, 0xC8, 0x1000}, 20, 2);
   create_3d_text2(dragon_name, &(vec3_32){0x150 - centering, 0xC8, 0xC00}, 26, 2);
+
   text_wave_effect1(object, lw(0x80077080)*2, 12, 1, 128);
+}
+
+// size: 0x00000150
+void function_80018728(void)
+{
+  UNREACHABLE;
+  rescued_dragon_name();
 }
 
 // size: 0x00000088
@@ -192,7 +200,7 @@ void function_80018880(void)
 
   a1 = lw(gameobject_stack_ptr);
 
-  while (a1 < lw(0x800756FC)) {
+  while (a1 < lw(gameobject_stack_ptr_base)) {
     sw(a0, a1);
     a0 += 4;
     a1 += 88;
@@ -558,7 +566,7 @@ void fade_in(uint32_t semi_transparency, uint8_t r, uint8_t g, uint8_t b)
 // size: 0x000000C8
 void function_800190D4(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   fade_in(a0, a1, a2, a3);
 }
 
@@ -617,7 +625,7 @@ void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
 // size: 0x00000164
 void function_8001919C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2));
 }
 
@@ -1200,7 +1208,7 @@ void rgb_to_grey(void *buf, uint32_t len)
 
 void function_80017E98(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   rgb_to_grey(addr_to_pointer(a0), a1);
 }
 
@@ -1276,7 +1284,7 @@ label8001A5E0:
   v1 += 0x1C000;
   v0 -= 0x1C200;
   sw(allocator1_end, v1);
-  sw(0x800756FC, v0);
+  sw(gameobject_stack_ptr_base, v0);
   sw(gameobject_stack_ptr, v0);
   
   for (int i = 0; i < 4; i++)
@@ -1869,40 +1877,38 @@ label8001B360:
 label8001B3AC:
   s1 = sp + 0x70;
   sw(sp + 0x70, 0x10);
-  sw(sp + 0x78, 0x1400);
-  sw(sp + 0x40, 0xC7);
   sw(sp + 0x74, 1);
+  sw(sp + 0x78, 0x1400);
+
+  sw(sp + 0x40, 0xC7);
   sw(sp + 0x44, 0x6E);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("CONTINUE", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720);
-  temp = v0 != 0;
-  if (temp) goto label8001B418;
-  s2 = lw(gameobject_stack_ptr);
-  s5 = 8; // 0x0008
-label8001B418:
+  
+  if (lw(0x80075720) == 0) {
+    s2 = lw(gameobject_stack_ptr);
+    s5 = 8;
+  }
+
   sw(sp + 0x40, 0xCF);
   sw(sp + 0x44, 0x80);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("OPTIONS", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720);
-  temp = v0 != 1;
-  if (temp) goto label8001B468;
-  s2 = lw(gameobject_stack_ptr);
-  s5 = 7; // 0x0007
-label8001B468:
-  a3 = 18; // 0x12
-  s6 = 191; // 0xBF
+
+  if (lw(0x80075720) == 1) {
+    s2 = lw(gameobject_stack_ptr);
+    s5 = 7;
+  }
+  
   sw(sp + 0x40, 0xBF);
   sw(sp + 0x44, 0x92);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("INVENTORY", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
-  v0 = lw(0x80075720);
-  temp = v0 != 2;
-  if (temp) goto label8001B4B8;
-  s2 = lw(gameobject_stack_ptr);
-  s5 = 9; // 0x0009
-label8001B4B8:
+
+  if (lw(0x80075720) == 2) {
+    s2 = lw(gameobject_stack_ptr);
+    s5 = 9;
+  }
   v0 = lw(0x80075690);
   temp = v0 == 0;
   if (temp) goto label8001B51C;
@@ -1945,7 +1951,7 @@ label8001B51C:
   s5 = 9; // 0x0009
   goto label8001B5E8;
 label8001B5A0:
-  sw(sp + 0x40, s6);
+  sw(sp + 0x40, 0xBF);
   sw(sp + 0x44, 0xA4);
   sw(sp + 0x48, 0x1100);
   create_3d_text1("QUIT GAME", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
@@ -2069,8 +2075,7 @@ label8001B760:
   a1 = 0;
   sb(v1 + 0x46, v0);
   v0 = lw(gameobject_stack_ptr);
-  s6 = 127; // 0x007F
-  sb(v0 + 0x47, s6);
+  sb(v0 + 0x47, 0x7F);
   v0 = lw(gameobject_stack_ptr);
   s3 = 11; // 0x000B
   sb(v0 + 0x4F, s3);
@@ -2098,7 +2103,7 @@ label8001B894:
   sw(lw(gameobject_stack_ptr) + 0x10, s1);
   sw(lw(gameobject_stack_ptr) + 0x14, 0x780);
   sb(lw(gameobject_stack_ptr) + 0x46, lhu(s0 + (lw(0x800758B8) & 0x1F) * 16) >> 8);
-  sb(lw(gameobject_stack_ptr) + 0x47, s6);
+  sb(lw(gameobject_stack_ptr) + 0x47, 0x7F);
   sb(lw(gameobject_stack_ptr) + 0x4F, s3);
   sb(lw(gameobject_stack_ptr) + 0x50, s2);
   s1 = 0x24;
@@ -3091,13 +3096,10 @@ label8001D120:
   if (temp) goto label8001D0FC;
 label8001D134:
   sw(a2 + 0x00, 0);
-  function_80018728();
+  rescued_dragon_name();
   function_80018880();
   function_8001F158();
-  a0 = 0x8006FCF4; // &0x000EA69B
-  a1 = 0;
-  a2 = 2304; // 0x0900
-  spyro_memset32(a0, a1, a2);
+  spyro_memset32(0x8006FCF4, 0, 0x900);
   function_8001F798();
   function_80022A2C();
   function_80059F8C();
@@ -3157,15 +3159,12 @@ label8001D260:
   v0 = lw(0x8007706C);
   v0 = (int32_t)v0 < 60;
   temp = v0 == 0;
-  if (temp) goto label8001D28C;
-  function_80018728();
-  function_80018880();
-label8001D28C:
+  if (v0) {
+    rescued_dragon_name();
+    function_80018880();
+  }
   function_8001F158();
-  a0 = 0x8006FCF4; // &0x000EA69B
-  a1 = 0;
-  a2 = 2304; // 0x0900
-  spyro_memset32(a0, a1, a2);
+  spyro_memset32(0x8006FCF4, 0, 0x900);
   function_8001F798();
   function_80022A2C();
   function_80059F8C();
@@ -3239,10 +3238,7 @@ label8001D2FC:
   v0 = (int32_t)a0 >> 12;
   sh(0x8007131A, v0); // &0xD4D4C3C3
 label8001D438:
-  a0 = 0x8006FCF4; // &0x000EA69B
-  a1 = 0;
-  a2 = 2304; // 0x0900
-  spyro_memset32(a0, a1, a2);
+  spyro_memset32(0x8006FCF4, 0, 0x900);
   function_8001F798();
   goto label8001D4A8;
 label8001D45C:
@@ -3368,9 +3364,9 @@ void function_8001D718(void)
   sw(sp + 0x54, s1);
   sw(sp + 0x50, s0);
   
-  if (lw(0x800756FC) == lw(0x800785F0)) {
+  if (lw(gameobject_stack_ptr_base) == lw(0x800785F0)) {
     v0 = lw(allocator1_ptr) + 0x1BA00;
-    sw(0x800756FC, v0);
+    sw(gameobject_stack_ptr_base, v0);
     sw(gameobject_stack_ptr, v0);
   }
   s0 = lw(0x80078D00);
@@ -3638,7 +3634,7 @@ void function_ptr_800758D8(void)
   if (lw(LEVEL_ID)/10 != lw(WORLD_ID)+1) {
     printf("LEVEL_ID: %d\n", lw(LEVEL_ID));
     printf("WORLD_ID: %d\n", lw(WORLD_ID));
-    BREAKPOINT;
+    UNREACHABLE;
   }
   sprintf(buf, "%s THE BALLOONIST", balloonist_names[lw(LEVEL_ID)/10]);
 
@@ -4494,7 +4490,7 @@ void function_8001ED5C(void)
   sw(allocator1_ptr, v0);
   v0 += 0x1C000;
   sw(allocator1_end, v0);
-  sw(0x800756FC, v0);
+  sw(gameobject_stack_ptr_base, v0);
   sw(gameobject_stack_ptr, v0);
   sw(ordered_linked_list, v1);
   sw(linked_list1, a0);
@@ -4555,7 +4551,7 @@ void function_8001ED5C(void)
     function_8001CA38();
     break;
   case 7: // flight level crashed
-    if (lw(0x8007567C) != 0x8007B68C) BREAKPOINT;
+    if (lw(0x8007567C) != 0x8007B68C) UNREACHABLE;
     function_8007B68C();
     break;
   case 8: // freed dragon
@@ -4580,7 +4576,7 @@ void function_8001ED5C(void)
   case 14: // credits
     function_8001E9C8();
     break;
-  case 15: // more credits 
+  case 15: // more credits
     if ((int32_t)lw(0x80075704) < 99)
       function_8007BFD0_credits();
     else
@@ -4819,7 +4815,7 @@ label8007B854:
   v1 += 0x1C000;
   v0 -= 0x1C200;
   sw(allocator1_end, v1);
-  sw(0x800756FC, v0);
+  sw(gameobject_stack_ptr_base, v0);
   sw(gameobject_stack_ptr, v0);
 label8007B8CC:
   v1 = s1 << 7;
@@ -5080,7 +5076,7 @@ label8007BD84:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007BE14;
-  a1 = spyro_position;
+  a1 = player_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -5177,7 +5173,7 @@ label8007BF80:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C010;
-  a1 = spyro_position;
+  a1 = player_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -5281,7 +5277,7 @@ label8007C178:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C208;
-  a1 = spyro_position;
+  a1 = player_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -5386,7 +5382,7 @@ label8007C374:
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C404;
-  a1 = spyro_position;
+  a1 = player_position;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x00);
@@ -5470,7 +5466,7 @@ label8007C530:
   v0 = (int32_t)v0 < 9;
   temp = v0 == 0;
   if (temp) goto label8007C5C0;
-  a1 = spyro_position;
+  a1 = player_position;
   v0 = lw(0x800761D4);
   a2 = 16; // 0x0010
   v0 += s1;
@@ -6943,4 +6939,34 @@ label8007C31C:
   s1 = lw(sp + 0x24);
   s0 = lw(sp + 0x20);
   sp += 0x30;
+}
+
+// size: 0x000000E0
+void function_8005B6F8(void)
+{
+  v0 = lw(0x800785FC);
+  sw(0x800785F8, v0 - 0x2000);
+  sw(0x800785F4, v0 - 0x6000);
+  sw(0x800785F0, v0 - 0x6008);
+  if (a0)
+    v1 = -0x13000;
+  else
+    v1 = -0x1C000;
+    
+  v0 += v1;
+  sw(0x800785EC, v0);
+  v0 += v1;
+  sw(0x800785E8, v0);
+  v1 = lw(0x800785E8);
+  a3 = lw(0x800785EC);
+  a0 = lw(0x800785F0);
+  v0 = lw(0x800785F4);
+  sw(DISP1 + 0x70, v1);
+  sw(DISP2 + 0x70, a3);
+  sw(DISP1 + 0x78, a0);
+  sw(DISP2 + 0x78, a0);
+  sw(DISP1 + 0x74, v0);
+  sw(DISP2 + 0x74, v0);
+  spyro_memset32(a0, 0, 8);
+  spyro_memset32(lw(0x800785F4), 0, 0x4000);
 }

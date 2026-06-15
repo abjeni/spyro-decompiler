@@ -2,9 +2,17 @@
 
 #include <assert.h>
 #include <stdio.h>
+#include <signal.h>
 #include <stdint.h>
 
 #define BREAKPOINT \
+do { \
+  print_trace(); \
+  fflush(stdout); \
+  raise(SIGABRT); \
+} while(0);
+
+#define UNREACHABLE \
 do { \
   print_trace(); \
   fflush(stdout); \

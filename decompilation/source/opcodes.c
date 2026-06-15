@@ -1199,7 +1199,7 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
     assert(inst.rtype.r3 == 31);
     //fprintf(prog.output, "  JALR(temp, 0x%.8X);\n", inst.addr);
-    //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: calling function %%.8X\\n\", __LINE__, temp); BREAKPOINT;\n");
+    //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: calling function %%.8X\\n\", __LINE__, temp); UNREACHABLE;\n");
     return 1;
   case J:
     // it doesn't matter what you return here, this is the final function in a subfunction
@@ -1216,10 +1216,10 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
 
     //fprintf(prog.output, "  JR(temp, 0x%.8X);\n", inst.addr);
-    //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: goto %%.8X\\n\", __LINE__, temp); BREAKPOINT;\n");
+    //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: goto %%.8X\\n\", __LINE__, temp); UNREACHABLE;\n");
     return 1;
   case BREAK:
-    fprintf(prog.output, "  BREAKPOINT; // BREAK 0x%.5X", inst.i20type.imm);
+    fprintf(prog.output, "  UNREACHABLE; // BREAK 0x%.5X", inst.i20type.imm);
     break;
   case COP0:
   case COP2: {}

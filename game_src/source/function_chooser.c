@@ -1,16 +1,11 @@
 #include "debug.h"
 #include "level_loading.h"
-#include "not_renamed.h"
-
-#include "title_screen.h"
-#include "credits.h"
 
 #include "alpine_ridge.h"
 #include "artisans_home.h"
 #include "beastmakers_home.h"
 #include "blowhard.h"
 #include "cliff_town.h"
-#include "credits.h"
 #include "crystal_flight.h"
 #include "dark_hollow.h"
 #include "dark_passage.h"
@@ -35,7 +30,6 @@
 #include "stone_hill.h"
 #include "sunny_flight.h"
 #include "terrace_village.h"
-#include "title_screen.h"
 #include "toasty.h"
 #include "town_square.h"
 #include "tree_tops.h"
@@ -75,43 +69,43 @@ void function_8007CEE4(void)
 
 void function_800857CC(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_800857CC_artisans_home();
 }
 
 void function_8007D9C8(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_8007D9C8_artisans_home();
 }
 
 void function_800873E0(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_800873E0_artisans_home();
 }
 
 void function_80086134(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_80086134_artisans_home();
 }
 
 void function_8007AEA0(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_8007AEA0_artisans_home();
 }
 
 void function_8007AFDC(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_8007AFDC_artisans_home();
 }
 
 void function_8007B020(void)
 {
-  if (lib_num != LIB_ARTISANS_HOME) BREAKPOINT;
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
   function_8007B020_artisans_home();
 }
 
@@ -122,7 +116,7 @@ void function_8008249C(void)
       function_8008249C_sunny_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -133,7 +127,7 @@ void function_80084128(void)
       function_80084128_sunny_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -144,7 +138,7 @@ void function_80083330(void)
       function_80083330_sunny_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -167,7 +161,7 @@ void function_8007CFB4(void)
       function_8007CFB4_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -190,7 +184,7 @@ void function_8007AE08(void)
       function_8007AE08_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -213,7 +207,7 @@ void function_8007AEDC(void)
       function_8007AEDC_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -236,7 +230,7 @@ void function_8007B1FC(void)
       function_8007B1FC_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -260,7 +254,7 @@ void function_8007B68C(void)
       function_8007B68C_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 */
@@ -285,7 +279,7 @@ void function_8007B4B0(void)
       function_8007B4B0_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 */
@@ -297,7 +291,7 @@ void function_8008772C(void)
       function_8008772C_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -308,7 +302,7 @@ void function_8007DA78(void)
       function_8007DA78_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -319,7 +313,7 @@ void function_800892C4(void)
       function_800892C4_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -330,7 +324,7 @@ void function_80088098(void)
       function_80088098_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -344,7 +338,7 @@ void function_8007AF50(void)
       function_8007AF50_jacques();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -355,7 +349,7 @@ void function_8007B08C(void)
       function_8007B08C_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -366,7 +360,7 @@ void function_8007B0D0(void)
       function_8007B0D0_stone_hill();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -377,7 +371,7 @@ void function_80082960(void)
       function_80082960_dark_hollow();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -388,7 +382,7 @@ void function_8007AE40(void)
       function_8007AE40_dark_hollow();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -399,7 +393,7 @@ void function_800844A0(void)
       function_800844A0_dark_hollow();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -410,7 +404,7 @@ void function_80083274(void)
       function_80083274_dark_hollow();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -421,7 +415,7 @@ void function_800872A4(void)
       function_800872A4_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -432,7 +426,7 @@ void function_8007DA54(void)
       function_8007DA54_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -443,7 +437,7 @@ void function_80088F68(void)
       function_80088F68_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -454,7 +448,7 @@ void function_80087E20(void)
       function_80087E20_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -465,7 +459,7 @@ void function_8007AF2C(void)
       function_8007AF2C_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -476,7 +470,7 @@ void function_8007B068(void)
       function_8007B068_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -487,7 +481,7 @@ void function_8007B0AC(void)
       function_8007B0AC_town_square();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -498,7 +492,7 @@ void function_80081DA8(void)
       function_80081DA8_toasty();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -509,7 +503,7 @@ void function_8007AF94(void)
       function_8007AF94_toasty();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -520,7 +514,7 @@ void function_8008391C(void)
       function_8008391C_toasty();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -531,7 +525,7 @@ void function_800826F0(void)
       function_800826F0_toasty();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -542,7 +536,7 @@ void function_8008A258(void)
       function_8008A258_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -553,7 +547,7 @@ void function_8007E3A0(void)
       function_8007E3A0_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -564,7 +558,7 @@ void function_8008BFF0(void)
       function_8008BFF0_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -575,7 +569,7 @@ void function_8008AE28(void)
       function_8008AE28_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -586,7 +580,7 @@ void function_8007B878(void)
       function_8007B878_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -597,7 +591,7 @@ void function_8007B9B4(void)
       function_8007B9B4_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -608,7 +602,7 @@ void function_8007B9F8(void)
       function_8007B9F8_peacekeepers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -619,7 +613,7 @@ void function_8008A4D0(void)
       function_8008A4D0_dry_canyon();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -633,7 +627,7 @@ void function_8007E240(void)
       function_8007E240_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -644,7 +638,7 @@ void function_8008C540(void)
       function_8008C540_dry_canyon();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -655,7 +649,7 @@ void function_8008B1C0(void)
       function_8008B1C0_dry_canyon();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -669,7 +663,7 @@ void function_8007B718(void)
       function_8007B718_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -683,7 +677,7 @@ void function_8007B854(void)
       function_8007B854_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -700,7 +694,7 @@ void function_8007B898(void)
       function_8007B898_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -711,7 +705,7 @@ void function_80088B88(void)
       function_80088B88_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -722,7 +716,7 @@ void function_8008A9A8(void)
       function_8008A9A8_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -733,7 +727,7 @@ void function_80089714(void)
       function_80089714_cliff_town();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -744,7 +738,7 @@ void function_80083608(void)
       function_80083608_ice_cavern();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8007B4C8(void)
@@ -754,7 +748,7 @@ void function_8007B4C8(void)
       function_8007B4C8_ice_cavern();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80085184(void)
@@ -764,7 +758,7 @@ void function_80085184(void)
       function_80085184_ice_cavern();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80083F2C(void)
@@ -774,7 +768,7 @@ void function_80083F2C(void)
       function_80083F2C_ice_cavern();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -785,7 +779,7 @@ void function_800845F0(void)
       function_800845F0_dr_shemp();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8007AEB8(void)
@@ -795,7 +789,7 @@ void function_8007AEB8(void)
       function_8007AEB8_dr_shemp();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8008611C(void)
@@ -805,7 +799,7 @@ void function_8008611C(void)
       function_8008611C_dr_shemp();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80084EF0(void)
@@ -815,7 +809,7 @@ void function_80084EF0(void)
       function_80084EF0_dr_shemp();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -826,7 +820,7 @@ void function_800819BC(void)
       function_800819BC_night_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80082F58(void)
@@ -836,7 +830,7 @@ void function_80082F58(void)
       function_80082F58_night_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80082300(void)
@@ -846,7 +840,7 @@ void function_80082300(void)
       function_80082300_night_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -857,7 +851,7 @@ void function_8008B2C0(void)
       function_8008B2C0_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8007E398(void)
@@ -867,7 +861,7 @@ void function_8007E398(void)
       function_8007E398_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8008D2D0(void)
@@ -877,7 +871,7 @@ void function_8008D2D0(void)
       function_8008D2D0_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8008BE98(void)
@@ -887,7 +881,7 @@ void function_8008BE98(void)
       function_8008BE98_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8007B870(void)
@@ -897,7 +891,7 @@ void function_8007B870(void)
       function_8007B870_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -908,7 +902,7 @@ void function_8007B9AC(void)
       function_8007B9AC_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -919,7 +913,7 @@ void function_8007B9F0(void)
       function_8007B9F0_magiccrafters_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -930,7 +924,7 @@ void function_8008A36C(void)
       function_8008A36C_alpine_ridge();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -941,7 +935,7 @@ void function_8007BB00(void)
       function_8007BB00_alpine_ridge();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -952,7 +946,7 @@ void function_8008C9D8(void)
       function_8008C9D8_alpine_ridge();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8008AF54(void)
@@ -962,7 +956,7 @@ void function_8008AF54(void)
       function_8008AF54_alpine_ridge();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -973,7 +967,7 @@ void function_8008883C(void)
       function_8008883C_high_caves();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8007B64C(void)
@@ -983,7 +977,7 @@ void function_8007B64C(void)
       function_8007B64C_high_caves();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_8008B0B0(void)
@@ -993,7 +987,7 @@ void function_8008B0B0(void)
       function_8008B0B0_high_caves();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80089454(void)
@@ -1003,7 +997,7 @@ void function_80089454(void)
       function_80089454_high_caves();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1014,7 +1008,7 @@ void function_80086DD8(void)
       function_80086DD8_wizard_peak();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1025,7 +1019,7 @@ void function_8007B7A8(void)
       function_8007B7A8_wizard_peak();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1036,7 +1030,7 @@ void function_80089450(void)
       function_80089450_wizard_peak();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1047,7 +1041,7 @@ void function_80087B40(void)
       function_80087B40_wizard_peak();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1058,7 +1052,7 @@ void function_80083AB4(void)
       function_80083AB4_blowhard();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1069,7 +1063,7 @@ void function_8007AF28(void)
       function_8007AF28_blowhard();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1080,7 +1074,7 @@ void function_80085F40(void)
       function_80085F40_blowhard();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1091,7 +1085,7 @@ void function_80084830(void)
       function_80084830_blowhard();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1103,7 +1097,7 @@ void function_80081F0C(void)
       function_80081F0C_crystal_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1114,7 +1108,7 @@ void function_800836F8(void)
       function_800836F8_crystal_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1125,7 +1119,7 @@ void function_80082AA0(void)
       function_80082AA0_crystal_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1136,7 +1130,7 @@ void function_80087EF0(void)
       function_80087EF0_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1147,7 +1141,7 @@ void function_8007E18C(void)
       function_8007E18C_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1158,7 +1152,7 @@ void function_80089AB8(void)
       function_80089AB8_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1169,7 +1163,7 @@ void function_800888F8(void)
       function_800888F8_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1180,7 +1174,7 @@ void function_8007B664(void)
       function_8007B664_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1191,7 +1185,7 @@ void function_8007B7A0(void)
       function_8007B7A0_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1202,7 +1196,7 @@ void function_8007B7E4(void)
       function_8007B7E4_beastmakers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1213,7 +1207,7 @@ void function_8008465C(void)
       function_8008465C_terrace_village();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1224,7 +1218,7 @@ void function_8007B5DC(void)
       function_8007B5DC_terrace_village();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1235,7 +1229,7 @@ void function_800866D8(void)
       function_800866D8_terrace_village();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1246,7 +1240,7 @@ void function_800853AC(void)
       function_800853AC_terrace_village();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1257,7 +1251,7 @@ void function_80084718(void)
       function_80084718_misty_bog();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1268,7 +1262,7 @@ void function_8007AFBC(void)
       function_8007AFBC_misty_bog();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1279,7 +1273,7 @@ void function_800861CC(void)
       function_800861CC_misty_bog();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1290,7 +1284,7 @@ void function_80085084(void)
       function_80085084_misty_bog();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1301,7 +1295,7 @@ void function_80086B38(void)
       function_80086B38_tree_tops();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1312,7 +1306,7 @@ void function_8007B698(void)
       function_8007B698_tree_tops();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1323,7 +1317,7 @@ void function_8008869C(void)
       function_8008869C_tree_tops();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1334,7 +1328,7 @@ void function_80087400(void)
       function_80087400_tree_tops();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1345,7 +1339,7 @@ void function_800874FC(void)
       function_800874FC_metalhead();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1356,7 +1350,7 @@ void function_8007B770(void)
       function_8007B770_metalhead();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1367,7 +1361,7 @@ void function_800894B0(void)
       function_800894B0_metalhead();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1378,7 +1372,7 @@ void function_80088178(void)
       function_80088178_metalhead();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1389,7 +1383,7 @@ void function_8008223C(void)
       function_8008223C_wild_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1400,7 +1394,7 @@ void function_80083BAC(void)
       function_80083BAC_wild_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1411,7 +1405,7 @@ void function_80082F54(void)
       function_80082F54_wild_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1422,7 +1416,7 @@ void function_80088E24(void)
       function_80088E24_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1433,7 +1427,7 @@ void function_8007E3C0(void)
       function_8007E3C0_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1444,7 +1438,7 @@ void function_8008AA24(void)
       function_8008AA24_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1455,7 +1449,7 @@ void function_800897FC(void)
       function_800897FC_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1466,7 +1460,7 @@ void function_8007B9D4(void)
       function_8007B9D4_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1477,7 +1471,7 @@ void function_8007BA18(void)
       function_8007BA18_dreamweavers_home();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1488,7 +1482,7 @@ void function_80084B94(void)
       function_80084B94_dark_passage();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1499,7 +1493,7 @@ void function_8007B4F8(void)
       function_8007B4F8_dark_passage();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1510,7 +1504,7 @@ void function_80086D38(void)
       function_80086D38_dark_passage();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1521,7 +1515,7 @@ void function_800857FC(void)
       function_800857FC_dark_passage();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1532,7 +1526,7 @@ void function_80084620(void)
       function_80084620_lofty_castle();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1543,7 +1537,7 @@ void function_8007B4DC(void)
       function_8007B4DC_lofty_castle();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1554,7 +1548,7 @@ void function_80086438(void)
       function_80086438_lofty_castle();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1565,7 +1559,7 @@ void function_800850A0(void)
       function_800850A0_lofty_castle();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1576,7 +1570,7 @@ void function_8008590C(void)
       function_8008590C_haunted_towers();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1587,7 +1581,7 @@ void function_8007B510(void)
       function_8007B510_haunted_towers();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1598,7 +1592,7 @@ void function_800881D8(void)
       function_800881D8_haunted_towers();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1609,7 +1603,7 @@ void function_80086754(void)
       function_80086754_haunted_towers();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1620,7 +1614,7 @@ void function_800836A8(void)
       function_800836A8_jacques();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1631,7 +1625,7 @@ void function_80085254(void)
       function_80085254_jacques();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1642,7 +1636,7 @@ void function_80084028(void)
       function_80084028_jacques();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1653,7 +1647,7 @@ void function_80082028(void)
       function_80082028_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80083B8C(void)
@@ -1663,7 +1657,7 @@ void function_80083B8C(void)
       function_80083B8C_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 void function_80082D94(void)
@@ -1673,7 +1667,7 @@ void function_80082D94(void)
       function_80082D94_icy_flight();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1684,7 +1678,7 @@ void function_80083568(void)
       function_80083568_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1695,7 +1689,7 @@ void function_8007D938(void)
       function_8007D938_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1706,7 +1700,7 @@ void function_80084EA0(void)
       function_80084EA0_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1717,7 +1711,7 @@ void function_80083ED8(void)
       function_80083ED8_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1728,7 +1722,7 @@ void function_8007AE10(void)
       function_8007AE10_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1739,7 +1733,7 @@ void function_8007AF4C(void)
       function_8007AF4C_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1750,7 +1744,7 @@ void function_8007AF90(void)
       function_8007AF90_gnastys_world();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1761,7 +1755,7 @@ void function_80085664(void)
       function_80085664_gnorc_cove();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1772,7 +1766,7 @@ void function_8007B528(void)
       function_8007B528_gnorc_cove();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1783,7 +1777,7 @@ void function_8008747C(void)
       function_8008747C_gnorc_cove();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1794,7 +1788,7 @@ void function_80086144(void)
       function_80086144_gnorc_cove();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1805,7 +1799,7 @@ void function_80083108(void)
       function_80083108_twilight_harbor();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1816,7 +1810,7 @@ void function_8007AE5C(void)
       function_8007AE5C_twilight_harbor();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1827,7 +1821,7 @@ void function_80084EAC(void)
       function_80084EAC_twilight_harbor();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1838,7 +1832,7 @@ void function_80083B4C(void)
       function_80083B4C_twilight_harbor();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1849,7 +1843,7 @@ void function_80082F24(void)
       function_80082F24_gnasty_gnorc();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1860,7 +1854,7 @@ void function_8007AD64(void)
       function_8007AD64_gnasty_gnorc();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1871,7 +1865,7 @@ void function_80084634(void)
       function_80084634_gnasty_gnorc();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1882,7 +1876,7 @@ void function_800836F0(void)
       function_800836F0_gnasty_gnorc();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1893,7 +1887,7 @@ void function_80083690(void)
       function_80083690_gnastys_loot();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1904,7 +1898,7 @@ void function_8007AD4C(void)
       function_8007AD4C_gnastys_loot();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1915,7 +1909,7 @@ void function_80085230(void)
       function_80085230_gnastys_loot();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }
 
@@ -1926,6 +1920,6 @@ void function_800840FC(void)
       function_800840FC_gnastys_loot();
       return;
     default:
-      BREAKPOINT;
+      UNREACHABLE;
   }
 }

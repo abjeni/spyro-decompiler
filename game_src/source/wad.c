@@ -17,76 +17,76 @@ uint32_t wad_main_header[][2] =
   {0x00800800, 0x00383000}, // artisans subwad
   {0x00B83800, 0x00010000}, // stone hill exe
   {0x00B93800, 0x00362800}, // stone hill subwad
-  {0x00EF6000, 0x0000B000},
-  {0x00F01000, 0x0028D800}, // subwad
-  {0x0118E800, 0x0000F800},
-  {0x0119E000, 0x002E2000}, // subwad
-  {0x01480000, 0x0000A000},
-  {0x0148A000, 0x0021E000}, // subwad
-  {0x016A8000, 0x0000A800},
-  {0x016B2800, 0x001CB800}, // subwad
-  {0x0187E000, 0x00012800},
-  {0x01890800, 0x0029E800}, // subwad
-  {0x01B2F000, 0x00013000},
-  {0x01B42000, 0x002C0000}, // subwad
-  {0x01E02000, 0x00011800},
-  {0x01E13800, 0x00286800}, // subwad
-  {0x0209A000, 0x0000C000},
-  {0x020A6000, 0x002D7000}, // subwad
-  {0x0237D000, 0x0000C800},
-  {0x02389800, 0x00206000}, // subwad
-  {0x0258F800, 0x00009800},
-  {0x02599000, 0x0018E000}, // subwad
-  {0x02727000, 0x00014000},
-  {0x0273B000, 0x002BE800}, // subwad
-  {0x029F9800, 0x00013800},
-  {0x02A0D000, 0x0029F800}, // subwad
-  {0x02CAC800, 0x00012000},
-  {0x02CBE800, 0x0029C800}, // subwad
-  {0x02F5B000, 0x00010000},
-  {0x02F6B000, 0x0028A000}, // subwad
-  {0x031F5000, 0x0000D000},
-  {0x03202000, 0x001DD800}, // subwad
-  {0x033DF800, 0x0000A000},
-  {0x033E9800, 0x001A2800}, // subwad
-  {0x0358C000, 0x00010800},
-  {0x0359C800, 0x00256000}, // subwad
-  {0x037F2800, 0x0000D000},
-  {0x037FF800, 0x0026E800}, // subwad
-  {0x03A6E000, 0x0000C800},
-  {0x03A7A800, 0x002FE800}, // subwad
-  {0x03D79000, 0x0000F000},
-  {0x03D88000, 0x0029C800}, // subwad
-  {0x04024800, 0x00010000},
-  {0x04034800, 0x00222000}, // subwad
-  {0x04256800, 0x0000A000},
-  {0x04260800, 0x0017A800}, // subwad
-  {0x043DB000, 0x00011800},
-  {0x043EC800, 0x0028D800}, // subwad
-  {0x0467A000, 0x0000D800},
-  {0x04687800, 0x002B4800}, // subwad
-  {0x0493C000, 0x0000D000},
-  {0x04949000, 0x00217800}, // subwad
-  {0x04B60800, 0x0000F000},
-  {0x04B6F800, 0x00280800}, // subwad
-  {0x04DF0000, 0x0000C000},
-  {0x04DFC000, 0x00233800}, // subwad
-  {0x0502F800, 0x0000A000},
-  {0x05039800, 0x001A9800}, // subwad
-  {0x051E3000, 0x0000B800},
-  {0x051EE800, 0x0025B800}, // subwad
-  {0x0544A000, 0x0000E000},
-  {0x05458000, 0x00271800}, // subwad
-  {0x056C9800, 0x0000B800},
-  {0x056D5000, 0x0023C800}, // subwad
-  {0x05911800, 0x0000B000},
-  {0x0591C800, 0x001CE000}, // subwad
-  {0x05AEA800, 0x0000C000},
-  {0x05AF6800, 0x001A1000}, // subwad
+  {0x00EF6000, 0x0000B000}, // dark hollow exe
+  {0x00F01000, 0x0028D800}, // dark hollow subwad
+  {0x0118E800, 0x0000F800}, // town square exe
+  {0x0119E000, 0x002E2000}, // town square subwad
+  {0x01480000, 0x0000A000}, // toasty exe
+  {0x0148A000, 0x0021E000}, // toasty subwad
+  {0x016A8000, 0x0000A800}, // sunny flight exe
+  {0x016B2800, 0x001CB800}, // sunny flight subwad
+  {0x0187E000, 0x00012800}, // peacekeepers exe
+  {0x01890800, 0x0029E800}, // peacekeepers subwad
+  {0x01B2F000, 0x00013000}, // dry canyon exe
+  {0x01B42000, 0x002C0000}, // dry canyon subwad
+  {0x01E02000, 0x00011800}, // cliff town exe
+  {0x01E13800, 0x00286800}, // cliff town subwad
+  {0x0209A000, 0x0000C000}, // ice cavern exe
+  {0x020A6000, 0x002D7000}, // ice cavern subwad
+  {0x0237D000, 0x0000C800}, // dr shemp exe
+  {0x02389800, 0x00206000}, // dr shemp subwad
+  {0x0258F800, 0x00009800}, // night flight exe
+  {0x02599000, 0x0018E000}, // night flight subwad
+  {0x02727000, 0x00014000}, // magiccrafters exe
+  {0x0273B000, 0x002BE800}, // magiccrafters subwad
+  {0x029F9800, 0x00013800}, // alpine ridge exe
+  {0x02A0D000, 0x0029F800}, // alpine ridge subwad
+  {0x02CAC800, 0x00012000}, // high caves exe
+  {0x02CBE800, 0x0029C800}, // high caves subwad
+  {0x02F5B000, 0x00010000}, // wizard peak exe
+  {0x02F6B000, 0x0028A000}, // wizard peak subwad
+  {0x031F5000, 0x0000D000}, // blowhard exe
+  {0x03202000, 0x001DD800}, // blowhard subwad
+  {0x033DF800, 0x0000A000}, // crystal flight exe
+  {0x033E9800, 0x001A2800}, // crystal flight subwad
+  {0x0358C000, 0x00010800}, // beastmakers exe
+  {0x0359C800, 0x00256000}, // beastmakers subwad
+  {0x037F2800, 0x0000D000}, // terrace village exe
+  {0x037FF800, 0x0026E800}, // terrace village subwad
+  {0x03A6E000, 0x0000C800}, // misty bog exe
+  {0x03A7A800, 0x002FE800}, // misty bog subwad
+  {0x03D79000, 0x0000F000}, // tree tops exe
+  {0x03D88000, 0x0029C800}, // tree tops subwad
+  {0x04024800, 0x00010000}, // metalhead exe
+  {0x04034800, 0x00222000}, // metalhead subwad
+  {0x04256800, 0x0000A000}, // wild flight exe
+  {0x04260800, 0x0017A800}, // wild flight subwad
+  {0x043DB000, 0x00011800}, // dreamweavers exe
+  {0x043EC800, 0x0028D800}, // dreamweavers subwad
+  {0x0467A000, 0x0000D800}, // dark passage exe
+  {0x04687800, 0x002B4800}, // dark passage subwad
+  {0x0493C000, 0x0000D000}, // lofty castle exe
+  {0x04949000, 0x00217800}, // lofty castle subwad
+  {0x04B60800, 0x0000F000}, // haunted towers exe
+  {0x04B6F800, 0x00280800}, // haunted towers subwad
+  {0x04DF0000, 0x0000C000}, // jacques exe
+  {0x04DFC000, 0x00233800}, // jacques subwad
+  {0x0502F800, 0x0000A000}, // icy flight exe
+  {0x05039800, 0x001A9800}, // icy flight subwad
+  {0x051E3000, 0x0000B800}, // gnastys world exe
+  {0x051EE800, 0x0025B800}, // gnastys world subwad
+  {0x0544A000, 0x0000E000}, // gnorc cove exe
+  {0x05458000, 0x00271800}, // gnorc cove subwad
+  {0x056C9800, 0x0000B800}, // twilight harbor exe
+  {0x056D5000, 0x0023C800}, // twilight harbor subwad
+  {0x05911800, 0x0000B000}, // gnasty gnorc exe
+  {0x0591C800, 0x001CE000}, // gnasty gnorc subwad
+  {0x05AEA800, 0x0000C000}, // gnastys loot exe
+  {0x05AF6800, 0x001A1000}, // gnastys loot subwad
   {0x00000000, 0x00000000},
   {0x00000000, 0x00000000},
-  {0x05C97800, 0x00002000},
-  {0x05C99800, 0x000F9800}, // subwad
+  {0x05C97800, 0x00002000}, // credits exe ?
+  {0x05C99800, 0x000F9800}, // credits subwad ?
   {0x05D93000, 0x000A0000},
   {0x05E33000, 0x00094800},
   {0x05EC7800, 0x0007F800},

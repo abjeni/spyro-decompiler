@@ -7,11 +7,13 @@
 
 struct game_object {
   uint32_t unknown00; // 0x00 - 0x04 // pointer
-  uint8_t unknown04[0x08]; // 0x04 - 0x0C
+  uint8_t unknown04[0x04]; // 0x04 - 0x08
+  uint32_t unknown08;
   vec3_32 p; // 0x0C - 0x18
   uint32_t unknown18; // 0x18 - 0x1C
   uint32_t unknown1C; // 0x1C - 0x20
-  uint8_t unknown20[0x16]; // 0x20 - 0x36
+  uint8_t unknown20[0x14]; // 0x20 - 0x34
+  uint16_t unknown34; // 0x34 - 0x36
   uint16_t modelID; // 0x36 - 0x38
   uint16_t unknown38; // 0x38 - 0x3A
   uint16_t unknown3A; // 0x3A - 0x3C
@@ -54,6 +56,11 @@ struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint3
 void new_game_object(struct game_object *game_object);
 
 void game_loop(void);
+
+#define MOVESTATE_STAND 0
+#define MOVESTATE_GLIDE 15
+
+void spyro_change_movestate(uint32_t movestate);
 
 /*
 

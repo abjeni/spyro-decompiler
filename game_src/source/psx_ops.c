@@ -12,7 +12,7 @@ extern uint32_t hi, lo;
 void divu_psx(uint32_t a, uint32_t b)
 {
   if (b == 0)
-    BREAKPOINT;
+    UNREACHABLE;
 
   lo = a/b;
   hi = a%b;
@@ -28,7 +28,7 @@ void div_psx(int32_t a, int32_t b)
   }
   
   if (b == -1 && a == 0x80000000)
-    BREAKPOINT;
+    UNREACHABLE;
 
   lo = a/b;
   hi = a%b;
@@ -74,7 +74,7 @@ void A(file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: A(0x%.2X)\n", loc.file, loc.line, t1);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -97,6 +97,7 @@ void B(file_loc loc)
     v0 = EnableEvent(a0);
     break;
   case 0x17:
+    UNREACHABLE;
     ReturnFromException();
     break;
   case 0x19:
@@ -137,7 +138,7 @@ void B(file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: B(0x%.2X)\n", loc.file, loc.line, t1);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -155,7 +156,7 @@ void C(file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: C(0x%.2X)\n", loc.file, loc.line, t1);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -178,7 +179,7 @@ void system_call(file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: system_call(%d)\n", loc.file, loc.line, a0);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -196,7 +197,7 @@ void JR(uint32_t addr, uint32_t location, file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: %.8X: goto label%.8X;\n", loc.file, loc.line, location, addr);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -215,6 +216,6 @@ void JALR(uint32_t addr, uint32_t location, file_loc loc)
     break;
   default:
     printf("ERROR: %s:%u: %.8X: function_%.8X();\n", loc.file, loc.line, location, addr);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }

@@ -149,4 +149,5 @@ void GPL(uint32_t sf, uint32_t lm);
 void SQR(uint32_t sf);
 void CC(void);
 void OP(uint32_t sf, uint32_t lm);
+uint32_t lzcr(uint32_t num);
 uint32_t LZCR(void);

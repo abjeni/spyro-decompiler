@@ -28,7 +28,7 @@ const uint32_t funcs_80074A5C[] = {
   0x800617CC,
   0x80061DEC,
   0x80060ED8,
-  0x80061F48 
+  0x80061F48
 };
 
 struct jump_list_list jumps = JUMP_LIST_LIST(ARR_JUMP_LIST(
@@ -185,46 +185,41 @@ struct jump_list_list jumps = JUMP_LIST_LIST(ARR_JUMP_LIST(
 
 struct entries entries = ENTRIES(ARR_U32(
   0x8001364C,
-  0x8002B9CC,
-  0x8002D338,
   0x80053C68,
-  0x80058BA8,
-  0x8005B988,
-  0x8005CFEC,
-  0x8005DDF8,
-  0x8005DF60,
-  0x8005E03C,
-  0x80061DEC,
-  0x80061F48,
-  0x800627D8,
-  0x80069634,
-  0x8006969C,
-  0x8001F158,
-
-  0x8005CA64,
-  0x80013230,
-
   0x8002DF9C,
   0x8002EB2C,
   0x8002F3E4,
   0x8002E000,
   0x8002E084,
-  0x800314B4,
   0x800324D8,
   0x80032B08,
   0x800331AC,
-  0x8004A200,
-  0x80054988,
-  0x80037BD4,
-  0x8002C420,
   0x8002C714,
 ));
 
 struct skips skips = SKIPS(ARR_U32(
+  0x80055A78,
+  0x80056200,
+  0x8005637C,
+  0x80056E3C,
+  0x8005B6F8,
+  0x80059594,
+  0x80059864,
+  0x800690EC,
+  0x800691AC,
+  0x80069420,
+  0x80069458,
+  0x800694A0,
+  0x8003AAEC,
+  0x8003E318,
+  0x800567F4,
+  0x8002BBE0,
+  0x8005C7D4,
+  0x8005CAC4,
+  0x8005CB24,
   0x80014564,
   0x800163E4,
   0x80014B70,
-  0x80063EAC,
   0x8002D554,
   0x8002D228,
   0x8005B7D8,
@@ -238,10 +233,8 @@ struct skips skips = SKIPS(ARR_U32(
   0x8005CBB0,
   0x800623D8,
   0x800562A4,
-  0x8006590C,
   0x80056DC4,
   0x80058C7C,
-  0x800258F0,
   0x8002B390,
   0x8002B3F4,
   0x8002B444,
@@ -251,10 +244,8 @@ struct skips skips = SKIPS(ARR_U32(
   0x8004D5EC,
   0x8004E3C8,
   0x800522C0,
-  0x800580F4,
   0x8002B4AC,
   0x8004E2E8,
-  0x800584C4,
   0x800536A4,
   0x800526A8,
   0x800533D0,
@@ -272,67 +263,16 @@ struct skips skips = SKIPS(ARR_U32(
   0x8002C914,
   0x80037E98,
   0x80058B60,
-  0x80067614,
-  0x80067D74,
-  0x80063AAC,
   0x8005956C,
-  0x8005C7AC,
-  0x800638EC,
-  0x80068F30,
-  0x8006815C,
-  0x8006841C,
-  0x80068264,
-  0x80068458,
-  0x80068340,
-  0x80069030,
-  0x8006B64C,
-  0x8006A0D0,
-  0x8006B2CC,
-  0x8006A014,
-  0x8006A99C,
-  0x8006A9B0,
-  0x8006A9F0,
-  0x8006A2BC,
-  0x8006A97C,
   0x80038074,
   0x800381BC,
-  0x8006A0A4,
-  0x8006BAE8,
-  0x8006BB20,
-  0x8006BB40,
   0x80051FEC,
-  0x80016930,
   0x800168DC,
-  0x80061B00,
-  0x800620C4,
-  0x80062090,
   0x8003C358,
   0x8003A720,
-  0x8005DE8C,
-  0x8005DF44,
-  0x8005C588,
-  0x80064094,
-  0x80064198,
-  0x8005C6C8,
-  0x8005C6F4,
   0x80015370,
   0x8005375C,
   0x80053790,
-  0x8005E224,
-  0x8005DB4C,
-  0x8005DBB4,
-  0x8005E4AC,
-  0x8005E4D8,
-  0x8005E4F8,
-  0x8005E604,
-  0x8005E8AC,
-  0x80062FC4,
-  0x800684C4,
-  0x800684D4,
-  0x800688E0,
-  0x800688F0,
-  0x80068900,
-  0x80068910,
   0x80016698,
   0x80016914,
   0x80016958,
@@ -373,27 +313,25 @@ struct skips skips = SKIPS(ARR_U32(
   0x80017CB8,
   0x80017D7C,
   0x8002BAB8,
-  0x8005C720,
   0x8005F764,
   0x8005F8F8,
   0x8005FA28,
-  0x8006230C,
   0x8006272C,
-  0x8006276C,
-  0x8006279C,
-  0x80062EC0,
-  0x80062F10,
   0x80063BD8,
-  0x80063C48,
-  0x80063D80,
   0x80067628,
-  0x80067EA0,
-  0x800680A4,
-  0x800684B4,
-  0x800684E4,
-  0x800684F4,
-  0x8006B670,
+  0x8003EA68,
+  0x800662BC,
+  0x8006631C,
+  0x80067B28,
+  0x8006635C,
+  0x800665B8,
+  0x80066E28,
+  0x800670E4,
+  0x80067718,
+  0x8003E1AC
 ));
+
+
 
 
 void print_psx_header(psx_header header, int depth)
@@ -469,19 +407,26 @@ int read_psx_file(addr_list *external_calls)
   FILE *header_file = fopen(SOURCES_ROOT"decompilation.h", "w");
   assert(header_file);
 
-  addr_list_sort(external_calls);
+
+
   
   struct program prog = {
     .psx_mem = psx_mem,
     .range = range,
     .entries = entries,
-    .entries2n = external_calls->size,
-    .entries2 = external_calls->addrs,
     .jumpss = jumps,
     .skips = skips,
     .output = output,
     .header = header_file
   };
+
+  if (external_calls) {
+    addr_list_sort(external_calls);
+    prog.entries2n = external_calls->size;
+    prog.entries2 = external_calls->addrs;
+  } else {
+    prog.entries2n = 0;
+  }
 
   read_instructions(prog);
   fclose(output);

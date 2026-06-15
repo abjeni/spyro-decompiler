@@ -15,11 +15,11 @@ struct function_name function_names[] = {
   {0x80012204, "game_loop()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
-  {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))"},
+  {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))", .name = "spyro_combine_all_command_buffers"},
   {0x800168A0, "append_gpu_command_block_depth_slot(a0, a1)"},
   {0x800168DC, "append_gpu_command_block(addr_to_pointer(a0))"},
   {0x80016914, "spyro_memset32(a0, a1, a2)"},
-  {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)"},
+  {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)", .name = "spyro_memset32"},
   {0x80016958, "spyro_memcpy32(a0, a1, a2)"},
   {0x800169AC, "v0 = spyro_atan(a0, a1)"},
   {0x80016AB4, "v0 = spyro_atan2(a0, a1, a2)"},
@@ -32,6 +32,7 @@ struct function_name function_names[] = {
   {0x800170C0, "spyro_mat_mirrored_vec_multiply(a0, a1)"},
   {0x80017110, "spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1))"},
   {0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
+  {0x8001729C, "v0 = math_func1(addr_to_pointer(a0), a1, a2)"},
   {0x80017330, "spyro_set_vec3_length(a0, a1)"},
   {0x800175B8, "vec3_mul_div(a0, a1, a2)"},
   {0x80017614, "spyro_vec3_multiply_fancy_shift_right(a0, a1, a2)"},
@@ -61,18 +62,28 @@ struct function_name function_names[] = {
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
-  {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))"},
-  {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))"},
+  {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
+  {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
   {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
   {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
+  {0x80018728, "rescued_dragon_name()"},
   {0x800190D4, "fade_in(a0, a1, a2, a3)"},
   {0x8001919C, "draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2))"},
   {0x8002BB20, "v0 = completion_percentage()"},
+  {0x8002C914, "// NOP 0x8002C914", .name = "NOP8002C914"},
+  {0x8002C91C, "// NOP 0x8002C91C", .name = "NOP8002C91C"},
+  {0x8002F3C4, "// NOP 0x8002F3C4", .name = "NOP8002F3C4"},
+  {0x80037E98, "// NOP 0x80037E98", .name = "NOP80037E98"},
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
+  {0x8003EA68, "spyro_change_movestate(a0)"},
   {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
-  {0x8005A470, "v0 = update_level_functions()"},
+  {0x8005595C, "init_spu()"},
+  {0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
+  {0x8005A470, "update_level_functions()"},
+  {0x8005B8E0, "spyro_start()"},
+  {0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
   {0x8005C720, "do_literally_nothing()"},
   {0x8005CBB0, "v0 = test_spu_event(a0)"},
   {0x8005DB14, "InitHeap(a0, a1)"},
@@ -90,6 +101,7 @@ struct function_name function_names[] = {
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
   {0x8005DF44, "v0 = set_I_MASK(a0)"},
+  {0x8005DF60, "v0 = init_hook_entry_int()"},
   {0x8005E4AC, "spyro_memclr32(a0, a1)"},
   {0x8005E4D8, "ReturnFromException()"},
   {0x8005E4E8, "ResetEntryInt(a0)"},
@@ -106,8 +118,8 @@ struct function_name function_names[] = {
   {0x8005FA8C, "v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1))"},
   {0x8005FAF0, "v0 = MoveImage(addr_to_pointer(a0), a1, a2)"},
   {0x8005FD64, "DrawOTag(addr_to_pointer(a0))"},
-  {0x8005FDD8, "v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)))"},
-  {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))"},
+  {0x8005FDD8, "v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)))", .name = "PutDrawEnv"},
+  {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))", .name = "PutDispEnv"},
   {0x80060670, "SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)))"},
   {0x800608E0, "spyro_clear_screen(addr_to_pointer(a0), *(DRAWENV*)addr_to_pointer(a1));"},
   {0x80060B70, "v0 = spyro_draw_mode_setting_command(a0, a1, a2)"},
@@ -145,7 +157,7 @@ struct function_name function_names[] = {
   {0x8006397C, "v0 = CdInit()"},
   {0x80063BD8, "v0 = CdSync(a0, addr_to_pointer(a1))"},
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
-  {0x80064094, "v0 = pointer_to_addr(write_cdrom_header(a0, addr_to_pointer(a1)))"},
+  {0x80064094, "write_cdrom_header(a0, addr_to_pointer(a1))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
@@ -182,6 +194,8 @@ struct address_name address_names[] = {
   {0x8006F7F0, "LEVEL_NAMES", 36*4},
   {0x8006F880, "BALLOONIST_NAMES", 4*7},
   {0x8006FCF4, NULL, 0x2C00},
+  {0x800730C0, "heap_base"},
+  {0x800730C4, "heap_size"},
   {0x800730E8, "spu_event"},
   {0x80073554, "spu_registers_base_ptr"},
   {0x80073558, "DMA_SPU_address_ptr"},
@@ -199,6 +213,7 @@ struct address_name address_names[] = {
   {0x800749E0, "frame_counter"},
   {0x800749E4, "TIMER_1_horizontal_retrace_counter_mode_ptr"},
   {0x800749E8, "DMA_interrupt_register_ptr"},
+  {0x800749EC, "DMA_callbacks", 4*8},
   {0x80074A66, "psy_debug_level_ptr"},
   {0x80074A68, "VRAM_SIZE_X"},
   {0x80074A6A, "VRAM_SIZE_Y"},
@@ -215,21 +230,29 @@ struct address_name address_names[] = {
   {0x80074B78, "saved_I_STAT2"},
   {0x80074B7C, "gpu_frame_limit"},
   {0x80074B80, "gpu_retry_counter"},
+  {0x80074B84, "sqrt_lookup_ptr"},
+  {0x80074E44, "cd_result1"},
+  {0x80074E48, "cd_result2"},
+  {0x80074E55, "cd_current_command"},
   {0x800750FC, "CDROM_INDEX_ptr"},
   {0x80075100, "CDROM_REG_1_ptr"},
   {0x80075104, "CDROM_REG_2_ptr"},
   {0x80075108, "CDROM_REG_3_ptr"},
   {0x8007510C, "MEM_COMMON_DELAY_ptr"},
   {0x80075110, "SPU_voice_base_ptr"},
+  {0x80075114, "cd_sync_status"},
+  {0x80075115, "cd_ready_status"},
   {0x80075130, "MEM_CDROM_DELAY_ptr"},
   {0x80075134, "DMA_control_register_copy_3_ptr"},
   {0x80075138, "DMA_CDROM_address_ptr"},
   {0x8007513C, "DMA_CDROM_block_control_ptr"},
   {0x80075140, "DMA_CDROM_channel_control_ptr"},
+  {0x80075168, "NEXT_EXPECTED_SECTOR"},
   {0x8007521C, "I_STAT2_ptr"},
   {0x80075220, "JOY_BASE_ptr"},
   {0x80075254, "JOY_BASE2_ptr"},
   {0x80075238, "JOY_BASE3_ptr"},
+  {0x800756FC, "gameobject_stack_ptr_base"},
   {0x80075710, "gameobject_stack_ptr"},
   {0x80075714, "IS_DEMO_MODE"},
   {0x8007572C, "level_frame_counter"},
@@ -256,6 +279,7 @@ struct address_name address_names[] = {
   {0x80076C00, "WAD_nested_header", 0x1D0},
   {0x80076EE0, "DISP1", 0x84},
   {0x80076F64, "DISP2", 0x84},
+  {0x800770C8, NULL, 0x18},
   {0x800770E0, "view_matrix", 2*9},
   {0x80077378, "buttons_press"},
   {0x8007737C, "buttons_unpress"},
@@ -264,15 +288,19 @@ struct address_name address_names[] = {
   {0x80077FEC, NULL, 0x420},
   {0x8007840C, NULL, 0x100},
   {0x80078560, NULL, 0x48},
+  {0x800785A8, NULL, 0x34},
   {0x800785D8, "lib_end_ptr"},
+  {0x800785DC, "lib_end_ptr2"},
   {0x800786C8, NULL, 0x138},
   {0x80078A40, "SKYBOX_DATA", 0x14},
-  {0x80078A58, "spyro_position", 0x0C},
+  {0x80078A58, "player_position", 0x0C},
+  {0x80078AD0, "player_movestate"},
   {0x80078D78, NULL, 0x5C},
   {0x80078E9C, "timeout1_duration"},
   {0x80078EA0, NULL, 0x1800},
   {0x8007A6D0, "WAD_header", 0x330},
   {0x8007AA10, NULL, 0x28},
+  {0x8007AA38, "lib_begin"},
   {0x80600000, NULL, 0x4000},
 };
 
@@ -644,8 +672,6 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
 {
   function func = func_list->funcs[func_num];
 
-  if (!(func.function_info & FUNCTION_CALLED)) return;
-
   function_list func_set = function_list_alloc();
   addr_list labels = addr_list_alloc();
   function_list_insert(&func_set, func);
@@ -671,9 +697,14 @@ void output_function(struct program prog, function_list *func_list, uint32_t fun
   uint32_t func_size = func_set.funcs[func_set.size-1].address + func_set.funcs[func_set.size-1].size*4 - func.address;
 
   fprintf(prog.output, "// size: 0x%.8X\n", func_size);
-  int no_declaration = print_func_declaration(prog.output, prog, func.address);
-  if (no_declaration != FUNC_NOT_RENAMED)
+  uint32_t no_declaration = print_func_declaration(prog.output, prog, func.address);
+  if (no_declaration != FUNC_NOT_RENAMED) {
     printf("Error function 0x%.8X renamed but not skipped\n", func.address);
+    if (no_declaration == FUNC_NULL_DECLARATION) {
+      fprintf(prog.output, "void function_%.8X(void) // ", func.address);
+      print_func_name(prog, func.address);
+    }
+  }
   fprintf(prog.output, "\n{\n");
 
   for (int i = 0; i < func_set.size; i++)
@@ -799,6 +830,8 @@ void output_function_list(struct program prog, function_list *func_list)
 
   for (int i = 0; i < func_list->size; i++)
   {
+    if (!(func_list->funcs[i].function_info & FUNCTION_CALLED)) continue;
+
     uint32_t addr = func_list->funcs[i].address;
     if (addr_in_range(prog, addr))
       output_function(prog, func_list, i);
@@ -817,6 +850,12 @@ void print_function_name(struct program prog, uint32_t addr)
 
     if (addr == rn.func)
     {
+      if (rn.name)
+      {
+        printf("%s", rn.name);
+        return;
+      }
+
       int i = 0;
       int j = 0;
       while (1) {
@@ -829,28 +868,88 @@ void print_function_name(struct program prog, uint32_t addr)
     }
   }
 
+  printf("%.8X", addr);
+}
+
+void print_func_name2(struct program prog, uint32_t addr)
+{
+  for (int i = 0; i < sizeof(function_names)/sizeof(function_names[0]); i++)
+  {
+    struct function_name rn = function_names[i];
+
+    int same_id = 0;
+    if (prog.id == NULL)
+      same_id = rn.id == NULL;
+    else
+      same_id = (rn.id == NULL) || (strcmp(rn.id, prog.id) == 0);
+
+    if (addr == rn.func && same_id)
+    {
+      print_function_name(prog, addr);
+      return;
+    }
+  }
+
   printf("function_%.8X", addr);
+  if (prog.id && addr_in_range(prog, addr))
+    printf("_%s", prog.id);
 }
 
 void output_function_list_graphviz(struct program prog, function_list *func_list)
 {
+  printf("\tsubgraph %s {\n", prog.id ? prog.id : "main");
   for (int i = 0; i < func_list->size; i++)
   {
     function func = func_list->funcs[i];
-    if (func.calls.size > 0)
+
+    if (!(func.function_info & FUNCTION_CALLED)) continue;
+
+    function_list func_set = function_list_alloc();
+    addr_list calls = addr_list_alloc();
+    function_list_insert(&func_set, func);
+
+    for (int i = 0; i < func_set.size; i++)
     {
-      printf("\t");
-      print_function_name(prog, func.address);
-      printf(" -> {");
-      for (int j = 0; j < func.calls.size-1; j++)
+      function func = func_set.funcs[i];
+
+      for (int j = 0; j < func.jumps.size; j++)
       {
-        print_function_name(prog, func.calls.addrs[j]);
+        uint32_t jump = func.jumps.addrs[j];
+        int func_num = function_list_contains_address(func_list, jump);
+        if (func_num) {
+          if (!function_list_contains_address(&func_set, jump))
+            function_list_insert(&func_set, func_list->funcs[func_num-1]);
+        } else {
+          assert(0);
+        }
+      }
+      for (int j = 0; j < func.calls.size; j++) {
+        uint32_t addr = func.calls.addrs[j];
+        if (!addr_list_contains(calls, addr))
+          addr_list_insert(&calls, addr);
+      }
+    }
+
+    if (calls.size > 0)
+    {
+      printf("\t\t");
+      print_func_name2(prog, func.address);
+      printf(" -> {");
+      for (int j = 0; j < calls.size-1; j++)
+      {
+        print_func_name2(prog, calls.addrs[j]);
         printf("; ");
       }
-      print_function_name(prog, func.calls.addrs[func.calls.size-1]);
+      print_func_name2(prog, calls.addrs[calls.size-1]);
       printf("};\n");
+    } else if (addr_in_range(prog, func.address)) {
+      printf("\t\t");
+      print_func_name2(prog, func.address);
+      printf(";\n");
     }
   }
+  printf("\t\tlabel = \"%s\";\n", prog.id ? prog.id : "main");
+  printf("\t}\n");
 }
 
 void include_headers(struct program prog)
@@ -999,17 +1098,19 @@ int read_instructions(struct program prog)
   function_list func_list = function_list_alloc();
 
   int err = init_function_list(prog, &func_list);
-  if (err)
+  if (err) {
+    printf("0\n");
     return err;
+  }
 
   function_list_sort(&func_list);
 
   check_unused_skips(prog);
 
+  //output_function_list_graphviz(prog, &func_list);
+
   include_headers(prog);
-
   output_function_list(prog, &func_list);
-
   write_header_file(prog, func_list);
 
   function_list_free(func_list);

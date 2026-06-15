@@ -1,21 +1,25 @@
+#include "int_math.h"
 #include "main.h"
 #include "psx_mem.h"
 #include "decompilation.h"
 #include "gte.h"
 #include "spyro_psy.h"
 #include "psx_ops.h"
+#include "spyro_math.h"
+#include "extra_gte.h"
 
 // size: 0x000000D8
 void function_800562A4(void)
 {
-  t3 = 0;
+  uint32_t bitfield = 0;
   for (int i = 0; i < 24; i++)
   {
     if (lw(0x80075F30 + i*0x1C) == a0
-      && (a1 == 1 || (a1 == 2
+      && (a1 == 1
+      || (a1 == 2
       && lhu(0x80075F30 + i*0x1C + 0x0E) & 0x100))) 
     {
-      t3 |= 1 << i;
+      bitfield |= 1 << i;
 
       v1 = lw(0x80075F30 + i*0x1C + 0x18);
       if (v1)
@@ -28,7 +32,86 @@ void function_800562A4(void)
       sw(0x80075F30 + i*0x1C + 0x18, 0);
     }
   }
-  sw(0x8007623C, lw(0x8007623C) | t3);
+  sw(0x8007623C, lw(0x8007623C) | bitfield);
+}
+
+// size: 0x000000A4
+void function_800524C4(void)
+{
+  sw(0x800756A4, lw(0x800756A4)+1);
+  
+  v0 = lw(0x8007573C);
+  a0 = lb(v0 + 0x48);
+  sb(v0 + 0x48, 0);
+  v1 = v0 + 88;
+
+  if (a0 == -1)
+    sb(v1 + 0x48, a0);
+  else
+    while ((int32_t)lb(v1 + 0x48) >= 0)
+      v1 += 88;
+
+  sw(0x8007573C, v1);
+
+  v1 = lw(0x80075930);
+  a1 = lb(v1 - 1);
+  sb(v1 - 1, 0);
+  a0 = v1 - 24;
+  if (a1 == -1)
+    sb(a0 - 1, a1);
+  else
+    while ((int32_t)lb(a0 - 1) >= 0)
+      a0 -= 24;
+    
+  v1 -= 24;
+  sw(v0, v1);
+  sw(0x80075930, a0);
+  return;
+}
+
+// size: 0x00000098
+void function_80053570(void)
+{
+  uint32_t temp;
+  a1 = 0x80075824;
+  a1 = lw(a1 + 0x0000);
+  at = 0x80075738; // &0x00000000
+  v0 = lw(at + 0x0000);
+  a1 += 8192; // 0x2000
+  temp = v0 != a1;
+  if (temp) goto label800535C0;
+  a3 = ra;
+  a2 = a0;
+  mult((spyro_rand() & 0xFF)+1, 0x20);
+  v0=lo;
+  v0 = a1 - v0;
+  temp = a3;
+  sb(v0 + 0x0001, a2);
+  return;
+label800535C0:
+  v1 = lb(v0 + 0x0001);
+  sb(v0 + 0x0001, a0);
+  a0 = -1; // 0xFFFFFFFF
+  temp = v1 != a0;
+  v1 = v0 + 32; // 0x0020
+  if (temp) goto label800535E8;
+  temp = v1 == a1;
+  if (temp) goto label800535E0;
+  sb(v1 + 0x0001, a0);
+label800535E0:
+  sw(at + 0x0000, v1);
+  return;
+label800535E8:
+  a0 = lb(v1 + 0x0001);
+  temp = v1 == a1;
+  if (temp) goto label80053600;
+  temp = (int32_t)a0 >= 0;
+  v1 += 32; // 0x0020
+  if (temp) goto label800535E8;
+  v1 -= 32; // 0xFFFFFFE0
+label80053600:
+  sw(at + 0x0000, v1);
+  return;
 }
 
 // size: 0x00000310
@@ -37,77 +120,45 @@ void function_800530C0(void)
   uint32_t temp;
   t7 = a0;
   cop2.RBK = a1;
-  at = lw(t7 + 0x0020);
-  v0 = lw(t7 + 0x0024);
-  v1 = lw(t7 + 0x0028);
-  a0 = lw(t7 + 0x002C);
-  a1 = lw(t7 + 0x0030);
-  cop2.RTM0 = at;
-  cop2.RTM1 = v0;
-  cop2.RTM2 = v1;
-  cop2.RTM3 = a0;
-  cop2.RTM4 = a1;
-  at = lw(t7 + 0x000C);
-  v0 = lw(t7 + 0x0010);
-  v1 = lw(t7 + 0x0014);
-  at = at >> 2;
-  v0 = v0 >> 2;
-  v1 = v1 >> 2;
-  cop2.TRX = at;
-  cop2.TRY = v0;
-  cop2.TRZ = v1;
-  at = lhu(t7 + 0x0036);
-  v1 = lw(t7 + 0x003C);
-  v0 = 0x80076378;
-  at = at << 2;
-  at += v0;
-  at = lw(at + 0x0000);
-  v0 = v1 << 2;
-  v0 = v0 & 0x3FC;
-  v0 += at;
-  v0 = lw(v0 + 0x0038);
-  v1 = v1 >> 13;
-  v1 = v1 & 0x7F8;
-  v1 += 36; // 0x0024
-  v1 += v0;
-  at = lw(v1 + 0x0000);
-  v1 = lw(v1 + 0x0004);
-  a0 = lbu(v0 + 0x0008);
-  a1 = lbu(v0 + 0x0005);
-  a2 = lbu(v0 + 0x0006);
-  t8 = lw(v0 + 0x0014);
-  t9 = lw(v0 + 0x0018);
-  at = at << 11;
-  at = at >> 11;
-  v1 = v1 >> 24;
-  v1 = v1 << 2;
-  v0 = at + v1;
+  load_RTM(t7 + 0x20);
+  cop2.TRX = lw(t7 + 0x0C) >> 2;
+  cop2.TRY = lw(t7 + 0x10) >> 2;
+  cop2.TRZ = lw(t7 + 0x14) >> 2;
+  at = lhu(t7 + 0x36);
+  v1 = lw(t7 + 0x3C);
+  at = lw(0x80076378 + at*4);
+  v0 = lw(at + (v1 & 0xFF)*4 + 0x38);
+  v1 = v0 + ((v1 >> 16) & 0xFF)*8 + 0x24;
+  at = lw(v1 + 0x00);
+  v1 = lw(v1 + 0x04);
+  a0 = lbu(v0 + 0x08);
+  a1 = lbu(v0 + 0x05);
+  a2 = lbu(v0 + 0x06);
+  t8 = lw(v0 + 0x14);
+  t9 = lw(v0 + 0x18);
+  at = at & 0x1FFFFF;
+  v0 = at + (v1 >> 24)*4;
   v1 = 0x1F800000;
-  t3 = 1; // 0x0001
+  t3 = 1;
   a0 = a0 >> 1;
   a0 = a0 << 3;
-  a0 += v1;
+  a0 += 0x1F800000;
   t2 = 0;
-  a2++;
-  a2 += a1;
+  a2 += a1 + 1;
 label800531A0:
   temp = t2 != 0;
   if (temp) goto label800531D8;
-  t1 = lw(at + 0x0000);
-  at += 4; // 0x0004
-  t2 = t1 & 0x1;
-  a3 = (int32_t)t1 >> 21;
-  t0 = t1 << 10;
-  t0 = (int32_t)t0 >> 21;
-  t1 = t1 << 20;
-  t1 = (int32_t)t1 >> 19;
-  a3 = a3 << a1;
-  t0 = t0 << a1;
-  t1 = t1 << a1;
+  t1 = lw(at);
+  at += 4;
+  t2 = t1 & 1;
+  a3 = (int32_t)(t1 <<  0) >> 21 << a1;
+  t0 = (int32_t)(t1 << 10) >> 21 << a1;
+  t1 = (int32_t)(t1 << 20) >> 19 << a1;
   goto label80053210;
 label800531D8:
   t4 = lh(v0 + 0x0000);
   v0 += 2; // 0x0002
+  t2 = t4 & 1;
   t5 = (int32_t)t4 >> 11;
   t5 = t5 << a2;
   a3 += t5;
@@ -119,7 +170,6 @@ label800531D8:
   t5 = (int32_t)t5 >> 27;
   t5 = t5 << a2;
   t1 -= t5;
-  t2 = t4 & 0x1;
 label80053210:
   temp = (int32_t)t3 < 0;
   t3 = -t3;
@@ -142,8 +192,7 @@ label80053210:
   t8 = 0x1F800000;
   t9 = a0 - 8; // 0xFFFFFFF8
 label80053260:
-  v0 = spyro_rand();
-  t6 = v0;
+  t6 = spyro_rand();
   a0 = 2; // 0x0002
   function_80053570();
   v1 = lh(t8 + 0x0000);
@@ -235,90 +284,6 @@ label80053350:
   return;
 }
 
-// size: 0x000000A4
-void function_800524C4(void)
-{
-  at = 0x800756A4;
-  sw(at, lw(at)+1);
-  
-  at = 0x8007573C;
-  v0 = lw(at);
-  a0 = lb(v0 + 0x48);
-  sb(v0 + 0x48, 0);
-  v1 = v0 + 88;
-
-  if (a0 == -1)
-    sb(v1 + 0x48, a0);
-  else
-    while ((int32_t)lb(v1 + 0x48) >= 0)
-      v1 += 88;
-
-  sw(at, v1);
-
-  at = 0x80075930;
-  v1 = lw(at);
-  a1 = lb(v1 - 1);
-  sb(v1 - 1, 0);
-  a0 = v1 - 24;
-  if (a1 == -1)
-    sb(a0 - 1, a1);
-  else
-    while ((int32_t)lb(a0 - 1) >= 0)
-      a0 -= 24;
-    
-  v1 -= 24;
-  sw(v0, v1);
-  sw(at, a0);
-  return;
-}
-
-
-
-// size: 0x00000098
-void function_80053570(void)
-{
-  uint32_t temp;
-  a1 = 0x80075824;
-  a1 = lw(a1 + 0x0000);
-  at = 0x80075738; // &0x00000000
-  v0 = lw(at + 0x0000);
-  a1 += 8192; // 0x2000
-  temp = v0 != a1;
-  if (temp) goto label800535C0;
-  a3 = ra;
-  a2 = a0;
-  mult((spyro_rand() & 0xFF)+1, 0x20);
-  v0=lo;
-  v0 = a1 - v0;
-  temp = a3;
-  sb(v0 + 0x0001, a2);
-  return;
-label800535C0:
-  v1 = lb(v0 + 0x0001);
-  sb(v0 + 0x0001, a0);
-  a0 = -1; // 0xFFFFFFFF
-  temp = v1 != a0;
-  v1 = v0 + 32; // 0x0020
-  if (temp) goto label800535E8;
-  temp = v1 == a1;
-  if (temp) goto label800535E0;
-  sb(v1 + 0x0001, a0);
-label800535E0:
-  sw(at + 0x0000, v1);
-  return;
-label800535E8:
-  a0 = lb(v1 + 0x0001);
-  temp = v1 == a1;
-  if (temp) goto label80053600;
-  temp = (int32_t)a0 >= 0;
-  v1 += 32; // 0x0020
-  if (temp) goto label800535E8;
-  v1 -= 32; // 0xFFFFFFE0
-label80053600:
-  sw(at + 0x0000, v1);
-  return;
-}
-
 // size: 0x000000F8
 void function_800333DC(void)
 {
@@ -368,4 +333,95 @@ uint32_t func_80056DC4(uint32_t a, uint32_t b)
 void function_80056DC4(void)
 {
   v0 = func_80056DC4(a0, a1);
+}
+
+// size: 0x0000006C
+void function_8003E1AC(void)
+{
+  sp -= 0x28;
+  sw(sp + 0x20, s0);
+  sw(sp + 0x24, ra);
+
+  s0 = 0x80078B34;
+  spyro_vec3_copy(s0, 0x80078AFC);
+  a1 = abs_int(lw(0x80078BA4));
+  spyro_set_vec3_length(s0, abs_int(lw(0x80078BA4)));
+  spyro_vec3_clear(sp + 0x10);
+  spyro_vec3_sub(s0, sp + 0x10, s0);
+
+  ra = lw(sp + 0x24);
+  s0 = lw(sp + 0x20);
+  sp += 0x28;
+  return;
+}
+
+// size: 0x00000038
+void function_8005882C(void)
+{
+  for (uint32_t i = 0; i < 8; i++) {
+    if (lbu(0x80077108 + i*0x18 + 0x0C) == 0) {
+      v0 = i;
+      return;
+    }
+  }
+  v0 = -1;
+  return;
+}
+
+// size: 0x000000D4
+void function_8003AAEC(void)
+{
+  uint32_t temp;
+  sp -= 40; // 0xFFFFFFD8
+  sw(sp + 0x0014, s1);
+  s1 = a0;
+  sw(sp + 0x001C, s3);
+  s3 = a1;
+  sw(sp + 0x0020, ra);
+  sw(sp + 0x0018, s2);
+  sw(sp + 0x0010, s0);
+  function_8005882C();
+  s2 = v0;
+  temp = (int32_t)s2 < 0;
+  a0 = s1;
+  if (temp) goto label8003AB9C;
+  a1 = 4; // 0x0004
+  s0 = s2 << 1;
+  s0 += s2;
+  s0 = s0 << 3;
+  v0 = 0x80077108;
+  s0 += v0;
+  v0 = 255; // 0x00FF
+  sb(s0 + 0x0010, v0);
+  sb(s0 + 0x0011, v0);
+  sb(s0 + 0x0012, v0);
+  function_800529E4();
+  a0 = s1 + 32; // 0x0020
+  a1 = s3;
+  a2 = s0;
+  spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
+  a0 = s0;
+  a1 = s0;
+  a2 = s1 + 12; // 0x000C
+  spyro_vec3_add(a0, a1, a2);
+  v0 = spyro_rand();
+  sb(s0 + 0x000E, v0);
+  v0 = 3; // 0x0003
+  v1 = 32; // 0x0020
+  sb(s0 + 0x000F, v0);
+  v0 = 16; // 0x0010
+  sb(s0 + 0x000D, v0);
+  v0 = 64; // 0x0040
+  sb(s0 + 0x000C, v1);
+  sb(s0 + 0x0014, v1);
+  sb(s0 + 0x0015, v0);
+label8003AB9C:
+  v0 = s2;
+  ra = lw(sp + 0x0020);
+  s3 = lw(sp + 0x001C);
+  s2 = lw(sp + 0x0018);
+  s1 = lw(sp + 0x0014);
+  s0 = lw(sp + 0x0010);
+  sp += 40; // 0x0028
+  return;
 }

@@ -2,9 +2,10 @@
 #include <assert.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <engine.h>
 
 #include "psx_mem.h"
-#include "not_renamed.h"
+#include "spyro_system.h"
 
 uint32_t v0, v1, k0, k1, a0, a1, a2, a3;
 uint32_t t0, t1, t2, t3, t4, t5, t6, t7, t8, t9;
@@ -22,31 +23,29 @@ void print_psx_string_array(char *name, uint32_t base, uint32_t n) {
   printf("};\n");
 }
 
+#include <spyro_psy.h>
+
 int main(int argc, char *argv[])
 {
-  int err = chdir("..");
-  if (err) return err;
+  platform_init();
   
   init_psx_mem();
-
   sw(0x80074E40, 2); // PSY-Q debug level
 
   if (argc > 1)
   {
-
-    printf("%d\n", -2%3);
     //wad_main();
     
     //print_psx_string_array("dragon_names", 0x8006F694, 80);
-    
-    print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
-    print_psx_string_array("cd_status_str", 0x80074EDC, 8);
+
+    //print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
+    //print_psx_string_array("cd_status_str", 0x80074EDC, 8);
 
     //read_disk1(lw(WAD_sector), 0x80100000, 0x800, 0, 0x256);
     return 0;
   }
 
-  function_8005B8E0();
+  spyro_start();
 
   printf("closing\n");
   return 0;

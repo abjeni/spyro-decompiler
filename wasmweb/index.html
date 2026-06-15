@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <!-- suppress favicon error
+      <link rel="icon" href="data:,">
+    -->
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>my first webassembly project</title>
+    <script type='text/javascript'>
+
+      let keys = 0xFFFF
+
+      function set_key(key, pressed) {
+        let mask = 0
+
+        if (key === "Enter") mask = 1 << 3;
+        if (key === "KeyW") mask = 1 << 4;
+        if (key === "KeyD") mask = 1 << 5;
+        if (key === "KeyS") mask = 1 << 6;
+        if (key === "KeyA") mask = 1 << 7;
+
+        if (key === "KeyY") mask = 1 << 8;
+        if (key === "KeyU") mask = 1 << 9;
+        if (key === "KeyH") mask = 1 << 10;
+        if (key === "KeyJ") mask = 1 << 11;
+
+        if (key === "KeyQ") mask = 1 << 12;
+        if (key === "KeyE") mask = 1 << 13;
+        if (key === "Space") mask = 1 << 14;
+        if (key === "ShiftLeft") mask = 1 << 15;
+
+        if (pressed) {
+          keys &= ~mask
+        } else {
+          keys |= mask
+        }
+      }
+
+      document.addEventListener('keydown', (e) => {
+        set_key(e.code, true)
+      })
+
+      document.addEventListener('keyup', (e) => {
+        set_key(e.code, false)
+      })
+
+      const sizex = 512
+      const sizey = 240
+
+      const PAGE_SIZE = 64*1024
+
+      const PSX_MEM_OFFSET = PAGE_SIZE
+      const PSX_MEM_SIZE = 1024*1024*2
+      const SCRATCHPAD_OFFSET = PSX_MEM_OFFSET + PSX_MEM_SIZE
+      const SCRATCHPAD_SIZE = 1024
+      const PSX_VRAM_OFFSET = SCRATCHPAD_OFFSET + SCRATCHPAD_SIZE
+      const PSX_VRAM_SIZE = 1024*1024
+      const PSX_SPU_OFFSET = PSX_VRAM_OFFSET + PSX_VRAM_SIZE
+      const PSX_SPU_SIZE = 512*1024
+      const FB_OFFSET = PSX_SPU_OFFSET + PSX_SPU_SIZE
+      const FB_SIZE = sizey*sizex*4
+      const ROM_OFFSET = FB_OFFSET + FB_SIZE
+
+      let wasm_memory
+      let wasm
+
+      let canvas
+      let ctx
+      let imageData
+      let fb
+      let canvasX = 0
+      let canvasY = 0
+
+      let files
+      let rom
+
+      lastTime = 0
+
+      function loop(time) {
+
+        delta = time - lastTime
+
+        if (delta > 1000 / 30) {
+          wasm.instance.exports.actual_game_loop()
+          lastTime = time
+        }
+
+        requestAnimationFrame(loop)
+      }
+
+      async function setup_wasm()
+      {
+        let wasm_response = fetch("main.wasm")
+
+        wasm_memory = new WebAssembly.Memory({initial: 12800})
+
+        const importObject = {
+          memory: wasm_memory,
+          console_log: function(msg, size) {
+            let buf = new Uint8Array(wasm_memory.buffer, msg, size)
+            let str = new TextDecoder().decode(buf)
+            console.log(str)
+          },
+          get_fb: function() {
+            return FB_OFFSET
+          },
+          display_fb: function() {
+            ctx.putImageData(imageData, 0, 0)
+          },
+          get_rom: function() {
+            return ROM_OFFSET
+          },
+          wasm_allocate: function() {
+            return PSX_MEM_OFFSET
+          },
+          request_animation_frame: function() {
+            requestAnimationFrame(loop)
+          },
+          wasm_get_keys: function() {
+            return keys
+          }
+        }
+
+        wasm = await WebAssembly.instantiateStreaming(wasm_response, {"env":importObject})
+      }
+
+      function mouse_on_canvas(e)
+      {
+        let x = e.clientX - canvas.offsetLeft
+        let y = e.clientY - canvas.offsetTop
+
+        canvasX = x
+        canvasY = y
+      }
+
+      async function setup_canvas()
+      {
+        canvas = document.createElement('canvas')
+        canvas.height = sizey
+        canvas.width = sizex
+        ctx = canvas.getContext('2d')
+        fb = new Uint8ClampedArray(wasm_memory.buffer, FB_OFFSET, canvas.width*canvas.height*4)
+        imageData = new ImageData(fb, canvas.width, canvas.height)
+        ctx.putImageData(imageData, 0, 0)
+
+        canvas.addEventListener("mousemove", mouse_on_canvas)
+        document.body.appendChild(canvas)
+      }
+
+      async function load_rom()
+      {
+        let file = files.files[0]
+        files.remove()
+        files = undefined
+        let rom = new Uint8Array(await file.arrayBuffer())
+
+        let rom_addr = new Uint8Array(wasm_memory.buffer, ROM_OFFSET, rom.length)
+
+        rom_addr.set(rom)
+      }
+
+      async function main()
+      {
+        await setup_wasm()
+        await load_rom()
+        await setup_canvas()
+        wasm.instance.exports.wasm_main()
+      }
+
+      async function get_rom()
+      {
+        await main()
+      }
+
+      function setup_file_picker()
+      {
+        files = document.createElement('input')
+        files.type = 'file'
+        document.body.appendChild(files)
+
+        files.addEventListener('input', get_rom, {once: true})
+      }
+
+      window.addEventListener("load", setup_file_picker)
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

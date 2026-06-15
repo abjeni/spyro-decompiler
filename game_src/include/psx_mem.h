@@ -494,7 +494,6 @@ struct memctl {
 
 struct psx_mem {
   uint8_t *mem;
-  file_loc *mem_access;
   uint8_t *scratchpad;
   union {
     uint16_t val;
@@ -550,26 +549,26 @@ void psx_test_render(uint32_t cmd_ptr, uint32_t depth, file_loc loc);
 
 #define LOC (file_loc){__FILE__, __LINE__}
 
-#define psx_test_render(cmd_ptr, depth) psx_test_render(cmd_ptr, depth, LOC)
+#define psx_test_render(cmd_ptr, depth) psx_test_render((cmd_ptr), (depth), LOC)
 
-#define sw_unaligned(addr, value) sw_unaligned(addr, value, LOC)
-#define sw(addr, value) sw(addr, value, LOC)
-#define sh(addr, value) sh(addr, value, LOC)
-#define sb(addr, value) sb(addr, value, LOC)
-#define lw_unaligned(addr) lw_unaligned(addr, LOC)
-#define lw(addr) lw(addr, LOC)
-#define lh(addr) lh(addr, LOC)
-#define lb(addr) lb(addr, LOC)
+#define sw_unaligned(addr, value) sw_unaligned((addr), (value), LOC)
+#define sw(addr, value) sw((addr), (value), LOC)
+#define sh(addr, value) sh((addr), (value), LOC)
+#define sb(addr, value) sb((addr), (value), LOC)
+#define lw_unaligned(addr) lw_unaligned((addr), LOC)
+#define lw(addr) lw((addr), LOC)
+#define lh(addr) lh((addr), LOC)
+#define lb(addr) lb((addr), LOC)
 
-#define lhu(addr) lhu(addr, LOC)
-#define lbu(addr) lbu(addr, LOC)
+#define lhu(addr) lhu((addr), LOC)
+#define lbu(addr) lbu((addr), LOC)
 
 void *addr_to_pointer(uint32_t addr, file_loc loc);
 uint32_t pointer_to_addr(void *ptr, file_loc loc);
 uint32_t pointer_to_addr_maybe(void *ptr, file_loc loc);
 
-#define addr_to_pointer(addr) addr_to_pointer(addr, LOC)
-#define pointer_to_addr(addr) pointer_to_addr(addr, LOC)
-#define pointer_to_addr_maybe(addr) pointer_to_addr_maybe(addr, LOC)
+#define addr_to_pointer(addr) addr_to_pointer((addr), LOC)
+#define pointer_to_addr(addr) pointer_to_addr((addr), LOC)
+#define pointer_to_addr_maybe(addr) pointer_to_addr_maybe((addr), LOC)
 
 void inter(int type);

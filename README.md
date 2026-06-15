@@ -11,19 +11,13 @@ The decompiler is a bit annoying to work with, but I was able to complete the en
 
 ## things that don't work
 
-- graphical issues, seeing rainbows when the camera is close to the floor/grass?
 - demo mode
 - no sound
 
 ## how to compile
 
 The target platform is linux, it may work on windows with mingw or wsl.
-make sure you have gcc, make and SDL2 (SDL2 with header files) installed.
-If you have apt you can install it with this command, but i have not tested it
-
-```bash
-sudo apt install build-essentials libsdl2-dev
-```
+make sure you have gcc, make and SDL3 (SDL3 with header files) installed.
 
 Before you compile anything you need to edit config.h to point to the disk file, the programs expect a .bin file from a .cue/.bin pair.
 The file name can be relative to the git folder, you need to force a recompile after changing the config file (or any .h file) later.

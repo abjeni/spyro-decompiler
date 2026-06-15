@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <setjmp.h>
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
@@ -68,7 +67,7 @@ uint32_t ChangeClearRCnt(uint32_t t, uint32_t flag)
   uint32_t prev = timerflags[t];
   timerflags[t] = flag;
 
-  if (flag == 1) BREAKPOINT;
+  if (flag == 1) UNREACHABLE;
 
   return prev;
 }
@@ -114,7 +113,7 @@ uint32_t hook;
 
 uint32_t ResetEntryInt(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   return 0;
 }
 
@@ -208,6 +207,19 @@ void int_load_regs(void)
   lo = int_ret_regs[33];
 }
 
+// just directly putting this here
+uint32_t function_80069634(void)
+{
+  if ((lw(lw(I_MASK_ptr)) & 1) == 0) return 0;
+  if ((lw(lw(I_STAT_ptr)) & 1) == 0) return 0;
+  if (lw(0x800751E4))
+    UNREACHABLE;
+  
+  return 1;
+}
+
+void function_8006969C(void);
+
 void interrupt2(uint32_t type)
 {
   //uint32_t mask = 1<<type;
@@ -218,17 +230,10 @@ void interrupt2(uint32_t type)
     if(SysIntRP[i])
     {
       uint32_t addr = lw(SysIntRP[i]+8);
-      switch(addr)
-      {
-      case 0x80069634:
-        function_80069634();
-        break;
-      default:
-        printf("unknown interrupt address %.8X\n", addr);
-        BREAKPOINT;
-      }
 
-      if (v0)
+      if (addr != 0x80069634) UNREACHABLE;
+
+      if (function_80069634())
       {
         uint32_t addr = lw(SysIntRP[i]+4);
         switch(addr)
@@ -238,7 +243,7 @@ void interrupt2(uint32_t type)
           break;
         default:
           printf("unknown interrupt address %.8X\n", addr);
-          BREAKPOINT;
+          UNREACHABLE;
         }
       }
     }
@@ -266,7 +271,7 @@ void interrupt2(uint32_t type)
 }
 
 int interrupt_depth = 0;
-jmp_buf env;
+//jmp_buf env;
 
 void interrupt(uint32_t type)
 {
@@ -278,13 +283,13 @@ void interrupt(uint32_t type)
 
   if(interrupt_depth != 1) {
     printf("interrupt on top of interrupt!\n");
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   int_save_regs();
 
-  if (setjmp(&(env[0])) == 0)
-    interrupt2(type);
+  //if (setjmp(&(env[0])) == 0)
+  interrupt2(type);
 
   int_load_regs();
 
@@ -297,8 +302,8 @@ void interrupt(uint32_t type)
 
 void ReturnFromException(void)
 {
-  longjmp(&(env[0]), 1);
-  BREAKPOINT;
+  //longjmp(&(env[0]), 1);
+  UNREACHABLE;
 }
 
 void SysDeqIntRP(uint32_t priority, uint32_t struc) //bugged, use with care
@@ -347,7 +352,7 @@ uint32_t OpenEvent(uint32_t class, uint32_t spec, uint32_t mode, uint32_t func)
     }
   }
 
-  BREAKPOINT;
+  UNREACHABLE;
   return -1;
 }
 
@@ -417,7 +422,7 @@ void DeliverEvent(uint32_t class, uint32_t spec)
           default:
             printf("class: %X, spec: %X\n", events[i].class, events[i].spec);
             printf("line %d: calling function %X\n", __LINE__, events[i].func);
-            BREAKPOINT;
+            UNREACHABLE;
           }
         }
       }
@@ -448,17 +453,26 @@ void _new_card(void)
 void _card_write(uint32_t port, uint32_t sector, uint32_t src)
 {
   //printf("_card_write(port: %.8X, sector: %.8X, src: %.8X)\n", port, sector, src);
-  
-  DeliverEvent(0xF4000001, 4);
-  DeliverEvent(0xF0000011, 4);
+
+  //DeliverEvent(0xF4000001, 4);
+  //DeliverEvent(0xF0000011, 4);
+
+  DeliverEvent(0xF4000001, 0x8000);
+  DeliverEvent(0xF0000011, 0x8000);
 }
 
 uint32_t _card_info(uint32_t port)
 {
   //printf("_card_info(port: %d)\n", port);
 
+
+#ifdef __wasm__
+  DeliverEvent(0xF4000001, 0x8000);
+  DeliverEvent(0xF0000011, 0x8000);
+#else
   DeliverEvent(0xF4000001, 4);
   DeliverEvent(0xF0000011, 4);
+#endif
 
   return 0;
 }
@@ -467,8 +481,14 @@ uint32_t _card_load(uint32_t port)
 {
   //printf("_card_load(port: %d)\n", port);
 
+
+#ifdef __wasm__
+  DeliverEvent(0xF4000001, 0x8000);
+  DeliverEvent(0xF0000011, 0x8000);
+#else
   DeliverEvent(0xF4000001, 4);
   DeliverEvent(0xF0000011, 4);
+#endif
 
   return 0;
 }
@@ -516,7 +536,7 @@ char *get_memcard_path(char *file_name)
   {
     *buf = *file_name;
     file_name++;buf++;
-    if (available-- <= 0) BREAKPOINT;
+    if (available-- <= 0) UNREACHABLE;
   }
 
   *buf = 0;
@@ -552,11 +572,16 @@ uint32_t psx_open(char *file_name, uint32_t modev)
     file.fd = creat(file_path, S_IRUSR | S_IWUSR);
 
     printf("error %m\n");
-    if (file.fd == -1) BREAKPOINT;
+    if (file.fd == -1) {
+      DeliverEvent(0xF4000001, 0x8000);
+      DeliverEvent(0xF0000011, 0x8000);
+      return -1; // UNREACHABLE;
+    }
 
     file.size = mode.blocks*0x2000;
-    char *buf = calloc(file.size, 1);
-    write(file.fd, buf, file.size);
+    uint32_t zero = 0;
+    for (uint32_t i = 0; i < file.size/sizeof(zero); i++)
+    write(file.fd, &zero, sizeof(zero));
 
     lseek(file.fd, 0, SEEK_SET);
 
@@ -576,7 +601,7 @@ uint32_t psx_open(char *file_name, uint32_t modev)
 
     int err = fstat(file.fd, &stats);
 
-    if (err == -1) BREAKPOINT;
+    if (err == -1) UNREACHABLE;
 
     file.size = stats.st_size;
 
@@ -596,7 +621,7 @@ uint32_t psx_open(char *file_name, uint32_t modev)
       fd2 = i;
       break;
     }
-    if (i == 15) BREAKPOINT;
+    if (i == 15) UNREACHABLE;
   }
 
   return fd2;
@@ -613,7 +638,7 @@ uint32_t psx_lseek(uint32_t fd, uint32_t offset, uint32_t seektype)
   DeliverEvent(0xF4000001, 4);
   DeliverEvent(0xF0000011, 4);
 
-  if (cursor == -1) BREAKPOINT;
+  if (cursor == -1) UNREACHABLE;
 
   return cursor;
 }
@@ -625,11 +650,11 @@ uint32_t psx_write(int fd, char *str, uint32_t len)
   } else {
 
     struct file file = files[fd];
-    if (file.fd == 0) BREAKPOINT;
+    if (file.fd == 0) UNREACHABLE;
 
     int cursor = lseek(file.fd, 0, SEEK_CUR);
 
-    if (cursor == -1) BREAKPOINT;
+    if (cursor == -1) UNREACHABLE;
 
     int len2 = file.size - cursor;
     //printf("filesize: %d cursor: %d len2: %d\n", file.size, cursor, len2);
@@ -640,7 +665,7 @@ uint32_t psx_write(int fd, char *str, uint32_t len)
 
     if (written_bytes == -1) {
       printf("err: %s\n", strerror(errno));
-      BREAKPOINT;
+      UNREACHABLE;
     } else if (written_bytes == 0) {
       DeliverEvent(0xF4000001, 0x8000);
       DeliverEvent(0xF0000011, 0x8000);
@@ -660,11 +685,11 @@ uint32_t psx_read(uint32_t fd, char *dst, uint32_t len)
 {
 
   struct file file = files[fd];
-  if (file.fd == 0) BREAKPOINT;
+  if (file.fd == 0) UNREACHABLE;
 
   ssize_t read_bytes = read(file.fd, dst, len);
 
-  if (read_bytes == -1) BREAKPOINT;
+  if (read_bytes == -1) UNREACHABLE;
 
   //printf("read(%d, %p, %d)\n", file.fd, dst, len);
   DeliverEvent(0xF4000001, 4);
@@ -689,7 +714,7 @@ uint32_t psx_close(uint32_t fd)
 
 uint32_t GetC0Table(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   //printf("getting C0 jump table\n");
   return -1;
 }
@@ -701,7 +726,7 @@ void FlushCache(void)
 
 void LoadExec(char *filename, uint32_t stackbase, uint32_t stack_offset)
 {
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 void psx_exit(uint32_t code)
@@ -712,6 +737,6 @@ void psx_exit(uint32_t code)
 uint32_t format(uint32_t devicename)
 {
   printf("format(%.8X)\n", devicename);
-  BREAKPOINT;
+  UNREACHABLE;
   return 0;
 }

@@ -9,12 +9,13 @@
 #include <fcntl.h>
 #include <time.h>
 
+#include <engine.h>
+
 #include "psx_bios.h"
-#include "game_viewer.h"
 #include "debug.h"
 #include "triangle.h"
 #include "debug.h"
-#include "../../config.h"
+#include "decompilation.h"
 
 //#define LOG_DISK_READ
 
@@ -29,7 +30,7 @@
 #define DEBUG_MASK_TIMER        (1<<8)
 #define DEBUG_MASK_CONTROLLER   (1<<9)
 
-#define DEBUG (0)
+#define DEBUG (DEBUG_MASK_CDROM)
 
 #define debug_printf(mask, ...) \
   do { \
@@ -42,7 +43,7 @@
 
 #define assert2(cond) \
 { \
-  if (!(cond)) BREAKPOINT; \
+  if (!(cond)) UNREACHABLE; \
 }
 
 #define STATE_NONE 0
@@ -95,7 +96,7 @@ void *addr_to_pointer(uint32_t addr, file_loc loc)
     return psx_mem.scratchpad+addr;
   }
   printf("file %s:%u: addr 0x%.8X is not mapped to physical memory\n", loc.file, loc.line, addr);
-  BREAKPOINT;
+  UNREACHABLE;
   return NULL;
 }
 
@@ -110,7 +111,7 @@ uint32_t pointer_to_addr(void *ptr, file_loc loc)
   if (addr_scratchpad < 0x400) return ((uint32_t)addr_scratchpad) + 0x1F800000;
 
   printf("file %s:%u: pointer_to_addr: addr %.16lX or %.16lX incompatible\n", loc.file, loc.line, addr, addr_scratchpad);
-  BREAKPOINT;
+  UNREACHABLE;
   return 0;
 }
 
@@ -141,6 +142,7 @@ void psx_read_sectors_direct(uint32_t dst, uint32_t sector, uint32_t sector_len)
 
 void load_psx_exe()
 {
+  // first sector is a header
   psx_read_sectors_direct(0x80010000, 53875+1, 204-1);
 }
 
@@ -148,13 +150,13 @@ uint32_t stopped;
 
 void enable_timer(void)
 {
-  if (stopped == 0) BREAKPOINT;
+  if (stopped == 0) UNREACHABLE;
   stopped = 0;
 }
 
 void disable_timer(void)
 {
-  if (stopped == 1) BREAKPOINT;
+  if (stopped == 1) UNREACHABLE;
   stopped = 1;
 }
 
@@ -184,7 +186,7 @@ void add_delayed_function(int frame_delay, void (*delayed_function)(void))
     delayed_functions[i] = delayed_function;
     return;
   }
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 void psx_init_cdrom()
@@ -194,26 +196,15 @@ void psx_init_cdrom()
   psx_mem.cdrom.status.PRMWRDY = 1;
   psx_mem.cdrom.stat.spindle_motor = 1;
 
-  FILE *file = fopen(ROM_NAME, "r");
-  assert2(file != NULL);
+  void *rom = platform_aquire_rom();
 
-  assert2(fseek(file, 0, SEEK_END) != -1);
-  int filesize = ftell(file);
-  assert2(filesize != -1);
-  assert2(fseek(file, 0, SEEK_SET) != -1);
-
-  uint8_t *ptr = malloc(filesize);
-  int things_read = fread(ptr, filesize, 1, file);
-  assert2(things_read == 1);
-  assert(fclose(file) == 0);
-
-  psx_mem.cdrom.disc = ptr;
+  psx_mem.cdrom.disc = rom;
 }
 
 void init_psx_mem()
 {
-  int memory_size = 2*1024*1024 + 1024*1024 + 512*1024 + 1024 + sizeof(file_loc)*2*1024*1024;
-  uint8_t *ptr = malloc(memory_size);
+  int memory_size = 2*1024*1024 + 1024*1024 + 512*1024 + 1024;
+  uint8_t *ptr = platform_allocate(memory_size);
   
   psx_mem.mem = ptr;
   ptr += 2*1024*1024;
@@ -223,7 +214,6 @@ void init_psx_mem()
   ptr += 1*1024*1024;
   psx_mem.spu.mem = ptr;
   ptr += 512*1024;
-  psx_mem.mem_access = (void *)ptr;
 
   psx_mem.gpu.GPUSTAT.val = 0x94802000;
 
@@ -232,8 +222,6 @@ void init_psx_mem()
   psx_mem.timer.timer[2].ctrl.val = 0x1C00;
 
   psx_init_cdrom();
-
-  init_game_window();
 
   load_psx_exe();
 }
@@ -274,7 +262,7 @@ void interrupt_cdrom(uint32_t type)
   }
   else {
     debug_printf(DEBUG_MASK_CDROM, "interrupt enable: %.8X type %d\n", psx_mem.cdrom.interrupt_enable, type);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -450,7 +438,7 @@ void cdrom_cmd(uint8_t cmd, file_loc loc)
     return;
   case 0x0E:
     debug_printf(DEBUG_MASK_CDROM, "setmode spu cdrom command\n");
-    if(psx_mem.cdrom.parameter_fifo.length != 1) {BREAKPOINT;}
+    if(psx_mem.cdrom.parameter_fifo.length != 1) {UNREACHABLE;}
     psx_mem.cdrom.parameter_fifo.length = 0;
     psx_mem.cdrom.mode.val = psx_mem.cdrom.parameter_fifo.parameters[0];
     debug_printf(DEBUG_MASK_CDROM, "  mode: %.2X\n", psx_mem.cdrom.parameter_fifo.parameters[0]);
@@ -482,7 +470,7 @@ void cdrom_cmd(uint8_t cmd, file_loc loc)
   }
   default:
     printf("file %s:%u: unknown cdrom command %.2X\n", loc.file, loc.line, cmd);
-    BREAKPOINT;
+    UNREACHABLE;
     return;
   }
 }
@@ -523,7 +511,7 @@ void GP0_stream(gp0_cmd param_list[static 16], uint32_t len, uint32_t value)
   }
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -559,7 +547,7 @@ uint32_t GP0_read_stream(gp0_cmd param_list[static 16], uint32_t len)
   }
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
   }
   return -1;
 }
@@ -639,7 +627,7 @@ color blend_col(color old, color new, uint32_t transparency)
     };
   default:
     printf("BLENDING: %d\n", transparency);
-    BREAKPOINT;
+    UNREACHABLE;
   }
   return (color){0,0,0};
 }
@@ -687,7 +675,7 @@ void set_pixel(vertex v)
 
     uint16_t *texels = (uint16_t *)psx_mem.gpu.mem;
 
-    uint16_t colcol;
+    uint16_t colcol = 0;
 
     color c2;
 
@@ -723,8 +711,9 @@ void set_pixel(vertex v)
       }
       case 2: //16 bits
         printf("16 bit textures\n");
-        BREAKPOINT;
-      case 3: BREAKPOINT;
+        UNREACHABLE;
+      case 3:
+		UNREACHABLE;
     }
 
     if (colcol == 0) return;
@@ -1027,7 +1016,7 @@ void gpu_line(gp0_cmd *params)
 
 void gpu_rect(gp0_cmd *params)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   gp0_cmd type = params[0];
   gp0_cmd xy = params[1];
   uint32_t x = xy.res.x;
@@ -1040,7 +1029,7 @@ void gpu_rect(gp0_cmd *params)
   if (type.rect.textured)
   {
     i++;
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   switch (type.rect.size)
@@ -1152,7 +1141,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
         }
           break;
         default:
-          BREAKPOINT;
+          UNREACHABLE;
         }
       }
         break;
@@ -1172,7 +1161,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
         gpu_blit(param_list);
         psx_mem.gpu.GPUSTAT.cmd_ready = 1;
         break;
-        BREAKPOINT;
+        UNREACHABLE;
       case 5:
         stream_state = STREAM_STATE_CPU_TO_VRAM;
         break;
@@ -1181,7 +1170,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
         psx_mem.gpu.GPUSTAT.vram_ready = 1;
         break;
       default:
-        BREAKPOINT;
+        UNREACHABLE;
       }
       param_list_len = 0;
     }
@@ -1213,7 +1202,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
       break;
     default:
       printf("file %s:%u: GP0 cmd %d not supported\n", loc.file, loc.line, value);
-      BREAKPOINT;
+      UNREACHABLE;
     }
     break;
   case 1:
@@ -1298,7 +1287,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
 
       printf("\n");
 
-      BREAKPOINT;
+      UNREACHABLE;
     }
 
     break;
@@ -1335,12 +1324,12 @@ void GP0_cmd(uint32_t value, file_loc loc)
       if (param.poly.quad)        printf("p");
       else                        printf("-");
       printf("\n");
-      BREAKPOINT;
+      UNREACHABLE;
     }
 
     break;
   case 3:
-    BREAKPOINT;
+    UNREACHABLE;
     debug_printf(DEBUG_MASK_GPU_GEOMETRY, "file %s:%u: GP0 Rectangle primitive %.8X\n", loc.file, loc.line, value);
 
     psx_mem.gpu.GPUSTAT.cmd_ready = 0;
@@ -1369,7 +1358,7 @@ void GP0_cmd(uint32_t value, file_loc loc)
 
       printf("\n");
       printf("\n");
-      BREAKPOINT;
+      UNREACHABLE;
     }
     break;
   case 4:
@@ -1457,13 +1446,13 @@ void GP0_cmd(uint32_t value, file_loc loc)
         break;
       default:
         printf("file %s:%u: cmd: %X, %X\n", loc.file, loc.line, cmd, value);
-        BREAKPOINT;
+        UNREACHABLE;
     }
     debug_printf(DEBUG_MASK_GPU, "\n");
     break;
   default:
     printf("file %s:%u: unknown GP0 command %2.2X %.8X\n", loc.file, loc.line, value, value);
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   }
 }
@@ -1477,7 +1466,7 @@ void gpu_info(uint32_t info_type)
     break;
   default:
     printf("gpu info type %d not implemented\n", info_type);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -1568,7 +1557,11 @@ struct segment segments[] = {
   //{LEVEL_ID, 4, MASK_WRITE},
   //{0x80074A10, 4, MASK_READONLY},
   //{0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
-  {0x80010000, 0x5BBDC, MASK_READONLY}
+  {0x80010000, 0x5BBDC, MASK_READONLY},
+  //{player_movestate, 4, MASK_WRITE}
+
+  {0x80075AEC, 4, MASK_FORBIDDEN}, // function_800655A0 counter
+  {0x80075AE8, 4, MASK_FORBIDDEN}, // function_800655A0 frame_limit
 };
 
 void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
@@ -1591,7 +1584,7 @@ void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_
         printf("---------- file %s:%u: %s(0x%.8X) -> 0x%.8X\n", loc.file, loc.line, func, addr, *(uint32_t*)addr_to_pointer(addr, loc));
 
       if (segment.operation_mask & MASK_PANIC) {
-        BREAKPOINT;
+        UNREACHABLE;
       }
     }
   }
@@ -1608,25 +1601,7 @@ void check_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t
     return;
 
   printf("%s: file %s:%u: address %X outside range\n", func, loc.file, loc.line, addr);
-  BREAKPOINT;
-}
-
-file_loc get_access(uint32_t addr)
-{
-  return psx_mem.mem_access[addr&0x001FFFFF];
-}
-
-void print_access(uint32_t addr)
-{
-  file_loc loc = get_access(addr);
-
-  printf("0x%.8X (0x%.2X) written by: %s:%u\n", addr, lbu(addr, LOC), loc.file, loc.line);
-}
-
-void set_access(uint32_t addr, uint32_t size, file_loc loc)
-{
-  for (int i = 0; i < size; i++)
-    psx_mem.mem_access[(addr+i)&0x001FFFFF] = loc;
+  UNREACHABLE;
 }
 
 uint32_t translate_addr(uint32_t addr)
@@ -1657,7 +1632,7 @@ void enable_dma(uint32_t dma_num)
 {
   struct dma dma = psx_mem.dma.DMA[dma_num];
 
-  if (dma.chcr.chopping) BREAKPOINT;
+  if (dma.chcr.chopping) UNREACHABLE;
 
   debug_printf(DEBUG_MASK_DMA, "dma running %d\n", dma.chcr.sync_mode);
 
@@ -1687,7 +1662,7 @@ void enable_dma(uint32_t dma_num)
 
       debug_printf(DEBUG_MASK_DMA_TRANSFER, "- address: 0x%.8X\n", dma.madr);
 
-      if (dma.madr == 0) BREAKPOINT;
+      if (dma.madr == 0) UNREACHABLE;
 
       uint32_t addr = dma.madr | 0x80000000;
 
@@ -1746,7 +1721,7 @@ void enable_dma(uint32_t dma_num)
           psx_mem.spu.current_addr += 4;
         }
         else
-          BREAKPOINT;
+          UNREACHABLE;
       }
 
       dma.madr += blocksize;
@@ -1789,7 +1764,7 @@ void enable_dma(uint32_t dma_num)
           psx_mem.spu.current_addr += 4;
         }
         else
-          BREAKPOINT;
+          UNREACHABLE;
       }
 
       dma.madr += blocksize;
@@ -1805,7 +1780,7 @@ void enable_dma(uint32_t dma_num)
   }
 
   printf("sync: %d, dir: %d, num: %d\n", dma.chcr.sync_mode, dma.chcr.dir, dma_num);
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 void sw_dma(uint32_t addr, uint32_t value, file_loc loc)
@@ -1862,13 +1837,13 @@ void sw_dma(uint32_t addr, uint32_t value, file_loc loc)
       break;
     default:
       printf("unknown %d\n", reg);
-      BREAKPOINT;
+      UNREACHABLE;
     }
     return;
   }
 
   printf("unknown address %X\n", addr);
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 void sw_timer(uint32_t addr, uint32_t value, file_loc loc)
@@ -1892,7 +1867,7 @@ void sw_timer(uint32_t addr, uint32_t value, file_loc loc)
     psx_mem.timer.timer[timer_num].target.val = value;
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   } 
 }
@@ -1918,7 +1893,7 @@ void sh_timer(uint32_t addr, uint32_t value, file_loc loc)
     psx_mem.timer.timer[timer_num].target.val = value;
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   } 
 }
@@ -1998,7 +1973,7 @@ void sw(uint32_t addr, uint32_t value, file_loc loc)
 {
   if(addr & 3) {
     printf("file %s:%u: sw, address %.8X unaligned\n", loc.file, loc.line, addr);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   sw_unaligned(addr, value, loc);
@@ -2125,7 +2100,7 @@ void sh_spu(uint32_t addr, uint16_t value, file_loc loc)
     break;
   default:
     printf("writing %.4X to unknown spu address %.8X\n", value, addr);
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   }
 }
@@ -2209,7 +2184,7 @@ void sh(uint32_t addr, uint16_t value, file_loc loc)
 {
   if(addr & 1) {
     printf("file %s:%u: sh, address %.8X unaligned\n", loc.file, loc.line, addr);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   sh_unaligned(addr, value, loc);
@@ -2309,7 +2284,7 @@ void sb_cdrom(uint32_t addr, uint8_t value, file_loc loc)
       psx_mem.cdrom.interrupt_flag.response_received = 0;
     }
 
-    if (value & ~7) BREAKPOINT;
+    if (value & ~7) UNREACHABLE;
     return;
   }
 
@@ -2323,7 +2298,7 @@ void sb_cdrom(uint32_t addr, uint8_t value, file_loc loc)
   }
 
   printf("file %s:%u: sb: writing 0x%.2X to unknown CDROM address %.8X index: %d\n", loc.file, loc.line, value, addr, index);
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 struct {
@@ -2333,7 +2308,7 @@ struct {
 
 void push_joy_fifo(uint8_t value)
 {
-  if (joy_fifo.size >= 8) BREAKPOINT;
+  if (joy_fifo.size >= 8) UNREACHABLE;
 
   for (int i = 0; i < 7; i++)
     joy_fifo.data[i+1] = joy_fifo.data[i];
@@ -2366,7 +2341,7 @@ void sb_joy_tx(uint8_t value, file_loc loc)
   // first byte selects 0x01 controller or 0x81 memory card
   switch (joy_state[psx_mem.controller.joy_ctrl.desired_slot]) {
   case STATE_NONE:
-    if (value != 1) BREAKPOINT;
+    if (value != 1) UNREACHABLE;
     push_joy_fifo(0xFF);
     command_success = 1;
     joy_state[psx_mem.controller.joy_ctrl.desired_slot] = STATE_JOY_1;
@@ -2381,24 +2356,24 @@ void sb_joy_tx(uint8_t value, file_loc loc)
       joy_state[psx_mem.controller.joy_ctrl.desired_slot] = STATE_NONE;
     } else {
       printf("unknown joy command %.2X\n", value);
-      BREAKPOINT;
+      UNREACHABLE;
     }
     break;
   case STATE_JOY_2:
-    if (value != 0) BREAKPOINT;
+    if (value != 0) UNREACHABLE;
     push_joy_fifo(0x5A);
     command_success = 1;
     joy_state[psx_mem.controller.joy_ctrl.desired_slot] = STATE_JOY_3;
     break;
   case STATE_JOY_3:
-    if (value != 0) BREAKPOINT;
+    if (value != 0) UNREACHABLE;
     input = get_input();
     command_success = 1;
     push_joy_fifo((input >> 0) & 0xFF);
     joy_state[psx_mem.controller.joy_ctrl.desired_slot] = STATE_JOY_4;
     break;
   case STATE_JOY_4:
-    if (value != 0) BREAKPOINT;
+    if (value != 0) UNREACHABLE;
     input = get_input();
     command_success = 1;
     push_joy_fifo((input >> 8) & 0xFF);
@@ -2406,7 +2381,7 @@ void sb_joy_tx(uint8_t value, file_loc loc)
     break;
   default:
     printf("unknown joy state %d\n", joy_state[psx_mem.controller.joy_ctrl.desired_slot]);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 }
 
@@ -2469,7 +2444,7 @@ uint32_t lw_timer(uint32_t addr, file_loc loc)
     return value;
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   }
   return 0;
@@ -2501,7 +2476,7 @@ uint16_t lh_timer(uint32_t addr, file_loc loc)
     return value;
     break;
   default:
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   }
   return 0;
@@ -2535,7 +2510,7 @@ uint32_t lw_dma(uint32_t addr, file_loc loc)
 
     debug_printf(DEBUG_MASK_DMA, "reading DMA%d %s ", dma_num, dmas[dma_num]);
 
-    uint32_t value;
+    uint32_t value = 0;
     switch (reg) {
     case 0:
       value = psx_mem.dma.DMA[dma_num].madr;
@@ -2547,13 +2522,13 @@ uint32_t lw_dma(uint32_t addr, file_loc loc)
       break;
     default:
       printf("unknown %d\n", reg);
-      BREAKPOINT;
+      UNREACHABLE;
     }
 
     return value;
   }
   printf("unknown DMA address %X\n", addr);
-  BREAKPOINT;
+  UNREACHABLE;
   return 0;
 }
 
@@ -2625,7 +2600,7 @@ uint32_t lw(uint32_t addr, file_loc loc)
 {
   if(addr & 3) {
     printf("file %s:%u: lw, address %.8X unaligned\n", loc.file, loc.line, addr);
-    BREAKPOINT;
+    UNREACHABLE;
   }
 
   return lw_unaligned(addr, loc);
@@ -2676,7 +2651,7 @@ uint32_t lh_spu(uint32_t addr, file_loc loc)
     break;
   default:
     printf("file %s:%u: reading %.4X from unknown spu address %.8X\n", loc.file, loc.line, value, addr);
-    BREAKPOINT;
+    UNREACHABLE;
     break;
   }
 
@@ -2717,7 +2692,7 @@ uint8_t lb_cdrom(uint32_t addr, file_loc loc)
   }
 
   printf("file %s:%u: lb: unknown CDROM address %.8X %d\n", loc.file, loc.line, addr, index);
-  BREAKPOINT;
+  UNREACHABLE;
   return 0;
 }
 
@@ -2853,7 +2828,6 @@ void psx_read_sectors(uint32_t dst, uint32_t sector, uint32_t sector_len)
 
 int start_frame()
 {
-
   set_resolution((int[]){256, 320, 512, 640}[psx_mem.gpu.display_mode.res_horiz_1], (int[]){240, 480}[psx_mem.gpu.display_mode.res_vert]);
 
   uint32_t x = psx_mem.gpu.display_area_start & 0x2FF;

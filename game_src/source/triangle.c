@@ -63,14 +63,6 @@ inline static vertex mix_vertices(vertex v1, vertex v2, int a, int b)
   };
 }
 
-inline static vertex mix_vertices2(vertex v1, vertex v2, int a, int b)
-{
-  return (vertex){
-    .c = mix_colors(v1.c, v2.c, a, b),
-    .uv = mix_vec2t(v1.uv, v2.uv, a, b)
-  };
-}
-
 inline static vertex_int mix_vertices3(vertex v1, vertex v2, int a, int b, int b2)
 {
   return (vertex_int){

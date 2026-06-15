@@ -8,9 +8,9 @@
 // size: 0x00000030
 void function_8005DEBC(void)
 {
-  if (lw(lw(0x800749AC) + 0x10) != 0x8005E378) BREAKPOINT;
+  if (lw(lw(0x800749AC) + 0x10) != 0x8005E378) UNREACHABLE;
   // function_8005E378();
-  BREAKPOINT;
+  UNREACHABLE;
 }
 
 // size: 0x0000001C
@@ -24,7 +24,7 @@ uint32_t set_I_MASK(uint32_t i_mask)
 // size: 0x0000001C
 void function_8005DF44(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = set_I_MASK(a0);
 }
 
@@ -35,19 +35,19 @@ void function_8005E5D8(void)
     sw(0x800749C0 + a0*4, a1);
 }
 
+// size: 0x00000030
+void function_8005DE8C(void)
+{
+  if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) UNREACHABLE;
+  function_8005E5D8();
+}
+
 // size: 0x00000034
 void function_8005DE58(void)
 {
   a1 = a0;
   a0 = 4;
-  if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) BREAKPOINT;
-  function_8005E5D8();
-}
-
-// size: 0x00000030
-void function_8005DE8C(void)
-{
-  if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) BREAKPOINT;
+  if (lw(lw(0x800749AC) + 0x14) != 0x8005E5D8) UNREACHABLE;
   function_8005E5D8();
 }
 
@@ -69,7 +69,7 @@ void wait_until_frame(int32_t frame, uint32_t timeout_time)
 
 void function_8005DD0C(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   wait_until_frame(a0, a1);
 }
 
@@ -96,6 +96,6 @@ int VSync(int mode)
 // size: 0x00000148
 void function_8005DBC4(void)
 {
-  BREAKPOINT;
+  UNREACHABLE;
   v0 = VSync(a0);
 }
