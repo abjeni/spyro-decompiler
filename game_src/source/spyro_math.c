@@ -9,8 +9,103 @@
 #include "spyro_math.h"
 #include "debug.h"
 
-#undef UNREACHABLE
-#define UNREACHABLE
+#undef DEPRECATED
+#define DEPRECATED
+
+int16_t sqrt_lookup[] = { // 0x80074B84
+  0x1000, 0x101F, 0x103F, 0x105E, 0x107E, 0x109C, 0x10BB, 0x10DA, 
+  0x10F8, 0x1116, 0x1134, 0x1152, 0x116F, 0x118C, 0x11A9, 0x11C6, 
+  0x11E3, 0x1200, 0x121C, 0x1238, 0x1254, 0x1270, 0x128C, 0x12A7, 
+  0x12C2, 0x12DE, 0x12F9, 0x1314, 0x132E, 0x1349, 0x1364, 0x137E, 
+  0x1398, 0x13B2, 0x13CC, 0x13E6, 0x1400, 0x1419, 0x1432, 0x144C, 
+  0x1465, 0x147E, 0x1497, 0x14B0, 0x14C8, 0x14E1, 0x14F9, 0x1512, 
+  0x152A, 0x1542, 0x155A, 0x1572, 0x158A, 0x15A2, 0x15B9, 0x15D1, 
+  0x15E8, 0x1600, 0x1617, 0x162E, 0x1645, 0x165C, 0x1673, 0x1689, 
+  0x16A0, 0x16B7, 0x16CD, 0x16E4, 0x16FA, 0x1710, 0x1726, 0x173C, 
+  0x1752, 0x1768, 0x177E, 0x1794, 0x17AA, 0x17BF, 0x17D5, 0x17EA, 
+  0x1800, 0x1815, 0x182A, 0x183F, 0x1854, 0x1869, 0x187E, 0x1893, 
+  0x18A8, 0x18BD, 0x18D1, 0x18E6, 0x18FA, 0x190F, 0x1923, 0x1938, 
+  0x194C, 0x1960, 0x1974, 0x1988, 0x199C, 0x19B0, 0x19C4, 0x19D8, 
+  0x19EC, 0x1A00, 0x1A13, 0x1A27, 0x1A3A, 0x1A4E, 0x1A61, 0x1A75, 
+  0x1A88, 0x1A9B, 0x1AAE, 0x1AC2, 0x1AD5, 0x1AE8, 0x1AFB, 0x1B0E, 
+  0x1B21, 0x1B33, 0x1B46, 0x1B59, 0x1B6C, 0x1B7E, 0x1B91, 0x1BA3, 
+  0x1BB6, 0x1BC8, 0x1BDB, 0x1BED, 0x1C00, 0x1C12, 0x1C24, 0x1C36, 
+  0x1C48, 0x1C5A, 0x1C6C, 0x1C7E, 0x1C90, 0x1CA2, 0x1CB4, 0x1CC6, 
+  0x1CD8, 0x1CE9, 0x1CFB, 0x1D0D, 0x1D1E, 0x1D30, 0x1D41, 0x1D53, 
+  0x1D64, 0x1D76, 0x1D87, 0x1D98, 0x1DAA, 0x1DBB, 0x1DCC, 0x1DDD, 
+  0x1DEE, 0x1E00, 0x1E11, 0x1E22, 0x1E33, 0x1E43, 0x1E54, 0x1E65, 
+  0x1E76, 0x1E87, 0x1E98, 0x1EA8, 0x1EB9, 0x1ECA, 0x1EDA, 0x1EEB, 
+  0x1EFB, 0x1F0C, 0x1F1C, 0x1F2D, 0x1F3D, 0x1F4E, 0x1F5E, 0x1F6E, 
+  0x1F7E, 0x1F8F, 0x1F9F, 0x1FAF, 0x1FBF, 0x1FCF, 0x1FDF, 0x1FEF, 
+};
+
+const uint8_t atan_lut[64] = { // 0x8006D908
+  0x00, 0x01, 0x01, 0x02,
+  0x03, 0x03, 0x04, 0x04,
+  0x05, 0x06, 0x06, 0x07,
+  0x08, 0x08, 0x09, 0x09,
+  0x0a, 0x0b, 0x0b, 0x0c,
+  0x0c, 0x0d, 0x0d, 0x0e,
+  0x0f, 0x0f, 0x10, 0x10,
+  0x11, 0x11, 0x12, 0x12,
+  0x13, 0x13, 0x14, 0x14,
+  0x15, 0x15, 0x16, 0x16,
+  0x17, 0x17, 0x18, 0x18,
+  0x19, 0x19, 0x19, 0x1a,
+  0x1a, 0x1b, 0x1b, 0x1b,
+  0x1c, 0x1c, 0x1d, 0x1d,
+  0x1d, 0x1e, 0x1e, 0x1e,
+  0x1f, 0x1f, 0x1f, 0x20
+};
+
+const uint32_t math_lut[] = { // 0x8006CE7C
+  0xFFFFFFFF,
+  0x00000324,
+  0x0000096E,
+  0x00000FBA,
+  0x0000160C,
+  0x00001C64,
+  0x000022C5,
+  0x00002931,
+  0x00002FAA,
+  0x00003632,
+  0x00003CCC,
+  0x00004379,
+  0x00004A3D,
+  0x00005119,
+  0x00005811,
+  0x00005F28,
+  0x00006660,
+  0x00006DBD,
+  0x00007542,
+  0x00007CF2,
+  0x000084D7,
+  0x00008CE7,
+  0x00009534,
+  0x00009DBE,
+  0x0000A68C,
+  0x0000AFA3,
+  0x0000B909,
+  0x0000C2C7,
+  0x0000CCE3,
+  0x0000D768,
+  0x0000E25E,
+  0x0000EDD0,
+  0x0000F9CB,
+  0x00010001
+};
+
+const uint16_t math_lut2[] = { // 0x8006CF04
+  0x0648, 0x064A, 0x064C, 0x0652,
+  0x0658, 0x0661, 0x066C, 0x0679,
+  0x0688, 0x069A, 0x06AD, 0x06C4,
+  0x06DC, 0x06F8, 0x0717, 0x0738,
+  0x075D, 0x0785, 0x07B0, 0x07E5,
+  0x0810, 0x084D, 0x088A, 0x08CE,
+  0x0917, 0x0966, 0x09BF, 0x0A1C,
+  0x0A85, 0x0AF6, 0x0B72, 0x0BFB,
+  0x0C6A, 0x0000,
+};
 
 struct game_object {
   uint32_t unknown00; // 0x00 - 0x04 // pointer
@@ -54,7 +149,6 @@ struct game_object {
   uint8_t unknown57; // 0x57 - 0x58
 };
 
-
 // size: 0x0000010C
 uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst)
 {
@@ -64,7 +158,7 @@ uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst)
 
 void function_800623D8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_mat_mul(a0, a1, a2);
 }
 
@@ -73,230 +167,191 @@ uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2)
   return spyro_mat_mul(m1, m2, m1);
 }
 
-/*
-
 // size: 0x0000010C
 void function_800624E8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_mat_mul_2(a0, a1);
 }
 
-const uint8_t atan_lut[64] = { // 0x8006D908
-  0x00, 0x01, 0x01, 0x02,
-  0x03, 0x03, 0x04, 0x04,
-  0x05, 0x06, 0x06, 0x07,
-  0x08, 0x08, 0x09, 0x09,
-  0x0a, 0x0b, 0x0b, 0x0c,
-  0x0c, 0x0d, 0x0d, 0x0e,
-  0x0f, 0x0f, 0x10, 0x10,
-  0x11, 0x11, 0x12, 0x12,
-  0x13, 0x13, 0x14, 0x14,
-  0x15, 0x15, 0x16, 0x16,
-  0x17, 0x17, 0x18, 0x18,
-  0x19, 0x19, 0x19, 0x1a,
-  0x1a, 0x1b, 0x1b, 0x1b,
-  0x1c, 0x1c, 0x1d, 0x1d,
-  0x1d, 0x1e, 0x1e, 0x1e,
-  0x1f, 0x1f, 0x1f, 0x20
-};
-
-int16_t spyro_atan(int32_t x, int32_t y)
+// size: 0x00000108
+int16_t spyro_atan(int16_t x, int16_t y)
 {
-  uint32_t at = abs_int(x);
-  uint32_t v0 = abs_int(y);
-  if (at > v0)
-  {
-    uint32_t tmp = at;
-    at = v0;
-    v0 = tmp;
-  }
-  at = at*64;
-  if (v0 == 0)
-    v0 = 1;
-  
-  uint32_t lo = at/v0;
-  if (x >= 0)
-    if (y >= 0)
-      if (x >= y) {
-        at = 0;
-        v0 = 0;
-      } else {
-        at = 1;
-        v0 = 0x40;
-      }
-    else
-      if (x >= -y) {
-        at = 1;
-        v0 = 0x100;
-      } else {
-        at = 0;
-        v0 = 0xC0;
-      }
-  else
-    if (y >= 0)
-      if (-x >= y) {
-        at = 1;
-        v0 = 0x80;
-      } else {
-        at = 0;
-        v0 = 0x40;
-      }
-    else
-      if (-x >= -y) {
-        at = 0;
-        v0 = 0x80;
-      } else {
-        at = 1;
-        v0 = 0xC0;
-      }
+  int16_t xabs = abs_int(a0);
+  int16_t yabs = abs_int(a1);
+  int x_positive = x >= 0;
+  int y_positive = y >= 0;
+  int xgty = xabs >= yabs;
 
-  uint32_t tmp = atan_lut[lo];
-  if (at == 0) {
-    at = v0 + tmp;
+  int desc;
+  int16_t atan;
+
+  if (x_positive) {
+    if (y_positive) {
+      if (xgty) {
+        desc = 0;
+        atan = 0;
+      } else {
+        desc = 1;
+        atan = 64;
+      }
+    } else {
+      if (xgty) {
+        desc = 1;
+        atan = 256;
+      } else {
+        desc = 0;
+        atan = 192;
+      }
+    }
   } else {
-    at = v0 - tmp;
+    if (y_positive) {
+      if (xgty) {
+        desc = 1;
+        atan = 128;
+      } else {
+        desc = 0;
+        atan = 64;
+      }
+    } else {
+      if (xgty) {
+        desc = 0;
+        atan = 128;
+      } else {
+        desc = 1;
+        atan = 192;
+      }
+    }
   }
-  return at;
+
+  int16_t x2 = xabs;
+  int16_t y2 = yabs;
+  if (xgty) {
+    int16_t tmp = x2;
+    x2 = y2;
+    y2 = tmp;
+  }
+  if (y2 == 0) y2 = 1;
+  a0=x2*64/y2;
+  assert(a0 < 64);
+  v1 = atan_lut[a0];
+  
+  if (desc)
+    atan -= v1;
+  else
+    atan += v1;
+
+  return atan;
 }
 
 // size: 0x00000108
 void function_800169AC(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_atan(a0, a1);
 }
 
-uint32_t math_lut[] = {
-  0xFFFFFFFF,
-  0x00000324,
-  0x0000096E,
-  0x00000FBA,
-  0x0000160C,
-  0x00001C64,
-  0x000022C5,
-  0x00002931,
-  0x00002FAA,
-  0x00003632,
-  0x00003CCC,
-  0x00004379,
-  0x00004A3D,
-  0x00005119,
-  0x00005811,
-  0x00005F28,
-  0x00006660,
-  0x00006DBD,
-  0x00007542,
-  0x00007CF2,
-  0x000084D7,
-  0x00008CE7,
-  0x00009534,
-  0x00009DBE,
-  0x0000A68C,
-  0x0000AFA3,
-  0x0000B909,
-  0x0000C2C7,
-  0x0000CCE3,
-  0x0000D768,
-  0x0000E25E,
-  0x0000EDD0,
-  0x0000F9CB,
-  0x00010001
-};
-
 // size: 0x000001A4
-int16_t spyro_atan2(int32_t x, int32_t y, uint32_t a3)
+int32_t spyro_atan2(int32_t x, int32_t y, uint32_t a3)
 {
-  int32_t at = abs_int(x);
-  int32_t v0 = abs_int(y);
-  cop2.LZCS = at | v0;
-  int32_t v1 = 17 - LZCR();
-  if (v1 > 0) {
-    at = at >> v1;
-    v0 = v0 >> v1;
-  }
-  if (at > v0) {
-    v1 = at;
-    at = v0;
-    v0 = v1;
-  }
-  if (v0 == 0)
-    return 0;
+  int32_t xabs = abs_int(a0);
+  int32_t yabs = abs_int(a1);
+  int x_positive = (int32_t)a0 >= 0;
+  int y_positive = (int32_t)a1 >= 0;
+  int xgty = xabs >= yabs;
 
-  at = at << 16;
-  div_psx(at,v0);
-  uint32_t negative;
-  if (x >= 0)
-    if (y >= 0)
-      if (x >= y) {
-        negative = 0;
-        v0 = 0;
-      } else {
-        negative = 1;
-        v0 = 0x40;
-      }
-    else
-      if (x >= -y) {
-        negative = 1;
-        v0 = 0x100;
-      } else {
-        negative = 0;
-        v0 = 0xC0;
-      }
-  else
-    if (y >= 0)
-      if (-x >= y) {
-        negative = 1;
-        v0 = 0x80;
-      } else {
-        negative = 0;
-        v0 = 0x40;
-      }
-    else
-      if (-x >= -y) {
-        negative = 0;
-        v0 = 0x80;
-      } else {
-        negative = 1;
-        v0 = 0xC0;
-      }
+  int32_t x2 = xabs;
+  int32_t y2 = yabs;
   
-  v1 = 0x8006CE7C;
-  a0=lo;
-  a1 = a0 >> 11;
-  do {
-    a1++;
-    a2 = lw(0x8006CE7C + a1*4) - a0;
-  } while (a2 < 0);
-  a1--;
-  v1 = a1;
-
-  // extra precision maybe
-  if (a3) {
-    a1 = a1*2;
-    v1 = lhu(0x8006CF04 + a1);
-    a2 = a2 << 16;
-    if (a1 != 64) 
-      a1 += 1;
-    v1 = a1*8 - ((int32_t)a2/v1 >> 12);
-
-    v0 = v0*16;
+  v1 = 17 - lzcr(x2 | y2);
+  if ((int32_t)v1 > 0) {
+    x2 >>= v1;
+    y2 >>= v1;
   }
 
-  if (negative)
-    v1 = -v1;
-  v0 += v1;
-  return v0;
+  if (x2 >= y2) {
+    int32_t tmp = x2;
+    x2 = y2;
+    y2 = tmp;
+  }
+  
+  if (y2 == 0) return 0;
+
+  div_psx(x2 << 16, y2);
+
+  int desc;
+  int16_t atan;
+
+  if (x_positive) {
+    if (y_positive) {
+      if (xgty) {
+        desc = 0;
+        atan = 0;
+      } else {
+        desc = 1;
+        atan = 64;
+      }
+    } else {
+      if (xgty) {
+        desc = 1;
+        atan = 256;
+      } else {
+        desc = 0;
+        atan = 192;
+      }
+    }
+  } else {
+    if (y_positive) {
+      if (xgty) {
+        desc = 1;
+        atan = 128;
+      } else {
+        desc = 0;
+        atan = 64;
+      }
+    } else {
+      if (xgty) {
+        desc = 0;
+        atan = 128;
+      } else {
+        desc = 1;
+        atan = 192;
+      }
+    }
+  }
+
+
+  a0=lo;
+  size_t i = (a0 >> 11);
+
+  do {
+    i++;
+    assert(i < 34);
+    a2 = math_lut[i] - a0;
+  } while ((int32_t)a2 < 0);
+  i--;
+
+  int32_t offset;
+  if (a3) {
+    div_psx(a2 << 16, math_lut2[i]);
+    a1 = i*2;
+    if (a1 != 64) a1++;
+    atan *= 16;
+    offset = a1*8 - (lo >> 12);
+  } else {
+    offset = i;
+  }
+  if (desc) offset = -offset;
+  atan += offset;
+  return atan;
 }
 
 // size: 0x000001A4
 void function_80016AB4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_atan2(a0, a1, a2);
 }
-
-*/
 
 // cos_lut and sin_lut overlap
 int16_t cos_lut[256] = {
@@ -391,18 +446,16 @@ int16_t spyro_sin(int32_t angle)
 // size: 0x00000058
 void function_80016C58(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_sin(a0);
 }
 
 // size: 0x00000058
 void function_80016CB0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_cos(a0);
 }
-
-/*
 
 uint32_t spyro_log2_uint(uint32_t a)
 {
@@ -414,7 +467,7 @@ uint32_t spyro_log2_uint(uint32_t a)
 // size: 0x00000024
 void function_80016D08(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_log2_uint(a0);
 }
 
@@ -446,7 +499,7 @@ void spyro_mat3_rotation(uint32_t rot_addr, uint32_t dst, uint32_t src)
 // given rotation vector
 void function_80016D2C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_mat3_rotation(a0, a1, a2);
 }
 
@@ -460,7 +513,7 @@ void spyro_mat3_transpose(uint32_t dst, uint32_t src)
 // size: 0x00000078
 void function_80016FD0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_mat3_transpose(a0, a1);
 }
 
@@ -484,7 +537,7 @@ void spyro_set_mat_mirrored_vec_multiply(uint32_t mat, uint32_t vec_src, uint32_
 // size: 0x00000078
 void function_80017048(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
 }
 
@@ -507,7 +560,7 @@ void spyro_mat_mirrored_vec_multiply(uint32_t vec_src, uint32_t vec_dst)
 // size: 0x00000050
 void function_800170C0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_mat_mirrored_vec_multiply(a0, a1);
 }
 
@@ -531,7 +584,7 @@ void spyro_camera_mat_vec_multiply(vec3_32 *src, vec3_32 *dst)
 // size: 0x00000078
 void function_80017110(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -539,21 +592,19 @@ void function_80017110(void)
 // vector length
 uint32_t spyro_vec_length(uint32_t vec, uint32_t is_vec3)
 {
-  int32_t x = clamp_int(lw(vec + 0), -0x8000, 0x7FFF);
-  int32_t y = clamp_int(lw(vec + 4), -0x8000, 0x7FFF);
+  int32_t x = lh(vec + 0);
+  int32_t y = lh(vec + 4);
   int32_t z = 0;
   if (is_vec3)
-    z = clamp_int(lw(vec + 8), -0x8000, 0x7FFF);
+    z = lh(vec + 8);
 
   uint32_t sqr = x*x + y*y + z*z;
-  if (sqr == 0)
-    return 0;
   return spyro_sqrt(sqr);
 }
 
 void function_800171FC(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_vec_length(a0, a1);
 }
 
@@ -587,7 +638,7 @@ uint32_t math_func1(vec3_32 *v_src, int32_t n, uint32_t v3)
 // size: 0x00000094
 void function_8001729C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = math_func1(addr_to_pointer(a0), a1, a2);
 }
 
@@ -614,7 +665,7 @@ void spyro_set_vec3_length(uint32_t vec, int32_t len)
 
 void function_80017330(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_set_vec3_length(a0, a1);
 }
 
@@ -662,15 +713,17 @@ void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul)
     sw(vec + 8, 0);
     return;
   }
-  sw(vec + 0, (int32_t)lw(vec + 0)*mul/div);
-  sw(vec + 4, (int32_t)lw(vec + 4)*mul/div);
-  sw(vec + 8, (int32_t)lw(vec + 8)*mul/div);
+  int32_t q = (mul << 12) / div;
+  sw(vec + 0, (int32_t)lh(vec + 0)*q >> 12);
+  sw(vec + 4, (int32_t)lh(vec + 4)*q >> 12);
+  sw(vec + 8, (int32_t)lh(vec + 8)*q >> 12);
+  return;
 }
 
 // size: 0x0000005C
 void function_800175B8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   vec3_mul_div(a0, a1, a2);
 }
 
@@ -703,7 +756,7 @@ void spyro_vec3_multiply_fancy_shift_right(uint32_t vec, uint32_t mult, uint32_t
 
 void function_80017614(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_multiply_fancy_shift_right(a0, a1, a2);
 }
 
@@ -717,7 +770,7 @@ void spyro_vec3_shift_left(uint32_t vec, uint32_t shift)
 // size: 0x00000028
 void function_800176A0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_shift_left(a0, a1);
 }
 
@@ -731,7 +784,7 @@ void spyro_vec3_shift_right(uint32_t vec, uint32_t shift)
 // size: 0x00000028
 void function_800176C8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_shift_right(a0, a1);
 }
 
@@ -745,7 +798,7 @@ void spyro_vec3_clear(uint32_t vec)
 // size: 0x00000010
 void function_800176F0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_clear(a0);
 }
 
@@ -759,7 +812,7 @@ void spyro_vec3_copy(uint32_t dst, uint32_t src)
 // size: 0x0000001C
 void function_80017700(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_copy(a0, a1);
 }
 
@@ -773,7 +826,7 @@ void spyro_vec3_add(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_80017758(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_add(a0, a1, a2);
 }
 
@@ -787,7 +840,7 @@ void spyro_vec3_sub(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_8001778C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_sub(a0, a1, a2);
 }
 
@@ -801,7 +854,7 @@ void spyro_vec3_mul(uint32_t dst, uint32_t src, int32_t mul)
 // size: 0x00000038
 void function_800177C0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_mul(a0, a1, a2);
 }
 
@@ -815,7 +868,7 @@ void spyro_vec3_div(uint32_t dst, uint32_t src, int32_t div)
 // size: 0x0000005C
 void function_800177F8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec3_div(a0, a1, a2);
 }
 
@@ -829,7 +882,7 @@ void spyro_vec_interpolation(uint32_t dst, uint32_t vec1, uint32_t vec2, int32_t
 // size: 0x00000074
 void function_80017894(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_interpolation(a0, a1, a2, a3);
 }
 
@@ -846,7 +899,7 @@ uint32_t spyro_two_angle_diff_8bit(uint32_t a, uint32_t b)
 // zigzag function 0-128-0-128
 void function_80017908(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_diff_8bit(a0, a1);
 }
 
@@ -862,7 +915,7 @@ uint32_t spyro_two_angle_diff_12bit(uint32_t a, uint32_t b)
 // size: 0x00000020
 void function_80017928(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_diff_12bit(a0, a1);
 }
 
@@ -879,7 +932,7 @@ uint32_t spyro_two_angle_signed_diff_8bit(int32_t a, int32_t b)
 // size: 0x00000024
 void function_80017948(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_signed_diff_8bit(a0, a1);
 }
 
@@ -895,7 +948,7 @@ uint32_t spyro_two_angle_signed_diff_12bit(int32_t a, int32_t b)
 // size: 0x00000024
 void function_8001796C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
 }
 
@@ -919,7 +972,7 @@ uint32_t spyro_octagon_distance(uint32_t a, uint32_t b)
 // octagon distance between two points
 void function_80017990(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_octagon_distance(a0, a1);
 }
 
@@ -940,42 +993,13 @@ uint32_t spyro_attract_angle_in_range(uint32_t a, uint32_t b, int32_t attraction
 
 void function_800179F0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_attract_angle_in_range(a0, a1, a2, a3);
 }
-*/
-
-int16_t sqrt_lookup[] = { // 0x80074B84
-  0x1000, 0x101F, 0x103F, 0x105E, 0x107E, 0x109C, 0x10BB, 0x10DA, 
-  0x10F8, 0x1116, 0x1134, 0x1152, 0x116F, 0x118C, 0x11A9, 0x11C6, 
-  0x11E3, 0x1200, 0x121C, 0x1238, 0x1254, 0x1270, 0x128C, 0x12A7, 
-  0x12C2, 0x12DE, 0x12F9, 0x1314, 0x132E, 0x1349, 0x1364, 0x137E, 
-  0x1398, 0x13B2, 0x13CC, 0x13E6, 0x1400, 0x1419, 0x1432, 0x144C, 
-  0x1465, 0x147E, 0x1497, 0x14B0, 0x14C8, 0x14E1, 0x14F9, 0x1512, 
-  0x152A, 0x1542, 0x155A, 0x1572, 0x158A, 0x15A2, 0x15B9, 0x15D1, 
-  0x15E8, 0x1600, 0x1617, 0x162E, 0x1645, 0x165C, 0x1673, 0x1689, 
-  0x16A0, 0x16B7, 0x16CD, 0x16E4, 0x16FA, 0x1710, 0x1726, 0x173C, 
-  0x1752, 0x1768, 0x177E, 0x1794, 0x17AA, 0x17BF, 0x17D5, 0x17EA, 
-  0x1800, 0x1815, 0x182A, 0x183F, 0x1854, 0x1869, 0x187E, 0x1893, 
-  0x18A8, 0x18BD, 0x18D1, 0x18E6, 0x18FA, 0x190F, 0x1923, 0x1938, 
-  0x194C, 0x1960, 0x1974, 0x1988, 0x199C, 0x19B0, 0x19C4, 0x19D8, 
-  0x19EC, 0x1A00, 0x1A13, 0x1A27, 0x1A3A, 0x1A4E, 0x1A61, 0x1A75, 
-  0x1A88, 0x1A9B, 0x1AAE, 0x1AC2, 0x1AD5, 0x1AE8, 0x1AFB, 0x1B0E, 
-  0x1B21, 0x1B33, 0x1B46, 0x1B59, 0x1B6C, 0x1B7E, 0x1B91, 0x1BA3, 
-  0x1BB6, 0x1BC8, 0x1BDB, 0x1BED, 0x1C00, 0x1C12, 0x1C24, 0x1C36, 
-  0x1C48, 0x1C5A, 0x1C6C, 0x1C7E, 0x1C90, 0x1CA2, 0x1CB4, 0x1CC6, 
-  0x1CD8, 0x1CE9, 0x1CFB, 0x1D0D, 0x1D1E, 0x1D30, 0x1D41, 0x1D53, 
-  0x1D64, 0x1D76, 0x1D87, 0x1D98, 0x1DAA, 0x1DBB, 0x1DCC, 0x1DDD, 
-  0x1DEE, 0x1E00, 0x1E11, 0x1E22, 0x1E33, 0x1E43, 0x1E54, 0x1E65, 
-  0x1E76, 0x1E87, 0x1E98, 0x1EA8, 0x1EB9, 0x1ECA, 0x1EDA, 0x1EEB, 
-  0x1EFB, 0x1F0C, 0x1F1C, 0x1F2D, 0x1F3D, 0x1F4E, 0x1F5E, 0x1F6E, 
-  0x1F7E, 0x1F8F, 0x1F9F, 0x1FAF, 0x1FBF, 0x1FCF, 0x1FDF, 0x1FEF, 
-};
 
 // size: 0x0000006C
 uint32_t spyro_sqrt(uint32_t a)
 {
-
   uint32_t a1, at, a3;
   if (a == 0)
     return 0;
@@ -990,7 +1014,7 @@ uint32_t spyro_sqrt(uint32_t a)
 
   uint32_t i = a3-64;
   if (i > 192) {
-    UNREACHABLE;
+    BREAKPOINT;
   }
 
   return (sqrt_lookup[i] << at) >> 12;
@@ -998,11 +1022,9 @@ uint32_t spyro_sqrt(uint32_t a)
 
 void function_80017A38(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_sqrt(a0);
 }
-
-/*
 
 // size: 0x000000A4
 void spyro_world_to_screen_projection(uint32_t dst, uint32_t vec)
@@ -1031,7 +1053,7 @@ void spyro_world_to_screen_projection(uint32_t dst, uint32_t vec)
 
 void function_80017AA4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_world_to_screen_projection(a0, a1);
 }
 
@@ -1066,7 +1088,7 @@ void spyro_world_to_screen_projection_with_right_shift(uint32_t dst, uint32_t ve
 
 void function_80017B48(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_world_to_screen_projection_with_right_shift(a0, a1, a2);
 }
 
@@ -1080,7 +1102,7 @@ void spyro_vec_32_to_16_div_4(uint32_t dst, uint32_t src)
 // size: 0x00000028
 void function_80017BFC(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_32_to_16_div_4(a0, a1);
 }
 
@@ -1094,7 +1116,7 @@ void spyro_vec_16_to_32_mul_4(uint32_t dst, uint32_t src)
 // size: 0x00000028
 void function_80017C24(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_16_to_32_mul_4(a0, a1);
 }
 
@@ -1108,7 +1130,7 @@ void spyro_vec_16_to_32(uint32_t dst, uint32_t src)
 // size: 0x0000001C
 void function_80017C4C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_16_to_32(a0, a1);
 }
 
@@ -1122,7 +1144,7 @@ void spyro_vec_32_to_16(vec3 *dst, vec3_32 *src)
 // size: 0x0000001C
 void function_80017C68(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_32_to_16(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -1136,7 +1158,7 @@ void spyro_vec_16_add(uint32_t dst, uint32_t a, uint32_t b)
 // size: 0x00000034
 void function_80017C84(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_vec_16_add(a0, a1, a2);
 }
 
@@ -1178,7 +1200,7 @@ void spyro_unpack_96bit_triangle(uint32_t index, uint32_t dst)
 
 void function_80017CB8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_unpack_96bit_triangle(a0, a1);
 }
 
@@ -1283,7 +1305,7 @@ uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol)
 // size: 0x00000044
 void function_80017E54(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = interpolate_color(a0, a1, a2);
 }
 
@@ -1295,7 +1317,7 @@ int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2)
 // size: 0x00000024
 void function_80038074(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_add(a0, a1);
 }
 
@@ -1312,7 +1334,7 @@ int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2)
 // size: 0x0000002C
 void function_800381BC(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_two_angle_diff_8bit2(a0, a1);
 }
 
@@ -1979,5 +2001,3 @@ void function_800533D0(void)
   sw(a0 + 0x1C, a3);
   return;
 }
-
-*/

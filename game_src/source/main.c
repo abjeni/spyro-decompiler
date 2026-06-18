@@ -23,6 +23,15 @@ void print_psx_string_array(const char *name, uint32_t base, uint32_t n) {
   printf("};\n");
 }
 
+void print_psx_uint16_t_array(const char *name, uint32_t base, uint32_t n) {
+  printf("uint16_t %s[] = {\n", name);
+  for (int i = 0; i < n; i++)
+  {
+    printf("  0x%.4hX,\n", lh(base + i*2));
+  }
+  printf("};\n");
+}
+
 int main(int argc, char *argv[])
 {
   platform_init();
@@ -35,11 +44,13 @@ int main(int argc, char *argv[])
   {
     printf("%d\n", -2%3);
     //wad_main();
+
+    print_psx_uint16_t_array("math_lut2", 0x8006CF04, 34);
     
     //print_psx_string_array("dragon_names", 0x8006F694, 80);
     
-    print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
-    print_psx_string_array("cd_status_str", 0x80074EDC, 8);
+    //print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
+    //print_psx_string_array("cd_status_str", 0x80074EDC, 8);
 
     //read_disk1(lw(WAD_sector), 0x80100000, 0x800, 0, 0x256);
     return 0;

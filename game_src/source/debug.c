@@ -1,11 +1,13 @@
 #include <main.h>
 #include <stdio.h>
+#include <execinfo.h>
+#include <stdlib.h>
 
 #include "debug.h"
 
 void print_trace(void)
 {
-  /*void *array[10];
+  void *array[10];
   char **strings;
   int size, i;
 
@@ -13,13 +15,12 @@ void print_trace(void)
   strings = backtrace_symbols (array, size);
   if (strings != NULL)
   {
-
     printf ("Obtained %d stack frames.\n", size);
     for (i = 0; i < size; i++)
       printf ("%s\n", strings[i]);
   }
 
-  free (strings);*/
+  free(strings);
 }
 
 void print_all_regs()

@@ -9,31 +9,42 @@
 #include "functions.h"
 #include "decompilation.h"
 
+extern FILE *graph_fd;
+
 char *used_skips = NULL;
 
 struct function_name function_names[] = {
   //{0x80012204, "game_loop()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
+
+
+
   /*{0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))", .name = "spyro_combine_all_command_buffers"},
   {0x800168A0, "append_gpu_command_block_depth_slot(a0, a1)"},
   {0x800168DC, "append_gpu_command_block(addr_to_pointer(a0))"},
   */
+
+
   {0x80016914, "spyro_memset32(a0, a1, a2)"},
   {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)", .name = "spyro_memset32"},
   {0x80016958, "spyro_memcpy32(a0, a1, a2)"},
   /*
   {0x800169AC, "v0 = spyro_atan(a0, a1)"},
   {0x80016AB4, "v0 = spyro_atan2(a0, a1, a2)"},
+  */
   {0x80016C58, "v0 = spyro_sin(a0)"},
   {0x80016CB0, "v0 = spyro_cos(a0)"},
+  /*
   {0x80016D08, "v0 = spyro_log2_uint(a0)"},
   {0x80016D2C, "spyro_mat3_rotation(a0, a1, a2)"},
   {0x80016FD0, "spyro_mat3_transpose(a0, a1)"},
   {0x80017048, "spyro_set_mat_mirrored_vec_multiply(a0, a1, a2)"},
   {0x800170C0, "spyro_mat_mirrored_vec_multiply(a0, a1)"},
   {0x80017110, "spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1))"},
-  {0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
+  */
+  //{0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
+  /*
   {0x8001729C, "v0 = math_func1(addr_to_pointer(a0), a1, a2)"},
   {0x80017330, "spyro_set_vec3_length(a0, a1)"},
   {0x800175B8, "vec3_mul_div(a0, a1, a2)"},
@@ -53,7 +64,10 @@ struct function_name function_names[] = {
   {0x8001796C, "v0 = spyro_two_angle_signed_diff_12bit(a0, a1)"},
   {0x80017990, "v0 = spyro_octagon_distance(a0, a1)"},
   {0x800179F0, "v0 = spyro_attract_angle_in_range(a0, a1, a2, a3)"},
+  */
   {0x80017A38, "v0 = spyro_sqrt(a0)"},
+  /*
+
   {0x80017AA4, "spyro_world_to_screen_projection(a0, a1)"},
   {0x80017B48, "spyro_world_to_screen_projection_with_right_shift(a0, a1, a2)"},
   {0x80017BFC, "spyro_vec_32_to_16_div_4(a0, a1)"},
@@ -63,6 +77,9 @@ struct function_name function_names[] = {
   {0x80017C84, "spyro_vec_16_add(a0, a1, a2)"},
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
+  */
+  
+  /*
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
   {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
@@ -76,8 +93,12 @@ struct function_name function_names[] = {
   {0x8002C91C, "// NOP 0x8002C91C", .name = "NOP8002C91C"},
   {0x8002F3C4, "// NOP 0x8002F3C4", .name = "NOP8002F3C4"},
   {0x80037E98, "// NOP 0x80037E98", .name = "NOP80037E98"},
+  */
+  /*
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
+  */
+  /*
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},
   {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
@@ -157,8 +178,10 @@ struct function_name function_names[] = {
   {0x8006230C, "spyro_memset8(a0, a1, a2)"},
   /*
   {0x80062338, "GPU_cw(a0)"},
+  */
   {0x800623D8, "v0 = spyro_mat_mul(a0, a1, a2)"},
   {0x800624E8, "v0 = spyro_mat_mul_2(a0, a1)"},
+  /*
   {0x800625F8, "mat3x4setTR(a0)"},
   {0x80062618, "SetGeomOffset(a0, a1)"},
   {0x80062638, "SetGeomScreen(a0)"},
@@ -884,7 +907,7 @@ void print_function_name(struct program prog, uint32_t addr)
     {
       if (rn.name)
       {
-        printf("%s", rn.name);
+        fprintf(graph_fd, "%s", rn.name);
         return;
       }
 
@@ -895,12 +918,12 @@ void print_function_name(struct program prog, uint32_t addr)
         if (rn.func_call[i] == 0 || rn.func_call[i] == '(') break;
         i++;
       }
-      printf("%.*s", i-j, rn.func_call+j);
+      fprintf(graph_fd, "%.*s", i-j, rn.func_call+j);
       return;
     }
   }
 
-  printf("%.8X", addr);
+  fprintf(graph_fd, "%.8X", addr);
 }
 
 void print_func_name2(struct program prog, uint32_t addr)
@@ -922,14 +945,14 @@ void print_func_name2(struct program prog, uint32_t addr)
     }
   }
 
-  printf("function_%.8X", addr);
+  fprintf(graph_fd, "function_%.8X", addr);
   if (prog.id && addr_in_range(prog, addr))
-    printf("_%s", prog.id);
+    fprintf(graph_fd, "_%s", prog.id);
 }
 
 void output_function_list_graphviz(struct program prog, function_list *func_list)
 {
-  printf("\tsubgraph %s {\n", prog.id ? prog.id : "main");
+  fprintf(graph_fd, "\tsubgraph %s {\n", prog.id ? prog.id : "main");
   for (int i = 0; i < func_list->size; i++)
   {
     function func = func_list->funcs[i];
@@ -964,24 +987,24 @@ void output_function_list_graphviz(struct program prog, function_list *func_list
 
     if (calls.size > 0)
     {
-      printf("\t\t");
+      fprintf(graph_fd, "\t\t");
       print_func_name2(prog, func.address);
-      printf(" -> {");
+      fprintf(graph_fd, " -> {");
       for (int j = 0; j < calls.size-1; j++)
       {
         print_func_name2(prog, calls.addrs[j]);
-        printf("; ");
+        fprintf(graph_fd, "; ");
       }
       print_func_name2(prog, calls.addrs[calls.size-1]);
-      printf("};\n");
+      fprintf(graph_fd, "};\n");
     } else if (addr_in_range(prog, func.address)) {
-      printf("\t\t");
+      fprintf(graph_fd, "\t\t");
       print_func_name2(prog, func.address);
-      printf(";\n");
+      fprintf(graph_fd, ";\n");
     }
   }
-  printf("\t\tlabel = \"%s\";\n", prog.id ? prog.id : "main");
-  printf("\t}\n");
+  fprintf(graph_fd, "\t\tlabel = \"%s\";\n", prog.id ? prog.id : "main");
+  fprintf(graph_fd, "\t}\n");
 }
 
 void include_headers(struct program prog)
@@ -992,6 +1015,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
   fprintf(prog.output, "#include \"spyro_string.h\"\n");
   fprintf(prog.output, "#include \"spyro_print.h\"\n");
+  fprintf(prog.output, "#include \"spyro_math.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
   fprintf(prog.output, "#include \"psx_mem.h\"\n");
@@ -1132,7 +1156,7 @@ int read_instructions(struct program prog)
 
   check_unused_skips(prog);
 
-  //output_function_list_graphviz(prog, &func_list);
+  output_function_list_graphviz(prog, &func_list);
 
   include_headers(prog);
   output_function_list(prog, &func_list);

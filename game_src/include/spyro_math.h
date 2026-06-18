@@ -7,8 +7,8 @@
 uint32_t spyro_mat_mul(uint32_t m1, uint32_t m2, uint32_t dst);
 uint32_t spyro_mat_mul_2(uint32_t m1, uint32_t m2);
 
-int16_t spyro_atan(int32_t x, int32_t y);
-int16_t spyro_atan2(int32_t x, int32_t y, uint32_t a3);
+int16_t spyro_atan(int16_t x, int16_t y);
+int32_t spyro_atan2(int32_t x, int32_t y, uint32_t a3);
 int16_t spyro_cos(int32_t angle);
 int16_t spyro_sin(int32_t angle);
 uint32_t spyro_log2_uint(uint32_t a);
