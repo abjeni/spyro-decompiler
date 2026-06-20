@@ -1311,7 +1311,7 @@ void function_80017E54(void)
 
 int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2)
 {
-  return (a0 + a1) % 0x100;
+  return (angle1 + angle2) % 0x100;
 }
 
 // size: 0x00000024

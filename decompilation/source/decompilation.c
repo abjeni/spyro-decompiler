@@ -18,33 +18,26 @@ struct function_name function_names[] = {
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
 
-
-
-  /*{0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))", .name = "spyro_combine_all_command_buffers"},
+  /*
+  {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))", .name = "spyro_combine_all_command_buffers"},
   {0x800168A0, "append_gpu_command_block_depth_slot(a0, a1)"},
   {0x800168DC, "append_gpu_command_block(addr_to_pointer(a0))"},
   */
 
-
   {0x80016914, "spyro_memset32(a0, a1, a2)"},
   {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)", .name = "spyro_memset32"},
   {0x80016958, "spyro_memcpy32(a0, a1, a2)"},
-  /*
   {0x800169AC, "v0 = spyro_atan(a0, a1)"},
   {0x80016AB4, "v0 = spyro_atan2(a0, a1, a2)"},
-  */
   {0x80016C58, "v0 = spyro_sin(a0)"},
   {0x80016CB0, "v0 = spyro_cos(a0)"},
-  /*
   {0x80016D08, "v0 = spyro_log2_uint(a0)"},
   {0x80016D2C, "spyro_mat3_rotation(a0, a1, a2)"},
   {0x80016FD0, "spyro_mat3_transpose(a0, a1)"},
   {0x80017048, "spyro_set_mat_mirrored_vec_multiply(a0, a1, a2)"},
   {0x800170C0, "spyro_mat_mirrored_vec_multiply(a0, a1)"},
   {0x80017110, "spyro_camera_mat_vec_multiply(addr_to_pointer(a0), addr_to_pointer(a1))"},
-  */
-  //{0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
-  /*
+  {0x800171FC, "v0 = spyro_vec_length(a0, a1)"},
   {0x8001729C, "v0 = math_func1(addr_to_pointer(a0), a1, a2)"},
   {0x80017330, "spyro_set_vec3_length(a0, a1)"},
   {0x800175B8, "vec3_mul_div(a0, a1, a2)"},
@@ -64,10 +57,7 @@ struct function_name function_names[] = {
   {0x8001796C, "v0 = spyro_two_angle_signed_diff_12bit(a0, a1)"},
   {0x80017990, "v0 = spyro_octagon_distance(a0, a1)"},
   {0x800179F0, "v0 = spyro_attract_angle_in_range(a0, a1, a2, a3)"},
-  */
   {0x80017A38, "v0 = spyro_sqrt(a0)"},
-  /*
-
   {0x80017AA4, "spyro_world_to_screen_projection(a0, a1)"},
   {0x80017B48, "spyro_world_to_screen_projection_with_right_shift(a0, a1, a2)"},
   {0x80017BFC, "spyro_vec_32_to_16_div_4(a0, a1)"},
@@ -77,7 +67,6 @@ struct function_name function_names[] = {
   {0x80017C84, "spyro_vec_16_add(a0, a1, a2)"},
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
-  */
   
   /*
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
@@ -94,10 +83,9 @@ struct function_name function_names[] = {
   {0x8002F3C4, "// NOP 0x8002F3C4", .name = "NOP8002F3C4"},
   {0x80037E98, "// NOP 0x80037E98", .name = "NOP80037E98"},
   */
-  /*
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
+  {0x80038120, "v0 = spyro_two_angle_idk(a0, a1, a2)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
-  */
   /*
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},

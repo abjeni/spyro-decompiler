@@ -51,6 +51,7 @@ uint32_t interpolate_color(uint32_t c1, uint32_t c2, int32_t ipol);
 
 int32_t spyro_two_angle_add(int32_t angle1, int32_t angle2);
 int32_t spyro_two_angle_diff_8bit2(int32_t angle1, int32_t angle2);
+int32_t spyro_two_angle_idk(uint32_t a, uint32_t b, uint32_t c);
 
 extern int16_t cos_lut[256];
 extern int16_t sin_lut[256];
