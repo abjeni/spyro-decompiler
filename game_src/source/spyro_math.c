@@ -109,13 +109,14 @@ const uint16_t math_lut2[] = { // 0x8006CF04
 
 struct game_object {
   uint32_t unknown00; // 0x00 - 0x04 // pointer
-  uint8_t unknown04[0x04]; // 0x04 - 0x08
+  uint32_t unknown04; // 0x04 - 0x08 // pointer to game_object, linked list for each cell id (unknown34) (find the linked lists at lw(0x80075778))
   uint32_t unknown08;
-  vec3_32 p; // 0x0C - 0x18
+  vec3_32 p; // 0x0C - 0x18 32 bit aligned 16 bit numbers
   uint32_t unknown18; // 0x18 - 0x1C
   uint32_t unknown1C; // 0x1C - 0x20
-  uint8_t unknown20[0x14]; // 0x20 - 0x34
-  uint16_t unknown34; // 0x34 - 0x36
+  mat3 m;
+  uint16_t padding1;
+  int16_t unknown34; // 0x34 - 0x36 // grid cell id ((x >> 13) | ((y >> 13) << 5)) // bit 10 depends on modelID // signed because it gets set to -1
   uint16_t modelID; // 0x36 - 0x38
   uint16_t unknown38; // 0x38 - 0x3A
   uint16_t unknown3A; // 0x3A - 0x3C
@@ -703,6 +704,7 @@ void function_80017428(void)
   sw(a2 + 4, v0*2 - t0);
   sw(a2 + 8, v1*2 - t1);
   v0 = 1;
+  return;
 }
 
 void vec3_mul_div(uint32_t vec, int32_t div, int32_t mul)
@@ -1349,369 +1351,111 @@ void function_80038120(void)
   v0 = spyro_two_angle_idk(a0, a1, a2);
 }
 
+// this function should be moved out of spyro_math
+// it has more to do with game objects and physics
 // size: 0x00000324
-// struct game_object *a0
 void function_800526A8(void)
 {
   struct game_object *object = addr_to_pointer(a0);
 
   at = lw(0x80076378 + object->modelID*4);
   v0 = lw(at + 0x38 + object->unknown3C*4);
-  v1 = lw(v0 + 0x24 + object->unknown3E*8);
-  object->unknown41 = lbu(v0 + 0x0C);
+  a1 = lbu(v0 + 0x0C);
+  object->unknown41 = a1;
+  v1 = object->unknown3E*8;
+  v0 += v1;
+  v1 = lw(v0 + 0x24);
   v1 = (v1 >> 19) & 0x1C;
   v0 = at + v1;
-  v0 = lw(v0 + 0x0014);
-  at = lw(at + 0x0014);
-
+  v0 = lw(v0 + 0x14);
+  at = lw(at + 0x14);
   object->unknown08 = v0;
   object->unknown34 = -1;
   if (at) {
-    
-    a1 = lw(0x80075778);
-    v0 = (object->p.x >> 13) + (object->p.y >> 13)*32;
-    a2 = 0;
+    v0 = object->p.x >> 13;
+    v1 = object->p.y >> 13;
+    v0 = v0 + (v1 << 5);
     if ((int32_t)at >= 0)
-      a2 = 0x400;
+      v0 += 1 << 10;
+    object->unknown34 = v0;
+    v0 = lw(0x80075778) + v0*4;
+    object->unknown04 = lw(v0);
+    sw(v0, pointer_to_addr(object));
+  }
+
+  mat3 m = mat3_identity();
+
+  uint32_t rotY = object->rotz;
+  if (rotY) m = mat3_mul(m, mat3rotY(-rotY*16));
+
+  uint32_t rotX = object->roty;
+  if (rotX) m = mat3_mul(m, mat3rotX(rotX*16));
   
-    v0 += a2;
-    sh(a0 + 0x34, v0);
-    v0 = v0 << 2;
-    v0 += a1;
-    v1 = lw(v0 + 0x0000);
-    sw(v0 + 0x0000, a0);
-    sw(a0 + 0x0004, v1);
-  }
-  t7 = a0;
-  at = lw(t7 + 0x0044);
-  v0 = spyro_sin_lut;
-  v1 = spyro_cos_lut;
-  set_RTM(mat3_identity());
-  set_TR(0, 0, 0);
-  a0 = (at >> 16) & 0xFF;
-  if (a0) {
-    a1 = cos_lut[a0];
-    a0 = sin_lut[a0];
-    cop2.VXY0 = a1 & 0xFFFF;
-    cop2.VZ0 = a0;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    a0 = (-a0) & 0xFFFF;
-    a1 = a1 & 0xFFFF;
-    a3 = cop2.IR1;
-    t0 = cop2.IR2;
-    t1 = cop2.IR3;
-    cop2.VXY0 = a0;
-    cop2.VZ0 = a1;
-    a2 = 0xFFFF0000;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    t2 = t2 & a2;
-    a3 = a3 & 0xFFFF;
-    t2 += a3;
-    t5 = t5 & a2;
-    t1 = t1 & 0xFFFF;
-    t5 += t1;
-    t0 = t0 << 16;
-    t4 = t4 & 0xFFFF;
-    a0 = cop2.IR1;
-    a1 = cop2.IR2;
-    a2 = cop2.IR3;
-    a0 = a0 & 0xFFFF;
-    t3 = a0 + t0;
-    a1 = a1 << 16;
-    t4 += a1;
-    t6 = a2 & 0xFFFF;
-    cop2.RTM0 = t2;
-    cop2.RTM1 = t3;
-    cop2.RTM2 = t4;
-    cop2.RTM3 = t5;
-    cop2.RTM4 = t6;
-  }
+  uint32_t rotZ = object->rotx;
+  if (rotZ) m = mat3_mul(m, mat3rotZ(-rotZ*16));
 
-  a0 = (a0 >> 8) & 0xFF;
-  if (a0) {
-    a1 = cos_lut[a0];
-    a0 = sin_lut[a0];
-    a2 = a1 << 16;
-    cop2.VXY0 = a2;
-    cop2.VZ0 = a0;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    a2 = a0 << 16;
-    a2 = -a2;
-    a3 = cop2.IR1;
-    t0 = cop2.IR2;
-    t1 = cop2.IR3;
-    cop2.VXY0 = a2;
-    cop2.VZ0 = a1;
-    a2 = 0xFFFF0000;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    t2 = t2 & 0xFFFF;
-    a3 = a3 << 16;
-    t2 += a3;
-    t5 = t5 & 0xFFFF;
-    t1 = t1 << 16;
-    t5 += t1;
-    t0 = t0 & 0xFFFF;
-    t3 = t3 & a2;
-    a0 = cop2.IR1;
-    a1 = cop2.IR2;
-    a2 = cop2.IR3;
-    a0 = a0 & 0xFFFF;
-    t3 += a0;
-    a1 = a1 << 16;
-    t4 = a1 + t0;
-    t6 = a2 & 0xFFFF;
-    cop2.RTM0 = t2;
-    cop2.RTM1 = t3;
-    cop2.RTM2 = t4;
-    cop2.RTM3 = t5;
-    cop2.RTM4 = t6;
-  }
-
-  a0 = (at >> 0) & 0xFF;
-  if (a0) {
-    a0 = a0 << 1;
-    a1 = a0 + v1;
-    a0 += v0;
-    a1 = lhu(a1 + 0x0000);
-    a0 = lhu(a0 + 0x0000);
-    cop2.VZ0 = 0;
-    a2 = a0 << 16;
-    a2 += a1;
-    cop2.VXY0 = a2;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    a0 = -a0;
-    a0 = a0 & 0xFFFF;
-    a1 = a1 << 16;
-    a0 += a1;
-    a3 = cop2.IR1;
-    t0 = cop2.IR2;
-    t1 = cop2.IR3;
-    cop2.VXY0 = a0;
-    cop2.VZ0 = 0;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    t0 = t0 << 16;
-    t3 = t3 & 0xFFFF;
-    t3 += t0;
-    a3 = a3 & 0xFFFF;
-    t1 = t1 & 0xFFFF;
-    t4 = t4 & 0xFFFF0000;
-    a0 = cop2.IR1 << 16;
-    t2 = a0 + a3;
-    a2 = cop2.IR3 << 16;
-    t5 = a2 + t1;
-    a1 = cop2.IR2 & 0xFFFF;
-    t4 += a1;
-  }
-
-  sw(t7 + 0x20, t2);
-  sw(t7 + 0x24, t3);
-  sw(t7 + 0x28, t4);
-  sw(t7 + 0x2C, t5);
-  sw(t7 + 0x30, t6);
-  return;
+  object->m = m;
 }
 
 // size: 0x00000380
 // struct game_object *a0
 void function_800529E4(void)
 {
-  uint32_t temp;
-  at = a1 & 1;
-  temp = at == 0;
-  if (temp) goto label80052A64;
-  at = lhu(a0 + 0x36);
-  v0 = 0x80076378;
-  at = at << 2;
-  at += v0;
-  v0 = lbu(a0 + 0x40);
-  v1 = lw(a0 + 0x3C);
-  at = lw(at);
-  temp = (int32_t)v0 > 0;
-  v0 = v1 & 0xFF;
-  if (temp) goto label80052A24;
-  v1 = v1 >> 16;
-  v1 = v1 & 0xFF;
-  goto label80052A30;
-label80052A24:
-  v0 = v1 >> 8;
-  v0 = v0 & 0xFF;
-  v1 = v1 >> 24;
-label80052A30:
-  v0 = lw(at + 0x38 + v0*4) + v1*8;
-  v1 = (lw(v0 + 0x24) >> 19) & 0x1C;
-  v0 = at + v1;
-  v0 = lw(v0 + 0x0014);
-  sw(a0 + 0x0008, v0);
-label80052A64:
-  at = a1 & 0x2;
-  temp = at == 0;
-  if (temp) goto label80052AEC;
-  at = lw(a0 + 0x0C);
-  v0 = lw(a0 + 0x10);
-  v1 = lw(0x80075778);
-  at = at >> 13;
-  v0 = v0 >> 13;
-  v0 = v0 << 5;
-  a2 = lh(a0 + 0x34);
-  at += v0;
-  a3 = a2 & 0x400;
-  at = at | a3;
-  temp = at == a2;
-  a2 = a2 << 2;
-  if (temp) goto label80052AEC;
-  temp = (int32_t)a2 < 0;
-  a2 += v1;
-  if (temp) goto label80052AEC;
-  v0 = a2 - 4; // 0xFFFFFFFC
-label80052AB4:
-  a2 = v0 + 4; // 0x0004
-  v0 = lw(a2 + 0x0000);
-  temp = v0 != a0;
-  if (temp) goto label80052AB4;
-  v0 = lw(a0 + 0x0004);
-  sw(a2 + 0x0000, v0);
-  sh(a0 + 0x0034, at);
-  at = v1 + at*4;
-  v0 = lw(at + 0x0000);
-  sw(at + 0x0000, a0);
-  sw(a0 + 0x0004, v0);
-label80052AEC:
-  at = a1 & 0x4;
-  temp = at == 0;
-  t7 = a0;
-  if (temp) goto label80052D5C;
-  t4 = lw(t7 + 0x0044);
-  set_RTM(mat3_identity());
-  a3 = cop2.RTM0;
-  t0 = cop2.RTM1;
-  t1 = cop2.RTM2;
-  t2 = cop2.RTM3;
-  t3 = cop2.RTM4;
-  cop2.TRX = 0;
-  cop2.TRY = 0;
-  cop2.TRZ = 0;
-  at = (t4 >> 16) & 0xFF;
-  if (at) {
-    v0 = cos_lut[at];
-    at = sin_lut[at];
-    v0 = v0 & 0xFFFF;
-    cop2.VXY0 = v0;
-    cop2.VZ0 = at;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    at = (-at) & 0xFFFF;
-    a0 = cop2.IR1;
-    a1 = cop2.IR2;
-    a2 = cop2.IR3;
-    cop2.VXY0 = at;
-    cop2.VZ0 = v0;
-    v1 = 0xFFFF0000;
-    MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-    a3 = a3 & v1;
-    a0 = a0 & 0xFFFF;
-    a3 += a0;
-    t2 = t2 & v1;
-    a2 = a2 & 0xFFFF;
-    t2 += a2;
-    a1 = a1 << 16;
-    t1 = t1 & 0xFFFF;
-    at = cop2.IR1;
-    v0 = cop2.IR2;
-    v1 = cop2.IR3;
-    at = at & 0xFFFF;
-    t0 = at + a1;
-    v0 = v0 << 16;
-    t1 += v0;
-    t3 = v1 & 0xFFFF;
-    cop2.RTM0 = a3;
-    cop2.RTM1 = t0;
-    cop2.RTM2 = t1;
-    cop2.RTM3 = t2;
-    cop2.RTM4 = t3;
+  struct game_object *object = addr_to_pointer(a0);
+
+  if (a1 & 1) {
+    at = lw(0x80076378 + object->modelID*4);
+    v1 = object->unknown3C;
+    v0 = v1;
+    if (object->unknown40) {
+      v0 = (v1 >> 8) & 0xFF;
+      v1 = v1 >> 24;
+    } else {
+      v1 = (v1 >> 16) & 0xFF;
+    }
+    v0 = lw(at + 0x38 + v0*4) + v1*8;
+    v1 = (lw(v0 + 0x24) >> 19) & 0x1C;
+    v0 = lw(at + v1 + 0x14);
+    object->unknown08 = v0;
   }
-  at = t4 & 0xFF00;
-  temp = at == 0;
-  at = at >> 8;
-  if (temp) goto label80052CA4;
-  at = at << 1;
-  v0 = at + spyro_cos_lut;
-  at = at + spyro_sin_lut;
-  v0 = lhu(v0 + 0x0000);
-  at = lhu(at + 0x0000);
-  v1 = v0 << 16;
-  cop2.VXY0 = v1;
-  cop2.VZ0 = at;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a0 = cop2.IR1;
-  a1 = cop2.IR2;
-  a2 = cop2.IR3;
-  cop2.VXY0 = -(at << 16);
-  cop2.VZ0 = v0;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a3 = a3 & 0xFFFF;
-  a0 = a0 << 16;
-  a3 += a0;
-  t2 = t2 & 0xFFFF;
-  a2 = a2 << 16;
-  t2 += a2;
-  a1 = a1 & 0xFFFF;
-  t0 = t0 & 0xFFFF0000;
-  at = cop2.IR1;
-  v0 = cop2.IR2;
-  at = at & 0xFFFF;
-  t0 += at;
-  v0 = v0 << 16;
-  t1 = v0 + a1;
-  t3 = cop2.IR3 & 0xFFFF;
-  cop2.RTM0 = a3;
-  cop2.RTM1 = t0;
-  cop2.RTM2 = t1;
-  cop2.RTM3 = t2;
-  cop2.RTM4 = t3;
-label80052CA4:
-  at = t4 & 0xFF;
-  temp = at == 0;
-  at = at << 1;
-  if (temp) goto label80052D48;
-  v0 = at + spyro_cos_lut;
-  at = at + spyro_sin_lut;
-  v0 = lhu(v0 + 0x0000);
-  at = lhu(at + 0x0000);
-  cop2.VZ0 = 0;
-  cop2.VXY0 = (at << 16) + v0;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  at = -at;
-  at = at & 0xFFFF;
-  v0 = v0 << 16;
-  at += v0;
-  a0 = cop2.IR1;
-  a1 = cop2.IR2;
-  a2 = cop2.IR3;
-  cop2.VXY0 = at;
-  cop2.VZ0 = 0;
-  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
-  a1 = a1 << 16;
-  t0 = t0 & 0xFFFF;
-  t0 += a1;
-  a0 = a0 & 0xFFFF;
-  a2 = a2 & 0xFFFF;
-  t1 = t1 & 0xFFFF0000;
-  at = cop2.IR1;
-  v0 = cop2.IR2;
-  v1 = cop2.IR3;
-  at = at << 16;
-  a3 = at + a0;
-  v1 = v1 << 16;
-  t2 = v1 + a2;
-  v0 = v0 & 0xFFFF;
-  t1 += v0;
-label80052D48:
-  sw(t7 + 0x0020, a3);
-  sw(t7 + 0x0024, t0);
-  sw(t7 + 0x0028, t1);
-  sw(t7 + 0x002C, t2);
-  sw(t7 + 0x0030, t3);
-label80052D5C:
-  return;
+
+  if (a1 & 2) {
+    at = object->p.x >> 13;
+    v0 = object->p.y >> 13;
+    at = at + (v0 << 5);
+    v1 = lw(0x80075778);
+
+    a2 = (int32_t)object->unknown34;
+    a3 = a2 & 0x400;
+    at = at | a3;
+    if (at != a2 && (int32_t)a2 >= 0) {
+      a2 = v1 + a2*4;
+      v0 = a2 - 4;
+      do {
+        a2 = v0 + 4;
+        v0 = lw(a2);
+      } while (addr_to_pointer(v0) != object);
+      sw(a2, object->unknown04);
+      object->unknown34 = at;
+      at = v1 + at*4;
+      object->unknown04 = lw(at);
+      sw(at, a0);
+    }
+  }
+  if (a1 & 4) {
+    mat3 m = mat3_identity();
+
+    uint32_t rotY = object->rotz;
+    if (rotY) m = mat3_mul(m, mat3rotY(-rotY*16));
+
+    uint32_t rotX = object->roty;
+    if (rotX) m = mat3_mul(m, mat3rotX(rotX*16));
+    
+    uint32_t rotZ = object->rotx;
+    if (rotZ) m = mat3_mul(m, mat3rotZ(-rotZ*16));
+
+    object->m = m;
+  }
 }
 
 // size: 0x000001D4

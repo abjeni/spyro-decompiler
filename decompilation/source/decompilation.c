@@ -15,6 +15,8 @@ char *used_skips = NULL;
 
 struct function_name function_names[] = {
   //{0x80012204, "game_loop()"},
+  //{0x800123C8, "init_controller()"},
+  //{0x80012480, "init_cdrom()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
 
@@ -115,7 +117,9 @@ struct function_name function_names[] = {
   /*
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
+  {0x8005DDC8, "v0 = init_hook_entry_int2()"},
   */
+  //{0x8005DE28, "v0 = dma_callback2(a0, a1)"},
   {0x8005DF44, "v0 = set_I_MASK(a0)"},
   /*
   {0x8005DF60, "v0 = init_hook_entry_int()"},
@@ -130,6 +134,7 @@ struct function_name function_names[] = {
   /*
   {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
   */
+  //{0x8005E804, "v0 = dma_callback(a0, a1)"},
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
 
 
@@ -213,6 +218,10 @@ struct function_name function_names[] = {
   {0x80068D60, "SysDeqIntRP(a0, a1)"},
   {0x80068E80, "InitCARD2(a0)"},
   {0x80068E90, "StartCARD2()"},
+  {0x80069060, "start_registering_gamepads()"},
+  {0x80069080, "stop_registering_gamepads()"},
+  {0x8006981C, "start_registering_gamepads_internal()"},
+  {0x800698E8, "stop_registering_gamepads_internal()"},
   {0x8006A0A4, "controller_wait_for_data()"},
   */
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
