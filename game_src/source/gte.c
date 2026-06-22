@@ -145,8 +145,12 @@ void prepare_gte(void)
   cop2.OTZ = (int32_t)cop2.OTZ << 16 >> 16;
 }
 
-void clamp_REGS(int min)
+void clamp_REGS(int lm)
 {
+
+  int min = -0x8000;
+  if (lm) min = 0x0;
+
   cop2.IR0sat = clamp((int32_t*)&cop2.IR0, 0x0, 0x7FFF);
   cop2.IR1sat = clamp((int32_t*)&cop2.IR1, min, 0x7FFF);
   cop2.IR2sat = clamp((int32_t*)&cop2.IR2, min, 0x7FFF);
@@ -183,10 +187,7 @@ void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
 }
 
 void project(void)
@@ -225,7 +226,7 @@ void project(void)
   cop2.MAC0=a;
   cop2.IR0=a/0x1000;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
 }
 
 void RTPS(void)
@@ -354,7 +355,7 @@ void INTPL(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3, crgb_code()));
 }
 
@@ -382,7 +383,7 @@ void DPCS(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.IR1, cop2.IR2, cop2.IR3, crgb_code()));
 }
@@ -413,10 +414,7 @@ void GPF(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
@@ -433,10 +431,7 @@ void GPL(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
@@ -453,7 +448,7 @@ void SQR(uint32_t sf)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(0);
+  clamp_REGS(LM_OFF);
 }
 
 
@@ -479,7 +474,7 @@ void CC(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x80000);
+  clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
@@ -496,10 +491,7 @@ void OP(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
 }
 
 uint32_t ulzcr(uint32_t num)

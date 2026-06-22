@@ -682,8 +682,8 @@ void set_pixel(vertex v)
 
     uint32_t clut = tri_info.clut;
 
-    int cx = (clut & 0x3F) * 16;
-    int cy = (clut >> 6) & 0x1FF;
+    uint32_t cx = (clut & 0x3F) * 16;
+    uint32_t cy = (clut >> 6) & 0x1FF;
 
     switch (tri_info.draw_mode.draw_mode.texture_bits) {
       case 0: { //4 bits
@@ -727,9 +727,9 @@ void set_pixel(vertex v)
     if (tri_info.poly.raw_texture)
       c = c2;
     else {
-      int r = (c.r * c2.r) / 128;
-      int g = (c.g * c2.g) / 128;
-      int b = (c.b * c2.b) / 128;
+      uint32_t r = (c.r * c2.r) / 128;
+      uint32_t g = (c.g * c2.g) / 128;
+      uint32_t b = (c.b * c2.b) / 128;
       if (r > 255) r = 255;
       if (g > 255) g = 255;
       if (b > 255) b = 255;

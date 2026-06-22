@@ -1,7 +1,7 @@
 SDL_PROGRAM := program
 WASM_PROGRAM := main.wasm
 
-CC := gcc
+CC := tcc
 wasm : CC := clang
 
 BUILD_DIR := build

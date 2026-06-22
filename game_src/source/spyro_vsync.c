@@ -4,6 +4,7 @@
 #include "psx_ops.h"
 #include "decompilation.h"
 #include "int_math.h"
+#include "not_renamed.h"
 #include <stdio.h>
 
 // size: 0x00000030

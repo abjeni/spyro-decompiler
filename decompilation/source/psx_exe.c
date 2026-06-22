@@ -216,7 +216,7 @@ struct entries entries = ENTRIES(ARR_U32(
   0x80033C50,
   0x8001A050,
 
-  0x80069080
+  0x80069080,
 ));
 
 
