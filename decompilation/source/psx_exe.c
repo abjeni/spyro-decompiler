@@ -206,7 +206,6 @@ struct entries entries = ENTRIES(ARR_U32(
   0x80067E34,
   0x80067E48,
   0x80067E5C,
-  0x8006590C,
   0x8005E560,
   0x8001973C,
   0x800625F8,
@@ -215,7 +214,9 @@ struct entries entries = ENTRIES(ARR_U32(
   0x8004F4BC,
 
   0x80033C50,
-  0x8001A050
+  0x8001A050,
+
+  0x80069080
 ));
 
 
@@ -277,7 +278,6 @@ struct skips skips = SKIPS(ARR_U32(
   0x80052F38,
   0x800533D0,
   0x8005DE58,
-  0x8005DEBC,
   0x800530C0,
   0x80053570,
   0x8005DE8C,
@@ -297,41 +297,16 @@ struct skips skips = SKIPS(ARR_U32(
   0x8006279C,
   0x80062FC4,
   0x80062FD4,
-  0x8006389C,
   0x80063BD8,
-  0x80063C48,
-  0x80063D80,
-  0x80063EAC,
   0x80063FF0,
-  0x800653B4,
   0x80067628,
   0x8006B670,
+  0x80012480,
+  0x800567F4,
+  0x800163E4,
+  0x8002BAB8,
+  0x8002BBE0,
 ));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -16,7 +16,7 @@ char *used_skips = NULL;
 struct function_name function_names[] = {
   //{0x80012204, "game_loop()"},
   //{0x800123C8, "init_controller()"},
-  //{0x80012480, "init_cdrom()"},
+  {0x80012480, "init_cdrom()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
 
