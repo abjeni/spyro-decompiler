@@ -61,6 +61,19 @@ void print_record_extra_bin(record_extra_bin *extra, int depth)
   printf("%s}\n", tabs);
 }
 
+void print_date(date d)
+{
+  int year = ((uint32_t)d[0]) + 1900;
+  int month = d[1];
+  int day = d[2];
+  int hour = d[3];
+  int minute = d[4];
+  int second = d[5];
+  int timezone = d[6];
+
+  printf("%d,%d,%d,%d,%d,%d,%+d", year, month, day, hour, minute, second, timezone);
+}
+
 void print_directory_record_bin(directory_record_bin dir_rec, int depth)
 {
   assert(depth > 0);
@@ -73,13 +86,23 @@ void print_directory_record_bin(directory_record_bin dir_rec, int depth)
   printf("%sextended_attribute_record_length: %d\n", tabs, dir_rec.extended_attribute_record_length);
   printf("%slocation_of_extent: [%d - %d] %d\n", tabs, dir_rec.location_of_extent.lsb, dir_rec.location_of_extent.lsb+dir_rec.size_of_extent.lsb/2048, dir_rec.size_of_extent.lsb/2048);
   printf("%ssize_of_extent: %d %d\n", tabs, dir_rec.size_of_extent.lsb, dir_rec.size_of_extent.lsb/2048);
-  printf("%srecording_time: wip\n", tabs);
+  printf("%srecording_time: ", tabs);
+  print_date(dir_rec.recording_time);
+  printf("\n");
   printf("%sflags: %X\n", tabs, dir_rec.flags);
   printf("%sinterleave_unit_size: %d\n", tabs, dir_rec.interleave_unit_size);
   printf("%sinterleave_gap_size: %d\n", tabs, dir_rec.interleave_gap_size);
   printf("%svolume_sequence_number: %d\n", tabs, dir_rec.volume_sequence_number.lsb);
   printf("%sidentifier_length: %d\n", tabs, dir_rec.identifier_length);
-  printf("%sidentifier: %.*s\n", tabs, dir_rec.identifier_length, dir_rec.identifier);
+
+  if (dir_rec.identifier_length == 1 && (dir_rec.identifier[0] == 0 || dir_rec.identifier[0] == 1))
+  {
+    printf("%sidentifier: %d\n", tabs, dir_rec.identifier[0]);
+  }
+  else
+  {
+    printf("%sidentifier: \"%.*s\"\n", tabs, dir_rec.identifier_length, dir_rec.identifier);
+  }
 
   tabs[depth-1] = 0;
   printf("%s}\n", tabs);
@@ -110,6 +133,7 @@ void print_iso9660_header_bin(iso9660_header_bin header, int depth)
   char tabs[depth+1];
   for (int i = 0; i < depth; i++) tabs[i] = '\t';
   tabs[depth] = 0;
+  
   printf("iso9660_header{\n");
   printf("%svolume_descriptor_type: %d\n", tabs, header.volume_descriptor_type);
   printf("%sstandard_identifier: %.5s\n", tabs, header.standard_identifier);
@@ -125,7 +149,7 @@ void print_iso9660_header_bin(iso9660_header_bin header, int depth)
   printf("%spath_table_2_block_number: %d\n", tabs, header.path_table_2_block_number);
   printf("%spath_table_3_block_number: %d\n", tabs, header.path_table_3_block_number);
   printf("%spath_table_4_block_number: %d\n", tabs, header.path_table_4_block_number);
-  printf("%sroot_directory_record: wip\n", tabs);
+  printf("%sroot_directory_record: read below\n", tabs);
   printf("%svolume_set_identifier: %.128s\n", tabs, header.volume_set_identifier);
   printf("%spublisher_identifier: %.128s\n", tabs, header.publisher_identifier);
   printf("%sdata_preparer_identifier: %.128s\n", tabs, header.data_preparer_identifier);
