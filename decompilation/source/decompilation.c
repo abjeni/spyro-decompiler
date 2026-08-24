@@ -14,9 +14,10 @@ extern FILE *graph_fd;
 char *used_skips = NULL;
 
 struct function_name function_names[] = {
-  //{0x80012204, "game_loop()"},
+  {0x80012204, "game_loop()"},
   //{0x800123C8, "init_controller()"},
   {0x80012480, "init_cdrom()"},
+  //{0x800127C0, "initial_loading_screen()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
 
@@ -72,14 +73,18 @@ struct function_name function_names[] = {
   
   /*
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
+  */
   {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
+  /*
   {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
   {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
   {0x80018728, "rescued_dragon_name()"},
   {0x800190D4, "fade_in(a0, a1, a2, a3)"},
   {0x8001919C, "draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2))"},
+  */
   {0x8002BB20, "v0 = completion_percentage()"},
+  /*
   {0x8002C914, "// NOP 0x8002C914", .name = "NOP8002C914"},
   {0x8002C91C, "// NOP 0x8002C91C", .name = "NOP8002C91C"},
   {0x8002F3C4, "// NOP 0x8002F3C4", .name = "NOP8002F3C4"},
@@ -88,9 +93,9 @@ struct function_name function_names[] = {
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
   {0x80038120, "v0 = spyro_two_angle_idk(a0, a1, a2)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
-  /*
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},
+  /*
   {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
   {0x8005595C, "init_spu()"},
   {0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
@@ -1013,14 +1018,15 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_string.h\"\n");
   fprintf(prog.output, "#include \"spyro_print.h\"\n");
   fprintf(prog.output, "#include \"spyro_math.h\"\n");
+  fprintf(prog.output, "#include \"spyro_game.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
   fprintf(prog.output, "#include \"psx_mem.h\"\n");
   fprintf(prog.output, "#include \"main.h\"\n");
   fprintf(prog.output, "#include \"gte.h\"\n");
-  fprintf(prog.output, "#include \"cop0.h\"\n\n");
-  fprintf(prog.output, "#include \"function_chooser.h\"\n\n");
-  fprintf(prog.output, "#include \"level_loading.h\"\n\n");
+  fprintf(prog.output, "#include \"cop0.h\"\n");
+  fprintf(prog.output, "#include \"function_chooser.h\"\n");
+  fprintf(prog.output, "#include \"level_loading.h\"\n");
 
   if (prog.id)
     fprintf(prog.output, "#include \"%s.h\"\n\n", prog.id);
