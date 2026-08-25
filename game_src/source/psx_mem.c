@@ -1516,6 +1516,7 @@ void GP1_cmd(uint32_t value, file_loc loc)
     break;
   default:
     debug_printf(DEBUG_MASK_GPU, "file %s:%u: GP1 cmd nr. %X -----------\n", loc.file, loc.line, psx_mem.gpu.GP1.cmd);
+    UNREACHABLE;
     break;
   }
 }

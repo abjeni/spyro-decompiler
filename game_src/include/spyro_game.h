@@ -14,7 +14,7 @@ struct game_object {
   uint32_t unknown1C; // 0x1C - 0x20
   mat3 m; // 0x20 - 0x32
   uint8_t padding1[0x02];
-  int16_t unknown34; // 0x34 - 0x36
+  int16_t cellID; // 0x34 - 0x36
   uint16_t modelID; // 0x36 - 0x38
   uint16_t unknown38; // 0x38 - 0x3A
   uint16_t unknown3A; // 0x3A - 0x3C

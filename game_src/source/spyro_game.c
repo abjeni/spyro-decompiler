@@ -28,22 +28,18 @@ void function_800526A8(void)
   v0 = lw(at + 0x38 + object->unknown3C*4);
   a1 = lbu(v0 + 0x0C);
   object->unknown41 = a1;
-  v1 = object->unknown3E*8;
-  v0 += v1;
-  v1 = lw(v0 + 0x24);
-  v1 = (v1 >> 19) & 0x1C;
-  v0 = at + v1;
-  v0 = lw(v0 + 0x14);
+  v1 = (lw(v0 + 0x24 + object->unknown3E*8) >> 21) & 0x07;
+  v0 = lw(at + 0x14 + v1*4);
   at = lw(at + 0x14);
   object->unknown08 = v0;
-  object->unknown34 = -1;
+  object->cellID = -1;
   if (at) {
     v0 = object->p.x >> 13;
     v1 = object->p.y >> 13;
     v0 = v0 + (v1 << 5);
-    if ((int32_t)at >= 0)
+    if ((int32_t)at > 0)
       v0 += 1 << 10;
-    object->unknown34 = v0;
+    object->cellID = v0;
     v0 = lw(0x80075778) + v0*4;
     object->unknown04 = lw(v0);
     sw(v0, pointer_to_addr(object));
@@ -88,7 +84,7 @@ void function_800529E4(void)
     at = at + (v0 << 5);
     v1 = lw(0x80075778);
 
-    a2 = (int32_t)object->unknown34;
+    a2 = (int32_t)object->cellID;
     a3 = a2 & 0x400;
     at = at | a3;
     if (at != a2 && (int32_t)a2 >= 0) {
@@ -99,13 +95,13 @@ void function_800529E4(void)
         v0 = lw(a2);
       } while (addr_to_pointer(v0) != object);
       sw(a2, object->unknown04);
-      object->unknown34 = at;
+      object->cellID = at;
       at = v1 + at*4;
       object->unknown04 = lw(at);
       sw(at, a0);
     }
   }
-  
+
   if (a1 & 4) {
     mat3 m = mat3_identity();
 
@@ -152,7 +148,7 @@ void function_800529E4(void)
     at = at + (v0 << 5);
     v1 = lw(0x80075778);
 
-    a2 = (int32_t)object->unknown34;
+    a2 = (int32_t)object->cellID;
     a3 = a2 & 0x400;
     at = at | a3;
     if (at != a2 && (int32_t)a2 >= 0) {
@@ -163,7 +159,7 @@ void function_800529E4(void)
         v0 = lw(a2);
       } while (addr_to_pointer(v0) != object);
       sw(a2, object->unknown04);
-      object->unknown34 = at;
+      object->cellID = at;
       at = v1 + at*4;
       object->unknown04 = lw(at);
       sw(at, a0);
