@@ -64,6 +64,67 @@ void function_800526A8(void)
 }
 
 // size: 0x00000380
+void function_800529E4(void)
+{
+  struct game_object *object = addr_to_pointer(a0);
+  if (a1 & 1) {
+    at = lw(0x80076378 + object->modelID*4);
+    v1 = lw(a0 + 0x3C);
+    if (object->unknown40 <= 0) {
+      v0 = object->unknown3C;
+      v1 = object->unknown3E;
+    } else {
+      v0 = object->unknown3D;
+      v1 = object->unknown3F;
+    }
+    v0 = lw(at + 0x38 + v0*4) + v1*8;
+    v1 = (lw(v0 + 0x24) >> 21) & 0x07;
+    object->unknown08 = lw(at + 0x14 + v1*4);
+  }
+
+  if (a1 & 2) {
+    at = object->p.x >> 13;
+    v0 = object->p.y >> 13;
+    at = at + (v0 << 5);
+    v1 = lw(0x80075778);
+
+    a2 = (int32_t)object->unknown34;
+    a3 = a2 & 0x400;
+    at = at | a3;
+    if (at != a2 && (int32_t)a2 >= 0) {
+      a2 = v1 + a2*4;
+      v0 = a2 - 4;
+      do {
+        a2 = v0 + 4;
+        v0 = lw(a2);
+      } while (addr_to_pointer(v0) != object);
+      sw(a2, object->unknown04);
+      object->unknown34 = at;
+      at = v1 + at*4;
+      object->unknown04 = lw(at);
+      sw(at, a0);
+    }
+  }
+  
+  if (a1 & 4) {
+    mat3 m = mat3_identity();
+
+    uint32_t rotY = object->rotz;
+    if (rotY) m = mat3_mul(m, mat3rotY(-rotY*16));
+
+    uint32_t rotX = object->roty;
+    if (rotX) m = mat3_mul(m, mat3rotX(rotX*16));
+    
+    uint32_t rotZ = object->rotx;
+    if (rotZ) m = mat3_mul(m, mat3rotZ(-rotZ*16));
+
+    object->m = m;
+  }
+  return;
+}
+
+/*
+// size: 0x00000380
 // struct game_object *a0
 void function_800529E4(void)
 {
@@ -123,6 +184,8 @@ void function_800529E4(void)
     object->m = m;
   }
 }
+
+*/
 
 // size: 0x000001D4
 // struct game_object *a0

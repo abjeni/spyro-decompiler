@@ -22,7 +22,7 @@ struct game_object {
   uint8_t unknown3D; // 0x3D - 0x3E
   uint8_t unknown3E; // 0x3E - 0x3F
   uint8_t unknown3F; // 0x3F - 0x40
-  uint8_t unknown40; // 0x40 - 0x41
+  int8_t unknown40; // 0x40 - 0x41
   uint8_t unknown41; // 0x41 - 0x42
   uint8_t unknown42; // 0x42 - 0x43
   int8_t unknown43; // 0x43 - 0x44
