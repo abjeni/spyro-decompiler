@@ -144,7 +144,6 @@ struct function_name function_names[] = {
 
 
 
-  /*
   {0x8005F2A4, "v0 = ResetGraph(a0)"},
   {0x8005F53C, "v0 = SetGraphDebug(a0)"},
   {0x8005F6C8, "SetDispMask(a0)"},
@@ -157,6 +156,7 @@ struct function_name function_names[] = {
   {0x8005FDD8, "v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)))", .name = "PutDrawEnv"},
   {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))", .name = "PutDispEnv"},
   {0x80060670, "SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)))"},
+  /*
   {0x800608E0, "spyro_clear_screen(addr_to_pointer(a0), *(DRAWENV*)addr_to_pointer(a1));"},
   {0x80060B70, "v0 = spyro_draw_mode_setting_command(a0, a1, a2)"},
   {0x80060BC8, "v0 = spyro_set_drawing_area_top_left_command(a0, a1)"},
@@ -186,10 +186,8 @@ struct function_name function_names[] = {
   {0x800626E8, "FlushCache()"},
   */
   {0x800626F8, "v0 = spyro_memcpy8(a0, a1, a2)"},
-  /*
   {0x8006272C, "v0 = spyro_rand()"},
   {0x8006275C, "spyro_srand(a0)"},
-  */
   {0x8006276C, "v0 = spyro_strlen(a0)"},
   {0x8006279C, "spyro_printf(a0, a1, a2, a3)"},
   {0x80062EC0, "v0 = spyro_strchr(a0, a1, a2)"},
@@ -1019,6 +1017,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_print.h\"\n");
   fprintf(prog.output, "#include \"spyro_math.h\"\n");
   fprintf(prog.output, "#include \"spyro_game.h\"\n");
+  fprintf(prog.output, "#include \"spyro_psy.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
   fprintf(prog.output, "#include \"psx_mem.h\"\n");

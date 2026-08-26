@@ -4,6 +4,7 @@
 #include "decompilation.h"
 #include "gte.h"
 #include "extra_gte.h"
+#include "spyro_psy.h"
 
 // different return instruction (not JR RA)
 void function_800530C0(void)
@@ -83,7 +84,7 @@ label80053210:
   t8 = 0x1F800000;
   t9 = a0 - 8; // 0xFFFFFFF8
 label80053260:
-  function_8006272C();
+  spyro_rand();
   t6 = v0;
   a0 = 2; // 0x0002
   function_80053570();
@@ -190,7 +191,7 @@ void function_80053570(void)
   if (temp) goto label800535C0;
   a3 = ra;
   a2 = a0;
-  function_8006272C();
+  spyro_rand();
   mult((v0 & 0xFF)+1, 0x20);
   v0=lo;
   v0 = a1 - v0;

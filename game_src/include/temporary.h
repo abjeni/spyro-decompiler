@@ -1,16 +1,6 @@
 #pragma once
 #include <stdint.h>
-
-/////////////////
-// spyro_psy.h //
-/////////////////
-
-int32_t ResetGraph(int32_t mode);
-void SetDispMask(int32_t mask);
-
-/////////////////
-// spyro_psy.h //
-/////////////////
+#include "spyro_psy.h"
 
 ////////////////////
 // spyro_system.h //
@@ -18,8 +8,6 @@ void SetDispMask(int32_t mask);
 
 uint32_t dma_callback(uint32_t dma_num, uint32_t callback);
 uint32_t init_hook_entry_int2(void);
-void spyro_srand(int32_t seed);
-int spyro_rand(void);
 
 ////////////////////
 // spyro_system.h //
@@ -42,6 +30,16 @@ void stop_registering_gamepads(void);
 //////////////////////
 
 void initial_loading_screen(void);
+void GP1_command(uint32_t cmd);
+uint32_t fill_color(RECT *rect, uint32_t color);
+uint32_t ram_to_vram(RECT *rect, uint16_t *data);
+uint32_t vram_to_ram(RECT *rect, uint16_t *data);
+uint32_t command_queue_append(uint32_t func, uint32_t data, uint32_t data_size, uint32_t data_or_color);
+void execute_gpu_linked_list(void *node);
+void spyro_clear_screen(DR_ENV *dr_env, DRAWENV env);
+uint32_t psx_has_2mb_vram();
+uint32_t spyro_draw_mode_setting_command(uint8_t dfe, uint8_t dtd, uint16_t tpage);
+uint32_t spyro_set_texture_window_setting_command(RECT *tw);
 
 //////////////////////
 // spyro_graphics.h //

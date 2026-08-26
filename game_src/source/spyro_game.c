@@ -1193,7 +1193,7 @@ label8003EB20:
   }
 label8003EB40:
   sw(0x80078AD4, 0);
-  function_8006272C();
+  spyro_rand();
   v0 = v0 & 0x7;
   v1 = lbu(0x80075274 + v0); // &0x08181008
   v0 = lbu(0x8006C4A2); // &0x14000216
@@ -1554,7 +1554,7 @@ label8003F1B4:
   goto label8003FD50;
 label8003F1D4:
   s1 = 0;
-  function_8006272C();
+  spyro_rand();
   s2 = v0 & 0x3F;
   s3 = spyro_cos_lut;
   s0 = sp + 32; // 0x0020
