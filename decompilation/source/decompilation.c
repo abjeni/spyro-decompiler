@@ -99,11 +99,11 @@ struct function_name function_names[] = {
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},
 
-  /*
-  {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
+  //{0x8004EBA8, "draw_skybox(a0, a1, a2)"},
+
   {0x8005595C, "init_spu()"},
-  {0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
-  */
+
+  //{0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
 
   {0x8005A470, "update_level_functions()"},
 
@@ -113,7 +113,7 @@ struct function_name function_names[] = {
   
   {0x8005C720, "do_literally_nothing()"},
 
-  //{0x8005CBB0, "v0 = test_spu_event(a0)"},
+  {0x8005CBB0, "v0 = test_spu_event(a0)"},
 
   {0x8005DB14, "InitHeap(a0, a1)"},
   {0x8005DB24, "LoadExec(addr_to_pointer(a0), a1, a2)"},
@@ -1037,6 +1037,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_math.h\"\n");
   fprintf(prog.output, "#include \"spyro_game.h\"\n");
   fprintf(prog.output, "#include \"spyro_psy.h\"\n");
+  fprintf(prog.output, "#include \"spyro_spu.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
   fprintf(prog.output, "#include \"psx_mem.h\"\n");
