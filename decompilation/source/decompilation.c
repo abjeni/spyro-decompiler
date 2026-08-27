@@ -15,7 +15,7 @@ char *used_skips = NULL;
 
 struct function_name function_names[] = {
   {0x80012204, "game_loop()"},
-  //{0x800123C8, "init_controller()"},
+  {0x800123C8, "init_controller()"},
   {0x80012480, "init_cdrom()"},
   //{0x800127C0, "initial_loading_screen()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
@@ -243,8 +243,9 @@ struct function_name function_names[] = {
   {0x80069080, "stop_registering_gamepads()"},
   {0x8006981C, "start_registering_gamepads_internal()"},
   {0x800698E8, "stop_registering_gamepads_internal()"},
-  {0x8006A0A4, "controller_wait_for_data()"},
   */
+  
+  {0x8006A0A4, "controller_wait_for_data()"},
 
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
   
@@ -1037,6 +1038,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_math.h\"\n");
   fprintf(prog.output, "#include \"spyro_game.h\"\n");
   fprintf(prog.output, "#include \"spyro_psy.h\"\n");
+  fprintf(prog.output, "#include \"spyro_controller.h\"\n");
   fprintf(prog.output, "#include \"spyro_spu.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");

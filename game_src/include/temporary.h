@@ -2,18 +2,6 @@
 #include <stdint.h>
 #include "spyro_psy.h"
 
-////////////////////////
-// spyro_controller.h //
-////////////////////////
-
-void init_controller(void);
-void controller_wait_for_data(void);
-void stop_registering_gamepads(void);
-
-////////////////////////
-// spyro_controller.h //
-////////////////////////
-
 //////////////////////
 // spyro_graphics.h //
 //////////////////////

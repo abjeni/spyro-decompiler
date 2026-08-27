@@ -6,29 +6,6 @@
 #include "spyro_psy.h"
 #include "spyro_vsync.h"
 
-////////////////////////
-// spyro_controller.h //
-////////////////////////
-
-void init_controller(void)
-{
-    function_800123C8();
-}
-
-void controller_wait_for_data(void)
-{
-    function_8006A0A4();
-}
-
-void stop_registering_gamepads(void)
-{
-    function_80069060();
-}
-
-////////////////////////
-// spyro_controller.h //
-////////////////////////
-
 //////////////////////
 // spyro_graphics.h //
 //////////////////////
