@@ -217,6 +217,7 @@ uint32_t function_80069634(void)
 }
 
 void function_8006969C(void);
+void function_8005E03C(void);
 
 void interrupt2(uint32_t type)
 {

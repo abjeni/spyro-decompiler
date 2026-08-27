@@ -6,28 +6,6 @@
 #include "spyro_psy.h"
 #include "spyro_vsync.h"
 
-////////////////////
-// spyro_system.h //
-////////////////////
-
-uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
-{
-  a0 = dma_num;
-  a1 = callback;
-  function_8005E804();
-  return v0;
-}
-
-uint32_t init_hook_entry_int2(void)
-{
-  function_8005DDC8();
-  return v0;
-}
-
-////////////////////
-// spyro_system.h //
-////////////////////
-
 ////////////////////////
 // spyro_controller.h //
 ////////////////////////

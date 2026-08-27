@@ -107,12 +107,13 @@ struct function_name function_names[] = {
 
   {0x8005A470, "update_level_functions()"},
 
-  /*
   {0x8005B8E0, "spyro_start()"},
-  {0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
+
+  //{0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
+  
   {0x8005C720, "do_literally_nothing()"},
-  {0x8005CBB0, "v0 = test_spu_event(a0)"},
-  */
+
+  //{0x8005CBB0, "v0 = test_spu_event(a0)"},
 
   {0x8005DB14, "InitHeap(a0, a1)"},
   {0x8005DB24, "LoadExec(addr_to_pointer(a0), a1, a2)"},
@@ -131,14 +132,10 @@ struct function_name function_names[] = {
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
 
-  /*
   {0x8005DDC8, "v0 = init_hook_entry_int2()"},
-  */
-  //{0x8005DE28, "v0 = dma_callback2(a0, a1)"},
+  {0x8005DE28, "v0 = dma_callback2(a0, a1)"},
   {0x8005DF44, "v0 = set_I_MASK(a0)"},
-  /*
   {0x8005DF60, "v0 = init_hook_entry_int()"},
-  */
   {0x8005E4AC, "spyro_memclr32(a0, a1)"},
 
   {0x8005E4D8, "ReturnFromException()"},
@@ -149,7 +146,7 @@ struct function_name function_names[] = {
   /*
   {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
   */
-  //{0x8005E804, "v0 = dma_callback(a0, a1)"},
+  {0x8005E804, "v0 = dma_callback(a0, a1)"},
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
 
 
@@ -194,6 +191,11 @@ struct function_name function_names[] = {
   {0x800625F8, "mat3x4setTR(a0)"},
   {0x80062618, "SetGeomOffset(a0, a1)"},
   {0x80062638, "SetGeomScreen(a0)"},
+  */
+
+  {0x80062648, "spyro_patch_bios()"},
+
+  /*
   {0x800626E8, "FlushCache()"},
   */
 
@@ -219,7 +221,7 @@ struct function_name function_names[] = {
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
   */
-  
+
   {0x80068494, "_bu_init()"},
   {0x800684A4, "v0 = CloseEvent(a0)"},
   {0x800684B4, "v0 = psx_open(addr_to_pointer(a0), a1)"},
@@ -243,11 +245,11 @@ struct function_name function_names[] = {
   {0x800698E8, "stop_registering_gamepads_internal()"},
   {0x8006A0A4, "controller_wait_for_data()"},
   */
+
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
-  /*
+  
   {0x8006BB20, "set_timer(a0)"},
   {0x8006BB40, "v0 = get_timer()"}
-  */
 };
 
 struct address_name address_names[] = {
@@ -1030,6 +1032,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
   fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
   fprintf(prog.output, "#include \"spyro_string.h\"\n");
+  fprintf(prog.output, "#include \"spyro_system.h\"\n");
   fprintf(prog.output, "#include \"spyro_print.h\"\n");
   fprintf(prog.output, "#include \"spyro_math.h\"\n");
   fprintf(prog.output, "#include \"spyro_game.h\"\n");

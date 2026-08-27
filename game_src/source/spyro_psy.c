@@ -7,6 +7,7 @@
 #include "psx_mem.h"
 #include "psx_bios.h"
 #include "spyro_string.h"
+#include "spyro_system.h"
 #include "psx_bios.h"
 #include "spyro_vsync.h"
 #include "debug.h"

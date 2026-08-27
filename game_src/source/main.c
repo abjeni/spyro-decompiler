@@ -5,7 +5,7 @@
 #include <engine.h>
 
 #include "psx_mem.h"
-#include "decompilation.h"
+#include "spyro_system.h"
 
 uint32_t v0, v1, k0, k1, a0, a1, a2, a3;
 uint32_t t0, t1, t2, t3, t4, t5, t6, t7, t8, t9;
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     return 0;
   }
 
-  function_8005B8E0();
+  spyro_start();
 
   printf("closing\n");
   return 0;
