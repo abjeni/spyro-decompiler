@@ -74,8 +74,10 @@ struct function_name function_names[] = {
   /*
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
   */
+
   {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
+  
   /*
   {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
   {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
@@ -83,29 +85,35 @@ struct function_name function_names[] = {
   {0x800190D4, "fade_in(a0, a1, a2, a3)"},
   {0x8001919C, "draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2))"},
   */
+
   {0x8002BB20, "v0 = completion_percentage()"},
-  /*
+  
   {0x8002C914, "// NOP 0x8002C914", .name = "NOP8002C914"},
   {0x8002C91C, "// NOP 0x8002C91C", .name = "NOP8002C91C"},
   {0x8002F3C4, "// NOP 0x8002F3C4", .name = "NOP8002F3C4"},
   {0x80037E98, "// NOP 0x80037E98", .name = "NOP80037E98"},
-  */
+
   {0x80038074, "v0 = spyro_two_angle_add(a0, a1)"},
   {0x80038120, "v0 = spyro_two_angle_idk(a0, a1, a2)"},
   {0x800381BC, "v0 = spyro_two_angle_diff_8bit2(a0, a1)"},
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},
+
   /*
   {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
   {0x8005595C, "init_spu()"},
   {0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
   */
+
   {0x8005A470, "update_level_functions()"},
+
   /*
   {0x8005B8E0, "spyro_start()"},
   {0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
   {0x8005C720, "do_literally_nothing()"},
   {0x8005CBB0, "v0 = test_spu_event(a0)"},
+  */
+
   {0x8005DB14, "InitHeap(a0, a1)"},
   {0x8005DB24, "LoadExec(addr_to_pointer(a0), a1, a2)"},
   {0x8005DB34, "_96_init()"},
@@ -116,12 +124,14 @@ struct function_name function_names[] = {
   {0x8005DB94, "v0 = EnableEvent(a0)"},
   {0x8005DBA4, "v0 = EnterCriticalSection()"},
   {0x8005DBB4, "ExitCriticalSection()"},
-  */
+
   {0x8005DBC4, "v0 = VSync(a0)"},
   {0x8005DD0C, "wait_until_frame(a0, a1)"},
-  /*
+  
   {0x8005DDA8, "v0 = ChangeClearPAD(a0)"},
   {0x8005DDB8, "v0 = ChangeClearRCnt(a0, a1)"},
+
+  /*
   {0x8005DDC8, "v0 = init_hook_entry_int2()"},
   */
   //{0x8005DE28, "v0 = dma_callback2(a0, a1)"},
@@ -130,11 +140,11 @@ struct function_name function_names[] = {
   {0x8005DF60, "v0 = init_hook_entry_int()"},
   */
   {0x8005E4AC, "spyro_memclr32(a0, a1)"},
-  /*
+
   {0x8005E4D8, "ReturnFromException()"},
   {0x8005E4E8, "ResetEntryInt(a0)"},
   {0x8005E4F8, "HookEntryInt(a0)"},
-  */
+  
   {0x8005E604, "spyro_memclr32(a0, a1)"},
   /*
   {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
@@ -156,6 +166,7 @@ struct function_name function_names[] = {
   {0x8005FDD8, "v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)))", .name = "PutDrawEnv"},
   {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))", .name = "PutDispEnv"},
   {0x80060670, "SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)))"},
+
   /*
   {0x800608E0, "spyro_clear_screen(addr_to_pointer(a0), *(DRAWENV*)addr_to_pointer(a1));"},
   {0x80060B70, "v0 = spyro_draw_mode_setting_command(a0, a1, a2)"},
@@ -173,18 +184,19 @@ struct function_name function_names[] = {
   {0x80062090, "gpu_start_timeout()"},
   {0x800620C4, "v0 = gpu_check_timeout()"},
   */
+
   {0x8006230C, "spyro_memset8(a0, a1, a2)"},
-  /*
   {0x80062338, "GPU_cw(a0)"},
-  */
   {0x800623D8, "v0 = spyro_mat_mul(a0, a1, a2)"},
   {0x800624E8, "v0 = spyro_mat_mul_2(a0, a1)"},
+
   /*
   {0x800625F8, "mat3x4setTR(a0)"},
   {0x80062618, "SetGeomOffset(a0, a1)"},
   {0x80062638, "SetGeomScreen(a0)"},
   {0x800626E8, "FlushCache()"},
   */
+
   {0x800626F8, "v0 = spyro_memcpy8(a0, a1, a2)"},
   {0x8006272C, "v0 = spyro_rand()"},
   {0x8006275C, "spyro_srand(a0)"},
@@ -195,10 +207,10 @@ struct function_name function_names[] = {
   {0x80062FD4, "spyro_sprintf()"},
   {0x80062FC4, "v0 = psx_write(a0, addr_to_pointer(a1), a2)"},
   {0x8006389C, "spyro_puts(a0)"},
-  /*
+
   {0x8006396C, "psx_exit(a0)"},
   {0x8006397C, "v0 = CdInit()"},
-  */
+  
   {0x80063BD8, "v0 = CdSync(a0, addr_to_pointer(a1))"},
   /*
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
@@ -206,6 +218,8 @@ struct function_name function_names[] = {
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
+  */
+  
   {0x80068494, "_bu_init()"},
   {0x800684A4, "v0 = CloseEvent(a0)"},
   {0x800684B4, "v0 = psx_open(addr_to_pointer(a0), a1)"},
@@ -221,6 +235,8 @@ struct function_name function_names[] = {
   {0x80068D60, "SysDeqIntRP(a0, a1)"},
   {0x80068E80, "InitCARD2(a0)"},
   {0x80068E90, "StartCARD2()"},
+
+  /*
   {0x80069060, "start_registering_gamepads()"},
   {0x80069080, "stop_registering_gamepads()"},
   {0x8006981C, "start_registering_gamepads_internal()"},

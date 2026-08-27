@@ -50,6 +50,7 @@ void mult(int32_t a, int32_t b)
 
 void A(file_loc loc)
 {
+  DEPRECATED;
   switch (t1) {
   case 0x39:
     InitHeap(a0, a1);
@@ -80,6 +81,7 @@ void A(file_loc loc)
 
 void B(file_loc loc)
 {
+  DEPRECATED;
   switch (t1) {
   case 0x07:
     DeliverEvent(a0, a1);
@@ -144,6 +146,7 @@ void B(file_loc loc)
 
 void C(file_loc loc)
 {
+  DEPRECATED;
   switch (t1) {
   case 0x02:
     SysEnqIntRP(a0, a1);
@@ -170,6 +173,7 @@ void C(file_loc loc)
 
 void system_call(file_loc loc)
 {
+  DEPRECATED;
   switch (a0) {
   case 1:
     v0 = EnterCriticalSection();
@@ -185,6 +189,7 @@ void system_call(file_loc loc)
 
 void JR(uint32_t addr, uint32_t location, file_loc loc)
 {
+  DEPRECATED;
   switch (addr) {
   case 0xA0:
     A(loc);
