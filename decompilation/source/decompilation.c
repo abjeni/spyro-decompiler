@@ -16,6 +16,7 @@ char *used_skips = NULL;
 struct function_name function_names[] = {
   {0x80012204, "game_loop()"},
   {0x800123C8, "init_controller()"},
+  {0x80012460, "init_memory_card()"},
   {0x80012480, "init_cdrom()"},
   //{0x800127C0, "initial_loading_screen()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
@@ -103,7 +104,7 @@ struct function_name function_names[] = {
 
   {0x8005595C, "init_spu()"},
 
-  //{0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
+  {0x8005956C, "v0 = savegame_checksum(addr_to_pointer(a0))"},
 
   {0x8005A470, "update_level_functions()"},
 
@@ -143,9 +144,9 @@ struct function_name function_names[] = {
   {0x8005E4F8, "HookEntryInt(a0)"},
   
   {0x8005E604, "spyro_memclr32(a0, a1)"},
-  /*
-  {0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
-  */
+  
+  //{0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
+  
   {0x8005E804, "v0 = dma_callback(a0, a1)"},
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
 
@@ -195,9 +196,7 @@ struct function_name function_names[] = {
 
   {0x80062648, "spyro_patch_bios()"},
 
-  /*
   {0x800626E8, "FlushCache()"},
-  */
 
   {0x800626F8, "v0 = spyro_memcpy8(a0, a1, a2)"},
   {0x8006272C, "v0 = spyro_rand()"},
@@ -218,9 +217,10 @@ struct function_name function_names[] = {
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
   {0x80064094, "write_cdrom_header(a0, addr_to_pointer(a1))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
+  */
+
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
-  */
 
   {0x80068494, "_bu_init()"},
   {0x800684A4, "v0 = CloseEvent(a0)"},
@@ -238,13 +238,11 @@ struct function_name function_names[] = {
   {0x80068E80, "InitCARD2(a0)"},
   {0x80068E90, "StartCARD2()"},
 
-  /*
   {0x80069060, "start_registering_gamepads()"},
   {0x80069080, "stop_registering_gamepads()"},
   {0x8006981C, "start_registering_gamepads_internal()"},
   {0x800698E8, "stop_registering_gamepads_internal()"},
-  */
-  
+
   {0x8006A0A4, "controller_wait_for_data()"},
 
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
@@ -1039,6 +1037,7 @@ void include_headers(struct program prog)
   fprintf(prog.output, "#include \"spyro_game.h\"\n");
   fprintf(prog.output, "#include \"spyro_psy.h\"\n");
   fprintf(prog.output, "#include \"spyro_controller.h\"\n");
+  fprintf(prog.output, "#include \"spyro_memory_card.h\"\n");
   fprintf(prog.output, "#include \"spyro_spu.h\"\n");
   fprintf(prog.output, "#include \"psx_ops.h\"\n");
   fprintf(prog.output, "#include \"psx_bios.h\"\n");
