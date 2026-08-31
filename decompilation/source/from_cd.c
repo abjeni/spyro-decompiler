@@ -1539,7 +1539,6 @@ int decompile_everything()
         PSXMEM_LIST(ARR_U32(0x8007BC5C), 5, 0x8007AA3C),
       )),
       .entries = ENTRIES(ARR_U32(
-        0x8007AA50,
         0x8007BFD0
       )),
       .skips = SKIPS(ARR_U32()),
