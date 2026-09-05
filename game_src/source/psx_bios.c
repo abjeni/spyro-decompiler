@@ -12,6 +12,7 @@
 #include "main.h"
 #include "psx_mem.h"
 #include "spyro_vsync.h"
+#include "not_renamed.h"
 #include "debug.h"
 
 // i decided to use pointers as parameters for some of these, which was a mistake

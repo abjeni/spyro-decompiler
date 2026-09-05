@@ -363,6 +363,7 @@ struct skips skips = SKIPS(ARR_U32(
   0x80014B70,
   0x80015370,
   0x8002D228,
+  0x80067DD0,
 ));
 
 

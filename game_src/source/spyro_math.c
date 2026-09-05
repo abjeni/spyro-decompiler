@@ -1298,7 +1298,8 @@ void function_800381BC(void)
   v0 = spyro_two_angle_diff_8bit2(a0, a1);
 }
 
-int32_t spyro_two_angle_idk(uint32_t a, uint32_t b, uint32_t c)
+// c should be uint8_t maybe
+int32_t spyro_two_angle_idk(int32_t a, int32_t b, int32_t c)
 {
   return spyro_two_angle_add(b, spyro_two_angle_diff_8bit2(b, a)*(c & 0xFF) >> 8);
 }

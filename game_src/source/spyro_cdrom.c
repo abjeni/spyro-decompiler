@@ -14,7 +14,7 @@
 #include "spyro_constants.h"
 #include "spyro_cdrom.h"
 #include "spyro_psy.h"
-#include "temporary.h"
+#include "spyro_system.h"
 
 int CdSync(int mode, uint8_t *result)
 {
