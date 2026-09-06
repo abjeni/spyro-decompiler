@@ -38,7 +38,7 @@
 #include "wizard_peak.h"
 #include "title_screen.h"
 #include "credits.h"
-
+#include "not_renamed.h"
 
 void function_8007CFC0(void)
 {
@@ -137,6 +137,7 @@ void function_8007AA50(void)
 {
   function_8007AA50_credits();
 }
+
 void function_8007BFD0(void)
 {
   function_8007BFD0_credits();

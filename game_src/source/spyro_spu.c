@@ -35,9 +35,9 @@ void function_8005C588(void)
     a1 = (a1 + a2) & ~lw(0x80073584);
     
   a3 = a1 >> lw(0x8007357C);
-  if (a0 == -2) {
+  if (a0 == (uint32_t)-2) {
     v0 = a1;
-  } else if (a0 == -1) {
+  } else if (a0 == (uint32_t)-1) {
     v0 = a3 & 0xFFFF;
   } else {
     sh(spu_registers_base + a0*2, a3);
@@ -85,7 +85,7 @@ void sound_ram_data_transfer(uint16_t *data, size_t len)
     len -= chunk_size;
 
     v1 = 0;
-    for (int i = 0; i < chunk_size; i++) {
+    for (size_t i = 0; i < chunk_size; i++) {
       sh(spu_registers_base + 0x1A8, *data++);
     }
 
@@ -128,8 +128,6 @@ void function_8005BE88(void)
 // size: 0x00000294
 void function_8005BBF4(void)
 {
-  const uint32_t spu_registers_base = 0x1F801C00;
-
   sp -= 0x20;
   sw(sp + 0x10, s0);
   sw(sp + 0x18, ra);
@@ -267,8 +265,6 @@ void function_8005BB78(void)
 // size: 0x00000048
 void function_8005C540(void)
 {
-  const uint32_t spu_registers_base = 0x1F801C00;
-
   if (a2)
     sh(spu_registers_base + a0*2, a1 >> lw(0x8007357C));
   else
@@ -392,8 +388,6 @@ void function_8005595C(void)
 // size: 0x00000290
 void function_8005C1C0(void)
 {
-  const uint32_t spu_registers_base = 0x1F801C00;
-
   uint32_t temp;
   sw(sp + 0x0000, a0);
   sw(sp + 0x0004, a1);
@@ -712,7 +706,7 @@ uint32_t psu_voice_status(uint32_t bitfield)
       break;
     }
   }
-  if (a1 == -1) {
+  if (a1 == (uint32_t)-1) {
     return -1;
   }
   v1 = lw(0x800730EC) & (1 << a1);

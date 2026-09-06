@@ -15,7 +15,7 @@
 #include "spyro_print.h"
 #include "decompilation.h"
 #include "not_renamed.h"
-#include "temporary.h"
+#include "spyro_graphics.h"
 
 // size: 0x00000010
 void function_8005EBA0(void)
@@ -53,12 +53,52 @@ void function_8006272C(void)
   v0 = spyro_rand();
 }
 
+// size: 0x000000DC
+void function_80062230(void)
+{
+  // assuming gpu version is v2
+  if (a0 & 8) {
+    sw(lw(GPU_GP1_cmd_ptr), 0x09000001);
+    v0 = 4;
+  } else {
+    v0 = 3;
+  }
+}
+
+// size: 0x0000015C
+void function_80061DEC(void)
+{
+  uint32_t mode = a0 & 7;
+  uint32_t double_vram = a0 & 8;
+  uint32_t istat = set_I_MASK(0);
+  sw(0x80074B6C, 0);
+  sw(0x80074B68, 0);
+
+  if (mode == 0 || mode == 5) {
+    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
+    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(v1, lw(v1) | 0x800);
+    sw(lw(GPU_GP1_cmd_ptr), 0);
+    spyro_memset8(0x800759BC, 0, 0x100);
+    spyro_memset8(0x80078EA0, 0, 0x1800);
+  } else if (mode == 1 || mode == 3) {
+    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
+    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(v1, lw(v1) | 0x800);
+    sw(lw(GPU_GP1_cmd_ptr), 0x02000000);
+    sw(lw(GPU_GP1_cmd_ptr), 0x01000000);
+  }
+  set_I_MASK(istat);
+  if (mode == 0) {
+    a0 = double_vram;
+    function_80062230();
+  }
+}
+
 // size: 0x00000184
 int32_t ResetGraph(int32_t mode)
 {
-  sp -= 0x20;
-  sw(sp + 0x10, s0);
-  sw(sp + 0x18, ra);
+  uint32_t s0;
   
   printf("resetgraph mode 0x%.2X\n", mode);
 
@@ -66,6 +106,7 @@ int32_t ResetGraph(int32_t mode)
   case 0: // reset
   case 3:
     printf("ResetGraph:jtb=%08x,env=%08x\n", 0x80074A1C, 0x80074A64);
+    [[fallthrough]];
   case 5:
     s0 = 0x80074A64;
     spyro_memset8(s0, 0, 0x80);
@@ -94,10 +135,6 @@ int32_t ResetGraph(int32_t mode)
     break;
   }
   
-
-  ra = lw(sp + 0x18);
-  s0 = lw(sp + 0x10);
-  sp += 0x20;
   return v0;
 }
 

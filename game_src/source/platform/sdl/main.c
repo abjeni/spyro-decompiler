@@ -18,7 +18,7 @@
 int resx = WIDTH;
 int resy = HEIGHT;
 
-int create_window(SDL_Window** window, SDL_Surface **screen_surface, int x, int y)
+int create_window(SDL_Window** window, SDL_Surface **screen_surface)
 {
   //Create window
   *window = SDL_CreateWindow("spyro", WIDTH*SCALE, HEIGHT*SCALE, SDL_WINDOW_OPENGL);
@@ -45,10 +45,10 @@ void update_vram(uint8_t *mem, uint32_t X, uint32_t Y, uint8_t bit16)
 
   uint32_t *pixels = (uint32_t *)screen_surface->pixels;
 
-  uint32_t sx = screen_surface->w/resx;
-  uint32_t sy = screen_surface->h/resy;
+  int sx = screen_surface->w/resx;
+  int sy = screen_surface->h/resy;
 
-  uint32_t scale = sx < sy ? sx : sy;
+  int scale = sx < sy ? sx : sy;
 
   if (bit16)
   {
@@ -214,7 +214,7 @@ void init_game_window()
 
   assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-  create_window(&window, &screen_surface, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED);
+  create_window(&window, &screen_surface);
 
   if (window == NULL) assert(0);
   if (screen_surface == NULL) assert(0);

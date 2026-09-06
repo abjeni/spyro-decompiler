@@ -7,11 +7,9 @@
 #include "main.h"
 #include "int_math.h"
 #include "spyro_math.h"
-#include "spyro_game.h"
 #include "debug.h"
 
-#undef DEPRECATED
-#define DEPRECATED
+//#pragma GCC diagnostic ignored "-Wuninitialized"
 
 int16_t sqrt_lookup[] = { // 0x80074B84
   0x1000, 0x101F, 0x103F, 0x105E, 0x107E, 0x109C, 0x10BB, 0x10DA, 
@@ -136,8 +134,8 @@ void function_800624E8(void)
 // size: 0x00000108
 int16_t spyro_atan(int16_t x, int16_t y)
 {
-  int16_t xabs = abs_int(a0);
-  int16_t yabs = abs_int(a1);
+  int16_t xabs = abs_int(x);
+  int16_t yabs = abs_int(y);
   int x_positive = x >= 0;
   int y_positive = y >= 0;
   int xgty = xabs >= yabs;
@@ -213,10 +211,10 @@ void function_800169AC(void)
 // size: 0x000001A4
 int32_t spyro_atan2(int32_t x, int32_t y, uint32_t a3)
 {
-  int32_t xabs = abs_int(a0);
-  int32_t yabs = abs_int(a1);
-  int x_positive = (int32_t)a0 >= 0;
-  int y_positive = (int32_t)a1 >= 0;
+  int32_t xabs = abs_int(x);
+  int32_t yabs = abs_int(y);
+  int x_positive = (int32_t)x >= 0;
+  int y_positive = (int32_t)y >= 0;
   int xgty = xabs >= yabs;
 
   int32_t x2 = xabs;
@@ -312,6 +310,8 @@ void function_80016AB4(void)
   v0 = spyro_atan2(a0, a1, a2);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverflow"
 // cos_lut and sin_lut overlap
 int16_t cos_lut[256] = {
   0x1000, 0x0FFF, 0x0FFB, 0x0FF5, 0x0FEC, 0x0FE1, 0x0FD4, 0x0FC4,
@@ -382,6 +382,8 @@ int16_t sin_lut[256] = {
   0xF9E1, 0xFA3E, 0xFA9C, 0xFAFB, 0xFB5B, 0xFBBC, 0xFC1D, 0xFC7F,
   0xFCE1, 0xFD44, 0xFDA7, 0xFE0B, 0xFE6F, 0xFED3, 0xFF37, 0xFF9B,
 };
+
+#pragma GCC diagnostic pop
 
 int16_t spyro_cos(int32_t angle)
 {
@@ -558,6 +560,16 @@ uint32_t spyro_vec_length(uint32_t vec, uint32_t is_vec3)
     z = lh(vec + 8);
 
   uint32_t sqr = x*x + y*y + z*z;
+  return spyro_sqrt(sqr);
+}
+
+// vector length
+// should give the same result as spyro_vec_length, but doesnt use uint32_t pointer
+uint32_t vec3_32_length(vec3_32 v)
+{
+  uint32_t sqr = v.x*v.x + v.y*v.y + v.z*v.z;
+  if (sqr == 0)
+    return 0;
   return spyro_sqrt(sqr);
 }
 
@@ -865,7 +877,7 @@ void function_80017908(void)
 
 uint32_t spyro_two_angle_diff_12bit(uint32_t a, uint32_t b)
 {
-  uint32_t diff = a0 - a1;
+  uint32_t diff = a - b;
   diff = diff & 0xFFF;
   if (diff >= 0x800)
     diff = 0x1000 - diff;

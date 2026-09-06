@@ -27,7 +27,7 @@ void div_psx(int32_t a, int32_t b)
     return;
   }
   
-  if (b == -1 && a == 0x80000000)
+  if (b == -1 && a == (int32_t)0x80000000)
     UNREACHABLE;
 
   lo = a/b;

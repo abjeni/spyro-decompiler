@@ -322,7 +322,7 @@ void wad_header_info(const char *name, uint32_t offset, uint32_t entries)
   read_disk1(0x25, 0x80100000, 0x800, offset, 0x258);
 
   printf("uint32_t %s[][2] =\n{\n", name);
-  for (int i = 0; i < entries; i++)
+  for (uint32_t i = 0; i < entries; i++)
   {
     printf("  {0x%.8X, 0x%.8X},", lw(0x80100000 + i*8), lw(0x80100000 + i*8 + 4));
     if (is_subwad(i, offset)) printf(" // subwad");

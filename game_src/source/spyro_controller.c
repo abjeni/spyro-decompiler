@@ -40,7 +40,7 @@ void function_80053790(void)
   for (int i = 0; i < 4; i++)
   {
     a2 = lbu(s0 + i + 0x20);
-    if (a2 + 0x30 >= lbu(s0 + i + 0x28) || lbu(s0 + i + 0x24) >= (int32_t)(a2 - 0x30)) {
+    if (a2 + 0x30 >= lbu(s0 + i + 0x28) || (int32_t)lbu(s0 + i + 0x24) >= (int32_t)(a2 - 0x30)) {
       a0 = s0;
       function_8005375C();
       t1 = 0;

@@ -38,7 +38,7 @@ uint32_t func_800133E0(uint32_t param1)
   sw(param1 + 0x34, num1);
   for (int i = 0; i < len; i++) {
     const uint32_t struct_ptr = ptr_list + i*4;
-    if (lw(struct_ptr) == -1) continue;
+    if (lw(struct_ptr) == (uint32_t)-1) continue;
     const uint32_t struct_addr = lw(struct_ptr) + param1;
     sw(struct_ptr, struct_addr);
 
@@ -2245,7 +2245,7 @@ label8002EE94:
   a1 += 4;
   sw(SKYBOX_DATA + 0x04, a1);
   sw(SKYBOX_DATA + 0x00, v0);
-  for (int i = 0; i < lw(SKYBOX_DATA + 0x00); i++)
+  for (int i = 0; i < (int)lw(SKYBOX_DATA + 0x00); i++)
     sw(a1 + i*4, lw(a1 + i*4) + a3);
   v1 = lhu(0x800752D8);
   a1 = lhu(0x800752DA);
@@ -2748,7 +2748,7 @@ void function_8007AA50_credits(void)
   sw(sp + 0x64, s1);
   sw(sp + 0x60, s0);
 
-  if (v1 == -1) 
+  if (v1 == (uint32_t)-1) 
   {
     v0 = lw(0x80075768);
     a1 = 0x8007C338; // &0x03E00008
@@ -2866,7 +2866,7 @@ void function_8007AA50_credits(void)
 
     a1 = lw(0x800757DC);
     v1 = lw(0x80075708);
-    for (int i = 0; i < a1; i++)
+    for (int i = 0; i < (int)a1; i++)
       sw(v1 + i*0x0C, lw(v1 + i*0x0C) + s0);
     
     sw(0x80075704, 0);
@@ -3663,7 +3663,7 @@ label8007BBA8:
   if (temp) goto label8007BBA8;
 label8007BBE4:
   v1 = lw(0x80075704);
-  if (v1 == -1) goto label8007BF9C;
+  if (v1 == (uint32_t)-1) goto label8007BF9C;
   if ((int32_t)v1 <= 0) goto label8007BC44;
   function_800163E4();
   if (lw(0x80076BB8)) goto label8007BF9C;

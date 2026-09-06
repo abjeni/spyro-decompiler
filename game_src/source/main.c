@@ -16,7 +16,7 @@ void wad_main(void);
 
 void print_psx_string_array(const char *name, uint32_t base, uint32_t n) {
   printf("char *%s[] = {\n", name);
-  for (int i = 0; i < n; i++)
+  for (uint32_t i = 0; i < n; i++)
   {
     printf("  \"%s\",\n", (char *)addr_to_pointer(lw(base + i*4)));
   }
@@ -25,7 +25,7 @@ void print_psx_string_array(const char *name, uint32_t base, uint32_t n) {
 
 void print_psx_uint16_t_array(const char *name, uint32_t base, uint32_t n) {
   printf("uint16_t %s[] = {\n", name);
-  for (int i = 0; i < n; i++)
+  for (uint32_t i = 0; i < n; i++)
   {
     printf("  0x%.4hX,\n", lh(base + i*2));
   }
@@ -34,6 +34,8 @@ void print_psx_uint16_t_array(const char *name, uint32_t base, uint32_t n) {
 
 int main(int argc, char *argv[])
 {
+  (void)argv;
+
   platform_init();
   
   init_psx_mem();

@@ -18,15 +18,13 @@ struct function_name function_names[] = {
   {0x800123C8, "init_controller()"},
   {0x80012460, "init_memory_card()"},
   {0x80012480, "init_cdrom()"},
-  //{0x800127C0, "initial_loading_screen()"},
+  {0x800127C0, "initial_loading_screen()"},
   {0x80016500, "read_disk1(a0, a1, a2, a3, lw(sp+0x10))"},
   {0x80016698, "read_disk2(a0, a1, a2, a3, lw(sp+0x10))"},
 
-  /*
   {0x80016784, "v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0))", .name = "spyro_combine_all_command_buffers"},
-  {0x800168A0, "append_gpu_command_block_depth_slot(a0, a1)"},
+  {0x800168A0, "append_gpu_command_block_depth_slot(addr_to_pointer(a0), a1)"},
   {0x800168DC, "append_gpu_command_block(addr_to_pointer(a0))"},
-  */
 
   {0x80016914, "spyro_memset32(a0, a1, a2)"},
   {0x80016930, "assert((a2%16) == 0);spyro_memset32(a0, a1, a2)", .name = "spyro_memset32"},
@@ -72,9 +70,7 @@ struct function_name function_names[] = {
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
   
-  /*
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
-  */
 
   {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
@@ -100,7 +96,7 @@ struct function_name function_names[] = {
   {0x8003A720, "new_game_object(addr_to_pointer(a0))"},
   {0x8003EA68, "spyro_change_movestate(a0)"},
 
-  //{0x8004EBA8, "draw_skybox(a0, a1, a2)"},
+  {0x8004EBA8, "draw_skybox(a0, a1, a2)"},
 
   {0x8005595C, "init_spu()"},
 
@@ -165,7 +161,6 @@ struct function_name function_names[] = {
   {0x80060030, "v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)))", .name = "PutDispEnv"},
   {0x80060670, "SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)))"},
 
-  /*
   {0x800608E0, "spyro_clear_screen(addr_to_pointer(a0), *(DRAWENV*)addr_to_pointer(a1));"},
   {0x80060B70, "v0 = spyro_draw_mode_setting_command(a0, a1, a2)"},
   {0x80060BC8, "v0 = spyro_set_drawing_area_top_left_command(a0, a1)"},
@@ -181,18 +176,15 @@ struct function_name function_names[] = {
   {0x80061B00, "v0 = command_queue_advance()"},
   {0x80062090, "gpu_start_timeout()"},
   {0x800620C4, "v0 = gpu_check_timeout()"},
-  */
 
   {0x8006230C, "spyro_memset8(a0, a1, a2)"},
   {0x80062338, "GPU_cw(a0)"},
   {0x800623D8, "v0 = spyro_mat_mul(a0, a1, a2)"},
   {0x800624E8, "v0 = spyro_mat_mul_2(a0, a1)"},
 
-  /*
   {0x800625F8, "mat3x4setTR(a0)"},
   {0x80062618, "SetGeomOffset(a0, a1)"},
   {0x80062638, "SetGeomScreen(a0)"},
-  */
 
   {0x80062648, "spyro_patch_bios()"},
 
@@ -213,11 +205,10 @@ struct function_name function_names[] = {
   {0x8006397C, "v0 = CdInit()"},
   
   {0x80063BD8, "v0 = CdSync(a0, addr_to_pointer(a1))"},
-  /*
+  
   {0x80064050, "v0 = dma_cdrom_callback(a0)"},
   {0x80064094, "write_cdrom_header(a0, addr_to_pointer(a1))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
-  */
 
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
@@ -737,8 +728,10 @@ end_loop3:
   return 0;
 }
 
-void output_function(struct program prog, function_list *func_list, uint32_t func_num)
+void output_function(const struct program prog, function_list *func_list, uint32_t func_num)
 {
+  if (prog.output == NULL) return;
+
   function func = func_list->funcs[func_num];
 
   function_list func_set = function_list_alloc();
@@ -954,7 +947,7 @@ void print_func_name2(struct program prog, uint32_t addr)
       same_id = rn.id == NULL;
     else
       same_id = (rn.id == NULL) || (strcmp(rn.id, prog.id) == 0);
-
+    
     if (addr == rn.func && same_id)
     {
       print_function_name(prog, addr);
@@ -969,6 +962,8 @@ void print_func_name2(struct program prog, uint32_t addr)
 
 void output_function_list_graphviz(struct program prog, function_list *func_list)
 {
+  if (graph_fd == NULL) return;
+
   fprintf(graph_fd, "\tsubgraph %s {\n", prog.id ? prog.id : "main");
   for (int i = 0; i < func_list->size; i++)
   {
@@ -1026,32 +1021,35 @@ void output_function_list_graphviz(struct program prog, function_list *func_list
 
 void include_headers(struct program prog)
 {
-  fprintf(prog.output, "#include <stdint.h>\n\n");
-  fprintf(prog.output, "#include \"decompilation.h\"\n");
-  fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
-  fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
-  fprintf(prog.output, "#include \"spyro_string.h\"\n");
-  fprintf(prog.output, "#include \"spyro_system.h\"\n");
-  fprintf(prog.output, "#include \"spyro_print.h\"\n");
-  fprintf(prog.output, "#include \"spyro_math.h\"\n");
-  fprintf(prog.output, "#include \"spyro_game.h\"\n");
-  fprintf(prog.output, "#include \"spyro_psy.h\"\n");
-  fprintf(prog.output, "#include \"spyro_controller.h\"\n");
-  fprintf(prog.output, "#include \"spyro_memory_card.h\"\n");
-  fprintf(prog.output, "#include \"spyro_spu.h\"\n");
-  fprintf(prog.output, "#include \"psx_ops.h\"\n");
-  fprintf(prog.output, "#include \"psx_bios.h\"\n");
-  fprintf(prog.output, "#include \"psx_mem.h\"\n");
-  fprintf(prog.output, "#include \"main.h\"\n");
-  fprintf(prog.output, "#include \"gte.h\"\n");
-  fprintf(prog.output, "#include \"cop0.h\"\n");
-  fprintf(prog.output, "#include \"function_chooser.h\"\n");
-  fprintf(prog.output, "#include \"level_loading.h\"\n");
+  if (prog.output) {
+    fprintf(prog.output, "#include <stdint.h>\n\n");
+    fprintf(prog.output, "#include \"decompilation.h\"\n");
+    fprintf(prog.output, "#include \"spyro_cdrom.h\"\n");
+    fprintf(prog.output, "#include \"spyro_vsync.h\"\n");
+    fprintf(prog.output, "#include \"spyro_string.h\"\n");
+    fprintf(prog.output, "#include \"spyro_system.h\"\n");
+    fprintf(prog.output, "#include \"spyro_print.h\"\n");
+    fprintf(prog.output, "#include \"spyro_math.h\"\n");
+    fprintf(prog.output, "#include \"spyro_game.h\"\n");
+    fprintf(prog.output, "#include \"spyro_graphics.h\"\n");
+    fprintf(prog.output, "#include \"spyro_psy.h\"\n");
+    fprintf(prog.output, "#include \"spyro_controller.h\"\n");
+    fprintf(prog.output, "#include \"spyro_memory_card.h\"\n");
+    fprintf(prog.output, "#include \"spyro_spu.h\"\n");
+    fprintf(prog.output, "#include \"psx_ops.h\"\n");
+    fprintf(prog.output, "#include \"psx_bios.h\"\n");
+    fprintf(prog.output, "#include \"psx_mem.h\"\n");
+    fprintf(prog.output, "#include \"main.h\"\n");
+    fprintf(prog.output, "#include \"gte.h\"\n");
+    fprintf(prog.output, "#include \"cop0.h\"\n");
+    fprintf(prog.output, "#include \"function_chooser.h\"\n");
+    fprintf(prog.output, "#include \"level_loading.h\"\n");
 
-  if (prog.id)
-    fprintf(prog.output, "#include \"%s.h\"\n\n", prog.id);
-  else
-    fprintf(prog.output, "#include \"function_chooser.h\"\n\n");
+    if (prog.id)
+      fprintf(prog.output, "#include \"%s.h\"\n\n", prog.id);
+    else
+      fprintf(prog.output, "#include \"function_chooser.h\"\n\n");
+  }
 }
 
 void write_header_file(struct program prog, function_list func_list)
@@ -1162,8 +1160,8 @@ int init_function_list(struct program prog, function_list *func_list)
 
 int read_instructions(struct program prog)
 {
-  if (prog.output == NULL)
-    prog.output = stdout;
+  //if (prog.output == NULL)
+  //  prog.output = stdout;
 
   used_skips = calloc(prog.skips.n, sizeof(char));
 
@@ -1181,9 +1179,15 @@ int read_instructions(struct program prog)
 
   output_function_list_graphviz(prog, &func_list);
 
-  include_headers(prog);
+  if (prog.output) {
+    include_headers(prog);
+  }
+
   output_function_list(prog, &func_list);
-  write_header_file(prog, func_list);
+
+  if (prog.output) {
+    write_header_file(prog, func_list);
+  }
 
   function_list_free(func_list);
 

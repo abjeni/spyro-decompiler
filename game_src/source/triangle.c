@@ -168,7 +168,12 @@ void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pi
       v[0] = tmp;
     }
 
-    for (int i = v[0].v.y; i < v[1].v.y; i++)
+    int up = y1;
+    int down = y2;
+    if (up <  v[0].v.y) up = v[0].v.y;
+    if (down >= v[1].v.y) down = v[1].v.y;
+
+    for (int i = up; i < down; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.y, dy);
       vert.v = (vec2t){v[0].v.x+dx*(i - v[0].v.y)/dy, i};
@@ -184,7 +189,12 @@ void draw_line(vertex v[static 2], int x1, int x2, int y1, int y2, void (*set_pi
       v[0] = tmp;
     }
 
-    for (int i = v[0].v.x; i < v[1].v.x; i++)
+    int left = x1;
+    int right = x2;
+    if (left <  v[0].v.x) left = v[0].v.x;
+    if (right >= v[1].v.x) right = v[1].v.x;
+
+    for (int i = left; i < right; i++)
     {
       vertex vert = mix_vertices(v[0], v[1], i - v[0].v.x, dx);
       vert.v = (vec2t){i, v[0].v.y+dy*(i - v[0].v.x)/dx};

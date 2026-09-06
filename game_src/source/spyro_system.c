@@ -155,7 +155,7 @@ void function_8005E804(void)
 uint32_t dma_callback2(uint32_t dma_num, uint32_t callback)
 {
   if (lw(lw(0x800749AC) + 0x04) != 0x8005E804) UNREACHABLE;
-  return dma_callback(a0, a1);
+  return dma_callback(dma_num, callback);
 }
 
 // size: 0x00000030

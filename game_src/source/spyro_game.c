@@ -3,7 +3,7 @@
 #include "main.h"
 #include "decompilation.h"
 #include "psx_mem.h"
-#include "temporary.h"
+#include "spyro_graphics.h"
 #include "spyro_string.h"
 #include "spyro_math.h"
 #include "spyro_vsync.h"
@@ -296,10 +296,10 @@ void function_80051FEC(void)
     if ((int32_t)v1 < 0) goto label8005210C;
     v1 = v1 << 10;
     vec3_32 p = vec3_32_sub(object->p, pos);
-    if (abs_int(p.x) >= v1
-     || abs_int(p.y) >= v1
-     || abs_int(p.z) >= v1) continue;
-    if (v1/8*v1/8 <= p.x/8*p.x/8 + p.y/8*p.y/8) continue;
+    if (abs_int(p.x) >= (int32_t)v1
+     || abs_int(p.y) >= (int32_t)v1
+     || abs_int(p.z) >= (int32_t)v1) continue;
+    if ((int)(v1/8*v1/8) <= p.x/8*p.x/8 + p.y/8*p.y/8) continue;
   label8005210C:
     if ((int32_t)object->unknown43 >= 0) {
       sb(0x80077868 + object->unknown43, 1);
@@ -388,7 +388,7 @@ void function_8003C358(void)
   sw(sp + 0x44, lw(sp + 0x14)*spyro_cos(s0));
   s3 = 0;
   s6 = s2;
-  for (int i = 0; i < fp; i++) {
+  for (uint32_t i = 0; i < fp; i++) {
     char ch = lbu(s6);
     uint32_t modelID;
     if (ch != ' ') {
@@ -558,7 +558,7 @@ void function_80012CF0(void)
   sw(0x800761D0, a0 + 0x104);
   if (a1 == 0) return;
   int32_t num = lw(a0 + 0x100);
-  for (int i = 0; i < num; i++) {
+  for (int32_t i = 0; i < num; i++) {
     v1 = a0 + 0x104 + i*0x14;
     sw(v1, lw(v1) + 0x1010);
   };
@@ -585,7 +585,7 @@ void function_80012D58(void)
   sw(0x800785A8 + 0x00, struct2_elements);
   sw(0x800785A8 + 0x04, struct2_len);
   
-  for (int i = 0; i < struct2_len; i++)
+  for (int32_t i = 0; i < struct2_len; i++)
     sw(struct2_elements + i*4, struct2 + lw(struct2_elements + i*4));
 
   if (a1 == 0) {
@@ -600,7 +600,7 @@ void function_80012D58(void)
       sw(0x800785A8 + 0x08, struct3_1_elements);
       sw(0x800785A8 + 0x0C, struct3_1_len);
 
-      for (int i = 0; i < struct3_1_len; i++)
+      for (int32_t i = 0; i < struct3_1_len; i++)
         sw(struct3_1_elements + i*4, struct3 + lw(struct3_1_elements + i*4));
 
       const uint32_t struct3_2 = struct_base + lw(struct3) + 0x04;
@@ -610,7 +610,7 @@ void function_80012D58(void)
       sw(0x80077788, struct3_2_len);
       sw(0x8007778C, struct3_2_elements);
 
-      for (int i = 0; i < struct3_2_len; i++)
+      for (int32_t i = 0; i < struct3_2_len; i++)
         sw(struct3_2_elements + i*4, struct3_2 + lw(struct3_2_elements + i*4));
 
     } else {
@@ -622,11 +622,11 @@ void function_80012D58(void)
     struct_base = struct_base + lw(struct_base);
 
     const uint32_t struct4 = struct_base + 0x04;
-    const uint32_t struct4_len = lw(struct4);
+    const int32_t struct4_len = lw(struct4);
     const uint32_t struct4_elements = struct4 + 0x04;
     sw(0x800785A8 + 0x10, struct4_elements);
     sw(0x800785A8 + 0x14, struct4_len);
-    for (int i = 0; i < struct4_len; i++)
+    for (int32_t i = 0; i < struct4_len; i++)
       sw(struct4_elements + i*4, lw(struct4_elements + i*4) + struct4);
     
     struct_base = struct_base + lw(struct_base);
@@ -643,7 +643,7 @@ void function_80012D58(void)
   struct_base = struct_base + lw(struct_base);
 
   const uint32_t struct6 = struct_base + 4;
-  const uint32_t struct6_len = lw(struct6 + 4);
+  const int32_t struct6_len = lw(struct6 + 4);
   const uint32_t struct6_elements = struct6 + 8;
 
   sb(0x80077790, lbu(struct6 + 0));
@@ -652,7 +652,7 @@ void function_80012D58(void)
   sw(0x80077780, struct6_len);
   sw(0x80077784, struct6_elements);
 
-  for (int i = 0; i < struct6_len; i++)
+  for (int32_t i = 0; i < struct6_len; i++)
     sw(struct6_elements + i*4, lw(struct6_elements + i*4) + struct_base + 4);
   
   struct_base = struct_base + lw(struct_base);
@@ -666,7 +666,7 @@ void function_80012D58(void)
   const uint32_t struct7_elements = struct7 + 0x04;
   sw(0x800758BC, struct7_len);
   uint32_t element = struct7_elements;
-  for (int i = 0; i < struct7_len; i++) {
+  for (int32_t i = 0; i < struct7_len; i++) {
     const uint32_t element_struct1 = element + 0x04;
     (void)element_struct1;
     const uint32_t element_struct1_len = lw(element + 0x04);
@@ -685,7 +685,7 @@ void function_80012D58(void)
     sw(element_unknown2 + 0x10, element_struct2_unknown1);
     sw(element_unknown2 + 0x00, element_struct2_len);
     sw(element_unknown2 + 0x04, element_struct2_elements);
-    for (int i = 0; i < element_struct2_len; i++)
+    for (uint32_t i = 0; i < element_struct2_len; i++)
       sw(element_struct2_elements + i*4, lw(element_struct2_elements + i*4) + element_struct2);
 
     element = struct_base + lw(struct_base);
@@ -698,7 +698,7 @@ void function_80012D58(void)
   const uint32_t struct8_elements = struct8 + 0x04;
 
   element = struct8_elements;
-  for (int i = 0; i < struct8_len; i++) {
+  for (uint32_t i = 0; i < struct8_len; i++) {
     const int16_t element_index = lh(element + 0);
     const int16_t element_len = lh(element + 2);
     sw(0x80076278 + element_index*4, element);
@@ -870,6 +870,7 @@ void function_8003385C(void)
     break;
   case 3: // inventory
     function_8002EB2C();
+    break;
   case 4: // dead
   case 5:
     function_8002EDF0();

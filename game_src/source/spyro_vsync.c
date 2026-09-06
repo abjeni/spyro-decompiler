@@ -60,7 +60,7 @@ void wait_until_frame(int32_t frame, uint32_t timeout_time)
   while ((int32_t)lw(frame_counter) < frame) {
     inter(0);
     timeout_counter--;
-    if (timeout_counter == -1) {
+    if (timeout_counter == (uint32_t)-1) {
       printf("VSync: timeout\n");
       ChangeClearPAD(0);
       ChangeClearRCnt(3, 0);

@@ -21,6 +21,8 @@ extern struct psx_mem psx_mem;
 
 void InitHeap(uint32_t addr, uint32_t size)
 {
+  (void)addr;
+  (void)size;
   //printf("heap address and size [%8X, %d]\n", addr, size);
   //printf("range [%8X, %8X]\n", addr, addr+size);
 }
@@ -33,6 +35,7 @@ void GPU_cw(uint32_t gp0cmd)
 
 int ChangeClearPAD(int a0)
 {
+  (void)a0;
   //printf("ChangeClearPAD(%d)\n", a0);
   return 0;
 }
@@ -79,6 +82,7 @@ void _bu_init(void)
 
 void DelDrv(uint32_t device_name_lowercase)
 {
+  (void)device_name_lowercase;
   //char *name = addr_to_pointer(device_name_lowercase);
 
   //printf("DelDrv(%X)\n", device_name_lowercase);
@@ -86,6 +90,7 @@ void DelDrv(uint32_t device_name_lowercase)
 
 void InitCARD2(uint32_t pad_enable)
 {
+  (void)pad_enable;
   //printf("start card2\n");
 }
 
@@ -220,10 +225,8 @@ uint32_t function_80069634(void)
 void function_8006969C(void);
 void function_8005E03C(void);
 
-void interrupt2(uint32_t type)
+void interrupt2(void)
 {
-  //uint32_t mask = 1<<type;
-
   sp = 0x80010000;
 
   for (int i = 0; i < 8; i++) {
@@ -273,7 +276,7 @@ void interrupt2(uint32_t type)
 int interrupt_depth = 0;
 //jmp_buf env;
 
-void interrupt(uint32_t type)
+void interrupt(void)
 {
   interrupt_depth++;
 
@@ -289,7 +292,7 @@ void interrupt(uint32_t type)
   int_save_regs();
 
   //if (setjmp(&(env[0])) == 0)
-  interrupt2(type);
+  interrupt2();
 
   int_load_regs();
 
@@ -308,6 +311,7 @@ void ReturnFromException(void)
 
 void SysDeqIntRP(uint32_t priority, uint32_t struc) //bugged, use with care
 {
+  (void)struc;
   //printf("SysDeqIntRP(%.8X, %.8X)\n", priority, struc);
 
   assert(priority < 8);
@@ -452,6 +456,9 @@ void _new_card(void)
 
 void _card_write(uint32_t port, uint32_t sector, uint32_t src)
 {
+  (void)port;
+  (void)sector;
+  (void)src;
   //printf("_card_write(port: %.8X, sector: %.8X, src: %.8X)\n", port, sector, src);
   
   DeliverEvent(0xF4000001, 4);
@@ -460,6 +467,7 @@ void _card_write(uint32_t port, uint32_t sector, uint32_t src)
 
 uint32_t _card_info(uint32_t port)
 {
+  (void)port;
   //printf("_card_info(port: %d)\n", port);
 
   DeliverEvent(0xF4000001, 4);
@@ -470,6 +478,7 @@ uint32_t _card_info(uint32_t port)
 
 uint32_t _card_load(uint32_t port)
 {
+  (void)port;
   //printf("_card_load(port: %d)\n", port);
 
   DeliverEvent(0xF4000001, 4);
@@ -535,10 +544,10 @@ struct file {
 };
 
 struct file files[16] = {
-  {1}, {1}, {0}, {0},
-  {0}, {0}, {0}, {0},
-  {0}, {0}, {0}, {0},
-  {0}, {0}, {0}, {0}
+  {.fd = 1}, {.fd = 1}, {.fd = 0}, {.fd = 0},
+  {.fd = 0}, {.fd = 0}, {.fd = 0}, {.fd = 0},
+  {.fd = 0}, {.fd = 0}, {.fd = 0}, {.fd = 0},
+  {.fd = 0}, {.fd = 0}, {.fd = 0}, {.fd = 0}
 };
 
 uint32_t psx_open(char *file_name, uint32_t modev)
@@ -636,7 +645,7 @@ uint32_t psx_write(int fd, const char *str, uint32_t len)
 
     if (cursor == -1) UNREACHABLE;
 
-    int len2 = file.size - cursor;
+    uint32_t len2 = file.size - cursor;
     //printf("filesize: %d cursor: %d len2: %d\n", file.size, cursor, len2);
     if (len2 > len) len2 = len; 
 
@@ -706,6 +715,7 @@ void FlushCache(void)
 
 void LoadExec(char *filename, uint32_t stackbase, uint32_t stack_offset)
 {
+  printf("LoadExec(%s, 0x%.8X, 0x%.8X)", filename, stackbase, stack_offset);
   UNREACHABLE;
 }
 

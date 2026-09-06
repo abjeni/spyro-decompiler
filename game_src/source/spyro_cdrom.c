@@ -18,6 +18,8 @@
 
 int CdSync(int mode, uint8_t *result)
 {
+  (void)result;
+  (void)mode;
   //if (result) UNREACHABLE;
 
   return CdlComplete;
@@ -26,8 +28,8 @@ int CdSync(int mode, uint8_t *result)
 // size: 0x00000020
 void function_80063BD8(void)
 {
-  v0 = CdSync(a0, addr_to_pointer(a1));
   UNREACHABLE;
+  v0 = CdSync(a0, addr_to_pointer(a1));
 }
 
 void function_800653B4(void)
@@ -341,7 +343,7 @@ uint32_t CdInit(void)
       function_80066254();
       return 1;
     }
-    if (s0 == -1) {
+    if (s0 == (uint32_t)-1) {
       printf("CdInit: Init failed\n");
       return 0;
     }
