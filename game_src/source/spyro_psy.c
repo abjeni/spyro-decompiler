@@ -106,7 +106,9 @@ int32_t ResetGraph(int32_t mode)
   case 0: // reset
   case 3:
     printf("ResetGraph:jtb=%08x,env=%08x\n", 0x80074A1C, 0x80074A64);
+#ifdef __GNUC__
     [[fallthrough]];
+#endif
   case 5:
     s0 = 0x80074A64;
     spyro_memset8(s0, 0, 0x80);

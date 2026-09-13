@@ -39,7 +39,8 @@ void append_to_linked_list(link_list *link_list, uint32_t *first_node, uint32_t 
   //printf("link_list: 0x%.8X\n", pointer_to_addr(link_list));
   //for (int i = 0; i < 8; i++)
   //  print_access(pointer_to_addr(link_list)+i);
-  uint32_t *v0 = addr_to_pointer(link_list->end);
+  uint32_t end = link_list->end;
+  uint32_t *v0 = addr_to_pointer(end);
   link_list->end = pointer_to_addr(last_node);
   if (v0) {
     write_three_bytes(v0, pointer_to_addr(first_node));

@@ -445,7 +445,7 @@ void function_8003C358(void)
 }
 
 // size: 0x000001C8
-struct game_object *create_3d_text2(char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata)
+struct game_object *create_3d_text2(const char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata)
 {
   struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
 
@@ -491,7 +491,7 @@ void function_80017FE4(void)
 }
 
 // size: 0x000002A0
-struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint32_t unknown_spacing, uint32_t unknown_metadata)
+struct game_object *create_3d_text1(const char *str, vec3_32 *pos, vec3_32 size, uint32_t unknown_spacing, uint32_t unknown_metadata)
 {
   uint32_t s2 = 1;
   struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));

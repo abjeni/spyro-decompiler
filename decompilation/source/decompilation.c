@@ -106,7 +106,7 @@ struct function_name function_names[] = {
 
   {0x8005B8E0, "spyro_start()"},
 
-  //{0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
+  {0x8005BE88, "sound_ram_data_transfer(addr_to_pointer(a0), a1)"},
   
   {0x8005C720, "do_literally_nothing()"},
 
@@ -141,9 +141,8 @@ struct function_name function_names[] = {
   
   {0x8005E604, "spyro_memclr32(a0, a1)"},
   
-  //{0x8005E804, "v0 = dma_complete_callback(a0, a1)"},
-  
   {0x8005E804, "v0 = dma_callback(a0, a1)"},
+  
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
 
 

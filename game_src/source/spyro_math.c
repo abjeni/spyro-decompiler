@@ -310,8 +310,11 @@ void function_80016AB4(void)
   v0 = spyro_atan2(a0, a1, a2);
 }
 
+#ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverflow"
+#endif
+
 // cos_lut and sin_lut overlap
 int16_t cos_lut[256] = {
   0x1000, 0x0FFF, 0x0FFB, 0x0FF5, 0x0FEC, 0x0FE1, 0x0FD4, 0x0FC4,
@@ -383,7 +386,9 @@ int16_t sin_lut[256] = {
   0xFCE1, 0xFD44, 0xFDA7, 0xFE0B, 0xFE6F, 0xFED3, 0xFF37, 0xFF9B,
 };
 
+#ifdef __GNUC__
 #pragma GCC diagnostic pop
+#endif
 
 int16_t spyro_cos(int32_t angle)
 {
