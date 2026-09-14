@@ -37,8 +37,98 @@
 #include "wild_flight.h"
 #include "wizard_peak.h"
 #include "title_screen.h"
-#include "credits.h"
-#include "not_renamed.h"
+
+
+void function_8007CFC0(void)
+{
+  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
+  function_8007CFC0_artisans_home();
+}
+
+void function_8007D070(void)
+{
+  if (lib_num != LIB_STONE_HILL) UNREACHABLE;
+  function_8007D070_stone_hill();
+}
+
+void function_8007D04C(void)
+{
+  if (lib_num != LIB_TOWN_SQUARE) UNREACHABLE;
+  function_8007D04C_town_square();
+}
+
+void function_8007D998(void)
+{
+  if (lib_num != LIB_PEACEKEEPERS_HOME) UNREACHABLE;
+  function_8007D998_peacekeepers_home();
+}
+
+void function_8007D838(void)
+{
+  switch (lib_num) {
+    case LIB_DRY_CANYON:
+      function_8007D838_dry_canyon();
+      break;
+    case LIB_CLIFF_TOWN:
+      function_8007D838_cliff_town();
+      break;
+    default:
+      printf("function_8007D838, lib_num: %d\n", lib_num);
+      UNREACHABLE;
+  }
+}
+
+void function_8007D990(void)
+{
+  if (lib_num != LIB_MAGICCRAFTERS_HOME) UNREACHABLE;
+  function_8007D990_magiccrafters_home();
+}
+
+void function_8007D784(void)
+{
+  if (lib_num != LIB_BEASTMAKERS_HOME) UNREACHABLE;
+  function_8007D784_beastmakers_home();
+}
+
+void function_8007D9B8(void)
+{
+  if (lib_num != LIB_DREAMWEAVERS_HOME) UNREACHABLE;
+  function_8007D9B8_dreamweavers_home();
+}
+
+void function_8007CF30(void)
+{
+  if (lib_num != LIB_GNASTYS_WORLD) UNREACHABLE;
+  function_8007CF30_gnastys_world();
+}
+
+/*
+
+void function_8007B68C(void)
+{
+  switch (lib_num) {
+    case LIB_SUNNY_FLIGHT:
+      function_8007B68C_sunny_flight();
+      break;
+    case LIB_NIGHT_FLIGHT:
+      function_8007B68C_night_flight();
+      break;
+    case LIB_CRYSTAL_FLIGHT:
+      function_8007B68C_crystal_flight();
+      break;
+    case LIB_WILD_FLIGHT:
+      function_8007B68C_wild_flight();
+      break;
+    case LIB_ICY_FLIGHT:
+      function_8007B68C_icy_flight();
+      break;
+    default:
+      printf("function_8007B68C, lib_num: %d\n", lib_num);
+      UNREACHABLE;
+  }
+}
+
+*/
 
 
 
@@ -46,15 +136,33 @@
 // which functions are currently in memory from address 0x8007AA38 onwards?
 // it depends, and this is the workaround to get the colliding function addresses to work.
 
+/*
+
 void function_8007AA50(void)
 {
   function_8007AA50_credits();
 }
 
+void function_8007BFD0(void)
+{
+  function_8007BFD0_credits();
+}
+
+*/
+
 void function_8007ABAC(void)
 {
   function_8007ABAC_title_screen();
 }
+
+/*
+
+void function_8007CEE4(void)
+{
+  function_8007CEE4_title_screen();
+}
+
+*/
 
 void function_800857CC(void)
 {

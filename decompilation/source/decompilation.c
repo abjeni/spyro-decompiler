@@ -69,19 +69,18 @@ struct function_name function_names[] = {
   {0x80017C84, "spyro_vec_16_add(a0, a1, a2)"},
   {0x80017CB8, "spyro_unpack_96bit_triangle(a0, a1)"},
   {0x80017E54, "v0 = interpolate_color(a0, a1, a2)"},
-  
+  {0x80017E98, "rgb_to_grey(addr_to_pointer(a0), a1)"},
   {0x80017F24, "spyro_image_unpack(addr_to_pointer(a0), addr_to_pointer(a1), a2)"},
 
   {0x80017FE4, "v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3))", .name = "create_3d_text2"},
   {0x800181AC, "v0 = pointer_to_addr(create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10)))", .name = "create_3d_text1"},
   
-  /*
+  {0x8001844C, "gui_line(a0, a1, a2, a3)"},
   {0x80018534, "blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2)"},
   {0x8001860C, "gui_box_balloonist(a0, a1, a2, a3)"},
   {0x80018728, "rescued_dragon_name()"},
   {0x800190D4, "fade_in(a0, a1, a2, a3)"},
   {0x8001919C, "draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2))"},
-  */
 
   {0x8002BB20, "v0 = completion_percentage()"},
   
@@ -1031,6 +1030,7 @@ void include_headers(struct program prog)
     fprintf(prog.output, "#include \"spyro_math.h\"\n");
     fprintf(prog.output, "#include \"spyro_game.h\"\n");
     fprintf(prog.output, "#include \"spyro_graphics.h\"\n");
+    fprintf(prog.output, "#include \"spyro_render_pipelines.h\"\n");
     fprintf(prog.output, "#include \"spyro_psy.h\"\n");
     fprintf(prog.output, "#include \"spyro_controller.h\"\n");
     fprintf(prog.output, "#include \"spyro_memory_card.h\"\n");

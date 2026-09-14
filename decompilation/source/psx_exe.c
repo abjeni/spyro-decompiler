@@ -1,6 +1,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "psx_exe.h"
@@ -196,8 +197,6 @@ struct entries entries = ENTRIES(ARR_U32(
   0x800331AC,
   0x8002C714,
   0x800333DC,
-  0x8001ED5C,
-  0x8002C534,
 ));
 
 struct skips skips = SKIPS(ARR_U32(
@@ -328,42 +327,29 @@ struct skips skips = SKIPS(ARR_U32(
   0x80038120,
   0x800530C0,
   0x80016784,
-  0x80016930,
-  0x80017FE4,
   0x800181AC,
   0x8004EBA8,
   0x8005DBC4,
-  0x8005FA8C,
-  0x8005FAF0,
   0x8005FD64,
   0x8005FDD8,
   0x80060030,
-  0x80060670,
   0x8006276C,
   0x80062FD4,
+  0x8001860C,
+  0x80018880,
+  0x800190D4,
+  0x80019698,
   0x8001F158,
   0x8001F798,
-  0x800208FC,
-  0x80020F34,
   0x80022A2C,
-  0x80059F8C,
-  0x80023AC4,
-  0x80059A48,
-  0x80058D64,
-  0x80058BA8,
-  0x800258F0,
+  0x800521C0,
   0x8002B9CC,
   0x80050BD0,
-  0x800521C0,
   0x800573C8,
-  0x800168A0,
-  0x80017B48,
-  0x8002BB20,
-  0x800624E8,
-  0x800625F8,
-  0x8004F000,
-  0x80033C50,
-  0x80058864,
+  0x800258F0,
+  0x8001844C,
+  0x80018534,
+  0x8005B6F8,
 ));
 
 

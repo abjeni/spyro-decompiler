@@ -39,14 +39,15 @@ typedef struct __attribute__((packed)) {
 
 // i made this one up
 typedef struct __attribute__((packed)) {
-  DRAWENV draw;
-  DISPENV disp;
-  uint32_t memory_arena;
-  uint32_t memory_ordered_link_list;
-  uint32_t memory_link_list;
-  uint32_t unknown4;
-  uint32_t unknown5;
+  DRAWENV draw; // 0x00
+  DISPENV disp; // 0x5C
+  uint32_t memory_arena; // 0x70
+  uint32_t memory_ordered_link_list; // 0x74
+  uint32_t memory_link_list; // 0x78
+  uint32_t unknown4; // 0x7C
+  uint32_t unknown5; // 0x80
 } DISP;
+
 
 // size: 0x00000010
 void spyro_srand(int32_t seed);

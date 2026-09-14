@@ -21,6 +21,8 @@
 #include <stdint.h>
 #include <string.h>
 
+void function_80023AC4(void);
+
 DISP *backbuffer_disp = NULL;
 DISP *frontbuffer_disp = NULL;
 
@@ -83,14 +85,14 @@ void gui_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
   sh(cmd_ptr + 0x0A, y1);
   sh(cmd_ptr + 0x10, x2);
   sh(cmd_ptr + 0x12, y2);
-  v0 = 0x80 - spyro_two_angle_diff_8bit(spyro_atan(x1 - 0x100, y1 - 0x78), lw(0x800770F4));
-  sb(cmd_ptr + 0x04, v0 + 0x60);
-  sb(cmd_ptr + 0x05, v0 + 0x60);
-  sb(cmd_ptr + 0x06, v0);
-  v0 = 0x80 - spyro_two_angle_diff_8bit(spyro_atan(x2 - 0x100, y2 - 0x78), lw(0x800770F4));
-  sb(cmd_ptr + 0x0C, v0 + 0x60);
-  sb(cmd_ptr + 0x0D, v0 + 0x60);
-  sb(cmd_ptr + 0x0E, v0);
+  uint8_t angle1 = 0x80 - spyro_two_angle_diff_8bit(spyro_atan(x1 - 0x100, y1 - 0x78), lw(0x800770F4));
+  sb(cmd_ptr + 0x04, angle1 + 0x60);
+  sb(cmd_ptr + 0x05, angle1 + 0x60);
+  sb(cmd_ptr + 0x06, angle1);
+  uint8_t angle2 = 0x80 - spyro_two_angle_diff_8bit(spyro_atan(x2 - 0x100, y2 - 0x78), lw(0x800770F4));
+  sb(cmd_ptr + 0x0C, angle2 + 0x60);
+  sb(cmd_ptr + 0x0D, angle2 + 0x60);
+  sb(cmd_ptr + 0x0E, angle2);
   append_gpu_command_block(addr_to_pointer(cmd_ptr));
   cmd_ptr += 0x14;
   sw(allocator1_ptr, cmd_ptr);
@@ -209,6 +211,106 @@ void function_80018880(void)
   sw(gameobject_stack_ptr, a1);
   sw(a0, 0);
 }
+
+// size: 0x000000C8
+void fade_in(uint32_t semi_transparency, uint8_t r, uint8_t g, uint8_t b)
+{
+  uint32_t cmd = lw(allocator1_ptr);
+
+  SetDrawMode(addr_to_pointer(cmd), 1, 0, semi_transparency << 5, NULL);
+
+  append_gpu_command_block(addr_to_pointer(cmd));
+  
+  sw(cmd + 0x0C, 0x05000000);
+  sb(cmd + 0x10, r);
+  sb(cmd + 0x11, g);
+  sb(cmd + 0x12, b);
+  sb(cmd + 0x13, 0x2A);
+
+  sh(cmd + 0x14, 0);
+  sh(cmd + 0x16, 0x08);
+
+  sh(cmd + 0x18, 0x200);
+  sh(cmd + 0x1A, 0x08);
+
+  sh(cmd + 0x1C, 0);
+  sh(cmd + 0x1E, 0xE8);
+
+  sh(cmd + 0x20, 0x200);
+  sh(cmd + 0x22, 0xE8);
+
+  append_gpu_command_block(addr_to_pointer(cmd + 0x0C));
+
+  sw(allocator1_ptr, cmd + 0x24);
+}
+
+// size: 0x000000C8
+void function_800190D4(void)
+{
+  UNREACHABLE;
+  fade_in(a0, a1, a2, a3);
+}
+
+// size: 0x00000164
+void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
+{
+
+  sp -= 0x18;
+  sw(sp + 0x10, s0);
+  sw(sp + 0x14, ra);
+
+  s0 = lw(allocator1_ptr);
+  sw(s0 + 0x00, 0x09000000);
+  if (a2){
+    sb(s0 + 0x04, col->x);
+    sb(s0 + 0x05, col->y);
+    sb(s0 + 0x06, col->z);
+  } else {
+    sb(s0 + 0x04, 0x80);
+    sb(s0 + 0x05, 0x80);
+    sb(s0 + 0x06, 0x80);
+  }
+  sb(s0 + 0x07, 0x2C);
+
+  sh(s0 + 0x08, box->x); // x
+  sh(s0 + 0x0A, box->y); // y
+
+  sw(s0 + 0x0C, sprite[0]); 
+
+  sh(s0 + 0x10, box->x + box->w); // x
+  sh(s0 + 0x12, box->y);          // y
+
+  sw(s0 + 0x14, sprite[1]);
+  sb(s0 + 0x14, lbu(s0 + 0x0C) + box->w);
+
+  sh(s0 + 0x18, box->x);          // x
+  sh(s0 + 0x1A, box->y + box->h); // y
+
+  sb(s0 + 0x1C, lbu(s0 + 0x0C));
+  sb(s0 + 0x1D, lbu(s0 + 0x0D) + box->h);
+
+  sh(s0 + 0x20, box->x + box->w); // x
+  sh(s0 + 0x22, box->y + box->h); // y
+
+  sb(s0 + 0x24, lbu(s0 + 0x14));
+  sb(s0 + 0x25, lbu(s0 + 0x0D) + box->h);
+  
+  append_gpu_command_block(addr_to_pointer(s0));
+  sw(allocator1_ptr, s0 + 0x28);
+
+  ra = lw(sp + 0x14);
+  s0 = lw(sp + 0x10);
+  sp += 0x18;
+}
+
+// size: 0x00000164
+void function_8001919C(void)
+{
+  UNREACHABLE;
+  draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2));
+}
+
+// BROKEN ABOVE
 
 // size: 0x000000E8
 void function_80018908(void)
@@ -533,104 +635,6 @@ void function_80018F30(void)
   sp += 40; // 0x0028
 }
 
-// size: 0x000000C8
-void fade_in(uint32_t semi_transparency, uint8_t r, uint8_t g, uint8_t b)
-{
-  uint32_t cmd = lw(allocator1_ptr);
-
-  SetDrawMode(addr_to_pointer(cmd), 1, 0, semi_transparency << 5, NULL);
-
-  append_gpu_command_block(addr_to_pointer(cmd));
-  
-  sw(cmd + 0x0C, 0x05000000);
-  sb(cmd + 0x10, r);
-  sb(cmd + 0x11, g);
-  sb(cmd + 0x12, b);
-  sb(cmd + 0x13, 0x2A);
-
-  sh(cmd + 0x14, 0);
-  sh(cmd + 0x16, 0x08);
-
-  sh(cmd + 0x18, 0x200);
-  sh(cmd + 0x1A, 0x08);
-
-  sh(cmd + 0x1C, 0);
-  sh(cmd + 0x1E, 0xE8);
-
-  sh(cmd + 0x20, 0x200);
-  sh(cmd + 0x22, 0xE8);
-
-  append_gpu_command_block(addr_to_pointer(cmd + 0x0C));
-
-  sw(allocator1_ptr, cmd + 0x24);
-}
-
-// size: 0x000000C8
-void function_800190D4(void)
-{
-  UNREACHABLE;
-  fade_in(a0, a1, a2, a3);
-}
-
-// size: 0x00000164
-void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
-{
-
-  sp -= 0x18;
-  sw(sp + 0x10, s0);
-  sw(sp + 0x14, ra);
-
-  s0 = lw(allocator1_ptr);
-  sw(s0 + 0x00, 0x09000000);
-  if (a2){
-    sb(s0 + 0x04, col->x);
-    sb(s0 + 0x05, col->y);
-    sb(s0 + 0x06, col->z);
-  } else {
-    sb(s0 + 0x04, 0x80);
-    sb(s0 + 0x05, 0x80);
-    sb(s0 + 0x06, 0x80);
-  }
-  sb(s0 + 0x07, 0x2C);
-
-  sh(s0 + 0x08, box->x); // x
-  sh(s0 + 0x0A, box->y); // y
-
-  sw(s0 + 0x0C, sprite[0]); 
-
-  sh(s0 + 0x10, box->x + box->w); // x
-  sh(s0 + 0x12, box->y);          // y
-
-  sw(s0 + 0x14, sprite[1]);
-  sb(s0 + 0x14, lbu(s0 + 0x0C) + box->w);
-
-  sh(s0 + 0x18, box->x);          // x
-  sh(s0 + 0x1A, box->y + box->h); // y
-
-  sb(s0 + 0x1C, lbu(s0 + 0x0C));
-  sb(s0 + 0x1D, lbu(s0 + 0x0D) + box->h);
-
-  sh(s0 + 0x20, box->x + box->w); // x
-  sh(s0 + 0x22, box->y + box->h); // y
-
-  sb(s0 + 0x24, lbu(s0 + 0x14));
-  sb(s0 + 0x25, lbu(s0 + 0x0D) + box->h);
-  
-  append_gpu_command_block(addr_to_pointer(s0));
-  sw(allocator1_ptr, s0 + 0x28);
-
-  ra = lw(sp + 0x14);
-  s0 = lw(sp + 0x10);
-  sp += 0x18;
-}
-
-// size: 0x00000164
-void function_8001919C(void)
-{
-  UNREACHABLE;
-  draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2));
-}
-
 // size: 0x00000398
 void function_80019300(void)
 {
@@ -822,8 +826,6 @@ label80019678:
   s0 = lw(sp + 0x40);
   sp += 88; // 0x0058
 }
-
-void function_80023AC4(void);
 
 // size: 0x000000A4
 void function_80019698(void)
@@ -4419,10 +4421,7 @@ void function_8001E9C8(void)
   sw(0x800785D0, v0);
   a0 = -1; // 0xFFFFFFFF
   function_800258F0();
-  a0 = -1; // 0xFFFFFFFF
-  a1 = 0x80076DE4;
-  a2 = a1 - 20; // 0xFFFFFFEC
-  draw_skybox(a0, a1, a2);
+  draw_skybox(-1, 0x80076DE4, 0x80076DD0);
   a1 = lw(0x80075918);
   temp = a1 == 0;
   a0 = 2; // 0x0002
@@ -4430,7 +4429,7 @@ void function_8001E9C8(void)
   a1 = a1 << 4;
   a2 = a1;
   a3 = a1;
-  fade_in(a0, a1, a2, a3);
+  //fade_in(a0, a1, a2, a3);
 label8001EAAC:
 
   wait_two_vsyncs();
@@ -4469,124 +4468,6 @@ void function_8001EB80(void)
   PutDispEnv(&backbuffer_disp->disp);
   PutDrawEnv(&backbuffer_disp->draw);
   DrawOTag(spyro_combine_all_command_buffers(0x800));
-}
-
-// size: 0x000003FC
-void function_8001ED5C(void)
-{
-  if (backbuffer_disp != addr_to_pointer(DISP1))
-  {
-    sw(BACKBUFFER_DISP, DISP1);
-    backbuffer_disp = addr_to_pointer(DISP1);
-    frontbuffer_disp = addr_to_pointer(DISP2);
-  }
-  else
-  {
-    sw(BACKBUFFER_DISP, DISP2);
-    backbuffer_disp = addr_to_pointer(DISP2);
-    frontbuffer_disp = addr_to_pointer(DISP1);
-  }
-
-  v0 = backbuffer_disp->memory_arena;
-  v1 = backbuffer_disp->memory_ordered_link_list;
-  a0 = backbuffer_disp->memory_link_list;
-  sw(0x800758B0, 0);
-  sw(allocator1_ptr, v0);
-  v0 += 0x1C000;
-  sw(allocator1_end, v0);
-  sw(gameobject_stack_ptr_base, v0);
-  sw(gameobject_stack_ptr, v0);
-  sw(ordered_linked_list, v1);
-  sw(linked_list1, a0);
-  function_80033C50();
-
-  switch (lw(0x800757D8))
-  {
-  case 0: // in game
-    v0 = lbu(SKYBOX_DATA + 0x10);
-    v1 = lbu(SKYBOX_DATA + 0x11);
-    a0 = lbu(SKYBOX_DATA + 0x12);
-    sb(0x80076EF9, v0);
-    sb(0x80076EFA, v1);
-    sb(0x80076EFB, a0);
-    sb(0x80076F7D, v0);
-    sb(0x80076F7E, v1);
-    sb(0x80076F7F, a0);
-    function_800521C0();
-    
-    if (lw(0x80075690) == 0)
-      function_80019300();
-    
-    if (lw(IS_DEMO_MODE))
-      function_80018908();
-
-    function_80019698();
-    function_8002B9CC();
-    function_80050BD0();
-    function_800573C8();
-    a1 = lw(0x80075918);
-    if (a1) {
-      uint32_t grey = a1*8;
-      fade_in(TRANSPARENCY_SUBTRACT, grey, grey, grey);
-    }
-
-    if (lw(0x8007570C) || lw(0x800756C0))
-      function_80018F30();
-    
-    function_800189F0();
-
-    wait_two_vsyncs();
-    
-    PutDispEnv(&backbuffer_disp->disp);
-    PutDrawEnv(&backbuffer_disp->draw);
-    DrawOTag(spyro_combine_all_command_buffers(0x800));
-    break;
-  case 1: // loading level
-  case 9: // landing after loading
-    function_8001A050();
-    break;
-  case 2: // pause menu
-  case 3: // inventory
-  case 6:
-    function_8001A40C();
-    break;
-  case 4: // dead
-  case 5:
-    function_8001CA38();
-    break;
-  case 7: // flight level crashed
-    if (lw(0x8007567C) != 0x8007B68C) UNREACHABLE;
-    function_8007B68C();
-    break;
-  case 8: // freed dragon
-    function_8001CFDC();
-    break;
-  case 10: // before loading ?
-    function_8001C694();
-    break;
-  case 11: // fairy menu
-    function_8001D718();
-    break;
-  case 12: // balloonist
-    function_8001E24C();
-    break;
-  case 13: // title screen / game intro
-    v1 = lw(0x80078D78);
-    if (v1 == 3)
-      function_8001E6B8();
-    else
-      function_8007CEE4();
-    break;
-  case 14: // cutscenes
-    function_8001E9C8();
-    break;
-  case 15: // more credits
-    if ((int32_t)lw(0x80075704) < 99)
-      function_8007BFD0_credits();
-    else
-      function_8001EB80();
-    break;
-  }
 }
 
 // size: 0x000001DC
@@ -4744,6 +4625,9 @@ void function_8002C534(void)
   sp += 0x20;
 }
 
+
+// BROKEN BELOW
+
 void function_8007B68C(void)
 {
   uint32_t temp;
@@ -4803,11 +4687,6 @@ void function_8007B68C(void)
   goto label8007CE90;
 label8007B854:
   s5 = 0;
-  if (backbuffer_disp == addr_to_pointer(DISP1))
-    a0 = DISP2;
-  else
-    a0 = DISP1;
-  
   s1 = 0;
   PutDrawEnv(&frontbuffer_disp->draw);
   a0 =  0x1C000;
@@ -6952,6 +6831,7 @@ void function_8005B6F8(void)
   sw(0x800785F8, v0 - 0x2000);
   sw(0x800785F4, v0 - 0x6000);
   sw(0x800785F0, v0 - 0x6008);
+  v0 -= 0x6008;
   if (a0)
     v1 = -0x13000;
   else
@@ -6965,12 +6845,132 @@ void function_8005B6F8(void)
   a3 = lw(0x800785EC);
   a0 = lw(0x800785F0);
   v0 = lw(0x800785F4);
-  sw(DISP1 + 0x70, v1);
-  sw(DISP2 + 0x70, a3);
-  sw(DISP1 + 0x78, a0);
-  sw(DISP2 + 0x78, a0);
-  sw(DISP1 + 0x74, v0);
-  sw(DISP2 + 0x74, v0);
+  DISP *disp1 = addr_to_pointer(DISP1);
+  DISP *disp2 = addr_to_pointer(DISP2);
+  disp1->memory_arena = v1;
+  disp2->memory_arena = a3;
+  disp1->memory_link_list = a0;
+  disp2->memory_link_list = a0;
+  disp1->memory_ordered_link_list = v0;
+  disp2->memory_ordered_link_list = v0;
   spyro_memset32(a0, 0, 8);
-  spyro_memset32(lw(0x800785F4), 0, 0x4000);
+  spyro_memset32(v0, 0, 0x4000);
+}
+
+// size: 0x000003FC
+void function_8001ED5C(void)
+{
+  if (backbuffer_disp != addr_to_pointer(DISP1))
+  {
+    sw(BACKBUFFER_DISP, DISP1);
+    backbuffer_disp = addr_to_pointer(DISP1);
+    frontbuffer_disp = addr_to_pointer(DISP2);
+  }
+  else
+  {
+    sw(BACKBUFFER_DISP, DISP2);
+    backbuffer_disp = addr_to_pointer(DISP2);
+    frontbuffer_disp = addr_to_pointer(DISP1);
+  }
+
+  v0 = backbuffer_disp->memory_arena;
+  v1 = backbuffer_disp->memory_ordered_link_list;
+  a0 = backbuffer_disp->memory_link_list;
+  sw(0x800758B0, 0);
+  sw(allocator1_ptr, v0);
+  v0 += 0x1C000;
+  sw(allocator1_end, v0);
+  sw(gameobject_stack_ptr_base, v0);
+  sw(gameobject_stack_ptr, v0);
+  sw(ordered_linked_list, v1);
+  sw(linked_list1, a0);
+  function_80033C50();
+
+  switch (lw(0x800757D8))
+  {
+  case 0: // in game
+    v0 = lbu(SKYBOX_DATA + 0x10);
+    v1 = lbu(SKYBOX_DATA + 0x11);
+    a0 = lbu(SKYBOX_DATA + 0x12);
+    sb(0x80076EF9, v0);
+    sb(0x80076EFA, v1);
+    sb(0x80076EFB, a0);
+    sb(0x80076F7D, v0);
+    sb(0x80076F7E, v1);
+    sb(0x80076F7F, a0);
+    function_800521C0();
+    
+    if (lw(0x80075690) == 0)
+      function_80019300();
+    
+    if (lw(IS_DEMO_MODE))
+      function_80018908();
+
+    function_80019698();
+    function_8002B9CC();
+    function_80050BD0();
+    function_800573C8();
+    a1 = lw(0x80075918);
+    if (a1) {
+      uint32_t grey = a1*8;
+      fade_in(TRANSPARENCY_SUBTRACT, grey, grey, grey);
+    }
+
+    if (lw(0x8007570C) || lw(0x800756C0))
+      function_80018F30();
+    
+    function_800189F0();
+
+    wait_two_vsyncs();
+    
+    PutDispEnv(&backbuffer_disp->disp);
+    PutDrawEnv(&backbuffer_disp->draw);
+    DrawOTag(spyro_combine_all_command_buffers(0x800));
+    break;
+  case 1: // loading level
+  case 9: // landing after loading
+    function_8001A050();
+    break;
+  case 2: // pause menu
+  case 3: // inventory
+  case 6:
+    function_8001A40C();
+    break;
+  case 4: // dead
+  case 5:
+    function_8001CA38();
+    break;
+  case 7: // flight level crashed
+    if (lw(0x8007567C) != 0x8007B68C) UNREACHABLE;
+    function_8007B68C();
+    break;
+  case 8: // freed dragon
+    function_8001CFDC();
+    break;
+  case 10: // before loading ?
+    function_8001C694();
+    break;
+  case 11: // fairy menu
+    function_8001D718();
+    break;
+  case 12: // balloonist
+    function_8001E24C();
+    break;
+  case 13: // title screen / game intro
+    v1 = lw(0x80078D78);
+    if (v1 == 3)
+      function_8001E6B8();
+    else
+      function_8007CEE4();
+    break;
+  case 14: // cutscenes
+    function_8001E9C8();
+    break;
+  case 15: // more credits
+    if ((int32_t)lw(0x80075704) < 99)
+      function_8007BFD0_credits();
+    else
+      function_8001EB80();
+    break;
+  }
 }
