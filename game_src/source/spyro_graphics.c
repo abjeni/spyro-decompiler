@@ -21388,7 +21388,7 @@ label80051164:
   sw(sp + 0x0128, 0);
   sw(sp + 0x0130, 0);
   v0 = 0x8006FCF4 + 0x0800;
-  sw(0x80075798, v0);
+  sw(0x80075798, v0); // &0x00000000
   v0 = lw(s5 + 0x0000);
   v1 = a2 - a1;
   v0 = lw(v0 + 0x0004);
@@ -21578,15 +21578,53 @@ label8005157C:
   temp = s3 != 0;
   if (temp) goto label80051F5C;
 label80051584:
-  t4 = lw(sp + 0x128);
-  div_psx(t4, lw(lw(s5) + 0x04));
+  v0 = lw(s5 + 0x0000);
+  t4 = lw(sp + 0x0128);
+  v0 = lw(v0 + 0x0004);
+  div_psx(t4,v0);
+  temp = v0 != 0;
+  if (temp) goto label800515A4;
+  UNREACHABLE; // BREAK 0x01C00
+label800515A4:
+  at = -1; // 0xFFFFFFFF
+  temp = v0 != at;
+  at = 0x80000000;
+  if (temp) goto label800515BC;
+  temp = t4 != at;
+  if (temp) goto label800515BC;
+  UNREACHABLE; // BREAK 0x01800
+label800515BC:
   t4=lo;
   v1 = lw(0x80075934);
   div_psx(v1,v0);
+  temp = v0 != 0;
+  if (temp) goto label800515DC;
+  UNREACHABLE; // BREAK 0x01C00
+label800515DC:
+  at = -1; // 0xFFFFFFFF
+  temp = v0 != at;
+  at = 0x80000000;
+  if (temp) goto label800515F4;
+  temp = v1 != at;
+  if (temp) goto label800515F4;
+  UNREACHABLE; // BREAK 0x01800
+label800515F4:
   v1=lo;
-  sw(sp + 0x128, t4);
-  t4 = lw(sp + 0x130);
+  sw(sp + 0x0128, t4);
+  t4 = lw(sp + 0x0130);
   div_psx(t4,v0);
+  temp = v0 != 0;
+  if (temp) goto label80051614;
+  UNREACHABLE; // BREAK 0x01C00
+label80051614:
+  at = -1; // 0xFFFFFFFF
+  temp = v0 != at;
+  at = 0x80000000;
+  if (temp) goto label8005162C;
+  temp = t4 != at;
+  if (temp) goto label8005162C;
+  UNREACHABLE; // BREAK 0x01800
+label8005162C:
   t4=lo;
   v1 = (int32_t)v1 >> 7;
   v0 = (int32_t)v1 < 256;
@@ -21724,18 +21762,21 @@ label80051814:
   v0 = v0 << 3;
   sw(0x80077EA0 + v0, 0);
   t4 = lw(sp + 0x0138);
-  v0 = (int32_t)t4 < 0x4000;
+  v0 = (int32_t)t4 < 16384;
   temp = v0 == 0;
   v0 = (int32_t)t4 < 12289;
   if (temp) goto label800518C0;
   temp = v0 != 0;
   a2 = t4 - 12288; // 0xFFFFD000
   if (temp) goto label800518AC;
+  v0 = lw(s5 + 0x0000);
   a1 = lw(sp + 0x00B8);
-  sw(0x8007575C, a2);
-  v0 = interpolate_color(lw(lw(lw(s5)) + 0x10), a1, a2);
-  a0 = 0x800757D4;
-  sw(0x800757D4, v0);
+  v0 = lw(v0 + 0x0000);
+  sw(0x8007575C, a2); // &0x00000000
+  a0 = lw(v0 + 0x0010);
+  v0 = interpolate_color(a0, a1, a2);
+  a0 = 0x800757D4; // &0x00000000
+  sw(0x800757D4, v0); // &0x00000000
   goto label800518C4;
 label800518AC:
   v0 = lw(s5 + 0x0000);
@@ -21748,7 +21789,7 @@ label800518C4:
   function_8004FEA0();
 label800518CC:
   t4 = lw(sp + 0x0138);
-  v0 = (int32_t)t4 < 0x4000;
+  v0 = (int32_t)t4 < 16384;
   temp = v0 == 0;
   fp = 512; // 0x0200
   if (temp) goto label80051F5C;
@@ -21760,7 +21801,7 @@ label800518CC:
   v0 = lw(s5 + 0x0000);
   v1 = lw(v0 + 0x0004);
   v0 = 0x8006FCF4 + 0x0800;
-  sw(0x80075798, v0);
+  sw(0x80075798, v0); // &0x00000000
   temp = (int32_t)v1 <= 0;
   s3 = 0;
   if (temp) goto label80051A04;
@@ -22097,13 +22138,13 @@ label80051EA8:
   a1 = lw(sp + 0x00B8);
   v0 = lw(v0 + 0x0000);
   a2 = t4 - 12288; // 0xFFFFD000
-  sw(0x8007575C, a2);
+  sw(0x8007575C, a2); // &0x00000000
   a0 = lw(v0 + 0x0010);
   v0 = interpolate_color(a0, a1, a2);
   v1 = lw(s5 + 0x0000);
   a1 = sp + 16; // 0x0010
   a0 = lw(v1 + 0x0000);
-  sw(0x800757D4, v0);
+  sw(0x800757D4, v0); // &0x00000000
   a2 = sp + 48; // 0x0030
   function_80050240();
   goto label80051F5C;
@@ -22127,7 +22168,7 @@ label80051F5C:
 label80051F88:
   a2 = 0x80076E24;
   a0 = lw(a2 + 0x0000);
-  v0 = lw(0x800785B4);
+  v0 = lw(0x800785A8 + 0x000C);
   v0 = (int32_t)a0 < (int32_t)v0;
   temp = v0 != 0;
   a1 = a2 - 64; // 0xFFFFFFC0
