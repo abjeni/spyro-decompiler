@@ -8903,149 +8903,6 @@ void function_80058BD8(void)
   save_mat3(0x800770E0, m);
 }
 
-// traverses a zero terminated pointer
-// array starting at 0x8006FCF4
-/*void function_8001F158()
-{
-  uint32_t at = 0x80077DD8;
-  sw(at + 0x08, s2);
-  sw(at + 0x0C, s3);
-  sw(at + 0x10, s4);
-  sw(at + 0x14, s5);
-  sw(at + 0x18, s6);
-  sw(at + 0x1C, s7);
-  sw(at + 0x24, sp);
-  sw(at + 0x28, fp);
-
-  ra = 0x8006FCF4 + 0x00;
-  fp = 0x8006FCF4 + 0x1600;
-  uint32_t lo = 0x8006FCF4 + 0x2800;
-
-  t9 = 0x80076DD0;
-  
-  s2 = lw(t9 + 0x28);
-  s3 = lw(t9 + 0x2C);
-  s4 = lw(t9 + 0x30);
-
-  mat3 rtm = load_mat3(t9);
-
-  while(fp + 0x38 <= 0x8006FCF4 + 0x2200) {
-    sp = lw(ra);
-    ra += 4;
-
-    if (sp == 0) break;
-
-    a0 = lhu(sp + 0x50);
-    sb(sp + 0x51, 0);
-    a1 = (a0 & 0x100) << 1;
-    t4 = ((a0 & 0xFF) << 8) + a1;
-
-    vec3_32 x = {
-      -(int32_t)(s2 - lw(sp + 0x0C)) >> 2,
-       (int32_t)(s3 - lw(sp + 0x10)) >> 2,
-       (int32_t)(s4 - lw(sp + 0x14)) >> 2
-    };
-    
-    if (abs_int(x.x) >= t4
-     || abs_int(x.y) >= t4
-     || abs_int(x.z) >= t4) continue;
-
-    t6 = lw(sp + 0x3C);
-    t7 = lw(0x80076378 + lhu(sp + 0x36)*4);
-    t5 = lw(((t6 & 0xFF) << 2) + t7 + 0x38);
-    
-    a1 = lbu(t5 + 7) << 4;
-    t0 = (a1 >> 1) + (a1 >> 5);
-    a2 = t0 + (a1 >> 2);
-    a3 = t0 + (a1 >> 4);
-
-    x = vec3_32_mat_mul((vec3_32){x.y, x.z, x.x}, rtm);
-
-    // frustum culling
-    if (x.z >= (int32_t)t4
-     || x.z <= (int32_t)-a1
-     || (int32_t)(abs_int(x.x) - a2)*4 >= (int32_t)(x.z + a3)*3) continue;
-
-    if ((int32_t)lw(sp + 0x1C) < 0 && x.z < 4608)
-    {
-      sw(lo + 0, sp);
-      sw(lo + 4, t5 + 6 + 0x24 + lbu((lbu(sp + 0x3E)*8)));
-      lo += 8;
-    }
-
-    t1 = (a1 >> 2) + (a1 >> 4);
-    t0 = a1 - (a1 >> 5) - (a1 >> 6);
-    
-    t3 = x.z + t1 - (abs_int(x.y) - t0)*3;
-    if ((int32_t)t3 <= 0) continue;
-    
-    if ((int32_t)(abs_int(x.x) + a2)*4 >= (int32_t)(x.z - a3)*3
-     || (int32_t)(x.z - t1) <= (int32_t)(abs_int(x.y) + t0)*3)
-      a0 = 0x80000000;
-    else
-      a0 = 0x40000000;
-
-    a1 = lbu(sp + 0x40);
-    t3 = lw(sp + 0x44); // rotation
-
-    if (a1) {
-      // t6 = lw(sp + 0x3C);
-      t4 = lw(t7 + 0x38 + ((t6 >> 8) & 0xFF)*4);
-
-      a0 += (max_int(lbu(t5 + 0xB), lbu(t4 + 0xB)) << 24)
-        + (a1 << 8) + ((t3 >> 24) << 16) + lbu(sp + 0x57);
-          
-      a1 = (((t6 >> 16) & 0xFF) << 3) + 36 + t5;
-      a2 = ((t6 >> 24) << 3) + 36 + t4;
-    } else {
-      // t6 = lw(sp + 0x3C);
-      a0 += ((t3 >> 24) << 16) + (lbu(t5 + 0xB) << 24) + lbu(sp + 0x57);
-      a1 = (((t6 >> 16) & 0xFF) << 3) + 36 + t5;
-      a2 = 0;
-    }
-
-    t2 = ((lbu(sp + 0x4B) & 0x3F) << 8) - x.z;
-
-    sb(sp + 0x51, 1);
-    sw(fp + 0x00, a0); // four 8-bit numbers
-    sw(fp + 0x04, t5); // pointer to another struct1
-    sw(fp + 0x08, a1); // pointer to another struct2
-    sw(fp + 0x0C, a2); // pointer to another struct3?
-    sw(fp + 0x10, x.x); //vec1 x
-    sw(fp + 0x14, x.y); //vec1 y
-    sw(fp + 0x18, x.z); //vec1 z
-    sh(fp + 0x2E, t2);
-    sw(fp + 0x34, sp);
-
-    mat3 m = rtm;
-
-    uint32_t rotY = (t3 >> 16) & 0xFF;
-    if (rotY) m = mat3_mul(m, mat3rotY(-rotY*16));
-
-    uint32_t rotX = (t3 >>  8) & 0xFF;
-    if (rotX) m = mat3_mul(m, mat3rotX(rotX*16));
-    
-    uint32_t rotZ = (t3 >>  0) & 0xFF;
-    if (rotZ) m = mat3_mul(m, mat3rotZ(-rotZ*16));
-
-    save_mat3(fp + 0x1C, m);
-
-    fp += 0x38;
-  }
-
-  sw(fp, 0);
-  v0 = 0x80075EF8;
-  sw(v0 + 8, lo);
-
-  at = 0x80077DD8;
-  fp = lw(at + 0x28);
-  sp = lw(at + 0x24);
-  s4 = lw(at + 0x10);
-  s3 = lw(at + 0x0C);
-  s2 = lw(at + 0x08);
-  return;
-}*/
-
 // size: 0x00001164
 void function_8001F798(void)
 {
@@ -18928,6 +18785,49 @@ label8004FD6C:
   return;
 }
 
+// size: 0x000000F4
+void function_8004FDAC(void)
+{
+  cop2.RGBC = a2;
+  cop2.RFC = ((a3 >>  0) & 0xFF) << 4;
+  cop2.GFC = ((a3 >>  8) & 0xFF) << 4;
+  cop2.BFC = ((a3 >> 16) & 0xFF) << 4;
+
+  vec2 vec1 = vec2_from_32(a0);
+  vec2 vec2 = vec2_from_32(a1);
+
+  vec2 = vec2_sub(vec2, vec1);
+  
+  at = vec1.x;
+  v0 = vec1.y;
+  v1 = vec2.x;
+  a0 = vec2.y;
+
+  int32_t a1 = lw(t2 + 0x0C);
+  int32_t a2 = lw(t2 + 0x10);
+  int32_t a3 = lw(t2 + 0x14);
+
+  int32_t t0 = vec2.x * a1;
+  cop2.MAC1 = vec1.x;
+  cop2.MAC2 = vec1.y;
+  cop2.IR1 = vec2.x;
+  cop2.IR2 = vec2.y;
+  t0 = vec2.x * a1 + vec2.y * a2;
+  mult(a1, at);
+  if (t0) {
+    cop2.IR0 = (-(((vec1.x * a1 + vec1.y * a2 + a3)*0x80 + 0x40) / t0))*0x20 + 0x10;
+    GPL(SF_ON, LM_OFF);
+    t0 = cop2.MAC1;
+    v1 = cop2.MAC2;
+    DPCS();
+    at = (v1 << 16) | (t0 & 0xFFFF);
+    v0 = 0x30000000 | cop2.RGB2;
+  } else {
+    v0 = v0 | a0;
+  }
+  return;
+}
+
 // size: 0x000004B0
 void function_8004F7E8(void)
 {
@@ -19246,11 +19146,12 @@ label8004FC3C:
   return;
 label8004FC74:
   t9 = s3;
-  sw(fp + 0x0008, at);
-  sw(fp + 0x0010, v0);
   sw(fp + 0x0018, v1);
+
   sw(fp + 0x0004, t6);
+  sw(fp + 0x0008, at);
   sw(fp + 0x000C, t7);
+  sw(fp + 0x0010, v0);
   sw(fp + 0x0014, s0);
   fp += 28; // 0x001C
   return;
@@ -20122,284 +20023,6 @@ label80052478:
   temp = at != a0;
   if (temp) goto label80052478;
   ra = lw(t7 + 0x0008);
-  return;
-}
-
-// size: 0x000003D0
-void function_800580F4(void)
-{
-  uint32_t temp;
-  at = 0x80077DD8;
-  sw(at + 0x0000, s0);
-  sw(at + 0x0004, s1);
-  sw(at + 0x0008, s2);
-  sw(at + 0x000C, s3);
-  sw(at + 0x0010, s4);
-  sw(at + 0x0014, s5);
-  sw(at + 0x0018, s6);
-  sw(at + 0x001C, s7);
-  sw(at + 0x0020, gp);
-  sw(at + 0x0024, sp);
-  sw(at + 0x0028, fp);
-  sw(at + 0x002C, ra);
-  a2 = 0x80076DD0;
-  at = lw(a2 + 0x0000);
-  v0 = lw(a2 + 0x0004);
-  v1 = lw(a2 + 0x0008);
-  a0 = lw(a2 + 0x000C);
-  a1 = lw(a2 + 0x0010);
-  cop2.RTM0 = at;
-  cop2.RTM1 = v0;
-  cop2.RTM2 = v1;
-  cop2.RTM3 = a0;
-  cop2.RTM4 = a1;
-  cop2.TRX = 0;
-  cop2.TRY = 0;
-  cop2.TRZ = 0;
-  at = lw(a2 + 0x0028);
-  v0 = lw(a2 + 0x002C);
-  v1 = lw(a2 + 0x0030);
-  a0 = 0x80078800;
-  t0 = 0 | 0x10;
-  s0 = ordered_linked_list;
-  s0 = lw(s0 + 0x0000);
-  s1 = allocator1_ptr;
-  s1 = lw(s1 + 0x0000);
-label80058198:
-  t6 = lw(a0 + 0x0000);
-  t3 = lw(a0 + 0x0008);
-  temp = t6 == 0;
-  a1 = lw(t3 + 0x0000);
-  if (temp) goto label8005846C;
-  a2 = lw(t3 + 0x0004);
-  a3 = lw(t3 + 0x0008);
-  t3 = lw(a0 + 0x0014);
-  t4 = lw(a0 + 0x0018);
-  t5 = lw(a0 + 0x001C);
-  a1 += t3;
-  a2 += t4;
-  a3 += t5;
-  a1 -= at;
-  a2 = v0 - a2;
-  a3 = v1 - a3;
-  temp = (int32_t)a1 >= 0;
-  t1 = a1;
-  if (temp) goto label800581E0;
-  t1 = -t1;
-label800581E0:
-  temp = (int32_t)a2 >= 0;
-  t2 = a2;
-  if (temp) goto label800581EC;
-  t2 = -t2;
-label800581EC:
-  t2 += t1;
-  temp = (int32_t)a3 >= 0;
-  t1 = a3;
-  if (temp) goto label800581FC;
-  t1 = -t1;
-label800581FC:
-  t2 += t1;
-  temp = (int32_t)t2 <= 0;
-  s2 = 0;
-  if (temp) goto label80058228;
-  s2 = t2 >> 13;
-  t1 = s2 - 4; // 0xFFFFFFFC
-  temp = (int32_t)t1 <= 0;
-  if (temp) goto label8005821C;
-  s2 = 0 | 0x4;
-label8005821C:
-  a1 = (int32_t)a1 >> s2;
-  a2 = (int32_t)a2 >> s2;
-  a3 = (int32_t)a3 >> s2;
-label80058228:
-  a3 = a3 << 16;
-  a2 = a2 & 0xFFFF;
-  a2 = a2 | a3;
-  cop2.VZ0 = a1;
-  cop2.VXY0 = a2;
-  RTPS();
-  t1 = 0x02000000;
-  sw(s1 + 0x0000, t1);
-  t1 = 0xE1000220;
-  sw(s1 + 0x0004, t1);
-  sw(s1 + 0x0008, 0);
-  t3 = cop2.SXY2;
-  a3 = cop2.MAC3;
-  a2 = (int32_t)t3 >> 16;
-  a1 = t3 << 16;
-  a1 = (int32_t)a1 >> 16;
-  t1 = lw(a0 + 0x0010);
-  a3 = a3 << s2;
-  t1 = t1 << 12;
-  div_psx(t1,a3);
-  t1 = lw(a0 + 0x0020);
-  a3 = a3 >> 7;
-  a3 += t1;
-  temp = (int32_t)a3 <= 0;
-  t2 = a3 - 255; // 0xFFFFFF01
-  if (temp) goto label8005846C;
-  temp = (int32_t)t2 <= 0;
-  if (temp) goto label800582A4;
-  a3 += 64; // 0x0040
-label800582A4:
-  t2 = a3 - 2047; // 0xFFFFF801
-  temp = (int32_t)t2 <= 0;
-  if (temp) goto label800582B4;
-  a3 = 0 | 0x7FF;
-label800582B4:
-  a3 = a3 << 3;
-  a3 += s0;
-  t1 = a2 - 1; // 0xFFFFFFFF
-  temp = (int32_t)t1 > 0;
-  t7 = 0;
-  if (temp) goto label800582CC;
-  t7 = t7 | 0x1;
-label800582CC:
-  t1 = a2 - 256; // 0xFFFFFF00
-  temp = (int32_t)t1 < 0;
-  if (temp) goto label800582DC;
-  t7 = t7 | 0x2;
-label800582DC:
-  t1 = a1 - 512; // 0xFFFFFE00
-  temp = (int32_t)t1 < 0;
-  if (temp) goto label800582EC;
-  t7 = t7 | 0x4;
-label800582EC:
-  temp = (int32_t)a1 > 0;
-  if (temp) goto label800582F8;
-  t7 = t7 | 0x8;
-label800582F8:
-  t1=lo;
-  cop2.IR0 = t1;
-  t1 = lw(a3 + 0x0000);
-  temp = t1 == 0;
-  sw(a3 + 0x0000, s1);
-  if (temp) goto label80058320;
-  sh(t1 + 0x0000, s1);
-  t2 = s1 >> 16;
-  sb(t1 + 0x0002, t2);
-  goto label80058324;
-label80058320:
-  sw(a3 + 0x0004, s1);
-label80058324:
-  s1 += 12; // 0x000C
-  t1 = lw(a0 + 0x0004);
-  t2 = lw(t1 + 0x0000);
-  t4 = lw(t1 + 0x0004);
-  cop2.IR1 = t2;
-  cop2.IR2 = t4;
-  t1 += 8; // 0x0008
-  t6--;
-  GPF(SF_ON, LM_OFF);
-  s4 = lw(a0 + 0x000C);
-  t5 = 0x32000000;
-  s4 = s4 << 8;
-  s4 = s4 >> 8;
-  s4 = s4 | t5;
-  t2 = cop2.MAC1;
-  t4 = cop2.MAC2;
-  t2 += a1;
-  t4 += a2;
-  t5 = t4 - 1; // 0xFFFFFFFF
-  temp = (int32_t)t5 > 0;
-  s2 = 0;
-  if (temp) goto label80058384;
-  s2 = s2 | 0x1;
-label80058384:
-  t5 = t4 - 256; // 0xFFFFFF00
-  temp = (int32_t)t5 < 0;
-  t4 = t4 << 16;
-  if (temp) goto label80058394;
-  s2 = s2 | 0x2;
-label80058394:
-  t5 = t2 - 512; // 0xFFFFFE00
-  temp = (int32_t)t5 < 0;
-  s3 = t2 & 0xFFFF;
-  if (temp) goto label800583A4;
-  s2 = s2 | 0x4;
-label800583A4:
-  temp = (int32_t)t2 > 0;
-  s3 = s3 | t4;
-  if (temp) goto label800583B0;
-  s2 = s2 | 0x8;
-label800583B0:
-  t2 = lw(t1 + 0x0000);
-  t4 = lw(t1 + 0x0004);
-  cop2.IR1 = t2;
-  cop2.IR2 = t4;
-  t5 = 0x06000000;
-  sw(s1 + 0x0000, t5);
-  GPF(SF_ON, LM_OFF);
-  sw(s1 + 0x0008, t3);
-  sw(s1 + 0x0004, s4);
-  sw(s1 + 0x0010, s3);
-  sw(s1 + 0x000C, 0);
-  sw(s1 + 0x0014, 0);
-  t2 = cop2.MAC1;
-  t4 = cop2.MAC2;
-  t2 += a1;
-  t4 += a2;
-  t5 = t4 - 1; // 0xFFFFFFFF
-  temp = (int32_t)t5 > 0;
-  s5 = 0;
-  if (temp) goto label80058404;
-  s5 = s5 | 0x1;
-label80058404:
-  t5 = t4 - 256; // 0xFFFFFF00
-  temp = (int32_t)t5 < 0;
-  t4 = t4 << 16;
-  if (temp) goto label80058414;
-  s5 = s5 | 0x2;
-label80058414:
-  t5 = t2 - 512; // 0xFFFFFE00
-  temp = (int32_t)t5 < 0;
-  s6 = t2 & 0xFFFF;
-  if (temp) goto label80058424;
-  s5 = s5 | 0x4;
-label80058424:
-  temp = (int32_t)t2 > 0;
-  s6 = s6 | t4;
-  if (temp) goto label80058430;
-  s5 = s5 | 0x8;
-label80058430:
-  t5 = t7 & s2;
-  t5 = t5 & s5;
-  temp = (int32_t)t5 > 0;
-  sw(s1 + 0x0018, s6);
-  if (temp) goto label80058458;
-  t5 = lw(a3 + 0x0000);
-  sw(a3 + 0x0000, s1);
-  sh(t5 + 0x0000, s1);
-  t2 = s1 >> 16;
-  sb(t5 + 0x0002, t2);
-  s1 += 28; // 0x001C
-label80058458:
-  t6--;
-  t1 += 8; // 0x0008
-  s3 = s6;
-  temp = (int32_t)t6 > 0;
-  s2 = s5;
-  if (temp) goto label800583B0;
-label8005846C:
-  t0--;
-  temp = (int32_t)t0 > 0;
-  a0 += 36; // 0x0024
-  if (temp) goto label80058198;
-  t5 = allocator1_ptr;
-  sw(t5 + 0x0000, s1);
-  at = 0x80077DD8;
-  ra = lw(at + 0x002C);
-  fp = lw(at + 0x0028);
-  sp = lw(at + 0x0024);
-  gp = lw(at + 0x0020);
-  s7 = lw(at + 0x001C);
-  s6 = lw(at + 0x0018);
-  s5 = lw(at + 0x0014);
-  s4 = lw(at + 0x0010);
-  s3 = lw(at + 0x000C);
-  s2 = lw(at + 0x0008);
-  s1 = lw(at + 0x0004);
-  s0 = lw(at + 0x0000);
   return;
 }
 
@@ -22271,60 +21894,75 @@ label80051FB0:
 // size: 0x00000100
 void function_800521C0(void)
 {
-  at = lw(0x80075828);
+  uint32_t temp;
+  at = 0x80075828;
+  at = lw(at + 0x0000);
   v0 = 0x8006FCF4;
-  a0 = 0x8006FCF4 + 0x2400;
-  v1 = 0x8006FCF4 + 0x2200;
+  a0 = v0 + 9216; // 0x2400
+  v1 = v0 + 8704; // 0x2200
 
   a1 = 0x800771C8;
   a3 = lw(at + 0x0048);
-  a2 = 0xFF;
-  at -= 88;
+  a2 = 255; // 0x00FF
+  at -= 88; // 0xFFFFFFA8
 label800521F4:
   t0 = a3;
-  at += 88;
-  a3 = lw(at + 88 + 0x48);
-  if (t0 & 0x80) {
-    if ((t0 & 0xFF) != a2) goto label800521F4;
-    sw(v0, 0);
-    sw(v1, 0);
-    sw(a0, 0);
-    return;
-  }
+  at += 88; // 0x0058
+  a3 = at + 88; // 0x0058
+  a3 = lw(a3 + 0x0048);
+  t1 = t0 << 24;
+  temp = (int32_t)t1 < 0;
   t1 = (int32_t)t0 >> 24;
-  if (t1 == 0) {
-    sw(a0, at);
-    a0 += 4;
-    if ((t0 >> 16) == a2) goto label800521F4;
-    t1 = lbu(t1 + a1);
-    if ((int32_t)t1 <= 0) {
-      sb(at + 0x51, 0);
-      a0 -= 4;
-    }
-    goto label800521F4;
-  }
+  if (temp) goto label800522A4;
+  temp = t1 == 0;
   t1 = t0 >> 16;
+  if (temp) goto label80052278;
+  temp = (int32_t)t0 < 0;
   t1 = t1 & 0xFF;
-  if ((t0 >> 24) & 0x80) {
-    sw(v1, at);
-    v1 += 4;
-    if (t1 == a2) goto label800521F4;
-    t1 = lbu(t1 + a1);
-    if ((int32_t)t1 <= 0) {
-      sb(at + 0x51, 0);
-      v1 -= 4;
-    }
-    goto label800521F4;
-  }
-  sw(v0, at);
-  v0 += 4;
-  if (t1 == a2) goto label800521F4;
-  t1 = lbu(t1 + a1);
-  if ((int32_t)t1 <= 0) {
-    sb(at + 0x51, 0);
-    v0 -= 4;
-  }
+  if (temp) goto label8005224C;
+  sw(v0 + 0x0000, at);
+  temp = t1 == a2;
+  v0 += 4; // 0x0004
+  if (temp) goto label800521F4;
+  t1 += a1;
+  t1 = lbu(t1 + 0x0000);
+  temp = (int32_t)t1 > 0;
+  if (temp) goto label800521F4;
+  sb(at + 0x0051, 0);
+  v0 -= 4; // 0xFFFFFFFC
   goto label800521F4;
+label8005224C:
+  sw(v1 + 0x0000, at);
+  temp = t1 == a2;
+  v1 += 4; // 0x0004
+  if (temp) goto label800521F4;
+  t1 += a1;
+  t1 = lbu(t1 + 0x0000);
+  temp = (int32_t)t1 > 0;
+  if (temp) goto label800521F4;
+  sb(at + 0x0051, 0);
+  v1 -= 4; // 0xFFFFFFFC
+  goto label800521F4;
+label80052278:
+  sw(a0 + 0x0000, at);
+  temp = t1 == a2;
+  a0 += 4; // 0x0004
+  if (temp) goto label800521F4;
+  t1 += a1;
+  t1 = lbu(t1 + 0x0000);
+  temp = (int32_t)t1 > 0;
+  if (temp) goto label800521F4;
+  sb(at + 0x0051, 0);
+  a0 -= 4; // 0xFFFFFFFC
+  goto label800521F4;
+label800522A4:
+  t1 = t0 & 0xFF;
+  temp = t1 != a2;
+  if (temp) goto label800521F4;
+  sw(v0 + 0x0000, 0);
+  sw(v1 + 0x0000, 0);
+  sw(a0 + 0x0000, 0);
+  return;
 }
 
 // size: 0x000004E4
@@ -24339,6 +23977,284 @@ label8005881C:
   return;
 }
 
+// size: 0x000003D0
+void function_800580F4(void)
+{
+  uint32_t temp;
+  at = 0x80077DD8;
+  sw(at + 0x0000, s0);
+  sw(at + 0x0004, s1);
+  sw(at + 0x0008, s2);
+  sw(at + 0x000C, s3);
+  sw(at + 0x0010, s4);
+  sw(at + 0x0014, s5);
+  sw(at + 0x0018, s6);
+  sw(at + 0x001C, s7);
+  sw(at + 0x0020, gp);
+  sw(at + 0x0024, sp);
+  sw(at + 0x0028, fp);
+  sw(at + 0x002C, ra);
+  a2 = 0x80076DD0;
+  at = lw(a2 + 0x0000);
+  v0 = lw(a2 + 0x0004);
+  v1 = lw(a2 + 0x0008);
+  a0 = lw(a2 + 0x000C);
+  a1 = lw(a2 + 0x0010);
+  cop2.RTM0 = at;
+  cop2.RTM1 = v0;
+  cop2.RTM2 = v1;
+  cop2.RTM3 = a0;
+  cop2.RTM4 = a1;
+  cop2.TRX = 0;
+  cop2.TRY = 0;
+  cop2.TRZ = 0;
+  at = lw(a2 + 0x0028);
+  v0 = lw(a2 + 0x002C);
+  v1 = lw(a2 + 0x0030);
+  a0 = 0x80078800;
+  t0 = 0 | 0x10;
+  s0 = ordered_linked_list;
+  s0 = lw(s0 + 0x0000);
+  s1 = allocator1_ptr;
+  s1 = lw(s1 + 0x0000);
+label80058198:
+  t6 = lw(a0 + 0x0000);
+  t3 = lw(a0 + 0x0008);
+  temp = t6 == 0;
+  a1 = lw(t3 + 0x0000);
+  if (temp) goto label8005846C;
+  a2 = lw(t3 + 0x0004);
+  a3 = lw(t3 + 0x0008);
+  t3 = lw(a0 + 0x0014);
+  t4 = lw(a0 + 0x0018);
+  t5 = lw(a0 + 0x001C);
+  a1 += t3;
+  a2 += t4;
+  a3 += t5;
+  a1 -= at;
+  a2 = v0 - a2;
+  a3 = v1 - a3;
+  temp = (int32_t)a1 >= 0;
+  t1 = a1;
+  if (temp) goto label800581E0;
+  t1 = -t1;
+label800581E0:
+  temp = (int32_t)a2 >= 0;
+  t2 = a2;
+  if (temp) goto label800581EC;
+  t2 = -t2;
+label800581EC:
+  t2 += t1;
+  temp = (int32_t)a3 >= 0;
+  t1 = a3;
+  if (temp) goto label800581FC;
+  t1 = -t1;
+label800581FC:
+  t2 += t1;
+  temp = (int32_t)t2 <= 0;
+  s2 = 0;
+  if (temp) goto label80058228;
+  s2 = t2 >> 13;
+  t1 = s2 - 4; // 0xFFFFFFFC
+  temp = (int32_t)t1 <= 0;
+  if (temp) goto label8005821C;
+  s2 = 0 | 0x4;
+label8005821C:
+  a1 = (int32_t)a1 >> s2;
+  a2 = (int32_t)a2 >> s2;
+  a3 = (int32_t)a3 >> s2;
+label80058228:
+  a3 = a3 << 16;
+  a2 = a2 & 0xFFFF;
+  a2 = a2 | a3;
+  cop2.VZ0 = a1;
+  cop2.VXY0 = a2;
+  RTPS();
+  t1 = 0x02000000;
+  sw(s1 + 0x0000, t1);
+  t1 = 0xE1000220;
+  sw(s1 + 0x0004, t1);
+  sw(s1 + 0x0008, 0);
+  t3 = cop2.SXY2;
+  a3 = cop2.MAC3;
+  a2 = (int32_t)t3 >> 16;
+  a1 = t3 << 16;
+  a1 = (int32_t)a1 >> 16;
+  t1 = lw(a0 + 0x0010);
+  a3 = a3 << s2;
+  t1 = t1 << 12;
+  div_psx(t1,a3);
+  t1 = lw(a0 + 0x0020);
+  a3 = a3 >> 7;
+  a3 += t1;
+  temp = (int32_t)a3 <= 0;
+  t2 = a3 - 255; // 0xFFFFFF01
+  if (temp) goto label8005846C;
+  temp = (int32_t)t2 <= 0;
+  if (temp) goto label800582A4;
+  a3 += 64; // 0x0040
+label800582A4:
+  t2 = a3 - 2047; // 0xFFFFF801
+  temp = (int32_t)t2 <= 0;
+  if (temp) goto label800582B4;
+  a3 = 0 | 0x7FF;
+label800582B4:
+  a3 = a3 << 3;
+  a3 += s0;
+  t1 = a2 - 1; // 0xFFFFFFFF
+  temp = (int32_t)t1 > 0;
+  t7 = 0;
+  if (temp) goto label800582CC;
+  t7 = t7 | 0x1;
+label800582CC:
+  t1 = a2 - 256; // 0xFFFFFF00
+  temp = (int32_t)t1 < 0;
+  if (temp) goto label800582DC;
+  t7 = t7 | 0x2;
+label800582DC:
+  t1 = a1 - 512; // 0xFFFFFE00
+  temp = (int32_t)t1 < 0;
+  if (temp) goto label800582EC;
+  t7 = t7 | 0x4;
+label800582EC:
+  temp = (int32_t)a1 > 0;
+  if (temp) goto label800582F8;
+  t7 = t7 | 0x8;
+label800582F8:
+  t1=lo;
+  cop2.IR0 = t1;
+  t1 = lw(a3 + 0x0000);
+  temp = t1 == 0;
+  sw(a3 + 0x0000, s1);
+  if (temp) goto label80058320;
+  sh(t1 + 0x0000, s1);
+  t2 = s1 >> 16;
+  sb(t1 + 0x0002, t2);
+  goto label80058324;
+label80058320:
+  sw(a3 + 0x0004, s1);
+label80058324:
+  s1 += 12; // 0x000C
+  t1 = lw(a0 + 0x0004);
+  t2 = lw(t1 + 0x0000);
+  t4 = lw(t1 + 0x0004);
+  cop2.IR1 = t2;
+  cop2.IR2 = t4;
+  t1 += 8; // 0x0008
+  t6--;
+  GPF(SF_ON, LM_OFF);
+  s4 = lw(a0 + 0x000C);
+  t5 = 0x32000000;
+  s4 = s4 << 8;
+  s4 = s4 >> 8;
+  s4 = s4 | t5;
+  t2 = cop2.MAC1;
+  t4 = cop2.MAC2;
+  t2 += a1;
+  t4 += a2;
+  t5 = t4 - 1; // 0xFFFFFFFF
+  temp = (int32_t)t5 > 0;
+  s2 = 0;
+  if (temp) goto label80058384;
+  s2 = s2 | 0x1;
+label80058384:
+  t5 = t4 - 256; // 0xFFFFFF00
+  temp = (int32_t)t5 < 0;
+  t4 = t4 << 16;
+  if (temp) goto label80058394;
+  s2 = s2 | 0x2;
+label80058394:
+  t5 = t2 - 512; // 0xFFFFFE00
+  temp = (int32_t)t5 < 0;
+  s3 = t2 & 0xFFFF;
+  if (temp) goto label800583A4;
+  s2 = s2 | 0x4;
+label800583A4:
+  temp = (int32_t)t2 > 0;
+  s3 = s3 | t4;
+  if (temp) goto label800583B0;
+  s2 = s2 | 0x8;
+label800583B0:
+  t2 = lw(t1 + 0x0000);
+  t4 = lw(t1 + 0x0004);
+  cop2.IR1 = t2;
+  cop2.IR2 = t4;
+  t5 = 0x06000000;
+  sw(s1 + 0x0000, t5);
+  GPF(SF_ON, LM_OFF);
+  sw(s1 + 0x0008, t3);
+  sw(s1 + 0x0004, s4);
+  sw(s1 + 0x0010, s3);
+  sw(s1 + 0x000C, 0);
+  sw(s1 + 0x0014, 0);
+  t2 = cop2.MAC1;
+  t4 = cop2.MAC2;
+  t2 += a1;
+  t4 += a2;
+  t5 = t4 - 1; // 0xFFFFFFFF
+  temp = (int32_t)t5 > 0;
+  s5 = 0;
+  if (temp) goto label80058404;
+  s5 = s5 | 0x1;
+label80058404:
+  t5 = t4 - 256; // 0xFFFFFF00
+  temp = (int32_t)t5 < 0;
+  t4 = t4 << 16;
+  if (temp) goto label80058414;
+  s5 = s5 | 0x2;
+label80058414:
+  t5 = t2 - 512; // 0xFFFFFE00
+  temp = (int32_t)t5 < 0;
+  s6 = t2 & 0xFFFF;
+  if (temp) goto label80058424;
+  s5 = s5 | 0x4;
+label80058424:
+  temp = (int32_t)t2 > 0;
+  s6 = s6 | t4;
+  if (temp) goto label80058430;
+  s5 = s5 | 0x8;
+label80058430:
+  t5 = t7 & s2;
+  t5 = t5 & s5;
+  temp = (int32_t)t5 > 0;
+  sw(s1 + 0x0018, s6);
+  if (temp) goto label80058458;
+  t5 = lw(a3 + 0x0000);
+  sw(a3 + 0x0000, s1);
+  sh(t5 + 0x0000, s1);
+  t2 = s1 >> 16;
+  sb(t5 + 0x0002, t2);
+  s1 += 28; // 0x001C
+label80058458:
+  t6--;
+  t1 += 8; // 0x0008
+  s3 = s6;
+  temp = (int32_t)t6 > 0;
+  s2 = s5;
+  if (temp) goto label800583B0;
+label8005846C:
+  t0--;
+  temp = (int32_t)t0 > 0;
+  a0 += 36; // 0x0024
+  if (temp) goto label80058198;
+  t5 = allocator1_ptr;
+  sw(t5 + 0x0000, s1);
+  at = 0x80077DD8;
+  ra = lw(at + 0x002C);
+  fp = lw(at + 0x0028);
+  sp = lw(at + 0x0024);
+  gp = lw(at + 0x0020);
+  s7 = lw(at + 0x001C);
+  s6 = lw(at + 0x0018);
+  s5 = lw(at + 0x0014);
+  s4 = lw(at + 0x0010);
+  s3 = lw(at + 0x000C);
+  s2 = lw(at + 0x0008);
+  s1 = lw(at + 0x0004);
+  s0 = lw(at + 0x0000);
+  return;
+}
+
 // size: 0x00000030
 void function_80058BA8(void)
 {
@@ -25638,49 +25554,6 @@ label8004E364:
   return;
 label8004E3C0:
   v0 = 0;
-  return;
-}
-
-// size: 0x000000F4
-void function_8004FDAC(void)
-{
-  cop2.RGBC = a2;
-  cop2.RFC = ((a3 >>  0) & 0xFF) << 4;
-  cop2.GFC = ((a3 >>  8) & 0xFF) << 4;
-  cop2.BFC = ((a3 >> 16) & 0xFF) << 4;
-
-  vec2 vec1 = vec2_from_32(a0);
-  vec2 vec2 = vec2_from_32(a1);
-
-  vec2 = vec2_sub(vec2, vec1);
-  
-  at = vec1.x;
-  v0 = vec1.y;
-  v1 = vec2.x;
-  a0 = vec2.y;
-
-  int32_t a1 = lw(t2 + 0x0C);
-  int32_t a2 = lw(t2 + 0x10);
-  int32_t a3 = lw(t2 + 0x14);
-
-  int32_t t0 = vec2.x * a1;
-  cop2.MAC1 = vec1.x;
-  cop2.MAC2 = vec1.y;
-  cop2.IR1 = vec2.x;
-  cop2.IR2 = vec2.y;
-  t0 = vec2.x * a1 + vec2.y * a2;
-  mult(a1, at);
-  if (t0) {
-    cop2.IR0 = (-(((vec1.x * a1 + vec1.y * a2 + a3)*0x80 + 0x40) / t0))*0x20 + 0x10;
-    GPL(SF_ON, LM_OFF);
-    t0 = cop2.MAC1;
-    v1 = cop2.MAC2;
-    DPCS();
-    at = (v1 << 16) | (t0 & 0xFFFF);
-    v0 = 0x30000000 | cop2.RGB2;
-  } else {
-    v0 = v0 | a0;
-  }
   return;
 }
 
