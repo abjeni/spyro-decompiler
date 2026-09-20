@@ -10615,6 +10615,7 @@ label80020EE0:
 }
 
 // size: 0x00001AF8
+// metal chest
 void function_80020F34(void)
 {
   uint32_t temp;
@@ -20707,6 +20708,7 @@ label800501EC:
 }
 
 // size: 0x0000141C
+// portal rendering
 void function_80050BD0(void)
 {
   uint32_t temp;
@@ -21892,6 +21894,7 @@ label80051FB0:
 }
 
 // size: 0x00000100
+// something about gems
 void function_800521C0(void)
 {
   uint32_t temp;
