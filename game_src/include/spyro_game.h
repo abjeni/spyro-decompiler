@@ -7,13 +7,14 @@
 
 struct game_object {
   uint32_t unknown00; // 0x00 - 0x04 // pointer
-  uint8_t unknown04[0x04]; // 0x04 - 0x08
+  uint32_t unknown04; // 0x04 - 0x08
   uint32_t unknown08;
   vec3_32 p; // 0x0C - 0x18
   uint32_t unknown18; // 0x18 - 0x1C
   uint32_t unknown1C; // 0x1C - 0x20
-  uint8_t unknown20[0x14]; // 0x20 - 0x34
-  uint16_t unknown34; // 0x34 - 0x36
+  mat3 m; // 0x20 - 0x32
+  uint8_t padding1[0x02];
+  int16_t cellID; // 0x34 - 0x36
   uint16_t modelID; // 0x36 - 0x38
   uint16_t unknown38; // 0x38 - 0x3A
   uint16_t unknown3A; // 0x3A - 0x3C
@@ -21,7 +22,7 @@ struct game_object {
   uint8_t unknown3D; // 0x3D - 0x3E
   uint8_t unknown3E; // 0x3E - 0x3F
   uint8_t unknown3F; // 0x3F - 0x40
-  uint8_t unknown40; // 0x40 - 0x41
+  int8_t unknown40; // 0x40 - 0x41
   uint8_t unknown41; // 0x41 - 0x42
   uint8_t unknown42; // 0x42 - 0x43
   int8_t unknown43; // 0x43 - 0x44
@@ -49,9 +50,9 @@ struct game_object {
 
 uint32_t completion_percentage(void);
 
-struct game_object *create_3d_text2(char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata);
+struct game_object *create_3d_text2(const char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata);
 
-struct game_object *create_3d_text1(char *str, vec3_32 *pos, vec3_32 size, uint32_t unknown_spacing, uint32_t unknown_metadata);
+struct game_object *create_3d_text1(const char *str, vec3_32 *pos, vec3_32 size, uint32_t unknown_spacing, uint32_t unknown_metadata);
 
 void new_game_object(struct game_object *game_object);
 

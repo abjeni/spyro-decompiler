@@ -150,6 +150,7 @@
 
       async function load_rom()
       {
+        console.log("loading rom...")
         let file = files.files[0]
         files.remove()
         files = undefined
@@ -158,6 +159,7 @@
         let rom_addr = new Uint8Array(wasm_memory.buffer, ROM_OFFSET, rom.length)
 
         rom_addr.set(rom)
+        console.log("rom loaded")
       }
 
       async function main()

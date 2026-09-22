@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdarg.h>
 
-char *strerror(int no);
+const char *strerror(int no);
 
 void *memset(void *s, int c, size_t n);
 

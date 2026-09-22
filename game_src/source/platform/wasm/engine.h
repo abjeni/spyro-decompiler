@@ -15,4 +15,4 @@ void *platform_aquire_rom(void);
 void *platform_allocate(size_t memory_size);
 int platform_init(void);
 
-extern void console_log(char *msg, int size);
+extern void console_log(const char *msg, int size);

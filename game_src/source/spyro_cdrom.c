@@ -7,7 +7,6 @@
 #include "psx_bios.h"
 #include "main.h"
 #include "spyro_vsync.h"
-#include "spyro_system.h"
 #include "spyro_string.h"
 #include "decompilation.h"
 #include "not_renamed.h"
@@ -15,6 +14,88 @@
 #include "spyro_constants.h"
 #include "spyro_cdrom.h"
 #include "spyro_psy.h"
+#include "spyro_system.h"
+
+int CdSync(int mode, uint8_t *result)
+{
+  (void)result;
+  (void)mode;
+  //if (result) UNREACHABLE;
+
+  return CdlComplete;
+}
+
+// size: 0x00000020
+void function_80063BD8(void)
+{
+  UNREACHABLE;
+  v0 = CdSync(a0, addr_to_pointer(a1));
+}
+
+void function_800653B4(void)
+{
+  v0 = 0;
+  return;
+}
+
+// size: 0x00000138
+void function_80063C48(void)
+{
+  return;
+}
+
+// size: 0x0000012C
+void function_80063D80(void)
+{
+  return;
+}
+
+// size: 0x00000144
+void function_80063EAC(void)
+{
+  return;
+}
+
+// size: 0x00000020
+void function_80063FF0(void)
+{
+  v0 = 1;
+  return;
+}
+
+void read_disk(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
+{
+  if (len & 0x7FF || offset & 0x7FF || num != 0x258) {
+    printf("len: %X offset: %X num: %X\n", len, offset, num);
+    UNREACHABLE;
+  }
+
+  sector += offset >> 11;
+  uint32_t sector_len = len >> 11;
+  psx_read_sectors(dst, sector, sector_len);
+}
+
+void read_disk1(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
+{
+  read_disk(sector, dst, len, offset, num);
+}
+
+void read_disk2(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
+{
+  read_disk(sector, dst, len, offset, num);
+}
+
+void function_80016500(void)
+{
+  UNREACHABLE;
+  read_disk1(a0, a1, a2, a3, lw(sp+0x10));
+}
+
+void function_80016698(void)
+{
+  UNREACHABLE;
+  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
+}
 
 // size: 0x00000010
 void function_80063A8C(void)
@@ -211,13 +292,6 @@ void function_80065270(void)
   v0 = 0;
 }
 
-// size: 0x000001EC
-void function_800653B4(void)
-{
-  v0 = 0;
-  return;
-}
-
 // size: 0x0000006C
 void function_80063ACC(void)
 {
@@ -242,43 +316,12 @@ void function_80063ACC(void)
   v0 = 1;
 }
 
-int CdSync(int mode, uint8_t *result)
+// size: 0x00000018
+void function_80066254(void)
 {
-  //if (result) UNREACHABLE;
-
-  return CdlComplete;
-}
-
-// size: 0x00000020
-void function_80063BD8(void)
-{
-  v0 = CdSync(a0, addr_to_pointer(a1));
-  UNREACHABLE;
-}
-
-// size: 0x00000138
-void function_80063C48(void)
-{
-  return;
-}
-
-// size: 0x0000012C
-void function_80063D80(void)
-{
-  return;
-}
-
-// size: 0x00000144
-void function_80063EAC(void)
-{
-  return;
-}
-
-// size: 0x00000020
-void function_80063FF0(void)
-{
-  v0 = 1;
-  return;
+  v1 = 0x80075178;
+  v0 = lw(v1);
+  sw(v1, a0);
 }
 
 // size: 0x00000018
@@ -308,7 +351,7 @@ uint32_t CdInit(void)
       function_80066254();
       return 1;
     }
-    if (s0 == -1) {
+    if (s0 == (uint32_t)-1) {
       printf("CdInit: Init failed\n");
       return 0;
     }
@@ -359,40 +402,6 @@ void function_80012480(void)
 {
   UNREACHABLE;
   init_cdrom();
-}
-
-void read_disk(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
-{
-  if (len & 0x7FF || offset & 0x7FF || num != 0x258) {
-    printf("len: %X offset: %X num: %X\n", len, offset, num);
-    UNREACHABLE;
-  }
-
-  sector += offset >> 11;
-  uint32_t sector_len = len >> 11;
-  psx_read_sectors(dst, sector, sector_len);
-}
-
-void read_disk1(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
-{
-  read_disk(sector, dst, len, offset, num);
-}
-
-void read_disk2(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, uint32_t num)
-{
-  read_disk(sector, dst, len, offset, num);
-}
-
-void function_80016500(void)
-{
-  UNREACHABLE;
-  read_disk1(a0, a1, a2, a3, lw(sp+0x10));
-}
-
-void function_80016698(void)
-{
-  UNREACHABLE;
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
 }
 
 // size: 0x00000588
@@ -450,11 +459,11 @@ void function_80064218(void)
         if (s0 == 1)
           s1 = 0;
         if (s1)
-          v0 = 5;
+          v0 = CdlDiskError;
         else
-          v0 = 1;
+          v0 = CdlDataReady;
       } else {
-        v0 = 1;
+        v0 = CdlDataReady;
       }
       sb(cd_ready_status, v0);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
@@ -464,35 +473,35 @@ void function_80064218(void)
       break;
     case CdlComplete:
       if (s1)
-        v0 = 5;
+        v0 = CdlDiskError;
       else
-        v0 = 2;
+        v0 = CdlComplete;
       sb(cd_sync_status, v0); // &0x00000000
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       v0 = 2;
       break;
     case CdlAcknowledge:
       if (s1) {
-        sb(cd_sync_status, 5);
+        sb(cd_sync_status, CdlDiskError);
         v0 = 2;
       } else if (lw(0x80074EFC + lbu(cd_current_command)*4)) {
         sb(cd_sync_status, 3);
         v0 = 1;
       } else {
-        sb(cd_sync_status, 2);
+        sb(cd_sync_status, CdlComplete);
         v0 = 2;
       }
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       break;
     case CdlDataEnd:
-      sb(0x80075116, 4);
-      sb(cd_ready_status, lbu(0x80075116));
+      sb(0x80075116, CdlDataEnd);
+      sb(cd_ready_status, CdlDataEnd);
       spyro_memcpy8(0x80075AE0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
       v0 = 4;
       break;
     case CdlDiskError:
-      sb(cd_ready_status, 5);
+      sb(cd_ready_status, CdlDiskError);
       sb(cd_sync_status, lbu(cd_ready_status));
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
@@ -521,9 +530,9 @@ void function_80065190(void)
     sb(lw(CDROM_REG_3_ptr), 7);
     sb(lw(CDROM_REG_2_ptr), 7);
   }
-  sb(0x80075116, 0);
-  sb(cd_ready_status, 0);
-  sb(cd_sync_status, 2);
+  sb(0x80075116, CdlNoIntr);
+  sb(cd_ready_status, CdlNoIntr);
+  sb(cd_sync_status, CdlComplete);
   sb(lw(CDROM_INDEX_ptr), 0);
   sb(lw(CDROM_REG_3_ptr), 0);
   sw(lw(MEM_COMMON_DELAY_ptr), 0x1325);
@@ -690,11 +699,8 @@ label80065E04:
     puts("CdRead: Shell open...\n");
   a1 = 0;
   function_80063D80();
-  a0 = -1; // 0xFFFFFFFF
-  v0 = VSync(a0);
-  sw(0x80075164, v0); // &0x00000000
-  v0 = -1; // 0xFFFFFFFF
-  sw(0x8007515C, v0); // &0x00000000
+  sw(0x80075164, VSync(-1));
+  sw(0x8007515C, -1);
   goto label80065FB0;
 label80065E6C:
   temp = s1 == 0;

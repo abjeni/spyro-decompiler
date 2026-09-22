@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "psx_mem.h"
 #include "spyro_string.h"
 #include "spyro_system.h"
@@ -39,7 +40,7 @@ void function_80053790(void)
   for (int i = 0; i < 4; i++)
   {
     a2 = lbu(s0 + i + 0x20);
-    if (a2 + 0x30 >= lbu(s0 + i + 0x28) || lbu(s0 + i + 0x24) >= (int32_t)(a2 - 0x30)) {
+    if (a2 + 0x30 >= lbu(s0 + i + 0x28) || (int32_t)lbu(s0 + i + 0x24) >= (int32_t)(a2 - 0x30)) {
       a0 = s0;
       function_8005375C();
       t1 = 0;
@@ -2481,67 +2482,57 @@ void function_800691AC(void)
   uint32_t temp;
   v0 = lw(0x800751D0); // &0x00000000
   sp -= 32; // 0xFFFFFFE0
-  sw(sp + 0x0010, s0);
+  sw(sp + 0x10, s0);
+  sw(sp + 0x14, s1);
+  sw(sp + 0x18, ra);
+
   s0 = a1;
-  sw(sp + 0x0014, s1);
-  sw(sp + 0x0018, ra);
-  temp = v0;
   s1 = a2;
-  switch (temp)
+  switch (v0)
   {
   case 0x8006B64C:
     function_8006B64C();
     break;
   default:
-    JALR(temp, 0x800691C8);
+    UNREACHABLE;
   }
   v1 = v0;
-  v0 = 3; // 0x0003
-  temp = s0 == v0;
+  if (s0 == 3) goto label80069234;
   v0 = (int32_t)s0 < 4;
-  if (temp) goto label80069234;
-  temp = v0 == 0;
-  v0 = 1; // 0x0001
-  if (temp) goto label80069200;
-  temp = s0 == v0;
-  v0 = 2; // 0x0002
-  if (temp) goto label8006921C;
-  temp = s0 == v0;
+  if (v0 == 0) goto label80069200;
+  if (s0 == 1) goto label8006921C;
   v0 = 0;
-  if (temp) goto label80069228;
+  if (s0 == 2) goto label80069228;
   goto label80069290;
 label80069200:
-  v0 = 4; // 0x0004
-  temp = s0 == v0;
-  v0 = 100; // 0x0064
+  temp = s0 == 4;
   if (temp) goto label80069240;
-  temp = s0 == v0;
+  temp = s0 == 100;
   v0 = 0;
   if (temp) goto label80069280;
   goto label80069290;
 label8006921C:
-  v0 = lbu(v1 + 0x00E8);
+  v0 = lbu(v1 + 0xE8);
   goto label80069290;
 label80069228:
-  v0 = lhu(v1 + 0x00E6);
+  v0 = lhu(v1 + 0xE6);
   goto label80069290;
 label80069234:
-  v0 = lbu(v1 + 0x00E4);
+  v0 = lbu(v1 + 0xE4);
   goto label80069290;
 label80069240:
   temp = (int32_t)s1 >= 0;
   if (temp) goto label80069254;
-  v0 = lbu(v1 + 0x00E3);
+  v0 = lbu(v1 + 0xE3);
   goto label80069290;
 label80069254:
-  v0 = lbu(v1 + 0x00E3);
+  v0 = lbu(v1 + 0xE3);
   v0 = (int32_t)s1 < (int32_t)v0;
   temp = v0 == 0;
   v0 = s1 << 1;
   if (temp) goto label8006928C;
-  v1 = lw(v1 + 0x0000);
-  v0 += v1;
-  v0 = lhu(v0 + 0x0000);
+  v1 = lw(v1);
+  v0 = lhu(v0 + v1);
   goto label80069290;
 label80069280:
   v0 = lw(v1 + 0x004C);
@@ -2549,9 +2540,9 @@ label80069280:
 label8006928C:
   v0 = 0;
 label80069290:
-  ra = lw(sp + 0x0018);
-  s1 = lw(sp + 0x0014);
-  s0 = lw(sp + 0x0010);
+  ra = lw(sp + 0x18);
+  s1 = lw(sp + 0x14);
+  s0 = lw(sp + 0x10);
   sp += 32; // 0x0020
   return;
 }

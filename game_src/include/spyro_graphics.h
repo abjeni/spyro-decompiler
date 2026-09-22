@@ -46,3 +46,5 @@ void SetGeomScreen(uint32_t h);
 void initial_loading_screen(void);
 
 void draw_skybox(int32_t index, uint32_t matrix1, uint32_t matrix2);
+
+void spyro_image_unpack(uint32_t *src, uint32_t *dst, uint32_t fade);

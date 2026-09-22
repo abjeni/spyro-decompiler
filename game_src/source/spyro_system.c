@@ -154,8 +154,8 @@ void function_8005E804(void)
 // size: 0x00000030
 uint32_t dma_callback2(uint32_t dma_num, uint32_t callback)
 {
-  if (lw(v0 + 0x04) != 0x8005E804) UNREACHABLE;
-  return dma_callback(a0, a1);
+  if (lw(lw(0x800749AC) + 0x04) != 0x8005E804) UNREACHABLE;
+  return dma_callback(dma_num, callback);
 }
 
 // size: 0x00000030
@@ -244,13 +244,9 @@ void function_8005DDF8(void)
 // size: 0x00000058
 void function_8005E508(void)
 {
-  a0 = 0x800749C0; // &0x00000000
-  v1 = lw(TIMER_1_horizontal_retrace_counter_mode_ptr);
-  v0 = 263; // 0x0107
   sw(lw(TIMER_1_horizontal_retrace_counter_mode_ptr), 0x0107);
   sw(frame_counter, 0);
-  a1 = 8; // 0x0008
-  spyro_memclr32(a0, a1);
+  spyro_memclr32(0x800749C0, 8);
   a1 = 0x8005E560; // &0x3C028007
   a0 = 0;
   function_8005DDF8();
@@ -323,6 +319,7 @@ void function_8005E03C(void)
   sw(sp + 0x001C, s3);
   sw(sp + 0x0018, s2);
   sw(sp + 0x0010, s0);
+  
   if (lhu(0x80073924) == 0) {
     printf("unexpected interrupt(%04x)\n", lhu(lw(I_STAT_ptr)));
     //ReturnFromException();

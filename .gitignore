@@ -1,5 +1,6 @@
 *.bin
 *.dot
+/decompilation/graph.dot
 /game_src/decompiled
 /game_src/objdump
 /root
@@ -12,5 +13,4 @@ compile_commands.json
 .clangd
 .vscode
 .idea
-
 /wasmweb/main.wasm

@@ -45,7 +45,7 @@ void function_800524C4(void)
   sb(v0 + 0x48, 0);
   v1 = v0 + 88;
 
-  if (a0 == -1)
+  if (a0 == (uint32_t)-1)
     sb(v1 + 0x48, a0);
   else
     while ((int32_t)lb(v1 + 0x48) >= 0)
@@ -57,7 +57,7 @@ void function_800524C4(void)
   a1 = lb(v1 - 1);
   sb(v1 - 1, 0);
   a0 = v1 - 24;
-  if (a1 == -1)
+  if (a1 == (uint32_t)-1)
     sb(a0 - 1, a1);
   else
     while ((int32_t)lb(a0 - 1) >= 0)
@@ -73,44 +73,38 @@ void function_800524C4(void)
 void function_80053570(void)
 {
   uint32_t temp;
-  a1 = 0x80075824;
-  a1 = lw(a1 + 0x0000);
-  at = 0x80075738; // &0x00000000
-  v0 = lw(at + 0x0000);
-  a1 += 8192; // 0x2000
+  a1 = lw(0x80075824) + 0x2000;
+  v0 = lw(0x80075738);
   temp = v0 != a1;
   if (temp) goto label800535C0;
   a3 = ra;
   a2 = a0;
   mult((spyro_rand() & 0xFF)+1, 0x20);
-  v0=lo;
-  v0 = a1 - v0;
+  v0 = a1 - lo;
   temp = a3;
-  sb(v0 + 0x0001, a2);
+  sb(v0 + 1, a2);
   return;
 label800535C0:
-  v1 = lb(v0 + 0x0001);
-  sb(v0 + 0x0001, a0);
-  a0 = -1; // 0xFFFFFFFF
-  temp = v1 != a0;
-  v1 = v0 + 32; // 0x0020
+  v1 = lb(v0 + 1);
+  sb(v0 + 1, a0);
+  temp = v1 != -1;
+  v1 = v0 + 0x20;
   if (temp) goto label800535E8;
-  temp = v1 == a1;
-  if (temp) goto label800535E0;
-  sb(v1 + 0x0001, a0);
+  if (v1 == a1) goto label800535E0;
+  sb(v1 + 1, -1);
 label800535E0:
-  sw(at + 0x0000, v1);
+  sw(0x80075738, v1);
   return;
 label800535E8:
   a0 = lb(v1 + 0x0001);
   temp = v1 == a1;
   if (temp) goto label80053600;
   temp = (int32_t)a0 >= 0;
-  v1 += 32; // 0x0020
+  v1 += 0x20;
   if (temp) goto label800535E8;
-  v1 -= 32; // 0xFFFFFFE0
+  v1 -= 0x20;
 label80053600:
-  sw(at + 0x0000, v1);
+  sw(0x80075738, v1);
   return;
 }
 
@@ -293,7 +287,7 @@ void function_800333DC(void)
   if (v1 == 99) {
     sw(0x80075864, 1);
     v0 = lw(0x80075818);
-    if (v0 != -1) {
+    if (v0 != (uint32_t)-1) {
       sw(0x800758B4, v0);
       sw(0x80075818, -1);
     } else

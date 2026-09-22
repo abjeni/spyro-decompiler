@@ -9,6 +9,7 @@ int abs(int j) {
 }
 
 void exit(int status) {
+    (void)status;
     print("exit");
     __asm__(
         "unreachable"
@@ -17,14 +18,19 @@ void exit(int status) {
 }
 
 int creat(const char *path, mode_t mode) {
+    (void)path;
+    (void)mode;
     return -1;
 }
 
 int open(const char *path, int flags) {
+    (void)path;
+    (void)flags;
     return -1;
 }
 
 int raise(int sig) {
+    (void)sig;
     print("raising");
     __asm__(
         "unreachable"
@@ -34,5 +40,7 @@ int raise(int sig) {
 }
 
 int fstat(int fildes, struct stat *buf) {
+    (void)fildes;
+    (void)buf;
     return -1;
 }

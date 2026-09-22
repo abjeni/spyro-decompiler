@@ -3,6 +3,7 @@
 #include "psx_bios.h"
 #include "decompilation.h"
 #include "int_math.h"
+#include "not_renamed.h"
 #include <stdio.h>
 
 // size: 0x00000030
@@ -58,7 +59,7 @@ void wait_until_frame(int32_t frame, uint32_t timeout_time)
   while ((int32_t)lw(frame_counter) < frame) {
     inter(0);
     timeout_counter--;
-    if (timeout_counter == -1) {
+    if (timeout_counter == (uint32_t)-1) {
       printf("VSync: timeout\n");
       ChangeClearPAD(0);
       ChangeClearRCnt(3, 0);
@@ -76,20 +77,27 @@ void function_8005DD0C(void)
 // size: 0x00000148
 int VSync(int mode)
 {
-  union gpustat GPUSTAT;
+  static uint32_t last_frame_num = 0;
+  static uint32_t last_vsync_time = 0;
+
   uint32_t time_delta;
 
-  GPUSTAT = psx_gpustat();
-  time_delta = (lw(lw(TIMER_1_horizontal_retrace_ptr)) - lw(VSync_last_vsync_time)) & 0xFFFF;
+  time_delta = (lw(lw(TIMER_1_horizontal_retrace_ptr)) - last_vsync_time) & 0xFFFF;
+
   if ((int32_t)mode < 0) return lw(frame_counter);
+
   if (mode == 1) return time_delta;
+
   int32_t skip_frames = max_int(0, mode-1);
-  wait_until_frame(lw(VSync_last_frame_num) + skip_frames, skip_frames);
-  GPUSTAT = psx_gpustat();
+  wait_until_frame(last_frame_num + skip_frames, skip_frames);
+
+  union gpustat GPUSTAT = psx_gpustat();
+
   wait_until_frame(lw(frame_counter)+1, 1);
+
   if (GPUSTAT.vertical_interlace) while (GPUSTAT.even_odd_interlace == psx_gpustat().even_odd_interlace);
-  sw(VSync_last_frame_num, lw(frame_counter));
-  sw(VSync_last_vsync_time, lw(lw(TIMER_1_horizontal_retrace_ptr)));
+  last_frame_num = lw(frame_counter);
+  last_vsync_time = lw(lw(TIMER_1_horizontal_retrace_ptr));
   return time_delta;
 }
 

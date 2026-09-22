@@ -1,7 +1,8 @@
 
 int errno;
 
-char *strerror(int no)
+const char *strerror(int no)
 {
+    (void)no;
     return "TODO: strerror";
 }

@@ -1,6 +1,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 #include "psx_exe.h"
@@ -328,9 +329,9 @@ struct skips skips = SKIPS(ARR_U32(
   0x80066E28,
   0x800670E4,
   0x80067718,
-  0x8003E1AC
+  0x8003E1AC,
+  0x80038120
 ));
-
 
 
 

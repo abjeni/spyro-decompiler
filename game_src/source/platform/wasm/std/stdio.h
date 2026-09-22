@@ -8,5 +8,5 @@ extern FILE *stdout;
 
 void fflush(FILE *stream);
 void print(const char *msg);
-void printf(char *fmt, ...);
-void puts(char *s);
+void printf(const char *fmt, ...);
+void puts(const char *s);

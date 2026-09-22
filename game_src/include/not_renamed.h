@@ -81,7 +81,6 @@ void function_8002B9CC(void);
 void function_800258F0(void);
 
 void function_8005DDF8(void);
-void function_80061DEC(void);
 void function_80061F48(void);
 
 void function_8005DE8C(void);

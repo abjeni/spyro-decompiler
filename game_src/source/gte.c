@@ -74,6 +74,8 @@ vec3 get_mul_vec(uint32_t i)
         .z = cop2.IR3
       };
     default:
+      xy = 0;
+      z = 0;
       UNREACHABLE;
   }
 
@@ -110,6 +112,7 @@ vec3 get_trans_vec(uint32_t i)
     vec = (vec3){0};
     break;
   default:
+    vec = (vec3){0};
     UNREACHABLE;
   }
 
@@ -129,8 +132,28 @@ uint32_t clamp(int32_t *x, int32_t min, int32_t max)
   return 0;
 }
 
-void clamp_REGS(int min)
+void prepare_gte(void)
 {
+  cop2.IR0 = (int32_t)cop2.IR0 << 16 >> 16;
+  cop2.IR1 = (int32_t)cop2.IR1 << 16 >> 16;
+  cop2.IR2 = (int32_t)cop2.IR2 << 16 >> 16;
+  cop2.IR3 = (int32_t)cop2.IR3 << 16 >> 16;
+
+  cop2.ZSF3 = (int32_t)cop2.ZSF3 << 16 >> 16;
+  cop2.ZSF4 = (int32_t)cop2.ZSF4 << 16 >> 16;
+  cop2.H = (int32_t)cop2.H << 16 >> 16;
+  cop2.DQA = (int32_t)cop2.DQA << 16 >> 16;
+  
+  cop2.LZCR = (int32_t)cop2.LZCR << 16 >> 16;
+  cop2.OTZ = (int32_t)cop2.OTZ << 16 >> 16;
+}
+
+void clamp_REGS(int lm)
+{
+
+  int min = -0x8000;
+  if (lm) min = 0x0;
+
   cop2.IR0sat = clamp((int32_t*)&cop2.IR0, 0x0, 0x7FFF);
   cop2.IR1sat = clamp((int32_t*)&cop2.IR1, min, 0x7FFF);
   cop2.IR2sat = clamp((int32_t*)&cop2.IR2, min, 0x7FFF);
@@ -153,6 +176,8 @@ void end_gte(void)
 
 void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm)
 {
+  prepare_gte();
+
   mat3 m = get_mat(mx);
   vec3 x = get_mul_vec(v);
   vec3 t = get_trans_vec(cv);
@@ -165,10 +190,7 @@ void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
 }
 
 void project(void)
@@ -207,11 +229,13 @@ void project(void)
   cop2.MAC0=a;
   cop2.IR0=a/0x1000;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
 }
 
 void RTPS(void)
 {
+  prepare_gte();
+
   start_gte();
 
   mat3 mm = get_mat(0);
@@ -252,6 +276,8 @@ void push_S(void)
 
 void RTPT(void)
 {
+  prepare_gte();
+
   mat3 mm = get_mat(0);
   vec3 vx0 = get_mul_vec(0);
   vec3 vx1 = get_mul_vec(1);
@@ -322,6 +348,8 @@ uint32_t crgb_code(void)
 
 void INTPL(void)
 {
+  prepare_gte();
+  
   cop2.MAC1 = cop2.IR1+((((int32_t)(cop2.RFC-cop2.IR1))*((int32_t)cop2.IR0))>>12);
   cop2.MAC2 = cop2.IR2+((((int32_t)(cop2.GFC-cop2.IR2))*((int32_t)cop2.IR0))>>12);
   cop2.MAC3 = cop2.IR3+((((int32_t)(cop2.BFC-cop2.IR3))*((int32_t)cop2.IR0))>>12);
@@ -330,12 +358,14 @@ void INTPL(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3, crgb_code()));
 }
 
 void DPCS(void)
 {
+  prepare_gte();
+
   uint32_t r = (cop2.RGBC >>  0) & 0xFF;
   uint32_t g = (cop2.RGBC >>  8) & 0xFF;
   uint32_t b = (cop2.RGBC >> 16) & 0xFF;
@@ -356,13 +386,15 @@ void DPCS(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x8000);
+  clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.IR1, cop2.IR2, cop2.IR3, crgb_code()));
 }
 
 void NCLIP(void)
 {
+  prepare_gte();
+
   int32_t SY0 = (int16_t)(cop2.SXY0 >> 16);
   int32_t SX0 = (int16_t)(cop2.SXY0 & 0xFFFF);
   
@@ -385,16 +417,15 @@ void GPF(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
 
 void GPL(uint32_t sf, uint32_t lm)
 {
+  prepare_gte();
+
   cop2.MAC1 = ((((int32_t)cop2.IR1) * ((int32_t)cop2.IR0)) + (((int32_t)cop2.MAC1) << (sf*12))) >> (sf*12);
   cop2.MAC2 = ((((int32_t)cop2.IR2) * ((int32_t)cop2.IR0)) + (((int32_t)cop2.MAC2) << (sf*12))) >> (sf*12);
   cop2.MAC3 = ((((int32_t)cop2.IR3) * ((int32_t)cop2.IR0)) + (((int32_t)cop2.MAC3) << (sf*12))) >> (sf*12);
@@ -403,17 +434,14 @@ void GPL(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
 
 void SQR(uint32_t sf)
 {
-  clamp_REGS(-0x8000);
+  prepare_gte();
 
   cop2.MAC1 = (((int32_t)cop2.IR1) * ((int32_t)cop2.IR1)) >> (sf*12);
   cop2.MAC2 = (((int32_t)cop2.IR2) * ((int32_t)cop2.IR2)) >> (sf*12);
@@ -423,7 +451,7 @@ void SQR(uint32_t sf)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(0);
+  clamp_REGS(LM_OFF);
 }
 
 
@@ -449,7 +477,7 @@ void CC(void)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  clamp_REGS(-0x80000);
+  clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
 }
@@ -466,16 +494,11 @@ void OP(uint32_t sf, uint32_t lm)
   cop2.IR2 = cop2.MAC2;
   cop2.IR3 = cop2.MAC3;
 
-  int min = -0x8000;
-  if (lm) min = 0x0;
-
-  clamp_REGS(min);
+  clamp_REGS(lm);
 }
 
-uint32_t lzcr(uint32_t num)
+uint32_t ulzcr(uint32_t num)
 {
-  if (num&0x80000000) num = ~num;
-
   if (num == 0) return 32;
 
   for (int i = 0; i < 32; i++)
@@ -486,6 +509,13 @@ uint32_t lzcr(uint32_t num)
 
   UNREACHABLE;
   return -1;
+}
+
+uint32_t lzcr(uint32_t num)
+{
+  if (num&0x80000000) num = ~num;
+
+  return ulzcr(num);
 }
 
 uint32_t LZCR(void)

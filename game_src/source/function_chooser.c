@@ -36,35 +36,70 @@
 #include "twilight_harbor.h"
 #include "wild_flight.h"
 #include "wizard_peak.h"
+#include "title_screen.h"
+
+
+
+/*
+
+void function_8007B68C(void)
+{
+  switch (lib_num) {
+    case LIB_SUNNY_FLIGHT:
+      function_8007B68C_sunny_flight();
+      break;
+    case LIB_NIGHT_FLIGHT:
+      function_8007B68C_night_flight();
+      break;
+    case LIB_CRYSTAL_FLIGHT:
+      function_8007B68C_crystal_flight();
+      break;
+    case LIB_WILD_FLIGHT:
+      function_8007B68C_wild_flight();
+      break;
+    case LIB_ICY_FLIGHT:
+      function_8007B68C_icy_flight();
+      break;
+    default:
+      printf("function_8007B68C, lib_num: %d\n", lib_num);
+      UNREACHABLE;
+  }
+}
+
+*/
+
+
 
 // 0x800785D8 is the end of the exe file
 // which functions are currently in memory from address 0x8007AA38 onwards?
 // it depends, and this is the workaround to get the colliding function addresses to work.
 
 /*
+
 void function_8007AA50(void)
 {
   function_8007AA50_credits();
 }
-*/
 
-/*void function_8007BFD0(void)
+void function_8007BFD0(void)
 {
   function_8007BFD0_credits();
-}*/
+}
 
-/*
+*/
+
 void function_8007ABAC(void)
 {
   function_8007ABAC_title_screen();
 }
-*/
 
 /*
+
 void function_8007CEE4(void)
 {
   function_8007CEE4_title_screen();
 }
+
 */
 
 void function_800857CC(void)

@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-void spyro_memset32(uint32_t dst, uint32_t set, uint32_t len)
+void spyro_memset32(uint32_t dst, uint32_t set, int len)
 {
   assert((dst%4) == 0);
   assert((len%4) == 0);
@@ -25,7 +25,7 @@ void function_80016930()
   assert((a2%16) == 0);spyro_memset32(a0, a1, a2);
 }
 
-void spyro_memcpy32(uint32_t dst, uint32_t src, uint32_t len)
+void spyro_memcpy32(uint32_t dst, uint32_t src, int len)
 {
   assert((dst%4) == 0);
   assert((src%4) == 0);
@@ -40,14 +40,14 @@ void function_80016958(void)
   spyro_memcpy32(a0, a1, a2);
 }
 
-uint32_t spyro_memcpy8(uint32_t dst, uint32_t src, uint32_t len)
+uint32_t spyro_memcpy8(uint32_t dst, uint32_t src, int len)
 {
   if (dst == 0) return 0;
   memcpy(addr_to_pointer(dst), addr_to_pointer(src), len);
   return dst;
 }
 
-void spyro_memset8(uint32_t dst, uint8_t set, uint32_t len)
+void spyro_memset8(uint32_t dst, uint8_t set, int len)
 {
   memset(addr_to_pointer(dst), set, len);
 }
@@ -79,7 +79,7 @@ void function_8006276C()
   v0 = spyro_strlen(a0);
 }
 
-uint32_t spyro_strchr(uint32_t str, uint32_t chr, uint32_t len)
+uint32_t spyro_strchr(uint32_t str, uint32_t chr, int len)
 {
   if (str == 0) return 0;
   chr = chr & 0xFF;
@@ -95,7 +95,7 @@ void function_80062EC0()
   v0 = spyro_strchr(a0, a1, a2);
 }
 
-void spyro_memmove(uint32_t dst, uint32_t src, uint32_t len)
+void spyro_memmove(uint32_t dst, uint32_t src, int len)
 {
   memmove(addr_to_pointer(dst), addr_to_pointer(src), len);
 }
@@ -107,13 +107,13 @@ void function_80063830(void)
   spyro_memmove(a0, a1, a2);
 }
 
-void spyro_memclr32(uint32_t dst, uint32_t len)
+void spyro_memclr32(uint32_t dst, int len)
 {
   for (int i = 0; i < len; i++)
     sw(dst + i*4, 0);
 }
 
-uint32_t spyro_memclr8(uint32_t dst, uint32_t len)
+uint32_t spyro_memclr8(uint32_t dst, int len)
 {
   if (dst == 0 || (int32_t)len <= 0)
     return 0;

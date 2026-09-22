@@ -71,8 +71,15 @@ int read_from_cd(struct exe_file exe, addr_list *external_calls)
   char decompname[1024];
   snprintf(decompname, sizeof(decompname), "%s%s.c", SOURCES_ROOT, exe.name);
   
+#if 1
   FILE *output = fopen(decompname, "w");
   if (output == NULL) return 1;
+#else
+  FILE *output = NULL;
+#endif
+
+  
+  
 
   snprintf(decompname, sizeof(decompname), "%s%s.h", SOURCES_ROOT, exe.name);
   
@@ -94,9 +101,11 @@ int read_from_cd(struct exe_file exe, addr_list *external_calls)
   err = read_instructions(prog);
   if (err) return err;
 
-  err = fclose(output);
-  if (err) return err;
-  
+  if (output) {
+    err = fclose(output);
+    if (err) return err;
+  }
+
   free(psx_mem);
 
   return 0;

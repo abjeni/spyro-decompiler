@@ -54,7 +54,7 @@
 
 uint32_t joy_state[] = {STATE_NONE, STATE_NONE};
 
-char *dmas[] = {
+const char *dmas[] = {
   "MDECin",
   "MDECout",
   "GPU",
@@ -69,7 +69,7 @@ char *dmas[] = {
 #define SYNC_BLOCKS 1
 #define SYNC_LINK_LIST 2
 
-char *filename = "root/SCUS_942.28;1";
+const char *filename = "root/SCUS_942.28;1";
 
 struct psx_mem psx_mem;
 
@@ -125,13 +125,13 @@ uint32_t pointer_to_addr_maybe(void *ptr, file_loc loc)
 
   if (addr_scratchpad < 0x400) return ((uint32_t)addr_scratchpad) + 0x1F800000;
 
-  //printf("pointer_to_addr: addr %.16lX or %.16lX incompatible\n", addr, addr_scratchpad);
+  printf("file %s:%u: pointer_to_addr: addr %.16lX or %.16lX incompatible\n", loc.file, loc.line, addr, addr_scratchpad);
   return 0xDEADBEEF;
 }
 
 void psx_read_sectors_direct(uint32_t dst, uint32_t sector, uint32_t sector_len)
 {
-  for (int i = 0; i < sector_len; i++) {
+  for (uint32_t i = 0; i < sector_len; i++) {
     uint32_t s = sector+i;
     uint32_t *ptr = (uint32_t *)(psx_mem.cdrom.disc + s*0x930 + 24);
     uint32_t *dst_ptr = addr_to_pointer(dst + i*0x800, LOC);
@@ -168,7 +168,7 @@ void inter(int type)
   if (psx_mem.I_MASK.val & mask) {
     disable_timer();
     debug_printf(DEBUG_MASK_INTERRUPT, "interrupt begin %d\n", type);
-    interrupt(type);
+    interrupt();
     debug_printf(DEBUG_MASK_INTERRUPT, "interrupt end %d\n", type);
     enable_timer();
   }
@@ -203,7 +203,7 @@ void psx_init_cdrom()
 
 void init_psx_mem()
 {
-  int memory_size = 2*1024*1024 + 1024*1024 + 512*1024 + 1024;
+  int memory_size = 2*1024*1024 + 1024*1024 + 512*1024 + 1024 + sizeof(file_loc)*2*1024*1024;
   uint8_t *ptr = platform_allocate(memory_size);
   
   psx_mem.mem = ptr;
@@ -484,6 +484,8 @@ uint32_t stream_params = 0;
 
 void GP0_stream(gp0_cmd param_list[static 16], uint32_t len, uint32_t value)
 {
+  (void)len;
+
   static uint32_t i = 0;
   switch (stream_state)
   {
@@ -499,7 +501,7 @@ void GP0_stream(gp0_cmd param_list[static 16], uint32_t len, uint32_t value)
     ptr[(x+y*1024)/2] = value;
 
     i++;
-    if (i == (p2.res.x*p2.res.y+1)/2)
+    if (i == (p2.res.x*p2.res.y+1u)/2u)
     {
       debug_printf(DEBUG_MASK_DMA, "CPU-to-VRAM done\n");
       i = 0;
@@ -519,6 +521,8 @@ uint32_t stream_state2;
 
 uint32_t GP0_read_stream(gp0_cmd param_list[static 16], uint32_t len)
 {
+  (void)len;
+
   static uint32_t i = 0;
   switch (stream_state2)
   {
@@ -655,10 +659,10 @@ void set_pixel(vertex v)
   int32_t x = v.v.x+psx_mem.gpu.area.x;
   int32_t y = v.v.y+psx_mem.gpu.area.y;
 
-  uint32_t x1 = psx_mem.gpu.area.x1;
-  uint32_t y1 = psx_mem.gpu.area.y1;
-  uint32_t x2 = psx_mem.gpu.area.x2;
-  uint32_t y2 = psx_mem.gpu.area.y2;
+  int32_t x1 = psx_mem.gpu.area.x1;
+  int32_t y1 = psx_mem.gpu.area.y1;
+  int32_t x2 = psx_mem.gpu.area.x2;
+  int32_t y2 = psx_mem.gpu.area.y2;
 
   if (x < x1 || x >= x2) return;
   if (y < y1 || y >= y2) return;
@@ -681,8 +685,8 @@ void set_pixel(vertex v)
 
     uint32_t clut = tri_info.clut;
 
-    int cx = (clut & 0x3F) * 16;
-    int cy = (clut >> 6) & 0x1FF;
+    uint32_t cx = (clut & 0x3F) * 16;
+    uint32_t cy = (clut >> 6) & 0x1FF;
 
     switch (tri_info.draw_mode.draw_mode.texture_bits) {
       case 0: { //4 bits
@@ -710,10 +714,12 @@ void set_pixel(vertex v)
         break;
       }
       case 2: //16 bits
+        colcol = 0;
         printf("16 bit textures\n");
         UNREACHABLE;
       case 3:
-		UNREACHABLE;
+        colcol = 0;
+        UNREACHABLE;
     }
 
     if (colcol == 0) return;
@@ -727,9 +733,9 @@ void set_pixel(vertex v)
     if (tri_info.poly.raw_texture)
       c = c2;
     else {
-      int r = (c.r * c2.r) / 128;
-      int g = (c.g * c2.g) / 128;
-      int b = (c.b * c2.b) / 128;
+      uint32_t r = (c.r * c2.r) / 128;
+      uint32_t g = (c.g * c2.g) / 128;
+      uint32_t b = (c.b * c2.b) / 128;
       if (r > 255) r = 255;
       if (g > 255) g = 255;
       if (b > 255) b = 255;
@@ -780,10 +786,10 @@ void set_pixel_line(vertex v)
   int32_t x = v.v.x+psx_mem.gpu.area.x;
   int32_t y = v.v.y+psx_mem.gpu.area.y;
 
-  uint32_t x1 = psx_mem.gpu.area.x1;
-  uint32_t y1 = psx_mem.gpu.area.y1;
-  uint32_t x2 = psx_mem.gpu.area.x2;
-  uint32_t y2 = psx_mem.gpu.area.y2;
+  int32_t x1 = psx_mem.gpu.area.x1;
+  int32_t y1 = psx_mem.gpu.area.y1;
+  int32_t x2 = psx_mem.gpu.area.x2;
+  int32_t y2 = psx_mem.gpu.area.y2;
 
   if (x < x1 || x >= x2) return;
   if (y < y1 || y >= y2) return;
@@ -1054,8 +1060,8 @@ void gpu_rect(gp0_cmd *params)
 
   uint16_t *ptr = (uint16_t *)psx_mem.gpu.mem;
 
-  for (int j = 0; j < sy+10; j++)
-  for (int i = 0; i < sx+10; i++)
+  for (uint32_t j = 0; j < sy+10; j++)
+  for (uint32_t i = 0; i < sx+10; i++)
   {
     uint32_t x2 = x+i;
     uint32_t y2 = y+i;
@@ -1470,7 +1476,7 @@ void gpu_info(uint32_t info_type)
   }
 }
 
-char *dma_directions[] = {
+const char *dma_directions[] = {
   "Off", "FIFO", "CPUtoGP0", "GPUREADtoCPU"
 };
 
@@ -1486,7 +1492,7 @@ void GP1_cmd(uint32_t value, file_loc loc)
     break;
   case 0x03:
   {
-    char *onoff[] =  {
+    const char *onoff[] =  {
       "on", "off"
     };
     debug_printf(DEBUG_MASK_GPU, "file %s:%u: GP1 display enable %s\n", loc.file, loc.line, onoff[value&1]);
@@ -1516,6 +1522,7 @@ void GP1_cmd(uint32_t value, file_loc loc)
     break;
   default:
     debug_printf(DEBUG_MASK_GPU, "file %s:%u: GP1 cmd nr. %X -----------\n", loc.file, loc.line, psx_mem.gpu.GP1.cmd);
+    UNREACHABLE;
     break;
   }
 }
@@ -1560,13 +1567,16 @@ struct segment segments[] = {
   {0x80010000, 0x5BBDC, MASK_READONLY},
   //{player_movestate, 4, MASK_WRITE}
 
-  {0x80075AEC, 4, MASK_FORBIDDEN}, // function_800655A0 counter
-  {0x80075AE8, 4, MASK_FORBIDDEN}, // function_800655A0 frame_limit
+  {VSync_last_vsync_time, 4 + 4, MASK_FORBIDDEN},
+  //{VSync_last_frame_num, 4, MASK_FORBIDDEN},
 };
 
-void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
+void report_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, uint32_t value)
 {
-  for (int i = 0; i < sizeof(segments)/sizeof(struct segment); i++)
+
+  (void)size;
+
+  for (uint32_t i = 0; i < sizeof(segments)/sizeof(struct segment); i++)
   {
     struct segment segment = segments[i];
 
@@ -1590,7 +1600,7 @@ void report_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_
   }
 }
 
-void check_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t value)
+void check_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, uint32_t value)
 {
   report_addr(addr, size, loc, func, value);
   
@@ -1602,6 +1612,24 @@ void check_addr(uint32_t addr, uint32_t size, file_loc loc, char *func, uint32_t
 
   printf("%s: file %s:%u: address %X outside range\n", func, loc.file, loc.line, addr);
   UNREACHABLE;
+}
+
+file_loc get_access(uint32_t addr)
+{
+  return psx_mem.mem_access[addr&0x001FFFFF];
+}
+
+void print_access(uint32_t addr)
+{
+  file_loc loc = get_access(addr);
+
+  printf("0x%.8X (0x%.2X) written by: %s:%u\n", addr, lbu(addr, LOC), loc.file, loc.line);
+}
+
+void set_access(uint32_t addr, uint32_t size, file_loc loc)
+{
+  for (uint32_t i = 0; i < size; i++)
+    psx_mem.mem_access[(addr+i)&0x001FFFFF] = loc;
 }
 
 uint32_t translate_addr(uint32_t addr)
@@ -1640,7 +1668,7 @@ void enable_dma(uint32_t dma_num)
   {
     uint32_t blocks = dma.bcr & 0xFFFF;
     
-    for (int i = 0; i < blocks; i++)
+    for (uint32_t i = 0; i < blocks; i++)
     {
       uint32_t value = *psx_mem.cdrom.disc_ptr++;
       sw(dma.madr | 0x80000000, value, LOC);
@@ -1673,7 +1701,7 @@ void enable_dma(uint32_t dma_num)
       debug_printf(DEBUG_MASK_DMA_TRANSFER, "- %.8X %d words file %s:%u\n", header, words, get_access(addr&0x1FFFFF).file, get_access(addr&0x1FFFFF).line);
 
       addr += 4;
-      for (int i = 0; i < words; i++)
+      for (uint32_t i = 0; i < words; i++)
       {
         uint32_t address = addr+i*4;
         uint32_t word = lw(address, LOC);
@@ -1705,9 +1733,9 @@ void enable_dma(uint32_t dma_num)
 
     uint32_t addr = dma.madr | 0x80000000;
 
-    for (int i = 0; i < blocks; i++)
+    for (uint32_t i = 0; i < blocks; i++)
     {
-      for (int j = 0; j < blocksize; j++)
+      for (uint32_t j = 0; j < blocksize; j++)
       {
         if (dma_num == 2)
         {
@@ -1748,9 +1776,9 @@ void enable_dma(uint32_t dma_num)
 
     uint32_t addr = dma.madr | 0x80000000;
 
-    for (int i = 0; i < blocks; i++)
+    for (uint32_t i = 0; i < blocks; i++)
     {
-      for (int j = 0; j < blocksize; j++)
+      for (uint32_t j = 0; j < blocksize; j++)
       {
         if (dma_num == 2)
         {
@@ -2380,7 +2408,7 @@ void sb_joy_tx(uint8_t value, file_loc loc)
     joy_state[psx_mem.controller.joy_ctrl.desired_slot] = STATE_NONE;
     break;
   default:
-    printf("unknown joy state %d\n", joy_state[psx_mem.controller.joy_ctrl.desired_slot]);
+    printf("file %s:%u: unknown joy state %d\n", loc.file, loc.line, joy_state[psx_mem.controller.joy_ctrl.desired_slot]);
     UNREACHABLE;
   }
 }
@@ -2521,6 +2549,7 @@ uint32_t lw_dma(uint32_t addr, file_loc loc)
       debug_printf(DEBUG_MASK_DMA, "channel control: %.8X\n", value);
       break;
     default:
+      value = 0;
       printf("unknown %d\n", reg);
       UNREACHABLE;
     }
@@ -2813,7 +2842,7 @@ void psx_read_sectors(uint32_t dst, uint32_t sector, uint32_t sector_len)
   printf("reading to %.8X-%.8X sectors %d-%d %d\n", dst, dst+sector_len*2048, sector, sector+sector_len, sector_len);
 #endif
 
-  for (int i = 0; i < sector_len; i++) {
+  for (uint32_t i = 0; i < sector_len; i++) {
 
     uint32_t s = sector+i;
     uint32_t *ptr = (uint32_t *)(psx_mem.cdrom.disc + s*0x930 + 24);

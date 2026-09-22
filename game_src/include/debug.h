@@ -1,9 +1,9 @@
 #pragma once
 
 #include <assert.h>
-#include <stdio.h>
 #include <signal.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define BREAKPOINT \
 do { \
@@ -19,8 +19,15 @@ do { \
   assert(0); \
 } while(0);
 
+#define DEPRECATED \
+do { \
+  print_trace(); \
+  fflush(stdout); \
+  assert(0); \
+} while(0);
+
 typedef struct {
-  char *file;
+  const char *file;
   uint32_t line;
 } file_loc;
 

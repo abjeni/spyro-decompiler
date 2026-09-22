@@ -2,8 +2,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <wasm.h>
 #include <stdio.h>
+#include "wasm.h"
 
 extern void *get_fb(void);
 extern void *display_fb(void);
@@ -35,9 +35,9 @@ void update_vram(uint8_t *mem, uint32_t X, uint32_t Y, uint8_t bit16)
   if (bit16)
   {
     uint8_t *ptr = (uint8_t *)mem;
-    for (int y = 0; y < resy; y++)
+    for (uint32_t y = 0; y < resy; y++)
     {
-      for (int x = 0; x < resx; x++)
+      for (uint32_t x = 0; x < resx; x++)
       {
         uint32_t i = (y+Y)*2048+(x+X)*3;
         uint32_t r = ptr[i+0];
@@ -53,9 +53,9 @@ void update_vram(uint8_t *mem, uint32_t X, uint32_t Y, uint8_t bit16)
   else
   {
     uint16_t *ptr = (uint16_t *)mem;
-    for (int y = 0; y < resy; y++)
+    for (uint32_t y = 0; y < resy; y++)
     {
-      for (int x = 0; x < resx; x++)
+      for (uint32_t x = 0; x < resx; x++)
       {
         uint32_t i = (y+Y)*1024+x+X;
         uint32_t rgb = ptr[i];
@@ -94,6 +94,8 @@ void wait_frame(void)
 
 void set_resolution(int x, int y)
 {
+  (void)x;
+  (void)y;
   resx = 512;
   resy = 240;
   /*if (resx != x || resy != y) {

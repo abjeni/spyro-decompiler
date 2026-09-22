@@ -14,19 +14,28 @@ uint32_t at, gp, sp, fp, ra, pc, hi, lo;
 
 void wad_main(void);
 
-void print_psx_string_array(char *name, uint32_t base, uint32_t n) {
+void print_psx_string_array(const char *name, uint32_t base, uint32_t n) {
   printf("char *%s[] = {\n", name);
-  for (int i = 0; i < n; i++)
+  for (uint32_t i = 0; i < n; i++)
   {
     printf("  \"%s\",\n", (char *)addr_to_pointer(lw(base + i*4)));
   }
   printf("};\n");
 }
 
-#include <spyro_psy.h>
+void print_psx_uint16_t_array(const char *name, uint32_t base, uint32_t n) {
+  printf("uint16_t %s[] = {\n", name);
+  for (uint32_t i = 0; i < n; i++)
+  {
+    printf("  0x%.4hX,\n", lh(base + i*2));
+  }
+  printf("};\n");
+}
 
 int main(int argc, char *argv[])
 {
+  (void)argv;
+
   platform_init();
   
   init_psx_mem();
@@ -34,10 +43,13 @@ int main(int argc, char *argv[])
 
   if (argc > 1)
   {
+    printf("%d\n", -2%3);
     //wad_main();
+
+    print_psx_uint16_t_array("math_lut2", 0x8006CF04, 34);
     
     //print_psx_string_array("dragon_names", 0x8006F694, 80);
-
+    
     //print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
     //print_psx_string_array("cd_status_str", 0x80074EDC, 8);
 

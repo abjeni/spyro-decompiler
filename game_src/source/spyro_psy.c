@@ -13,9 +13,9 @@
 #include "debug.h"
 #include "decompilation.h"
 #include "spyro_print.h"
-#include "spyro_graphics.h"
 #include "decompilation.h"
 #include "not_renamed.h"
+#include "spyro_graphics.h"
 
 // size: 0x00000010
 void function_8005EBA0(void)
@@ -35,7 +35,7 @@ void spyro_srand(int32_t seed)
 // size: 0x00000010
 void function_8006275C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_srand(a0);
 }
 
@@ -49,16 +49,56 @@ int spyro_rand(void)
 // size: 0x00000030
 void function_8006272C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_rand();
+}
+
+// size: 0x000000DC
+void function_80062230(void)
+{
+  // assuming gpu version is v2
+  if (a0 & 8) {
+    sw(lw(GPU_GP1_cmd_ptr), 0x09000001);
+    v0 = 4;
+  } else {
+    v0 = 3;
+  }
+}
+
+// size: 0x0000015C
+void function_80061DEC(void)
+{
+  uint32_t mode = a0 & 7;
+  uint32_t double_vram = a0 & 8;
+  uint32_t istat = set_I_MASK(0);
+  sw(0x80074B6C, 0);
+  sw(0x80074B68, 0);
+
+  if (mode == 0 || mode == 5) {
+    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
+    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(v1, lw(v1) | 0x800);
+    sw(lw(GPU_GP1_cmd_ptr), 0);
+    spyro_memset8(0x800759BC, 0, 0x100);
+    spyro_memset8(0x80078EA0, 0, 0x1800);
+  } else if (mode == 1 || mode == 3) {
+    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
+    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(v1, lw(v1) | 0x800);
+    sw(lw(GPU_GP1_cmd_ptr), 0x02000000);
+    sw(lw(GPU_GP1_cmd_ptr), 0x01000000);
+  }
+  set_I_MASK(istat);
+  if (mode == 0) {
+    a0 = double_vram;
+    function_80062230();
+  }
 }
 
 // size: 0x00000184
 int32_t ResetGraph(int32_t mode)
 {
-  sp -= 0x20;
-  sw(sp + 0x10, s0);
-  sw(sp + 0x18, ra);
+  uint32_t s0;
   
   printf("resetgraph mode 0x%.2X\n", mode);
 
@@ -66,6 +106,9 @@ int32_t ResetGraph(int32_t mode)
   case 0: // reset
   case 3:
     printf("ResetGraph:jtb=%08x,env=%08x\n", 0x80074A1C, 0x80074A64);
+#ifdef __GNUC__
+    [[fallthrough]];
+#endif
   case 5:
     s0 = 0x80074A64;
     spyro_memset8(s0, 0, 0x80);
@@ -94,16 +137,12 @@ int32_t ResetGraph(int32_t mode)
     break;
   }
   
-
-  ra = lw(sp + 0x18);
-  s0 = lw(sp + 0x10);
-  sp += 0x20;
   return v0;
 }
 
 void function_8005F2A4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = ResetGraph(a0);
 }
 
@@ -140,7 +179,7 @@ void SetDispMask(int32_t mask)
 
 void function_8005F6C8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   SetDispMask(a0);
 }
 
@@ -162,7 +201,7 @@ uint32_t DrawSync(uint32_t mode)
 
 void function_8005F764(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = DrawSync(a0);
 }
 
@@ -189,12 +228,12 @@ int32_t SetGraphDebug(int32_t level)
 
 void function_8005F53C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = SetGraphDebug(a0);
 }
 
 // size: 0x00000128
-void psyq_check_box(char *str, RECT box)
+void psyq_check_box(const char *str, RECT box)
 {
   uint32_t debug_level = lbu(psy_debug_level_ptr);
   if (debug_level == 1) {
@@ -211,22 +250,17 @@ void psyq_check_box(char *str, RECT box)
       if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("%s:bad RECT", str);
       printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
-      return;
      }
-    return;
-  }
-  if (debug_level == 2) {
+  } else if (debug_level == 2) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("%s:", str);
     printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
-    return;
   }
-  return;
 }
 
 void function_8005F7D0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   psyq_check_box(addr_to_pointer(a0), *(RECT*)addr_to_pointer(a1));
 }
 
@@ -252,7 +286,7 @@ int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b)
 
 void function_8005F8F8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3);
 }
 
@@ -272,7 +306,7 @@ int32_t LoadImage(RECT *recp, void *p)
 
 void function_8005FA28(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -291,7 +325,7 @@ int32_t StoreImage(RECT *recp, void *p)
 
 void function_8005FA8C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -314,7 +348,7 @@ int32_t MoveImage(RECT *recp, int32_t x, int32_t y)
 
 void function_8005FAF0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = MoveImage(addr_to_pointer(a0), a1, a2);
 }
 
@@ -334,7 +368,7 @@ void DrawOTag(uint32_t *ot)
 
 void function_8005FD64(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   DrawOTag(addr_to_pointer(a0));
 }
 
@@ -362,7 +396,7 @@ DRAWENV *PutDrawEnv(DRAWENV *env)
 
 void function_8005FDD8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
 }
 
@@ -392,6 +426,7 @@ uint32_t psy_lib_func1(RECT box)
 
 void function_80060E28(void)
 {
+  DEPRECATED;
   v0 = psy_lib_func1(*(RECT*)addr_to_pointer(a0));
 }
 
@@ -589,7 +624,7 @@ DISPENV *PutDispEnv(DISPENV *env)
 
 void function_80060030(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
 }
 
@@ -605,6 +640,6 @@ void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw)
 // size: 0x00000058
 void function_80060670(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)));
 }

@@ -14,7 +14,7 @@
 #define NANOPRINTF_USE_WRITEBACK_FORMAT_SPECIFIERS 0
 #define NANOPRINTF_USE_ALT_FORM_FLAG 1
 #define NANOPRINTF_IMPLEMENTATION
-#include <nanoprintf.h>
+#include "nanoprintf.h"
 
 char temp_buf[0x100];
 
@@ -32,27 +32,28 @@ void print(const char *msg)
 }
 
 void fflush(FILE *stream) {
-
+    (void)stream;
 }
 
-void puts(char *s) {
+void puts(const char *s) {
     print(s);
 }
 
 int chdir(const char *path) {
+    (void)path;
     return 0;
 }
 
 void *memset(void *s, int c, size_t n) {
 
-    for (int i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++)
         ((char *)s)[i] = (char)c;
 
     return s;
 }
 
 void *memcpy(void *dest, const void *src, size_t n) {
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         ((char *)dest)[i] = ((char *)src)[i];
     }
     return dest;
@@ -64,7 +65,7 @@ void *memmove(void *dest, const void *src, size_t n) {
         return memcpy(dest, src, n);
     }
 
-    for (int i = n-1; i >= 0; i--) {
+    for (size_t i = n-1; i >= 0; i--) {
         ((char *)dest)[i] = ((char *)src)[i];
     }
     return dest;
@@ -84,7 +85,7 @@ int sprintf(char * buf, const char * fmt, ...)
     return ret;
 }
 
-void printf(char *fmt, ...) {
+void printf(const char *fmt, ...) {
     va_list va;
     va_start(va,fmt);
     vsprintf(temp_buf, fmt, va);
@@ -93,17 +94,27 @@ void printf(char *fmt, ...) {
 }
 
 ssize_t read(int fd, void *buf, size_t count) {
+    (void)fd;
+    (void)buf;
+    (void)count;
     return -1;
 }
 
 ssize_t write(int fd, const void *buf, size_t count) {
+    (void)fd;
+    (void)buf;
+    (void)count;
     return -1;
 }
 
 int close(int fd) {
+    (void)fd;
     return -1;
 }
 
 off_t lseek(int fd, off_t offset, int whence) {
+    (void)fd;
+    (void)offset;
+    (void)whence;
     return -1;
 }

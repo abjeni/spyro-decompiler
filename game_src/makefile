@@ -1,7 +1,7 @@
 SDL_PROGRAM := program
 WASM_PROGRAM := ../wasmweb/main.wasm
 
-CC := tcc
+CC := gcc
 wasm : CC := clang
 
 BUILD_DIR := build
@@ -11,7 +11,7 @@ SOURCE_DIR := source
 DECOMPILE_DIR := decompiled
 MEMCARD_DIR := ../mem_card
 
-CFLAGS := -Wall -pipe -O3 -g -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
+CFLAGS :=  -Werror -Wwrite-strings -Wimplicit-function-declaration -Wall -Wunused-parameter -Wsign-compare -pipe -O3 -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
 #CFLAGS := -Wall -march=native -Ofast -pipe
 
 
