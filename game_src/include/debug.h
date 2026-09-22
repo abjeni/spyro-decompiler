@@ -1,9 +1,9 @@
 #pragma once
 
 #include <assert.h>
-#include <stdio.h>
 #include <signal.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #define BREAKPOINT \
 do { \

@@ -39,68 +39,6 @@
 #include "title_screen.h"
 
 
-void function_8007CFC0(void)
-{
-  if (lib_num != LIB_ARTISANS_HOME) UNREACHABLE;
-  function_8007CFC0_artisans_home();
-}
-
-void function_8007D070(void)
-{
-  if (lib_num != LIB_STONE_HILL) UNREACHABLE;
-  function_8007D070_stone_hill();
-}
-
-void function_8007D04C(void)
-{
-  if (lib_num != LIB_TOWN_SQUARE) UNREACHABLE;
-  function_8007D04C_town_square();
-}
-
-void function_8007D998(void)
-{
-  if (lib_num != LIB_PEACEKEEPERS_HOME) UNREACHABLE;
-  function_8007D998_peacekeepers_home();
-}
-
-void function_8007D838(void)
-{
-  switch (lib_num) {
-    case LIB_DRY_CANYON:
-      function_8007D838_dry_canyon();
-      break;
-    case LIB_CLIFF_TOWN:
-      function_8007D838_cliff_town();
-      break;
-    default:
-      printf("function_8007D838, lib_num: %d\n", lib_num);
-      UNREACHABLE;
-  }
-}
-
-void function_8007D990(void)
-{
-  if (lib_num != LIB_MAGICCRAFTERS_HOME) UNREACHABLE;
-  function_8007D990_magiccrafters_home();
-}
-
-void function_8007D784(void)
-{
-  if (lib_num != LIB_BEASTMAKERS_HOME) UNREACHABLE;
-  function_8007D784_beastmakers_home();
-}
-
-void function_8007D9B8(void)
-{
-  if (lib_num != LIB_DREAMWEAVERS_HOME) UNREACHABLE;
-  function_8007D9B8_dreamweavers_home();
-}
-
-void function_8007CF30(void)
-{
-  if (lib_num != LIB_GNASTYS_WORLD) UNREACHABLE;
-  function_8007CF30_gnastys_world();
-}
 
 /*
 

@@ -470,8 +470,13 @@ uint32_t _card_info(uint32_t port)
   (void)port;
   //printf("_card_info(port: %d)\n", port);
 
+#ifdef __wasm__
+  DeliverEvent(0xF4000001, 0x8000);
+  DeliverEvent(0xF0000011, 0x8000);
+#else
   DeliverEvent(0xF4000001, 4);
   DeliverEvent(0xF0000011, 4);
+#endif
 
   return 0;
 }
@@ -566,11 +571,16 @@ uint32_t psx_open(char *file_name, uint32_t modev)
     file.fd = creat(file_path, S_IRUSR | S_IWUSR);
 
     printf("error %m\n");
-    if (file.fd == -1) UNREACHABLE;
+    if (file.fd == -1) {
+      DeliverEvent(0xF4000001, 0x8000);
+      DeliverEvent(0xF0000011, 0x8000);
+      return -1; // UNREACHABLE;
+    }
 
     file.size = mode.blocks*0x2000;
-    char *buf = calloc(file.size, 1);
-    write(file.fd, buf, file.size);
+    uint32_t zero = 0;
+    for (uint32_t i = 0; i < file.size/sizeof(zero); i++)
+    write(file.fd, &zero, sizeof(zero));
 
     lseek(file.fd, 0, SEEK_SET);
 

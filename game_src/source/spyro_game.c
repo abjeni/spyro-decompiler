@@ -2141,6 +2141,47 @@ void function_8003FDC8(void)
   sb(0x80078A71, v1);
 }
 
+
+
+#ifdef __wasm__
+
+#include <wasm.h>
+
+WASM_PUBLIC void actual_game_loop(void)
+{
+  if (start_frame()) return;
+
+  sb(gp + 0x0604, 0);
+
+  function_8003385C();
+
+  sb(gp + 0x0604, 1);
+  sw(gp + 0x0468, lw(gp + 0x04FC));
+
+  if (lw(gp + 0x0468) < 2)
+    sw(gp + 0x0468, 2);
+
+  if (lw(gp + 0x0468) > 4)
+    sw(gp + 0x0468, 4);
+
+  sw(gp + 0x04FC, 0);
+  if (lw(gp + 0x0538) == 0) {
+    function_8001ED5C();
+  }
+}
+
+void request_animation_frame(void);
+
+// size: 0x00000088
+void game_loop(void)
+{
+  initial_loading_screen();
+
+  request_animation_frame();
+}
+
+#else // __wasm__
+
 // size: 0x00000088
 void game_loop(void)
 {
@@ -2176,3 +2217,5 @@ void function_80012204(void)
   DEPRECATED;
   game_loop();
 }
+
+#endif // __wasm__

@@ -300,6 +300,7 @@ struct address_name address_names[] = {
   {0x80075110, "SPU_voice_base_ptr"},
   {0x80075114, "cd_sync_status"},
   {0x80075115, "cd_ready_status"},
+  {0x80075115, "cd_ready_status"},
   {0x80075130, "MEM_CDROM_DELAY_ptr"},
   {0x80075134, "DMA_control_register_copy_3_ptr"},
   {0x80075138, "DMA_CDROM_address_ptr"},

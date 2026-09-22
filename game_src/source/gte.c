@@ -74,6 +74,8 @@ vec3 get_mul_vec(uint32_t i)
         .z = cop2.IR3
       };
     default:
+      xy = 0;
+      z = 0;
       UNREACHABLE;
   }
 
@@ -110,6 +112,7 @@ vec3 get_trans_vec(uint32_t i)
     vec = (vec3){0};
     break;
   default:
+    vec = (vec3){0};
     UNREACHABLE;
   }
 

@@ -451,11 +451,11 @@ void function_80064218(void)
         if (s0 == 1)
           s1 = 0;
         if (s1)
-          v0 = 5;
+          v0 = CdlDiskError;
         else
-          v0 = 1;
+          v0 = CdlDataReady;
       } else {
-        v0 = 1;
+        v0 = CdlDataReady;
       }
       sb(cd_ready_status, v0);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
@@ -465,35 +465,35 @@ void function_80064218(void)
       break;
     case CdlComplete:
       if (s1)
-        v0 = 5;
+        v0 = CdlDiskError;
       else
-        v0 = 2;
+        v0 = CdlComplete;
       sb(cd_sync_status, v0); // &0x00000000
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       v0 = 2;
       break;
     case CdlAcknowledge:
       if (s1) {
-        sb(cd_sync_status, 5);
+        sb(cd_sync_status, CdlDiskError);
         v0 = 2;
       } else if (lw(0x80074EFC + lbu(cd_current_command)*4)) {
         sb(cd_sync_status, 3);
         v0 = 1;
       } else {
-        sb(cd_sync_status, 2);
+        sb(cd_sync_status, CdlComplete);
         v0 = 2;
       }
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       break;
     case CdlDataEnd:
-      sb(0x80075116, 4);
-      sb(cd_ready_status, lbu(0x80075116));
+      sb(0x80075116, CdlDataEnd);
+      sb(cd_ready_status, CdlDataEnd);
       spyro_memcpy8(0x80075AE0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
       v0 = 4;
       break;
     case CdlDiskError:
-      sb(cd_ready_status, 5);
+      sb(cd_ready_status, CdlDiskError);
       sb(cd_sync_status, lbu(cd_ready_status));
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
@@ -522,9 +522,9 @@ void function_80065190(void)
     sb(lw(CDROM_REG_3_ptr), 7);
     sb(lw(CDROM_REG_2_ptr), 7);
   }
-  sb(0x80075116, 0);
-  sb(cd_ready_status, 0);
-  sb(cd_sync_status, 2);
+  sb(0x80075116, CdlNoIntr);
+  sb(cd_ready_status, CdlNoIntr);
+  sb(cd_sync_status, CdlComplete);
   sb(lw(CDROM_INDEX_ptr), 0);
   sb(lw(CDROM_REG_3_ptr), 0);
   sw(lw(MEM_COMMON_DELAY_ptr), 0x1325);
@@ -691,11 +691,8 @@ label80065E04:
     puts("CdRead: Shell open...\n");
   a1 = 0;
   function_80063D80();
-  a0 = -1; // 0xFFFFFFFF
-  v0 = VSync(a0);
-  sw(0x80075164, v0); // &0x00000000
-  v0 = -1; // 0xFFFFFFFF
-  sw(0x8007515C, v0); // &0x00000000
+  sw(0x80075164, VSync(-1));
+  sw(0x8007515C, -1);
   goto label80065FB0;
 label80065E6C:
   temp = s1 == 0;

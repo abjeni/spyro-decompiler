@@ -1,12 +1,114 @@
+#include "int_math.h"
 #include "main.h"
 #include "psx_mem.h"
-#include "psx_ops.h"
 #include "decompilation.h"
 #include "gte.h"
-#include "extra_gte.h"
 #include "spyro_psy.h"
+#include "psx_ops.h"
+#include "spyro_math.h"
+#include "extra_gte.h"
 
-// different return instruction (not JR RA)
+// size: 0x000000D8
+void function_800562A4(void)
+{
+  uint32_t bitfield = 0;
+  for (int i = 0; i < 24; i++)
+  {
+    if (lw(0x80075F30 + i*0x1C) == a0
+      && (a1 == 1
+      || (a1 == 2
+      && lhu(0x80075F30 + i*0x1C + 0x0E) & 0x100))) 
+    {
+      bitfield |= 1 << i;
+
+      v1 = lw(0x80075F30 + i*0x1C + 0x18);
+      if (v1)
+        sb(v1, 0x7F);
+      
+      sw(0x80075F30 + i*0x1C + 0x00, 0);
+      sb(0x80075F30 + i*0x1C + 0x0D, 0xFF);
+      sh(0x80075F30 + i*0x1C + 0x0E, 0x40);
+      sw(0x80075F30 + i*0x1C + 0x14, 0);
+      sw(0x80075F30 + i*0x1C + 0x18, 0);
+    }
+  }
+  sw(0x8007623C, lw(0x8007623C) | bitfield);
+}
+
+// size: 0x000000A4
+void function_800524C4(void)
+{
+  sw(0x800756A4, lw(0x800756A4)+1);
+  
+  v0 = lw(0x8007573C);
+  a0 = lb(v0 + 0x48);
+  sb(v0 + 0x48, 0);
+  v1 = v0 + 88;
+
+  if (a0 == (uint32_t)-1)
+    sb(v1 + 0x48, a0);
+  else
+    while ((int32_t)lb(v1 + 0x48) >= 0)
+      v1 += 88;
+
+  sw(0x8007573C, v1);
+
+  v1 = lw(0x80075930);
+  a1 = lb(v1 - 1);
+  sb(v1 - 1, 0);
+  a0 = v1 - 24;
+  if (a1 == (uint32_t)-1)
+    sb(a0 - 1, a1);
+  else
+    while ((int32_t)lb(a0 - 1) >= 0)
+      a0 -= 24;
+    
+  v1 -= 24;
+  sw(v0, v1);
+  sw(0x80075930, a0);
+  return;
+}
+
+// size: 0x00000098
+void function_80053570(void)
+{
+  uint32_t temp;
+  a1 = lw(0x80075824) + 0x2000;
+  v0 = lw(0x80075738);
+  temp = v0 != a1;
+  if (temp) goto label800535C0;
+  a3 = ra;
+  a2 = a0;
+  mult((spyro_rand() & 0xFF)+1, 0x20);
+  v0 = a1 - lo;
+  temp = a3;
+  sb(v0 + 1, a2);
+  return;
+label800535C0:
+  v1 = lb(v0 + 1);
+  sb(v0 + 1, a0);
+  temp = v1 != -1;
+  v1 = v0 + 0x20;
+  if (temp) goto label800535E8;
+  if (v1 == a1) goto label800535E0;
+  sb(v1 + 1, -1);
+label800535E0:
+  sw(0x80075738, v1);
+  return;
+label800535E8:
+  a0 = lb(v1 + 0x0001);
+  temp = v1 == a1;
+  if (temp) goto label80053600;
+  temp = (int32_t)a0 >= 0;
+  v1 += 0x20;
+  if (temp) goto label800535E8;
+  v1 -= 0x20;
+label80053600:
+  sw(0x80075738, v1);
+  return;
+}
+
+// size: 0x00000310
 void function_800530C0(void)
 {
   uint32_t temp;
@@ -84,8 +186,7 @@ label80053210:
   t8 = 0x1F800000;
   t9 = a0 - 8; // 0xFFFFFFF8
 label80053260:
-  spyro_rand();
-  t6 = v0;
+  t6 = spyro_rand();
   a0 = 2; // 0x0002
   function_80053570();
   v1 = lh(t8 + 0x0000);
@@ -177,49 +278,144 @@ label80053350:
   return;
 }
 
+// size: 0x000000F8
+void function_800333DC(void)
+{
+  a0 = 3;
+  function_80058CC0();
+  v1 = lw(0x80075704);
+  if (v1 == 99) {
+    sw(0x80075864, 1);
+    v0 = lw(0x80075818);
+    if (v0 != (uint32_t)-1) {
+      sw(0x800758B4, v0);
+      sw(0x80075818, -1);
+    } else
+      if (lw(total_found_gems) == 14000)
+        sw(0x800758B4, 10);
+      else
+        sw(0x800758B4, 60);
+    
+    sw(0x800758AC, 0);
+    sw(0x800756D0, 0);
+    sw(0x800756F8, 0);
+    sw(0x80075704, lw(0x80075704)+1);
+  } else if (v1 == 100) {
+    sw(0x800756F8, lw(0x800756F8)+lw(0x800756CC));
+    a0 = 1;
+    function_80015370();
+  }
+}
 
-// different return instruction (not JR RA)
-void function_80053570(void)
+uint32_t func_80056DC4(uint32_t a, uint32_t b)
+{
+  for (int i = 0; i < 24; i++)
+  {
+    if (lw(0x80075F30 + i*0x1C + 0x00) == a
+     && lbu(0x80075F30 + i*0x1C + 0x0D) == b)
+    {
+      if (lhu(0x80075F30 + i*0x1C + 0x0E) & 0x100) 
+        return 2;
+      else
+        return 1;
+    }
+  }
+  return 0;
+}
+
+// size: 0x00000078
+void function_80056DC4(void)
+{
+  v0 = func_80056DC4(a0, a1);
+}
+
+// size: 0x0000006C
+void function_8003E1AC(void)
+{
+  sp -= 0x28;
+  sw(sp + 0x20, s0);
+  sw(sp + 0x24, ra);
+
+  s0 = 0x80078B34;
+  spyro_vec3_copy(s0, 0x80078AFC);
+  a1 = abs_int(lw(0x80078BA4));
+  spyro_set_vec3_length(s0, abs_int(lw(0x80078BA4)));
+  spyro_vec3_clear(sp + 0x10);
+  spyro_vec3_sub(s0, sp + 0x10, s0);
+
+  ra = lw(sp + 0x24);
+  s0 = lw(sp + 0x20);
+  sp += 0x28;
+  return;
+}
+
+// size: 0x00000038
+void function_8005882C(void)
+{
+  for (uint32_t i = 0; i < 8; i++) {
+    if (lbu(0x80077108 + i*0x18 + 0x0C) == 0) {
+      v0 = i;
+      return;
+    }
+  }
+  v0 = -1;
+  return;
+}
+
+// size: 0x000000D4
+void function_8003AAEC(void)
 {
   uint32_t temp;
-  a1 = 0x80075824;
-  a1 = lw(a1 + 0x0000);
-  at = 0x80075738; // &0x00000000
-  v0 = lw(at + 0x0000);
-  a1 += 8192; // 0x2000
-  temp = v0 != a1;
-  if (temp) goto label800535C0;
-  a3 = ra;
-  a2 = a0;
-  spyro_rand();
-  mult((v0 & 0xFF)+1, 0x20);
-  v0=lo;
-  v0 = a1 - v0;
-  temp = a3;
-  sb(v0 + 0x0001, a2);
-  return;
-label800535C0:
-  v1 = lb(v0 + 0x0001);
-  sb(v0 + 0x0001, a0);
-  a0 = -1; // 0xFFFFFFFF
-  temp = v1 != a0;
-  v1 = v0 + 32; // 0x0020
-  if (temp) goto label800535E8;
-  temp = v1 == a1;
-  if (temp) goto label800535E0;
-  sb(v1 + 0x0001, a0);
-label800535E0:
-  sw(at + 0x0000, v1);
-  return;
-label800535E8:
-  a0 = lb(v1 + 0x0001);
-  temp = v1 == a1;
-  if (temp) goto label80053600;
-  temp = (int32_t)a0 >= 0;
-  v1 += 32; // 0x0020
-  if (temp) goto label800535E8;
-  v1 -= 32; // 0xFFFFFFE0
-label80053600:
-  sw(at + 0x0000, v1);
+  sp -= 40; // 0xFFFFFFD8
+  sw(sp + 0x0014, s1);
+  s1 = a0;
+  sw(sp + 0x001C, s3);
+  s3 = a1;
+  sw(sp + 0x0020, ra);
+  sw(sp + 0x0018, s2);
+  sw(sp + 0x0010, s0);
+  function_8005882C();
+  s2 = v0;
+  temp = (int32_t)s2 < 0;
+  a0 = s1;
+  if (temp) goto label8003AB9C;
+  a1 = 4; // 0x0004
+  s0 = s2 << 1;
+  s0 += s2;
+  s0 = s0 << 3;
+  v0 = 0x80077108;
+  s0 += v0;
+  v0 = 255; // 0x00FF
+  sb(s0 + 0x0010, v0);
+  sb(s0 + 0x0011, v0);
+  sb(s0 + 0x0012, v0);
+  function_800529E4();
+  a0 = s1 + 32; // 0x0020
+  a1 = s3;
+  a2 = s0;
+  spyro_set_mat_mirrored_vec_multiply(a0, a1, a2);
+  a0 = s0;
+  a1 = s0;
+  a2 = s1 + 12; // 0x000C
+  spyro_vec3_add(a0, a1, a2);
+  v0 = spyro_rand();
+  sb(s0 + 0x000E, v0);
+  v0 = 3; // 0x0003
+  v1 = 32; // 0x0020
+  sb(s0 + 0x000F, v0);
+  v0 = 16; // 0x0010
+  sb(s0 + 0x000D, v0);
+  v0 = 64; // 0x0040
+  sb(s0 + 0x000C, v1);
+  sb(s0 + 0x0014, v1);
+  sb(s0 + 0x0015, v0);
+label8003AB9C:
+  v0 = s2;
+  ra = lw(sp + 0x0020);
+  s3 = lw(sp + 0x001C);
+  s2 = lw(sp + 0x0018);
+  s1 = lw(sp + 0x0014);
+  s0 = lw(sp + 0x0010);
+  sp += 40; // 0x0028
   return;
 }

@@ -319,6 +319,7 @@ void function_8005E03C(void)
   sw(sp + 0x001C, s3);
   sw(sp + 0x0018, s2);
   sw(sp + 0x0010, s0);
+  
   if (lhu(0x80073924) == 0) {
     printf("unexpected interrupt(%04x)\n", lhu(lw(I_STAT_ptr)));
     //ReturnFromException();

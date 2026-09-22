@@ -715,9 +715,12 @@ void set_pixel(vertex v)
         break;
       }
       case 2: //16 bits
+        colcol = 0;
         printf("16 bit textures\n");
         UNREACHABLE;
-      case 3: UNREACHABLE;
+      case 3:
+        colcol = 0;
+        UNREACHABLE;
     }
 
     if (colcol == 0) return;
@@ -2547,6 +2550,7 @@ uint32_t lw_dma(uint32_t addr, file_loc loc)
       debug_printf(DEBUG_MASK_DMA, "channel control: %.8X\n", value);
       break;
     default:
+      value = 0;
       printf("unknown %d\n", reg);
       UNREACHABLE;
     }

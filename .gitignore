@@ -11,3 +11,5 @@ program
 compile_commands.json
 .clangd
 .vscode
+.idea
+/wasmweb/main.wasm

@@ -128,7 +128,6 @@ int decompile_everything()
       .entries = ENTRIES(ARR_U32(
         0x8007ABAC,
         0x8007CD38,
-        0x8007CEE4
       )),
       .skips = SKIPS(ARR_U32()),
     },
@@ -164,7 +163,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x800857CC,
-        0x8007CFC0,
         0x8007D9C8,
         0x800873E0,
         0x80086134,
@@ -206,7 +204,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008772C,
-        0x8007D070,
         0x8007DA78,
         0x800892C4,
         0x80088098,
@@ -286,7 +283,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x800872A4,
-        0x8007D04C,
         0x8007DA54,
         0x80088F68,
         0x80087E20,
@@ -359,7 +355,7 @@ int decompile_everything()
 
         CUSTOM_LIST(ARR_U32(0x80080E80, 0x80081374), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008249C,
@@ -413,7 +409,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008A258,
-        0x8007D998,
         0x8007E3A0,
         0x8008BFF0,
         0x8008AE28,
@@ -462,7 +457,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008A4D0,
-        0x8007D838,
         0x8007E240,
         0x8008C540,
         0x8008B1C0,
@@ -507,7 +501,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x80088B88,
-        0x8007D838,
         0x8007E240,
         0x8008A9A8,
         0x80089714,
@@ -615,7 +608,7 @@ int decompile_everything()
         ), ARR_U32(0x80082F58)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080974, 0x80080E68), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x800819BC,
@@ -670,7 +663,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008B2C0,
-        0x8007D990,
         0x8007E398,
         0x8008D2D0,
         0x8008BE98,
@@ -876,7 +868,7 @@ int decompile_everything()
         ), ARR_U32(0x800836F8)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080DF0, 0x800812E4), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x80081F0C,
@@ -929,7 +921,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x80087EF0,
-        0x8007D784,
         0x8007E18C,
         0x80089AB8,
         0x800888F8,
@@ -1126,7 +1117,7 @@ int decompile_everything()
         ), ARR_U32(0x80083BAC)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80081044, 0x80081538), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x8008223C,
@@ -1181,7 +1172,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x80088E24,
-        0x8007D9B8,
         0x8007E3C0,
         0x8008AA24,
         0x800897FC,
@@ -1373,7 +1363,7 @@ int decompile_everything()
         ), ARR_U32(0x80083B8C)), // 0x800758E4
         CUSTOM_LIST(ARR_U32(0x80080A04, 0x80080EF8), ARR_U32(0x8007AE08)), // 0x80075694
         CUSTOM_LIST(ARR_U32(0x8007B3EC, 0x8007B410), ARR_U32(0x8007AEDC)), // 0x800757A8
-        CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
+        //CUSTOM_LIST(ARR_U32(0x8007C988, 0x8007CA50, 0x8007CAD0), ARR_U32(0x8007B4B0)), // 0x800758C4
       )),
       .entries = ENTRIES(ARR_U32(
         0x80082028,
@@ -1417,7 +1407,6 @@ int decompile_everything()
       )),
       .entries = ENTRIES(ARR_U32(
         0x80083568,
-        0x8007CF30,
         0x8007D938,
         0x80084EA0,
         0x80083ED8,
@@ -1539,8 +1528,7 @@ int decompile_everything()
       )),
       .skips = SKIPS(ARR_U32()),
     },
-    /*
-    {
+    /*{
       .name = "credits",
       .base = 0x8007AA38,
       .sector = 47444,
@@ -1553,8 +1541,7 @@ int decompile_everything()
         //0x8007BFD0
       )),
       .skips = SKIPS(ARR_U32()),
-    },
-    */
+    },*/
     {
       .name = "gnastys_loot",
       .base = 0x8007AA38,
@@ -1590,6 +1577,7 @@ int decompile_everything()
       )),
       .skips = SKIPS(ARR_U32()),
     },
+    /*
     {
       .name = "level_name",
       .base = 0x8007AA38,
@@ -1601,6 +1589,7 @@ int decompile_everything()
       .entries = ENTRIES(ARR_U32()),
       .skips = SKIPS(ARR_U32()),
     },
+    */
   };
 
   for (int i = 0; i < sizeof(files)/sizeof(files[0]); i++)

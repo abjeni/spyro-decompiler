@@ -35,7 +35,7 @@ void spyro_srand(int32_t seed)
 // size: 0x00000010
 void function_8006275C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_srand(a0);
 }
 
@@ -49,7 +49,7 @@ int spyro_rand(void)
 // size: 0x00000030
 void function_8006272C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = spyro_rand();
 }
 
@@ -142,7 +142,7 @@ int32_t ResetGraph(int32_t mode)
 
 void function_8005F2A4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = ResetGraph(a0);
 }
 
@@ -179,7 +179,7 @@ void SetDispMask(int32_t mask)
 
 void function_8005F6C8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   SetDispMask(a0);
 }
 
@@ -201,7 +201,7 @@ uint32_t DrawSync(uint32_t mode)
 
 void function_8005F764(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = DrawSync(a0);
 }
 
@@ -228,7 +228,7 @@ int32_t SetGraphDebug(int32_t level)
 
 void function_8005F53C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = SetGraphDebug(a0);
 }
 
@@ -250,22 +250,17 @@ void psyq_check_box(const char *str, RECT box)
       if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("%s:bad RECT", str);
       printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
-      return;
      }
-    return;
-  }
-  if (debug_level == 2) {
+  } else if (debug_level == 2) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("%s:", str);
     printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
-    return;
   }
-  return;
 }
 
 void function_8005F7D0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   psyq_check_box(addr_to_pointer(a0), *(RECT*)addr_to_pointer(a1));
 }
 
@@ -291,7 +286,7 @@ int32_t ClearImage(RECT *rect, uint8_t r, uint8_t g, uint8_t b)
 
 void function_8005F8F8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3);
 }
 
@@ -311,7 +306,7 @@ int32_t LoadImage(RECT *recp, void *p)
 
 void function_8005FA28(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -330,7 +325,7 @@ int32_t StoreImage(RECT *recp, void *p)
 
 void function_8005FA8C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1));
 }
 
@@ -353,7 +348,7 @@ int32_t MoveImage(RECT *recp, int32_t x, int32_t y)
 
 void function_8005FAF0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = MoveImage(addr_to_pointer(a0), a1, a2);
 }
 
@@ -373,7 +368,7 @@ void DrawOTag(uint32_t *ot)
 
 void function_8005FD64(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   DrawOTag(addr_to_pointer(a0));
 }
 
@@ -401,7 +396,7 @@ DRAWENV *PutDrawEnv(DRAWENV *env)
 
 void function_8005FDD8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
 }
 
@@ -431,6 +426,7 @@ uint32_t psy_lib_func1(RECT box)
 
 void function_80060E28(void)
 {
+  DEPRECATED;
   v0 = psy_lib_func1(*(RECT*)addr_to_pointer(a0));
 }
 
@@ -628,7 +624,7 @@ DISPENV *PutDispEnv(DISPENV *env)
 
 void function_80060030(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
 }
 
@@ -644,6 +640,6 @@ void SetDrawMode(DR_MODE *p, int32_t dfe, int32_t dfd, int32_t tpage, RECT *tw)
 // size: 0x00000058
 void function_80060670(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   SetDrawMode(addr_to_pointer(a0), a1, a2, a3, addr_to_pointer(lw(sp + 0x10)));
 }
