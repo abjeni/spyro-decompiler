@@ -87,7 +87,7 @@ void function_80053570(void)
 label800535C0:
   v1 = lb(v0 + 1);
   sb(v0 + 1, a0);
-  temp = v1 != -1;
+  temp = v1 != (uint32_t)-1;
   v1 = v0 + 0x20;
   if (temp) goto label800535E8;
   if (v1 == a1) goto label800535E0;
