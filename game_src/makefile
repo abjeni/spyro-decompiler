@@ -11,7 +11,7 @@ SOURCE_DIR := source
 DECOMPILE_DIR := decompiled
 MEMCARD_DIR := ../mem_card
 
-CFLAGS :=  -Werror -Wwrite-strings -Wimplicit-function-declaration -Wall -Wunused-parameter -Wsign-compare -pipe -O3 -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
+CFLAGS :=  -Werror -Wwrite-strings -Wimplicit-function-declaration -Wall -Wunused-parameter -Wsign-compare -pipe -O3 -ggdb -I$(INCLUDE_DIR) -I$(DECOMPILE_DIR)
 #CFLAGS := -Wall -march=native -Ofast -pipe
 
 

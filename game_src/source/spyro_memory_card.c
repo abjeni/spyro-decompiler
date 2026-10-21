@@ -7,6 +7,7 @@
 #include "not_renamed.h"
 #include "level_loading.h"
 #include "spyro_math.h"
+#include "string.h"
 
 // size: 0x00000010
 void function_80068A1C(void)
@@ -1465,96 +1466,32 @@ void function_8005956C(void)
 // size: 0x000001E4
 void function_80059864(void)
 {
-  uint32_t temp;
-  sp -= 0x20; // 0xFFFFFFE0
-  sw(sp + 0x10, s0);
-  sw(sp + 0x18, ra);
-  sw(sp + 0x14, s1);
+  uint32_t dst = a0;
 
-  s0 = a0;
-  s1 = s0;
-  spyro_memset32(s0, 0, 0x600);
-  sb(s0 + 0x00, lw(LEVEL_ID));
-  sb(s0 + 0x01, lw(0x80075754));
-  sb(s0 + 0x02, lw(0x80075748));
-  sb(s0 + 0x03, lw(0x800757A4));
-  sw(s0 + 0x04, lw(CAMERA_MODE));
-  sb(s0 + 0x08, lw(0x80076240));
-  sb(s0 + 0x09, lw(0x80075838));
-  sb(s0 + 0x0A, lw(0x8007583C));
-  sb(s0 + 0x000B, lw(0x8007582C));
-  spyro_memcpy32(s0 + 0x10, 0x80078618, 0x14);
-  t0 = 0;
-  a3 = 0x80078680;
-  a1 = s0;
-label8005992C:
-  v1 = a1 + 36; // 0x0024
-  a0 = a3;
-  a2 = a1 + 41; // 0x0029
-label80059938:
-  v0 = lbu(a0 + 0x0000);
-  sb(v1 + 0x0000, v0);
-  v1++;
-  v0 = (int32_t)v1 < (int32_t)a2;
-  temp = v0 != 0;
-  a0++;
-  if (temp) goto label80059938;
-  a3 += 5; // 0x0005
-  t0++;
-  v0 = (int32_t)t0 < 5;
-  temp = v0 != 0;
-  a1 += 5; // 0x0005
-  if (temp) goto label8005992C;
-  a0 = s0 + 64; // 0x0040
-  a1 = 0x80078E78;
-  a2 = 36; // 0x0024
-  spyro_memcpy32(a0, a1, a2);
-  a0 = s0 + 100; // 0x0064
-  a1 = 0x8007A6A8;
-  a2 = 36; // 0x0024
-  spyro_memcpy32(a0, a1, a2);
-  a0 = 0;
-  t0 = 0x80076FE8;
-  a3 = 0x80077420;
-  a2 = s0;
-  a1 = 0x800772D8;
-label800599B0:
-  v0 = lw(a1 + 0x0000);
-  a1 += 4; // 0x0004
-  v1 = s0 + a0;
-  a0++;
-  sb(v1 + 0x0088, v0);
-  v0 = lw(a3 + 0x0000);
-  a3 += 4; // 0x0004
-  sh(a2 + 0x00AC, v0);
-  v0 = lw(t0 + 0x0000);
-  t0 += 4; // 0x0004
-  sb(v1 + 0x00F4, v0);
-  v0 = (int32_t)a0 < 36;
-  temp = v0 != 0;
-  a2 += 2; // 0x0002
-  if (temp) goto label800599B0;
-  a0 = 0;
-  v1 = s0 + a0;
-label800599F0:
-  v0 = lbu(0x800758D0 + a0);
-  a0++;
-  sb(v1 + 0x0106, v0);
-  v0 = (int32_t)a0 < 6;
-  temp = v0 != 0;
-  v1 = s0 + a0;
-  if (temp) goto label800599F0;
-  a0 = s0 + 268; // 0x010C
-  a1 = 0x80077908;
-  a2 = 1152; // 0x0480
-  spyro_memcpy32(a0, a1, a2);
-  a0 = s1;
-  sw(s0 + 0x058C, savegame_checksum(addr_to_pointer(s1)));
-  ra = lw(sp + 0x0018);
-  s1 = lw(sp + 0x0014);
-  s0 = lw(sp + 0x0010);
-  sp += 32; // 0x0020
-  return;
+  spyro_memset32(dst, 0, 0x600);
+  sb(dst + 0x00, lw(LEVEL_ID));
+  sb(dst + 0x01, lw(0x80075754));
+  sb(dst + 0x02, lw(0x80075748));
+  sb(dst + 0x03, lw(0x800757A4));
+  sw(dst + 0x04, lw(CAMERA_MODE));
+  sb(dst + 0x08, lw(0x80076240));
+  sb(dst + 0x09, lw(0x80075838));
+  sb(dst + 0x0A, lw(0x8007583C));
+  sb(dst + 0x0B, lw(lives));
+  spyro_memcpy32(dst + 0x10, 0x80078618, 0x14);
+  memcpy(addr_to_pointer(dst + 0x24), addr_to_pointer(0x80078680), 5*5);
+  spyro_memcpy32(dst + 0x40, 0x80078E78, 0x24);
+  spyro_memcpy32(dst + 0x64, 0x8007A6A8, 0x24);
+
+  for (int i = 0; i < 36; i++) {
+    sb(dst + 0x88 + i, lw(level_dragons + i*4));
+    sh(dst + 0xAC + i*2, lw(level_gems + i*4));
+    sb(dst + 0xF4 + i, lw(level_eggs + i*4));
+  }
+
+  memcpy(addr_to_pointer(dst + 0x106), addr_to_pointer(0x800758D0), 6);
+  spyro_memcpy32(dst + 0x10C, 0x80077908, 0x480);
+  sw(dst + 0x58C, savegame_checksum(addr_to_pointer(dst)));
 }
 
 // size: 0x000002D0
@@ -1611,13 +1548,13 @@ void function_80059594(void)
   v0 = lbu(s0 + 0x000A);
   sw(0x8007583C, v0);
   v0 = lbu(s0 + 0x000B);
-  sw(0x8007582C, v0);
+  sw(lives, v0);
   v0 = (int32_t)v0 < 4;
   temp = v0 == 0;
   s1 = s0;
   if (temp) goto label800596B4;
   v0 = 4; // 0x0004
-  sw(0x8007582C, v0);
+  sw(lives, v0);
 label800596B4:
   a0 = 0x80078618;
   a1 = s0 + 16; // 0x0010
@@ -1653,10 +1590,10 @@ label800596E4:
   a2 = 36; // 0x0024
   spyro_memcpy32(a0, a1, a2);
   a2 = 0;
-  t3 = 0x80076FE8;
-  t2 = 0x80077420;
+  t3 = level_eggs;
+  t2 = level_gems;
   t1 = s0;
-  t0 = 0x800772D8;
+  t0 = level_dragons;
   sw(total_found_dragons, 0);
   sw(total_found_gems, 0);
   sw(total_found_eggs, 0);
@@ -2207,7 +2144,7 @@ label80031DBC:
     return;
   }
 label80031E34:
-  v1 = lw(buttons_press);
+  v1 = lw(buttons);
   v0 = v1 & 0x4000;
   temp = v0 == 0;
   a1 = 0;
@@ -2249,7 +2186,7 @@ label80031EEC:
   v0 = (int32_t)v0 < 8;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2304,7 +2241,7 @@ label80031F88:
   sh(a0 + 0x0034, v0);
   function_8002C924();
   a0 = lw(CONTINUOUS_LEVEL_ID);
-  v0 = 0x800772D8;
+  v0 = level_dragons;
   a0 = a0 << 2;
   a0 += v0;
   v0 = lw(total_found_dragons);
@@ -2320,7 +2257,7 @@ label80032054:
   v0 = (int32_t)v0 < 60;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2484,7 +2421,7 @@ label80032338:
   v0 = (int32_t)v0 < 60;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2497,7 +2434,7 @@ label80032338:
   v0 = 6; // 0x0006
   goto label80032440;
 label8003238C:
-  s1 = buttons_press;
+  s1 = buttons;
   v0 = lw(s1 + 0x0000);
   v0 = v0 & 0x5000;
   temp = v0 == 0;
@@ -2544,7 +2481,7 @@ label8003245C:
   v0 = (int32_t)v0 < 8;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   if (temp) goto label800324B8;

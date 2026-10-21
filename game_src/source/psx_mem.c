@@ -1,13 +1,12 @@
 #include "psx_mem.h"
-#include <stdlib.h>
+#include "decompilation.h"
+
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <string.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <time.h>
 
 #include <engine.h>
 
@@ -15,7 +14,6 @@
 #include "debug.h"
 #include "triangle.h"
 #include "debug.h"
-#include "decompilation.h"
 
 //#define LOG_DISK_READ
 
@@ -52,6 +50,10 @@
 #define STATE_JOY_3 3
 #define STATE_JOY_4 4
 
+#define SYNC_TRANSFER 0
+#define SYNC_BLOCKS 1
+#define SYNC_LINK_LIST 2
+
 uint32_t joy_state[] = {STATE_NONE, STATE_NONE};
 
 const char *dmas[] = {
@@ -64,14 +66,24 @@ const char *dmas[] = {
   "OTC"
 };
 
-
-#define SYNC_TRANSFER 0
-#define SYNC_BLOCKS 1
-#define SYNC_LINK_LIST 2
-
-const char *filename = "root/SCUS_942.28;1";
-
 struct psx_mem psx_mem;
+
+int start_frame()
+{
+
+
+  set_resolution((int[]){256, 320, 512, 640}[psx_mem.gpu.display_mode.res_horiz_1], (int[]){240, 480}[psx_mem.gpu.display_mode.res_vert]);
+
+  uint32_t x = psx_mem.gpu.display_area_start & 0x2FF;
+  uint32_t y = (psx_mem.gpu.display_area_start >> 10) & 0x1FF;
+  update_vram(psx_mem.gpu.mem, x, y, psx_mem.gpu.display_mode.color_depth);
+
+  update_debug_text();
+
+  wait_frame();
+
+  return handle_input();
+}
 
 #undef addr_to_pointer
 #undef pointer_to_addr
@@ -1615,24 +1627,6 @@ void check_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, ui
   UNREACHABLE;
 }
 
-file_loc get_access(uint32_t addr)
-{
-  return psx_mem.mem_access[addr&0x001FFFFF];
-}
-
-void print_access(uint32_t addr)
-{
-  file_loc loc = get_access(addr);
-
-  printf("0x%.8X (0x%.2X) written by: %s:%u\n", addr, lbu(addr, LOC), loc.file, loc.line);
-}
-
-void set_access(uint32_t addr, uint32_t size, file_loc loc)
-{
-  for (uint32_t i = 0; i < size; i++)
-    psx_mem.mem_access[(addr+i)&0x001FFFFF] = loc;
-}
-
 uint32_t translate_addr(uint32_t addr)
 {
   if (addr < 0x00200000) 
@@ -1699,14 +1693,14 @@ void enable_dma(uint32_t dma_num)
       uint32_t words = header>>24;
       dma.madr = header&0x00FFFFFF;
 
-      debug_printf(DEBUG_MASK_DMA_TRANSFER, "- %.8X %d words file %s:%u\n", header, words, get_access(addr&0x1FFFFF).file, get_access(addr&0x1FFFFF).line);
+      debug_printf(DEBUG_MASK_DMA_TRANSFER, "- %.8X %d words\n", header, words);
 
       addr += 4;
       for (uint32_t i = 0; i < words; i++)
       {
         uint32_t address = addr+i*4;
         uint32_t word = lw(address, LOC);
-        debug_printf(DEBUG_MASK_DMA_TRANSFER, "- 0x%.8X -> 0x%.8X file %s:%u\n", address, word, get_access(address&0x1FFFFF).file, get_access(address&0x1FFFFF).line);
+        debug_printf(DEBUG_MASK_DMA_TRANSFER, "- 0x%.8X -> 0x%.8X\n", address, word);
         sw(0x1F801810, word, LOC);
       }
     }
@@ -2854,18 +2848,4 @@ void psx_read_sectors(uint32_t dst, uint32_t sector, uint32_t sector_len)
       ptr++;
     }
   }
-}
-
-int start_frame()
-{
-
-  set_resolution((int[]){256, 320, 512, 640}[psx_mem.gpu.display_mode.res_horiz_1], (int[]){240, 480}[psx_mem.gpu.display_mode.res_vert]);
-
-  uint32_t x = psx_mem.gpu.display_area_start & 0x2FF;
-  uint32_t y = (psx_mem.gpu.display_area_start >> 10) & 0x1FF;
-  update_vram(psx_mem.gpu.mem, x, y, psx_mem.gpu.display_mode.color_depth);
-
-  wait_frame();
-
-  return handle_input();
 }

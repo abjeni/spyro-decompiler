@@ -1,4 +1,6 @@
 
+#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -13,25 +15,14 @@
 
 #define WIDTH (512)
 #define HEIGHT (240)
-#define SCALE 3
+#define SCALE 2
 
 int resx = WIDTH;
 int resy = HEIGHT;
 
-int create_window(SDL_Window** window, SDL_Surface **screen_surface)
-{
-  //Create window
-  *window = SDL_CreateWindow("spyro", WIDTH*SCALE, HEIGHT*SCALE, SDL_WINDOW_OPENGL);
-  if (*window == NULL)
-  {
-    printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-    return 1;
-  }
-
-  *screen_surface = SDL_GetWindowSurface(*window);
-
-  return 0;
-}
+uint32_t g_debug_line_num;
+SDL_Window* g_debug_window;
+SDL_Renderer *g_debug_renderer;
 
 SDL_Window* g_window;
 SDL_Surface *g_screen_surface;
@@ -207,22 +198,6 @@ void set_resolution(int x, int y)
   }
 }
 
-void init_game_window()
-{
-  SDL_Window *window = NULL;
-  SDL_Surface *screen_surface = NULL;
-
-  assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
-
-  create_window(&window, &screen_surface);
-
-  if (window == NULL) assert(0);
-  if (screen_surface == NULL) assert(0);
-
-  g_window = window;
-  g_screen_surface = screen_surface;
-}
-
 void *platform_aquire_rom(void)
 {
   FILE *file = fopen(ROM_NAME, "r");
@@ -246,12 +221,69 @@ void *platform_allocate(size_t memory_size)
   return malloc(memory_size);
 }
 
+int create_window(SDL_Window** window, SDL_Surface **screen_surface, const char *name)
+{
+  *window = SDL_CreateWindow(name, WIDTH*SCALE, HEIGHT*SCALE, SDL_WINDOW_OPENGL);
+  if (*window == NULL)
+  {
+    printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+    return 1;
+  }
+
+  *screen_surface = SDL_GetWindowSurface(*window);
+
+  if (window == NULL) assert(0);
+  if (screen_surface == NULL) assert(0);
+
+  return 0;
+}
+
+void init_game_window(void)
+{
+  create_window(&g_window, &g_screen_surface, "spyro");
+}
+
+void init_debug_window(void)
+{
+  assert(SDL_CreateWindowAndRenderer("examples/renderer/debug-text", 1024, 1024, SDL_WINDOW_RESIZABLE, &g_debug_window, &g_debug_renderer));
+  SDL_SetRenderLogicalPresentation(g_debug_renderer, 1024, 1024, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  SDL_SetRenderScale(g_debug_renderer, 2.0f, 2.0f);
+}
+
 int platform_init(void)
 {
   int err = chdir("..");
   if (err) return err;
 
+  assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
+
   init_game_window();
 
+  init_debug_window();
+
+  SDL_UpdateWindowSurface(g_debug_window);
+
   return 0;
+}
+
+void debug_begin()
+{
+  g_debug_line_num = 0;
+
+  SDL_SetRenderDrawColor(g_debug_renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+
+  SDL_RenderClear(g_debug_renderer);
+
+  SDL_SetRenderDrawColor(g_debug_renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+}
+
+void debug_text(const char *text)
+{
+  SDL_RenderDebugText(g_debug_renderer, 2, 2 + g_debug_line_num*10, text);
+  g_debug_line_num++;
+}
+
+void debug_end()
+{
+  SDL_RenderPresent(g_debug_renderer);
 }

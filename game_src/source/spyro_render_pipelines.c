@@ -992,7 +992,7 @@ label80019B0C:
   if (v0 == 0) goto label80019BD8;
   v0 = lw(0x80075688);
   v0 = v0 << 2;
-  v1 = lw(0x80077420 + v0);
+  v1 = lw(level_gems + v0);
   v0 = lw(0x8007587C);
   a2 = v1 - v0;
   goto label80019D84;
@@ -1017,7 +1017,7 @@ label80019C24:
   v0 = lw(0x80075688);
   v1 = lw(0x8007587C);
   v0 = v0 << 2;
-  v0 = lw(0x80077420 + v0);
+  v0 = lw(level_gems + v0);
   v0 -= v1;
   mult(v0, a1);
   v0=lo;
@@ -1030,7 +1030,7 @@ label80019C90:
   v0 = lw(0x80075688);
   v1 = lw(0x8007587C);
   v0 = v0 << 2;
-  v0 = lw(0x80077420 + v0);
+  v0 = lw(level_gems + v0);
   a0 = lw(total_found_gems);
   v0 -= v1;
   a2 = a0 - v0;
@@ -1055,7 +1055,7 @@ label80019D10:
   v0 = lw(0x80075688);
   v1 = lw(0x8007587C);
   v0 = v0 << 2;
-  v0 = lw(0x80077420 + v0);
+  v0 = lw(level_gems + v0);
   v0 -= v1;
   mult(v0, a1);
   v0=lo;
@@ -1341,7 +1341,7 @@ label8001A5E0:
   sb(s0 + 0x2D, 0);
   sb(s0 + 0x2E, 0);
   append_gpu_command_block(addr_to_pointer(s0 + 0x28));
-  v1 = lw(0x800757D8);
+  v1 = lw(gamestate);
   sw(allocator1_ptr, s0 + 0x38);
   temp = v1 != 2;
   v0 = 3; // 0x0003
@@ -2413,7 +2413,7 @@ label8001BE14:
   v0 += v1;
   v0 = v0 << 1;
   v0 += s3;
-  v1 = 0x80077420;
+  v1 = level_gems;
   v0 = v0 << 2;
   a2 = v0 + v1;
   sw(sp + 0x40, a0);
@@ -2483,15 +2483,13 @@ label8001C04C:
   v0 += 445; // 0x01BD
   sw(sp + 0x40, v0);
   v0 = v1 << 2;
-  a2 = lw(0x800772D8 + v0);
+  a2 = lw(level_dragons + v0);
   a1 = 0x800755BC; // "%d"
   a0 = s6;
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s6), addr_to_pointer(s4), 18, 2);
-  v0 = lw(0x800757CC);
   sw(sp + 0x48, 0x1800);
-  v0 += 462; // 0x01CE
-  sw(sp + 0x40, v0);
+  sw(sp + 0x40, lw(0x800757CC) + 0x1CE);
   create_3d_text2("/", addr_to_pointer(s4), 18, 2);
   t1 = 4352; // 0x1100
   sw(sp + 0x48, t1);
@@ -2607,7 +2605,7 @@ label8001C3A8:
   v0 = v0 << 1;
   v0 += s3;
   v0 = v0 << 2;
-  v0 = lw(0x80076FE8 + v0);
+  v0 = lw(level_eggs + v0);
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 != 0;
   v0 = 0x38E30000;
@@ -2673,11 +2671,8 @@ label8001C4D8:
   a2 = lw(0x800757CC);
   gui_line(a2 + 0x1AE, s0, a2 + 0x1EE, s0);
 label8001C53C:
-  v1 = lw(0x800757D8);
-  v0 = 2; // 0x0002
   sw(0x8006FCF4 + 0x2400, 0); // "H^^^oooooofffOOO((("
-  temp = v1 != v0;
-  if (temp) goto label8001C574;
+  if (lw(gamestate) != GAMESTATE_PAUSE) goto label8001C574;
   v0 = lw(0x80075690);
   temp = v0 != 0;
   if (temp) goto label8001C574;
@@ -2692,9 +2687,7 @@ label8001C574:
   
   PutDispEnv(&backbuffer_disp->disp);
 label8001C648:
-  v0 = lw(0x800758B8);
-  v0++;
-  sw(0x800758B8, v0);
+  sw(0x800758B8, lw(0x800758B8) + 1);
   ra = lw(sp + 0x014C);
   fp = lw(sp + 0x0148);
   s7 = lw(sp + 0x0144);
@@ -4599,7 +4592,7 @@ void function_8002C534(void)
 
   LoadImage((RECT[]){{0x200, 0, 0x100, 0xE1}}, addr_to_pointer(lw(0x800785F0) - 0x1C200));
   DrawSync(0);
-  sw(0x800757D8, 0);
+  sw(gamestate, 0);
   function_80058C7C();
   sb(0x80077FA8, 3);
   sb(0x80077FA9, 3);
@@ -7155,7 +7148,7 @@ void function_8001ED5C(void)
   sw(linked_list1, a0);
   function_80033C50();
 
-  switch (lw(0x800757D8))
+  switch (lw(gamestate))
   {
   case 0: // in game
     v0 = lbu(SKYBOX_DATA + 0x10);

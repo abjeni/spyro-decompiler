@@ -31,6 +31,8 @@ typedef struct {
 int32_t fixed_multi(int32_t a, int32_t b);
 uint32_t fixed_multu(uint32_t a, uint32_t b);
 
+int32_t avg_int(int32_t a, int32_t b);
+uint32_t avg_uint(uint32_t a, uint32_t b);
 int32_t abs_int(int32_t x);
 int32_t max_int(int32_t x, int32_t y);
 int32_t min_int(int32_t x, int32_t y);
@@ -47,6 +49,8 @@ mat3 list_to_mat3(uint32_t list[5]);
 void mat3_to_list(mat3 m, uint32_t list[5]);
 
 mat3 mat3_mul(mat3 a, mat3 b);
+
+vec3 avg_vec3(vec3 a, vec3 b);
 
 vec3 vec3_32_to_vec3(vec3_32 v);
 vec3_32 vec3_to_vec3_32(vec3 v);

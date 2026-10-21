@@ -769,18 +769,18 @@ void function_80056B28(void)
 {
   a0 = a0 ^ 0x00FFFFFF;
   for (int i = 0; i < 24; i++) {
-    if (lhu(0x80075F3E + i*0x1C) & 0x83) {
+    if (lhu(0x80075F30 + i*0x1C + 0x0E) & 0x83) {
       if ((a0 >> i) & 1) {
         v1 = 1 << i;
         sw(0x8007623C, lw(0x8007623C) | v1);
-        v1 = lhu(0x80075F3E + i*0x1C) & 0x1C;
+        v1 = lhu(0x80075F30 + i*0x1C + 0x0E) & 0x1C;
         if (v1 != 8) {
           if (v1 == 4) {
-            v0 = lw(0x80075F30 + i*0x1C);
+            v0 = lw(0x80075F30 + i*0x1C + 0x00);
             if (v0) sb(v0 + 0x2A0, 0x7F);
           }
         } else {
-          v0 = lw(0x80075F30 + i*0x1C);
+          v0 = lw(0x80075F30 + i*0x1C + 0x00);
           if (v0) sb(v0 + 0x54, 0x7F);
         }
         v0 = i*0x1C;
@@ -795,6 +795,647 @@ void function_80056B28(void)
   a0 = 0;
   a1 = 4;
   function_800567F4();
+}
+
+
+// size: 0x00000788
+void function_80055A78(void)
+{
+  uint32_t temp;
+  sp -= 144; // 0xFFFFFF70
+  sw(sp + 0x0078, s4);
+  s4 = a0;
+  sw(sp + 0x006C, s1);
+  s1 = a1;
+  sw(sp + 0x0074, s3);
+  s3 = a2;
+  sw(sp + 0x0084, s7);
+  s7 = a3;
+  sw(sp + 0x0070, s2);
+  s2 = -1; // 0xFFFFFFFF
+  sw(sp + 0x007C, s5);
+  s5 = 0x80076E20;
+  v0 = 8; // 0x0008
+  sw(sp + 0x008C, ra);
+  sw(sp + 0x0088, fp);
+  sw(sp + 0x0080, s6);
+  temp = s3 == v0;
+  sw(sp + 0x0068, s0);
+  if (temp) goto label80055AFC;
+  v0 = s3 < 9;
+  temp = v0 == 0;
+  v0 = 4; // 0x0004
+  if (temp) goto label80055B7C;
+  temp = s3 != v0;
+  a1 = 256; // 0x0100
+  if (temp) goto label80055B80;
+  a0 = s1;
+  a1 = s4;
+  function_80056DC4();
+  v1 = 2; // 0x0002
+  temp = v0 != v1;
+  a1 = 256; // 0x0100
+  if (temp) goto label80055B80;
+  v0 = 0;
+  goto label800561CC;
+label80055AFC:
+  a0 = s1;
+  a1 = s4;
+  function_80056DC4();
+  v1 = 2; // 0x0002
+  temp = v0 == v1;
+  a1 = s1 + 12; // 0x000C
+  if (temp) goto label800561C8;
+  s0 = sp + 88; // 0x0058
+  a0 = s0;
+  a2 = s5 - 40; // 0xFFFFFFD8
+  spyro_vec3_sub(a0, a1, a2);
+  a0 = s0;
+  a1 = 4; // 0x0004
+  spyro_vec3_shift_right(a0, a1);
+  a0 = s0;
+  a1 = 1; // 0x0001
+  v0 = spyro_vec_length(a0, a1);
+  v1 = lbu(s1 + 0x0055);
+  s6 = v1 << 10;
+  temp = s6 != 0;
+  fp = v0 << 4;
+  if (temp) goto label80055B54;
+  s6 = 0x4000; // 0x4000
+label80055B54:
+  v0 = (int32_t)s6 < (int32_t)fp;
+  temp = v0 == 0;
+  if (temp) goto label80055B7C;
+  temp = s7 == 0;
+  v0 = 127; // 0x007F
+  if (temp) goto label80055B6C;
+  sb(s7 + 0x0000, v0);
+label80055B6C:
+  v0 = 127; // 0x007F
+  goto label800561CC;
+label80055B74:
+  s2 = s0;
+  goto label80055BE8;
+label80055B7C:
+  a1 = 256; // 0x0100
+label80055B80:
+  s0 = 0;
+  a0 = 0;
+label80055B88:
+  v0 = lhu(0x80075F30 + 0x000E + a0);
+  v0 = v0 & 0xC1;
+  temp = v0 == 0;
+  v0 = a1 << 3;
+  if (temp) goto label80055B74;
+  v0 -= a1;
+  v0 = v0 << 2;
+  v1 = lbu(0x80075F30 + 0x000C + a0);
+  v0 = lbu(0x80075F30 + 0x000C + v0);
+  v1 = v1 < v0;
+  temp = v1 == 0;
+  if (temp) goto label80055BD8;
+  a1 = s0;
+label80055BD8:
+  s0++;
+  v0 = (int32_t)s0 < 24;
+  temp = v0 != 0;
+  a0 += 28; // 0x001C
+  if (temp) goto label80055B88;
+label80055BE8:
+  temp = (int32_t)s2 < 0;
+  v0 = 24; // 0x0018
+  if (temp) goto label800561C8;
+  temp = s2 == v0;
+  v0 = s2 << 3;
+  if (temp) goto label80056160;
+  v0 -= s2;
+  a0 = v0 << 2;
+  v0 = s3 | 0x1;
+  a2 = 0x800761DC;
+  sh(0x80075F30 + 0x000E + a0, v0);
+  sw(0x80075F30 + a0, s1);
+  sb(0x80075F30 + 0x000D + a0, s4);
+  a1 = lw(a2 + 0x0000);
+  v0 = a1 & 0x2;
+  temp = v0 == 0;
+  v0 = -3; // 0xFFFFFFFD
+  if (temp) goto label80055C68;
+  v1 = lhu(0x800761F4);
+  v0 = a1 & v0;
+  sw(a2 + 0x0000, v0);
+  sw(0x80075F30 + 0x0008 + a0, v1);
+  v0 = 0x00010000;
+  goto label80055C94;
+label80055C68:
+  v0 = s4 << 2;
+  v0 += s4;
+  v1 = lw(0x800761D0);
+  v0 = v0 << 2;
+  v0 += v1;
+  v0 = lhu(v0 + 0x000A);
+  sw(0x80075F30 + 0x0008 + a0, v0);
+  v0 = 0x00010000;
+label80055C94:
+  v0 = v0 | 0x93;
+  a3 = 1; // 0x0001
+  sw(sp + 0x001C, v0);
+  v0 = a3 << s2;
+  sw(sp + 0x0018, v0);
+  v0 = s4 << 2;
+  v0 += s4;
+  v1 = lw(0x800761D0);
+  s1 = v0 << 2;
+  a0 = s1 + v1;
+  v0 = lw(a0 + 0x0000);
+  sw(sp + 0x0034, v0);
+  a2 = lhu(a0 + 0x000A);
+  sh(sp + 0x002C, a2);
+  a1 = lhu(a0 + 0x000C);
+  temp = a1 == 0;
+  if (temp) goto label80055E74;
+  v1 = lw(a0 + 0x0010);
+  temp = v1 == a3;
+  if (temp) goto label80055DA4;
+  v0 = (int32_t)v1 < 2;
+  temp = v0 == 0;
+  if (temp) goto label80055D14;
+  temp = v1 == 0;
+  v0 = a1 >> 1;
+  if (temp) goto label80055D28;
+  v0 = s4 << 2;
+  goto label80055E78;
+label80055D14:
+  v0 = 2; // 0x0002
+  temp = v1 == v0;
+  v0 = s4 << 2;
+  if (temp) goto label80055E0C;
+  goto label80055E78;
+label80055D28:
+  v1 = lhu(a0 + 0x000E);
+  mult(v1, v0);
+  t0=lo;
+  v0 = a2 - t0;
+  sh(sp + 0x002C, v0);
+  v0 = spyro_rand();
+  a0 = lw(0x800761D0);
+  a0 += s1;
+  v1 = lhu(a0 + 0x000C);
+  div_psx(v0,v1);
+  temp = v1 != 0;
+  if (temp) goto label80055D6C;
+  UNREACHABLE; // BREAK 0x01C00
+label80055D6C:
+  at = -1; // 0xFFFFFFFF
+  temp = v1 != at;
+  at = 0x80000000;
+  if (temp) goto label80055D84;
+  temp = v0 != at;
+  if (temp) goto label80055D84;
+  UNREACHABLE; // BREAK 0x01800
+label80055D84:
+  v1=hi;
+  v0 = lhu(a0 + 0x000E);
+  mult(v1, v0);
+  v0 = lhu(sp + 0x002C);
+  t0=lo;
+  v0 += t0;
+  goto label80055E70;
+label80055DA4:
+  v0 = spyro_rand();
+  a0 = lw(0x800761D0);
+  a0 += s1;
+  v1 = lhu(a0 + 0x000C);
+  div_psx(v0,v1);
+  temp = v1 != 0;
+  if (temp) goto label80055DD4;
+  UNREACHABLE; // BREAK 0x01C00
+label80055DD4:
+  at = -1; // 0xFFFFFFFF
+  temp = v1 != at;
+  at = 0x80000000;
+  if (temp) goto label80055DEC;
+  temp = v0 != at;
+  if (temp) goto label80055DEC;
+  UNREACHABLE; // BREAK 0x01800
+label80055DEC:
+  v1=hi;
+  v0 = lhu(a0 + 0x000E);
+  mult(v1, v0);
+  v0 = lhu(sp + 0x002C);
+  t0=lo;
+  v0 += t0;
+  goto label80055E70;
+label80055E0C:
+  v0 = spyro_rand();
+  a0 = lw(0x800761D0);
+  a0 += s1;
+  v1 = lhu(a0 + 0x000C);
+  div_psx(v0,v1);
+  temp = v1 != 0;
+  if (temp) goto label80055E3C;
+  UNREACHABLE; // BREAK 0x01C00
+label80055E3C:
+  at = -1; // 0xFFFFFFFF
+  temp = v1 != at;
+  at = 0x80000000;
+  if (temp) goto label80055E54;
+  temp = v0 != at;
+  if (temp) goto label80055E54;
+  UNREACHABLE; // BREAK 0x01800
+label80055E54:
+  v1=hi;
+  v0 = lhu(a0 + 0x000E);
+  mult(v1, v0);
+  v0 = lhu(sp + 0x002C);
+  t0=lo;
+  v0 -= t0;
+label80055E70:
+  sh(sp + 0x002C, v0);
+label80055E74:
+  v0 = s4 << 2;
+label80055E78:
+  v0 += s4;
+  v1 = lw(0x800761D0);
+  v0 = v0 << 2;
+  v0 += v1;
+  v0 = lw(v0 + 0x0004);
+  sw(sp + 0x0038, v0);
+  v0 = s0 << 3;
+  v0 -= s0;
+  v0 = v0 << 2;
+  v0 = lhu(0x80075F30 + 0x000E + v0);
+  v1 = v0 & 0x1C;
+  v0 = 8; // 0x0008
+  temp = v1 == v0;
+  v0 = (int32_t)v1 < 9;
+  if (temp) goto label80055FE8;
+  temp = v0 == 0;
+  v0 = 4; // 0x0004
+  if (temp) goto label80055EDC;
+  temp = v1 == v0;
+  if (temp) goto label80055EE8;
+  goto label80056104;
+label80055EDC:
+  v0 = 16; // 0x0010
+  temp = v1 != v0;
+  if (temp) goto label80056104;
+label80055EE8:
+  a0 = 0x800761DC;
+  v1 = lw(a0 + 0x0000);
+  v0 = v1 & 0x1;
+  temp = v0 == 0;
+  v0 = -2; // 0xFFFFFFFE
+  if (temp) goto label80055F8C;
+  v0 = v1 & v0;
+  sw(a0 + 0x0000, v0);
+  v0 = s2 << 3;
+  v0 -= s2;
+  v1 = lhu(0x800761E8);
+  v0 = v0 << 2;
+  sh(0x80075F30 + 0x0010 + v0, v1);
+  v1 = lhu(0x800761E8);
+  sh(0x80075F30 + 0x0012 + v0, v1);
+  v0 = lhu(0x800761E8);
+  v1 = lhu(0x800761EA);
+  sh(sp + 0x0020, v0);
+  v0 = s0 << 3;
+  v0 -= s0;
+  v0 = v0 << 2;
+  sh(sp + 0x0022, v1);
+  sh(0x80075F30 + 0x0006 + v0, v1);
+  v1 = lhu(0x800761E8);
+  sh(0x80075F30 + 0x0004 + v0, v1);
+  goto label80056104;
+label80055F8C:
+  v0 = s2 << 3;
+  v0 -= s2;
+  v0 = v0 << 2;
+  v1 = 8192; // 0x2000
+  sh(0x80075F30 + 0x0010 + v0, v1);
+  sh(0x80075F30 + 0x0012 + v0, v1);
+  v0 = s0 << 3;
+  v0 -= s0;
+  v0 = v0 << 2;
+  sh(sp + 0x0022, v1);
+  sh(sp + 0x0020, v1);
+  sh(0x80075F30 + 0x0006 + v0, v1);
+  sh(0x80075F30 + 0x0004 + v0, v1);
+  goto label80056104;
+label80055FE8:
+  a0 = 0x800761DC;
+  v1 = lw(a0 + 0x0000);
+  v0 = v1 & 0x1;
+  temp = v0 == 0;
+  v0 = -2; // 0xFFFFFFFE
+  if (temp) goto label80056058;
+  v0 = v1 & v0;
+  sw(a0 + 0x0000, v0);
+  v0 = s2 << 3;
+  v0 -= s2;
+  v1 = lhu(0x800761E8);
+  v0 = v0 << 2;
+  sh(0x80075F30 + 0x0010 + v0, v1);
+  v1 = lhu(0x800761EA);
+  sh(0x80075F30 + 0x0012 + v0, v1);
+  v0 = lhu(0x800761EA);
+  v1 = lhu(0x800761E8);
+  sh(sp + 0x0022, v0);
+  goto label80056084;
+label80056058:
+  v0 = s2 << 3;
+  v0 -= s2;
+  v0 = v0 << 2;
+  v1 = 15564; // 0x3CCC
+  sh(0x80075F30 + 0x0010 + v0, v1);
+  sh(0x80075F30 + 0x0012 + v0, v1);
+  sh(sp + 0x0022, v1);
+label80056084:
+  sh(sp + 0x0020, v1);
+  a2 = 0;
+  s0 = s2 << 3;
+  s0 -= s2;
+  s0 = s0 << 2;
+  v0 = lw(0x80075F30 + s0);
+  a3 = lw(0x80076DF8);
+  v1 = lw(0x80076DFC);
+  a0 = lw(v0 + 0x000C);
+  a1 = lw(v0 + 0x0010);
+  a0 = a3 - a0;
+  a1 = v1 - a1;
+  v0 = spyro_atan2(a0, a1, a2);
+  a0 = lhu(0x80076E20);
+  a1 = v0 & 0xFF;
+  a0 = a0 << 16;
+  a0 = (int32_t)a0 >> 20;
+  v0 = spyro_two_angle_diff_8bit(a0, a1);
+  a0 = sp + 32; // 0x0020
+  a1 = fp;
+  a2 = v0 & 0xFF;
+  v0 = 0x80075F30 + 0x0010;
+  s0 += v0;
+  a3 = s6;
+  sw(sp + 0x0010, s0);
+  function_80056C84();
+label80056104:
+  v0 = lh(sp + 0x0020);
+  v1 = lw(0x8007622C);
+  mult(v0, v1);
+  t1=lo;
+  v0 = lh(sp + 0x0022);
+  mult(v0, v1);
+  a0 = sp + 24; // 0x0018
+  v0 = (int32_t)t1 >> 12;
+  sh(sp + 0x0020, v0);
+  v1=lo;
+  v0 = (int32_t)v1 >> 12;
+  sh(sp + 0x0022, v0);
+  function_8005C7AC();
+  v0 = 1; // 0x0001
+  v1 = lw(0x80076238);
+  v0 = v0 << s2;
+  v1 = v1 | v0;
+  sw(0x80076238, v1);
+label80056160:
+  v0 = s2 << 3;
+  v0 -= s2;
+  a0 = v0 << 2;
+  sw(0x80075F30 + 0x0018 + a0, s7);
+  temp = s7 == 0;
+  v0 = s4 << 2;
+  if (temp) goto label800561C8;
+  v0 += s4;
+  sb(s7 + 0x0000, s2);
+  v1 = lw(0x800761D0);
+  v0 = v0 << 2;
+  v0 += v1;
+  v0 = lw(v0 + 0x0004);
+  temp = v0 == 0;
+  v0 = 0;
+  if (temp) goto label800561CC;
+  v0 = lhu(0x80075F30 + 0x000E + a0);
+  v0 = v0 | 0x100;
+  sh(0x80075F30 + 0x000E + a0, v0);
+label800561C8:
+  v0 = 0;
+label800561CC:
+  ra = lw(sp + 0x008C);
+  fp = lw(sp + 0x0088);
+  s7 = lw(sp + 0x0084);
+  s6 = lw(sp + 0x0080);
+  s5 = lw(sp + 0x007C);
+  s4 = lw(sp + 0x0078);
+  s3 = lw(sp + 0x0074);
+  s2 = lw(sp + 0x0070);
+  s1 = lw(sp + 0x006C);
+  s0 = lw(sp + 0x0068);
+  sp += 144; // 0x0090
+  return;
+}
+
+// size: 0x000000A4
+void function_80056200(void)
+{
+  uint32_t temp;
+  a2 = a0 & 0x7F;
+  v0 = a2 < 24;
+  temp = v0 == 0;
+  v0 = 1; // 0x0001
+  if (temp) goto label8005629C;
+  a0 = 0x8007623C;
+  v1 = lw(a0 + 0x0000);
+  v0 = v0 << a2;
+  v1 = v1 | v0;
+  v0 = 2; // 0x0002
+  temp = a1 == v0;
+  sw(a0 + 0x0000, v1);
+  if (temp) goto label8005623C;
+  v0 = 4; // 0x0004
+  temp = a1 != v0;
+  if (temp) goto label8005629C;
+label8005623C:
+  v0 = a2 << 3;
+  v0 -= a2;
+  v1 = v0 << 2;
+  a0 = lw(0x80075F30 + 0x0018 + v1);
+  temp = a0 == 0;
+  v0 = 127; // 0x007F
+  if (temp) goto label80056264;
+  sb(a0 + 0x0000, v0);
+label80056264:
+  v0 = 64; // 0x0040
+  sh(0x80075F30 + 0x000E + v1, v0);
+  v0 = 255; // 0x00FF
+  sw(0x80075F30 + 0x0018 + v1, 0);
+  sw(0x80075F30 + v1, 0);
+  sb(0x80075F30 + 0x000D + v1, v0);
+label8005629C:
+  return;
+}
+
+// size: 0x00000140
+void function_80056C84(void)
+{
+  uint32_t temp;
+  sp -= 32; // 0xFFFFFFE0
+  t0 = a0;
+  t2 = lw(sp + 0x0030);
+  temp = a3 == 0;
+  v1 = a2;
+  if (temp) goto label80056DB8;
+  v0 = a2 - 64; // 0xFFFFFFC0
+  v0 = v0 & 0xFF;
+  v0 = v0 < 128;
+  temp = v0 == 0;
+  v0 = -a2;
+  if (temp) goto label80056CB8;
+  t1 = v0 & 0xFF;
+  a2 = v1 & 0xFF;
+  goto label80056CCC;
+label80056CB8:
+  v0 = a2 + 128; // 0x0080
+  t1 = v0 & 0xFF;
+  v0 = 128; // 0x0080
+  v0 -= a2;
+  a2 = v0 & 0xFF;
+label80056CCC:
+  a0 = a1 << 8;
+  divu_psx(a0, a3);
+  temp = a3 != 0;
+  if (temp) goto label80056CE0;
+  UNREACHABLE; // BREAK 0x01C00
+label80056CE0:
+  a0=lo;
+  v0 = lh(t2 + 0x0000);
+  mult(a0, v0);
+  t3=lo;
+  v1 = t3 >> 8;
+  v0 -= v1;
+  v0 = v0 << 16;
+  v0 = (int32_t)v0 >> 16;
+  mult(t1, v0);
+  t3=lo;
+  v0 = (int32_t)t3 >> 7;
+  sh(t0 + 0x0000, v0);
+  v0 = lh(t2 + 0x0002);
+  mult(a0, v0);
+  t3=lo;
+  v1 = t3 >> 8;
+  v0 -= v1;
+  v0 = v0 << 16;
+  v0 = (int32_t)v0 >> 16;
+  mult(a2, v0);
+  v1 = lh(t0 + 0x0000);
+  t3=lo;
+  v0 = (int32_t)t3 >> 7;
+  temp = (int32_t)v1 >= 0;
+  sh(t0 + 0x0002, v0);
+  if (temp) goto label80056D54;
+  sh(t0 + 0x0000, 0);
+  goto label80056D64;
+label80056D54:
+  v0 = (int32_t)v1 < 0x4000;
+  temp = v0 != 0;
+  v0 = 16383; // 0x3FFF
+  if (temp) goto label80056D64;
+  sh(t0 + 0x0000, v0);
+label80056D64:
+  v0 = lh(t0 + 0x0002);
+  temp = (int32_t)v0 >= 0;
+  v0 = (int32_t)v0 < 0x4000;
+  if (temp) goto label80056D7C;
+  sh(t0 + 0x0002, 0);
+  goto label80056D88;
+label80056D7C:
+  temp = v0 != 0;
+  v0 = 16383; // 0x3FFF
+  if (temp) goto label80056D88;
+  sh(t0 + 0x0002, v0);
+label80056D88:
+  v0 = lw(0x80076240);
+  temp = v0 == 0;
+  if (temp) goto label80056DB8;
+  v0 = lh(t0 + 0x0002);
+  v1 = lh(t0 + 0x0000);
+  v0 += v1;
+  v0 = v0 >> 1;
+  sh(t0 + 0x0000, v0);
+  sh(t0 + 0x0002, v0);
+label80056DB8:
+  sp += 32; // 0x0020
+  return;
+}
+
+void function_8005D9EC(void);
+
+// size: 0x00000098
+void function_80056E3C(void)
+{
+  uint32_t temp;
+  sp -= 48; // 0xFFFFFFD0
+  sw(sp + 0x0028, ra);
+  a0 = sp + 16; // 0x0010
+  function_8005D9EC();
+  a1 = 0;
+  t1 = 1; // 0x0001
+  t0 = 64; // 0x0040
+  a3 = 0x8007623C;
+  a0 = 0;
+  a2 = sp + 16; // 0x0010
+label80056E68:
+  v1 = lbu(a2 + 0x0000);
+  temp = v1 != t1;
+  if (temp) goto label80056EB0;
+  v0 = lhu(0x80075F30 + 0x0E + a0) & 0xC1;
+  temp = v0 != 0;
+  v1 = v1 << a1;
+  if (temp) goto label80056EB0;
+  sh(0x80075F30 + 0x0E + a0, t0);
+  sw(a3, lw(a3) | v1);
+label80056EB0:
+  a0 += 28; // 0x001C
+  a1++;
+  v0 = (int32_t)a1 < 24;
+  temp = v0 != 0;
+  a2++;
+  if (temp) goto label80056E68;
+  ra = lw(sp + 0x0028);
+  sp += 48; // 0x0030
+  return;
+}
+
+// size: 0x000000A8
+void function_8002C714(void)
+{
+  sp -= 24;
+  sw(sp + 0x10, s0);
+  sw(sp + 0x14, ra);
+  s0 = a0;
+  if (s0) {
+    a0 = 0;
+    function_80056B28();
+  }
+  a0 = lbu(lw(0x800761D4) + 0x2C);
+  a1 = 0;
+  a2 = 16; // 0x0010
+  a3 = 0;
+  function_80055A78();
+  v1 = lw(CONTINUOUS_LEVEL_ID);
+  mult(v1, 0x2AAAAAAB);
+  sw(0x800757CC, 0);
+  sw(0x800756D4, 0);
+  v1 = (int32_t)v1 >> 31;
+  sw(gamestate, 3);
+  t0=hi;
+  v1 = t0 - v1;
+  sw(0x80075744, v1);
+  if (s0)
+    sw(0x800758B8, 0);
+    
+  function_8002D554();
+  ra = lw(sp + 0x14);
+  s0 = lw(sp + 0x10);
+  sp += 24;
+  return;
 }
 
 // size: 0x000000C0
@@ -819,23 +1460,23 @@ void function_8002BB20(void)
 // size: 0x000003F4
 void function_8003385C(void)
 {
-  sw(0x8007579C, 0); // &0x00000000
+  sw(0x8007579C, 0);
   function_8005637C();
   function_8002BBE0();
-  switch (lw(0x800757D8)) {
-  case 0: // in game
+  switch (lw(gamestate)) {
+  case GAMESTATE_INGAME: // in game
     sw(level_frame_counter, lw(level_frame_counter)+1);
     if (lw(IS_DEMO_MODE)) {
       function_800334D4();
       if (v0) return;
     }
-    a0 = lw(0x800756CC); // &0x00000000
+    a0 = lw(0x800756CC);
     function_8002A6FC();
     function_loaded_80075734();
-    v1 = lw(0x800757D8); // &0x00000000
+    v1 = lw(gamestate);
     if (v1 == 1 || v1 == 7 || v1 == 11 || v1 == 12) return;
     function_8004A200();
-    v1 = lw(0x800757D8);
+    v1 = lw(gamestate);
     if (v1 == 1 || v1 == 4 || v1 == 5 || v1 == 7) return;
     a0 = lw(0x800756CC);
     function_loaded_800756BC();
@@ -849,65 +1490,65 @@ void function_8003385C(void)
     if (lw(0x80075918))
       sw(0x80075918, max_int(lw(0x80075918) - lw(0x800756CC), 0));
     
-    if (lw(0x800757D8)) break;
+    if (lw(gamestate)) break;
     if (lw(0x8007570C)) break;
     if ((int32_t)lw(0x80078BBC) < 0) break;
     if (lw(0x80076E28) == 0x8000000E) break;
 
-    if (lw(0x80077384) < 2 || lw(buttons_press) & 0x800) {
+    if (lw(buttons + 0x0C) < 2 || lw(buttons) & 0x800) {
       a0 = 1;
       function_8002C420();
-    } else if (lw(buttons_press) & 0x100) {
+    } else if (lw(buttons) & 0x100) {
       a0 = 1;
       function_8002C714();
     }
     break;
-  case 1: // loading level
+  case GAMESTATE_LOADING: // loading level
     function_8002DF9C();
     break;
-  case 2: // pause menu
+  case GAMESTATE_PAUSE: // pause menu
     function_8002E12C();
     break;
-  case 3: // inventory
+  case GAMESTATE_INVENTORY: // inventory
     function_8002EB2C();
     break;
-  case 4: // dead
-  case 5:
+  case GAMESTATE_DEAD: // dead
+  case GAMESTATE_GAMEOVER:
     function_8002EDF0();
     break;
-  case 6:
+  case GAMESTATE_UNKNOWN:
     // function_8002F3C4(); // this does nothing
     UNREACHABLE;
     break;
-  case 7: // flight level crashed
+  case GAMESTATE_FLIGHT_LEVEL_MENU: // flight level crashed
     if(lw(0x800757C0) != 0x8007B1FC) BREAKPOINT;
     function_8007B1FC();
     break;
-  case 8: // freed dragon
+  case GAMESTATE_DRAGON_FREED: // freed dragon
     function_8002F3E4();
     break;
-  case 9: // landing after loading
+  case GAMESTATE_LOADING_TRANSITION: // landing after loading
     function_8002E000();
     break;
-  case 10: // before loading ?
+  case GAMESTATE_PREPARE_LOADING: // before loading ?
     function_8002E084();
     break;
-  case 11: // fairy menu
+  case GAMESTATE_FAIRY: // fairy menu
     function_800314B4();
     break;
-  case 12: // balloonist
+  case GAMESTATE_BALLOONIST: // balloonist
     function_800324D8();
     break;
-  case 13: // title screen / game intro
+  case GAMESTATE_TITLE_SCREEN: // title screen / game intro
     if (lw(0x80078D78) != 3)
       function_8007ABAC_title_screen();
     else
       function_80032B08();
     break;
-  case 14: // credits
+  case GAMESTATE_CUTSCENE: // credits
     function_800331AC();
     break;
-  case 15: // more credits
+  case GAMESTATE_CREDITS: // more credits
     if ((int32_t)lw(0x80075704) >= 99)
       function_800333DC();
     else
@@ -922,10 +1563,10 @@ void function_8003385C(void)
 void function_80012604(void)
 {
   for (int i = 0; i < 36; i++) {
-    sw(0x80076FE8 + i*4, 0);
-    sw(0x800772D8 + i*4, 0);
+    sw(level_eggs + i*4, 0);
+    sw(level_dragons + i*4, 0);
     if ((int32_t)i < 18)
-      sw(0x80077420 + i*4, 0);
+      sw(level_gems + i*4, 0);
     
     sb(0x80078E78 + i, 0);
     sb(0x8007A6A8 + i, 0);
@@ -942,7 +1583,7 @@ void function_80012604(void)
   }
 
   sw(0x80078BBC, 3);
-  sw(0x8007582C, 4);
+  sw(lives, 4);
   sw(total_found_gems, 0);
   sw(total_found_dragons, 0);
   sw(total_found_eggs, 0);
@@ -971,68 +1612,46 @@ void function_8003EA68(void)
 {
   uint32_t temp;
   v0 = lw(player_movestate);
-  sp -= 80; // 0xFFFFFFB0
-  sw(sp + 0x0044, s5);
+  sp -= 80;
+  sw(sp + 0x48, ra);
+  sw(sp + 0x44, s5);
+  sw(sp + 0x40, s4);
+  sw(sp + 0x3C, s3);
+  sw(sp + 0x38, s2);
+  sw(sp + 0x34, s1);
+  sw(sp + 0x30, s0);
   s5 = a0;
-  sw(sp + 0x0048, ra);
-  sw(sp + 0x0040, s4);
-  sw(sp + 0x003C, s3);
-  sw(sp + 0x0038, s2);
-  sw(sp + 0x0034, s1);
-  v1 = v0 - 7; // 0xFFFFFFF9
-  v0 = v1 < 38;
-  temp = v0 == 0;
-  sw(sp + 0x0030, s0);
-  if (temp) goto label8003EB1C;
-  v0 = v1 << 2;
-  v0 = lw(0x80010E88 + v0); // &0x8003EAD4
-  temp = v0;
-  switch (temp)
+  switch (v0)
   {
-  case 0x8003EAD4: // 0
-    goto label8003EAD4;
+  case 11:case 15:case 32:case 44:
+    a0 = player_position;
+    a1 = 2;
+    function_800562A4();
     break;
-  case 0x8003EB1C: // 1 2 3 5 6 9 10 11 12 13 14 16 17 19 22 23 24 26 27 28 29 30 31 32 33 34 35 36
-    goto label8003EB1C;
+  case 7:
+    sb(0x80078A83, 0);
+#ifdef __GNUC__
+    [[fallthrough]];
+#endif
+  case 14:case 22:case 27:case 28:
+    a0 = lbu(lw(0x800761D4) + 0x1B);
+    a1 = player_position;
+    v0 = lw(0x800761D4);
+    a2 = 4;
+    a3 = a1 + 0x2A0;
+    function_80055A78();
     break;
-  case 0x8003EABC: // 4 8 25 37
-    goto label8003EABC;
-    break;
-  case 0x8003EADC: // 7 15 20 21
-    goto label8003EADC;
-    break;
-  case 0x8003EAFC: // 18
-    goto label8003EAFC;
+  case 25:
+    a0 = lbu(lw(0x800761D4) + 0x20);
+    a1 = player_position;
+    a2 = 4;
+    a3 = a1 + 0x2A0;
+    function_80055A78();
     break;
   default:
-    JR(temp, 0x8003EAB4);
-    return;
+    break;
   }
-label8003EABC:
-  a0 = player_position;
-  a1 = 2; // 0x0002
-  function_800562A4();
   v0 = s5 < 45;
-  goto label8003EB20;
-label8003EAD4:
-  sb(0x80078A83, 0);
-label8003EADC:
-  a1 = player_position;
-  v0 = lw(0x800761D4);
-  a0 = lbu(v0 + 0x001B);
-  a2 = 4; // 0x0004
-  goto label8003EB14;
-label8003EAFC:
-  a1 = player_position;
-  v0 = lw(0x800761D4);
-  a2 = 4; // 0x0004
-  a0 = lbu(v0 + 0x0020);
-label8003EB14:
-  a3 = a1 + 672; // 0x02A0
-  function_80055A78();
-label8003EB1C:
-  v0 = s5 < 45;
-label8003EB20:
   temp = v0 == 0;
   v0 = s5 << 2;
   if (temp) goto label8003FD50;
@@ -2141,6 +2760,97 @@ void function_8003FDC8(void)
   sb(0x80078A71, v1);
 }
 
+// size: 0x0000004C
+void function_8002C618(void)
+{
+  a0 = 0;
+  function_80056B28();
+  v0 = 10; // 0x000A
+  sw(gamestate, v0); // &0x00000000
+  sw(0x8007568C, 0); // &0x00000000
+  sw(0x800758B8, 0);
+  a0 = 0;
+  function_8004AC24();
+  spyro_change_movestate(MOVESTATE_STAND);
+}
+
+// size: 0x000000B0
+void function_8002C664(void)
+{
+  function_80058C7C();
+  uint32_t level_id = lw(LEVEL_ID);
+  sw(0x80075864, 0);
+  mult(level_id, 0x66666667);
+  sw(0x800756AC, 0);
+  sw(0x80076E90, 0x80000012);
+  sw(0x8007576C, -1);
+  v0 = 1; // 0x0001
+  sw(0x800758AC, level_id);
+  a0 = (int32_t)level_id >> 31;
+  sw(gamestate, 1);
+  sw(0x800756D0, 1);
+  sw(0x800756B0, 1);
+  sw(0x8007579C, 1);
+  sw(0x800758B4, level_id/10*10);
+}
+
+// size: 0x000000A0
+void function_8002C7BC(void)
+{
+  RECT rect = {0x200, 0, 0x100, 0xE1};
+  LoadImage(&rect, addr_to_pointer(lw(0x800785F0) - 0x1C200));
+  DrawSync(0);
+  sw(gamestate, 0); // &0x00000000
+  function_80058C7C();
+  a0 = lw(0x800774B0);
+  sb(0x80077FA8, 0);
+  sb(0x80077FA9, 0);
+  sb(0x80077FAA, 0);
+  sb(0x80077FAB, 0);
+  sb(0x80077FAC, 0);
+  a1 = 8; // 0x0008
+  function_800567F4();
+}
+
+// size: 0x00000048
+void function_8002C85C(void)
+{
+  v0 = lw(lives);
+  if (v0) {
+    sw(lives, v0-1);
+    v0 = GAMESTATE_DEAD;
+  } else
+    v0 = GAMESTATE_GAMEOVER;
+  
+  sw(gamestate, v0);
+  sw(0x80075940, 0);
+  sw(0x8007593C, 0);
+  return;
+}
+
+// size: 0x00000040
+void function_80058B68(void)
+{
+  for (int i = 0; i < 16; i++) sw(0x80078800 + i*0x24, 0);
+  for (int i = 0; i < 8; i++) sb(0x80077114 + i*0x18, 0);
+}
+
+// size: 0x000000F8
+void function_80059474(void)
+{
+  sw(0x80077888 + 0x5C, (a1 & 0xFF)*16);
+  spyro_vec3_copy(0x80077888 + 0x50, a0 + 0x0C);
+  sw(0x80077888, 1);
+  v1 = lw(CONTINUOUS_LEVEL_ID)*4;
+  sw(0x80077888 + 0x58, lw(0x80077888 + 0x58) + 0x164);
+  sw(0x80077888 + 0x04, lw(level_dragons + v1));
+  sw(0x80077888 + 0x0C, 0);
+  sw(0x80077888 + 0x08, lw(level_gems + v1));
+  spyro_memcpy32(0x80077888 + 0x10, 0x80077888 + 0x30, 0x20);
+  
+  sw(0x80077888 + 0x64, lw(0x80077888 + 0x60));
+}
+
 
 
 #ifdef __wasm__
@@ -2172,7 +2882,6 @@ WASM_PUBLIC void actual_game_loop(void)
 
 void request_animation_frame(void);
 
-// size: 0x00000088
 void game_loop(void)
 {
   initial_loading_screen();
@@ -2182,7 +2891,7 @@ void game_loop(void)
 
 #else // __wasm__
 
-// size: 0x00000088
+// probably main()
 void game_loop(void)
 {
   initial_loading_screen();

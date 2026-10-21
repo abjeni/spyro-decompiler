@@ -531,9 +531,6 @@ void release_lock(void);
 
 void psx_read_sectors(uint32_t dst, uint32_t sector, uint32_t sector_len);
 
-file_loc get_access(uint32_t addr);
-void print_access(uint32_t addr);
-
 void sw_unaligned(uint32_t addr, uint32_t value, file_loc loc);
 void sw(uint32_t addr, uint32_t value, file_loc loc);
 void sh(uint32_t addr, uint16_t value, file_loc loc);

@@ -373,6 +373,7 @@ end:
   return;
 }
 
+void function_80053C68(void);
 void function_80067CD4(void);
 
 // size: 0x00000078

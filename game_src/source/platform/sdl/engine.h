@@ -20,3 +20,9 @@ int memcard_lseek(int fd, uint32_t offset, int seektype);
 ssize_t memcard_write(int fd, void *buf, int size);
 ssize_t memcard_read(int fd, void *buf, int size);
 void memcard_close(int fd);
+
+
+
+void debug_begin();
+void debug_text(const char *text);
+void debug_end();

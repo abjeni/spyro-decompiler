@@ -319,6 +319,8 @@ void RTPT(void)
   push_S();
 
   project();
+
+  end_gte();
 }
 
 void push_rgb(uint32_t rgb)
@@ -360,6 +362,8 @@ void INTPL(void)
 
   clamp_REGS(LM_OFF);
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3, crgb_code()));
+
+  end_gte();
 }
 
 void DPCS(void)
@@ -389,6 +393,8 @@ void DPCS(void)
   clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.IR1, cop2.IR2, cop2.IR3, crgb_code()));
+
+  end_gte();
 }
 
 void NCLIP(void)
@@ -405,10 +411,14 @@ void NCLIP(void)
   int32_t SX2 = (int16_t)(cop2.SXY2 & 0xFFFF);
   
   cop2.MAC0 = (SX0*SY1 + SX1*SY2 + SX2*SY0 - SX0*SY2 - SX1*SY0 - SX2*SY1);
+
+  end_gte();
 }
 
 void GPF(uint32_t sf, uint32_t lm)
 {
+  prepare_gte();
+
   cop2.MAC1 = (((int32_t)cop2.IR1) * ((int32_t)cop2.IR0)) >> (sf*12);
   cop2.MAC2 = (((int32_t)cop2.IR2) * ((int32_t)cop2.IR0)) >> (sf*12);
   cop2.MAC3 = (((int32_t)cop2.IR3) * ((int32_t)cop2.IR0)) >> (sf*12);
@@ -420,6 +430,8 @@ void GPF(uint32_t sf, uint32_t lm)
   clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
+
+  end_gte();
 }
 
 void GPL(uint32_t sf, uint32_t lm)
@@ -437,6 +449,8 @@ void GPL(uint32_t sf, uint32_t lm)
   clamp_REGS(lm);
   
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
+
+  end_gte();
 }
 
 void SQR(uint32_t sf)
@@ -452,11 +466,15 @@ void SQR(uint32_t sf)
   cop2.IR3 = cop2.MAC3;
 
   clamp_REGS(LM_OFF);
+
+  end_gte();
 }
 
 
 void CC(void)
 {
+  prepare_gte();
+
   mat3 lcm = get_mat(2);
   vec3 x = get_mul_vec(3);
   vec3 t = get_trans_vec(1);
@@ -480,10 +498,14 @@ void CC(void)
   clamp_REGS(LM_OFF);
 
   push_rgb(get_crgb(cop2.MAC1, cop2.MAC2, cop2.MAC3,crgb_code()));
+
+  end_gte();
 }
 
 void OP(uint32_t sf, uint32_t lm)
 {
+  prepare_gte();
+
   mat3 m = get_mat(0);
   
   cop2.MAC1 = (((int32_t)cop2.IR3)*((int32_t)m.m[1][1]) - ((int32_t)cop2.IR2)*((int32_t)m.m[2][2])) >> (sf*12);
@@ -495,6 +517,8 @@ void OP(uint32_t sf, uint32_t lm)
   cop2.IR3 = cop2.MAC3;
 
   clamp_REGS(lm);
+
+  end_gte();
 }
 
 uint32_t ulzcr(uint32_t num)

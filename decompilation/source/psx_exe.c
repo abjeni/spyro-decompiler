@@ -186,7 +186,6 @@ struct jump_list_list jumps = JUMP_LIST_LIST(ARR_JUMP_LIST(
 
 struct entries entries = ENTRIES(ARR_U32(
   0x8001364C,
-  0x80053C68,
   0x8002DF9C,
   0x8002EB2C,
   0x8002F3E4,
@@ -195,10 +194,13 @@ struct entries entries = ENTRIES(ARR_U32(
   0x800324D8,
   0x80032B08,
   0x800331AC,
-  0x8002C714,
 ));
 
 struct skips skips = SKIPS(ARR_U32(
+  0x8002C85C,
+  0x8002C7BC,
+  0x8002C664,
+  0x8002C618,
   0x80055A78,
   0x80056200,
   0x8005637C,
@@ -206,11 +208,6 @@ struct skips skips = SKIPS(ARR_U32(
   0x8005B6F8,
   0x80059594,
   0x80059864,
-  0x800690EC,
-  0x800691AC,
-  0x80069420,
-  0x80069458,
-  0x800694A0,
   0x8003AAEC,
   0x8003E318,
   0x800567F4,
@@ -272,8 +269,6 @@ struct skips skips = SKIPS(ARR_U32(
   0x8003C358,
   0x8003A720,
   0x80015370,
-  0x8005375C,
-  0x80053790,
   0x80016698,
   0x80016914,
   0x80016958,
@@ -330,7 +325,9 @@ struct skips skips = SKIPS(ARR_U32(
   0x800670E4,
   0x80067718,
   0x8003E1AC,
-  0x80038120
+  0x80038120,
+  0x80059474,
+  0x80058B68
 ));
 
 

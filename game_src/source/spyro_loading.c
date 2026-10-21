@@ -1239,9 +1239,7 @@ label80015CF0:
   sb(0x80078E78 + v1, v0);
   a2 = 104; // 0x0068
   spyro_memset32(a0, a1, a2);
-  v0 = lw(CONTINUOUS_LEVEL_ID);
-  v0 = v0 << 2;
-  v0 = lw(0x80077420 + v0);
+  v0 = lw(level_gems + lw(CONTINUOUS_LEVEL_ID)*4);
   sw(0x80075830, 0);
   sw(0x800756C8, 0);
   sw(0x8007587C, v0);
@@ -1342,7 +1340,7 @@ label80015EF8:
   v0 = v0 << 3;
   v0 += v1;
   s0 = lw(v0 + 0x0000);
-  spyro_change_movestate(MOVESTATE_GLIDE); // gliding
+  spyro_change_movestate(MOVESTATE_GLIDE);
   a0 = s4;
   v0 = 9; // 0x0009
   sw(s1 + 0x006E, v0);
@@ -1431,7 +1429,7 @@ label800160A8:
   if (temp) goto label80015EF8;
   goto label80016314;
 label800160C8:
-  spyro_change_movestate(MOVESTATE_GLIDE); // gliding
+  spyro_change_movestate(MOVESTATE_GLIDE);
   s1 = 0x80076DF8;
   a0 = s1;
   function_80033F08();
@@ -1588,7 +1586,7 @@ label8002E150:
   v0 = (int32_t)v0 < 5;
   temp = v0 != 0;
   if (temp) goto label8002EB14_end;
-  a0 = lw(buttons_press);
+  a0 = lw(buttons);
   v0 = a0 & 0x100;
   temp = v0 != 0;
   v0 = 2; // 0x0002
@@ -1725,7 +1723,7 @@ label8002E458:
 label8002E474:
   sw(0x80075720, v0); // &0x00000000
 label8002E47C:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x10;
   temp = v0 != 0;
   a1 = 0;
@@ -1762,7 +1760,7 @@ label8002E47C:
     return;
   }
 label8002E4C4:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x8000;
   temp = v0 == 0;
   if (temp) goto label8002E518;
@@ -1779,7 +1777,7 @@ label8002E4C4:
   v0--;
   goto label8002E570;
 label8002E518:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x2000;
   temp = v0 == 0;
   a0 = 0x66660000;
@@ -1821,7 +1819,7 @@ label8002E57C:
   sw(0x8007622C, v0);
   goto label8002EB14_end;
 label8002E5E0:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x8000;
   temp = v0 == 0;
   if (temp) goto label8002E634;
@@ -1838,7 +1836,7 @@ label8002E5E0:
   v0--;
   goto label8002E68C;
 label8002E634:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x2000;
   temp = v0 == 0;
   if (temp) goto label8002E694;
@@ -1869,7 +1867,7 @@ label8002E694:
   function_8005CC58();
   goto label8002EB14_end;
 label8002E6D4:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0xA040;
   temp = v0 == 0;
   a1 = 0;
@@ -1907,7 +1905,7 @@ label8002E788:
   temp = v0 == 0;
   v0 = 4; // 0x0004
   if (temp) goto label8002E814;
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0xA040;
   temp = v0 == 0;
   a1 = 0;
@@ -1936,7 +1934,7 @@ label8002E814:
 label8002E824:
 
   // buttons LEFT, RIGHT and X
-  if (!(lw(buttons_press) & 0xA040)) goto label8002EB14_end;
+  if (!(lw(buttons) & 0xA040)) goto label8002EB14_end;
 
   a0 = lbu(lw(0x800761D4) + 0x2E);
   a1 = 0;
@@ -1950,7 +1948,7 @@ label8002E824:
     sw(CAMERA_MODE, 0x02);
   goto label8002EB14_end;
 label8002E888:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2001,7 +1999,7 @@ label8002E92C:
   if (temp) goto label8002E97C;
   sw(0x80075720, 3); // &0x00000000
 label8002E97C:
-  v0 = lw(buttons_press);
+  v0 = lw(buttons);
   v0 = v0 & 0x840;
   temp = v0 == 0;
   s0 = 1; // 0x0001
@@ -2262,7 +2260,7 @@ label8002EE94:
   sb(0x80078A70, 0x10);
   sb(0x80078A71, 0x10);
   sb(0x80078A77, 1);
-  sw(0x8007582C, 4);
+  sw(lives, 4);
   sw(0x800758E8, 0);
   sw(0x80078BBC, 3);
   sw(0x800756D0, 0);
@@ -2366,7 +2364,7 @@ label8002F0C4:
     goto label8002F3A4;
   }
   v0 = lw(0x8007593C);
-  if ((int32_t)v0 > 360 && lw(buttons) & 0x800) {
+  if ((int32_t)v0 > 360 && lw(buttons + 8) & 0x800) {
     a0 = 0;
     function_8003FDC8();
     sw(0x80075940, 2);
@@ -2404,7 +2402,7 @@ void function_800539FC(void)
   temp = v1 != v0;
   sw(sp + 0x0010, s0);
   if (temp) goto label80053A8C;
-  a0 = 0x8007738C;
+  a0 = buttons + 0x14;
   v0 = lbu(0x800786A2);
   v1 = lbu(0x800786A3);
   v0 = v0 << 8;
@@ -2413,73 +2411,71 @@ void function_800539FC(void)
   a1 = a0 - 20; // 0xFFFFFFEC
   sw(a0 + 0x0000, v0);
   function_80053940();
-  s0 = s0 & 0xFFFF;
-  s0 = s0 | (lbu(0x8007738E) << 16);
-  s0 = s0 | (lbu(0x8007738F) << 24);
+  s0 = (s0 & 0xFFFF)
+    | (lbu(buttons + 0x16) << 16)
+    | (lbu(buttons + 0x17) << 24);
   a0 = lw(0x8007585C);
   sw(0x8007585C, a0 + 4);
-  sw(a0, s0);
+  sw(a0 + 0, s0);
   goto label80053AD4;
 label80053A8C:
   v1 = lw(0x8007585C);
   sw(0x8007585C, v1 + 4);
   s0 = lw(v1);
-  sb(0x8007738C, 0x7F);
-  sb(0x8007738D, 0x7F);
-  sb(0x8007738E, (int32_t)s0 >> 16);
-  sb(0x8007738F, (int32_t)s0 >> 24);
+  sb(buttons + 0x14, 0x7F);
+  sb(buttons + 0x15, 0x7F);
+  sb(buttons + 0x16, (int32_t)s0 >> 16);
+  sb(buttons + 0x17, (int32_t)s0 >> 24);
 label80053AD4:
   s0 = s0 & 0xFFFF;
-  v1 = lw(buttons);
-  v0 = 3; // 0x0003
-  sw(0x80077384, v0);
+  v1 = lw(buttons + 0x08);
+  sw(buttons + 0x0C, 3);
   v0 = (~v1) & s0;
-  sw(buttons_press, v0);
+  sw(buttons + 0x00, v0);
   v1 = v1 & (~s0);
-  v0 = lw(0x8007738C);
-  sw(buttons, s0);
-  sw(buttons_unpress, v1);
+  v0 = lw(buttons + 0x14);
+  sw(buttons + 8, s0);
+  sw(buttons + 4, v1);
   if ((v0 & 0xFFFF0000) != 0x7F7F0000)
-    sw(0x80077388, 1);
+    sw(buttons + 0x10, 1);
   else
-    sw(0x80077388, 0);
+    sw(buttons + 0x10, 0);
   a2 = 0;
   for (int i = 0; i < 4; i++)
   {
-    sw(0x800773BC + i*0x18, lw(buttons + 0x04));
-    sw(0x800773C0 + i*0x18, lw(buttons));
-    sw(0x800773C4 + i*0x18, lw(buttons_press));
-    sw(0x800773C8 + i*0x18, lw(buttons_unpress));
-    sw(0x800773CC + i*0x18, lw(buttons + 0x08));
-
-    sw(buttons + 0x50 + i*0x18, lw(buttons + 0x0C));
+    sw(buttons + 0x44 + i*0x18 + 0x00, lw(buttons + 0x0C));
+    sw(buttons + 0x44 + i*0x18 + 0x04, lw(buttons + 0x08));
+    sw(buttons + 0x44 + i*0x18 + 0x08, lw(buttons + 0x00));
+    sw(buttons + 0x44 + i*0x18 + 0x0C, lw(buttons + 0x04));
+    sw(buttons + 0x44 + i*0x18 + 0x10, lw(buttons + 0x10));
+    sw(buttons + 0x44 + i*0x18 + 0x14, lw(buttons + 0x14));
   }
-  v0 = lw(buttons);
+  v0 = lw(buttons + 8);
   v1 = 1; // 0x0001
-  sw(0x80077390, v1);
-  sw(0x80077394, v1);
+  sw(buttons + 0x18, v1);
+  sw(buttons + 0x1C, v1);
   v0 = v0 & 0xF000;
   temp = v0 != 0;
   v1 = 0xFFFF0000;
   if (temp) goto label80053C0C;
-  v0 = lw(0x8007738C);
+  v0 = lw(buttons + 0x14);
   v0 = v0 & v1;
   v1 = 0x7F7F0000;
   temp = v0 == v1;
   if (temp) goto label80053C14;
 label80053C0C:
-  sw(0x80077394, 0);
+  sw(buttons + 0x1C, 0);
 label80053C14:
-  v0 = lw(0x80077394);
+  v0 = lw(buttons + 0x1C);
   temp = v0 == 0;
   if (temp) goto label80053C40;
-  v0 = lw(buttons);
+  v0 = lw(buttons + 8);
   v0 = v0 & 0xF0FF;
   temp = v0 == 0;
   v0 = 2; // 0x0002
   if (temp) goto label80053C4C;
 label80053C40:
-  sw(0x80077390, 0);
+  sw(buttons + 0x18, 0);
   v0 = 2; // 0x0002
 label80053C4C:
   sw(0x80075760, v0); // &0x00000000

@@ -34,3 +34,5 @@ typedef struct {
 void print_trace(void);
 void print_gte_regs(void);
 void print_all_regs(void);
+
+void update_debug_text(void);

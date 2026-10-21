@@ -13,6 +13,16 @@ uint32_t fixed_multu(uint32_t a, uint32_t b)
   return (a*b) >> 12;
 }
 
+int32_t avg_int(int32_t a, int32_t b)
+{
+  return (a + b) >> 1;
+}
+
+uint32_t avg_uint(uint32_t a, uint32_t b)
+{
+  return (a + b) >> 1;
+}
+
 int32_t abs_int(int32_t x)
 {
   if (x < 0) return -x;
@@ -61,6 +71,24 @@ mat3 mat3_cv(vec3 v1, vec3 v2, vec3 v3)
     {v2.x, v2.y, v2.z},
     {v3.x, v3.y, v3.z},
   }};
+}
+
+vec3 vec3_add_int32(vec3 v, int32_t a)
+{
+  return (vec3){
+    .x = v.x+a,
+    .y = v.y+a,
+    .z = v.z+a
+  };
+}
+
+vec3 avg_vec3(vec3 a, vec3 b)
+{
+  return (vec3){
+    (a.x + b.x) >> 1,
+    (a.y + b.y) >> 1,
+    (a.z + b.z) >> 1
+  };
 }
 
 vec3 vec3_32_to_vec3(vec3_32 v) {

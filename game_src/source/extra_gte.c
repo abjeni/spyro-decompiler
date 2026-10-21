@@ -5,6 +5,69 @@
 #include "gte.h"
 #include "int_math.h"
 
+void spyro_unpack1(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3)
+{
+  *reg1 = ((pack >> 21) & 0x7FF)*4;
+  *reg2 = ((pack >> 10) & 0x7FF)*4;
+  *reg3 = ((pack >>  0) & 0x3FF)*4;
+}
+
+vec3 spyro_unpack1_vec3(uint32_t pack)
+{
+  return (vec3){
+    ((pack >> 21) & 0x7FF)*4,
+    ((pack >> 10) & 0x7FF)*4,
+    ((pack >>  0) & 0x3FF)*4
+  };
+}
+
+vec3 spyro_unpack3_vec3(uint32_t pack)
+{
+  return (vec3){
+    ((pack >> 21) & 0x7FF),
+    ((pack >> 10) & 0x7FF),
+    ((pack >>  0) & 0x3FF)
+  };
+}
+
+uint32_t spyro_pack3_vec3(vec3 v)
+{
+  return ((v.x & 0x7FF) << 21) | ((v.y & 0x7FF) << 10) | ((v.z & 0x3FF) << 0);
+}
+
+vec3 spyro_unpack2_vec3(uint32_t pack, vec3 v)
+{
+  return (vec3){
+    v.x + ((pack >> 21) & 0x7FF)*4,
+    v.y - ((pack >> 10) & 0x7FF)*4,
+    v.z - ((pack >>  0) & 0x3FF)*4
+  };
+}
+
+vec3 intpl_vec1(vec3 a, vec3 b, int32_t i)
+{
+  return (vec3){
+    a.x + (((int32_t)b.x-(int32_t)a.x)*i>>8),
+    a.y + (((int32_t)b.y-(int32_t)a.y)*i>>8),
+    a.z + (((int32_t)b.z-(int32_t)a.z)*i>>8)
+  };
+}
+
+void spyro_interpolate_packed_vecs1(uint32_t *a, uint32_t *b, uint32_t *c, int32_t i, size_t iter)
+{
+  assert(i >= 0 && i < 0x100);
+
+  for (size_t it = 0; it < iter; it++)
+  {
+    vec3 av = spyro_unpack3_vec3(*a++);
+    vec3 bv = spyro_unpack3_vec3(*b++);
+
+    vec3 cv = intpl_vec1(av, bv, i);
+
+    *c++ = spyro_pack3_vec3(cv);
+  }
+}
+
 vec3 load_vec3(uint32_t addr)
 {
   return (vec3){
@@ -12,6 +75,13 @@ vec3 load_vec3(uint32_t addr)
     lh(addr + 2),
     lh(addr + 4)
   };
+}
+
+void save_vec3(uint32_t addr, vec3 v)
+{
+  sh(addr + 0, v.x);
+  sh(addr + 2, v.y);
+  sh(addr + 4, v.z);
 }
 
 vec3_32 load_vec3_32(uint32_t addr)
@@ -141,6 +211,13 @@ void set_FC(uint32_t r, uint32_t g, uint32_t b)
 }
 
 void set_BK_vec3(vec3 bk)
+{
+  cop2.RBK = bk.x;
+  cop2.GBK = bk.y;
+  cop2.BBK = bk.z;
+}
+
+void set_BK_vec3_32(vec3_32 bk)
 {
   cop2.RBK = bk.x;
   cop2.GBK = bk.y;

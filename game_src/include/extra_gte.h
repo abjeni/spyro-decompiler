@@ -1,7 +1,14 @@
 #include <stdint.h>
+#include <stddef.h>
 #include "int_math.h"
 
+void spyro_unpack1(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3);
+vec3 spyro_unpack2_vec3(uint32_t pack, vec3 v);
+uint32_t spyro_pack1_vec3(vec3 v);
+void spyro_interpolate_packed_vecs1(uint32_t *a, uint32_t *b, uint32_t *c, int32_t i, size_t iter);
 vec3 load_vec3(uint32_t addr);
+void save_vec3(uint32_t addr, vec3 v);
+vec3_32 load_vec3_32(uint32_t addr);
 void load_RTM(uint32_t addr);
 mat3 get_RTM(void);
 mat3 get_LLM(void);
@@ -20,6 +27,7 @@ vec3 get_IR_vec3(void);
 void set_FC_vec3(vec3 fc);
 void set_FC(uint32_t r, uint32_t g, uint32_t b);
 void set_BK_vec3(vec3 bk);
+void set_BK_vec3_32(vec3_32 bk);
 void set_BK(uint32_t r, uint32_t g, uint32_t b);
 vec3 get_MAC_vec3(void);
 void save_mat3(uint32_t addr, mat3 m);
