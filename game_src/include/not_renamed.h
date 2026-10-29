@@ -91,3 +91,7 @@ void function_80056C84(void);
 
 void function_8002C714(void);
 void function_80053940(void);
+
+void function_8005CB24(void);
+
+void function_8005CAC4(void);

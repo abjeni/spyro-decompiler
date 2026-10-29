@@ -137,6 +137,7 @@ typedef union {
 extern struct cop2 cop2;
 
 vec3 xy_z_to_vec(uint32_t xy, uint32_t z);
+int32_t nclip(vec2 a, vec2 b, vec2 c);
 
 void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm);
 void RTPS(void);

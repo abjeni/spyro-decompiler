@@ -118,7 +118,7 @@ void blinking_arrow(vec3_32 p, uint32_t frame, int32_t direction)
       object->rotz = direction*0x80;
     }
     object->unknown47 = 0x7F;
-    object->unknown4F = 11;
+    object->unknown4F = 0x0B;
     object->render_distance = 0xFF;
   }
 }
@@ -873,10 +873,10 @@ void function_8001973C(void)
   v1 = 0x100-(strlen(buf)-1)*8;
   a0 = lw(0x800756AC);
   sw(sp + 0x18, v1);
-  if ((int32_t)a0 < 32)
-    v0 = (int32_t)lh(spyro_sin_lut + a0*4)/128;
-  else if ((int32_t)a0 >= 385)
-    v0 = (int32_t)lh(spyro_sin_lut + (0x1A0 - a0)*4)/128;
+  if ((int32_t)a0 < 0x20)
+    v0 = sin_lut[a0*2]/0x80;
+  else if ((int32_t)a0 > 0x180)
+    v0 = sin_lut[(0x1A0 - a0)*2]/0x80;
   else
     v0 = 0x20;
   sw(sp + 0x1C, v0);
@@ -917,9 +917,8 @@ label8001999C:
   v0 = v1 - 64; // 0xFFFFFFC0
   v0 = v0 << 2;
   v1 = lhu(spyro_sin_lut + v0);
-  v0 = 272; // 0x0110
-  v1 = v1 << 16;
-  v1 = (int32_t)v1 >> 22;
+  v0 = 0x110;
+  v1 = (int32_t)(v1 << 16) >> 22;
   v0 -= v1;
   goto label80019AB4;
 label800199E4:
@@ -927,23 +926,23 @@ label800199E4:
   v0 = 208; // 0x00D0
   if ((int32_t)v1 < (int32_t)a0) goto label80019AB4;
   if ((int32_t)v1 >= (int32_t)(a0 + 32)) goto label80019A34;
-  v0 = v1 - 32; // 0xFFFFFFE0
+  v0 = v1 - 0x20;
   v0 = a0 - v0;
   v0 = v0 << 2;
   v1 = lhu(spyro_sin_lut + v0);
-  v0 = 272; // 0x0110
+  v0 = 0x110;
   v1 = v1 << 16;
   v1 = (int32_t)v1 >> 22;
   v0 -= v1;
   goto label80019AB4;
 label80019A34:
-  v0 = 272; // 0x0110
-  if ((int32_t)v1 < 224) goto label80019AB4;
-  v0 = v1 - 224; // 0xFFFFFF20
-  if ((int32_t)v1 >= 256) goto label80019A70;
+  v0 = 0x110;
+  if ((int32_t)v1 < 0xE0) goto label80019AB4;
+  v0 = v1 - 0xE0;
+  if ((int32_t)v1 >= 0x100) goto label80019A70;
   v0 = v0 << 2;
   v1 = lhu(spyro_sin_lut + v0);
-  v0 = 272; // 0x0110
+  v0 = 0x110;
   v1 = v1 << 16;
   v1 = (int32_t)v1 >> 22;
   v0 -= v1;
@@ -964,113 +963,62 @@ label80019A70:
 label80019AB4:
   sw(sp + 0x1C, v0);
   v0 = lw(0x800756AC);
-  v0 = (int32_t)v0 < 224;
-  if (v0 == 0) goto label80019AE8;
-  sprintf(buf, "TREASURE FOUND");
-  goto label80019B0C;
-label80019AE8:
-  sprintf(buf, "TOTAL TREASURE");
-  v0 = lw(sp + 0x18) - 0x10;
-  sw(sp + 0x18, v0);
-label80019B0C:
-  a1 = sp + 24; // 0x0018
-  a2 = sp + 40; // 0x0028
-  a3 = 18; // 0x0012
+  if ((int32_t)v0 < 0xE0) {
+    sprintf(buf, "TREASURE FOUND");
+  } else {
+    sprintf(buf, "TOTAL TREASURE");
+    v0 = lw(sp + 0x18) - 0x10;
+    sw(sp + 0x18, v0);
+  }
   object = addr_to_pointer(lw(gameobject_stack_ptr));
-  v0 = 2; // 0x0002
-  sw(sp + 0x10, v0);
 
   sw(sp + 0x28, 0x10);
   sw(sp + 0x2C, 1);
   sw(sp + 0x30, 0x1400);
-  create_3d_text1(buf, addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), a3, lw(sp + 0x10));
+  create_3d_text1(buf, addr_to_pointer(sp + 0x18), (vec3_32){0x10, 1, 0x1400}, 0x12, 2);
   
   text_wave_effect1(object, lw(0x800756AC)*2, 12, 1, 128);
   
   v1 = lw(0x800756AC);
-  v0 = (int32_t)v1 < 128;
-  if (v0 == 0) goto label80019BD8;
-  v0 = lw(0x80075688);
-  v0 = v0 << 2;
-  v1 = lw(level_gems + v0);
-  v0 = lw(0x8007587C);
-  a2 = v1 - v0;
-  goto label80019D84;
-label80019BD8:
-  v0 = (int32_t)v1 < 224;
-  if (v0 == 0) goto label80019C90;
-  v0 = lw(0x800756C8);
-  v0++;
-  a0 = v0 << 1;
-  if ((int32_t)a0 < 65) goto label80019C04;
-  a0 = 64; // 0x0040
-label80019C04:
-  v0 = v1 - 128; // 0xFFFFFF80
-  a1 = a0 - v0;
-  if ((int32_t)a1 >= 0) goto label80019C18;
-  a1 = 0;
-label80019C18:
-  v0 = (int32_t)a0 < (int32_t)a1;
-  if (v0 == 0) goto label80019C24;
-  a1 = a0;
-label80019C24:
-  v0 = lw(0x80075688);
-  v1 = lw(0x8007587C);
-  v0 = v0 << 2;
-  v0 = lw(level_gems + v0);
-  v0 -= v1;
-  mult(v0, a1);
-  v0=lo;
-  div_psx(v0,a0);
-  a2=lo;
-  goto label80019D84;
-label80019C90:
-  v0 = (int32_t)v1 < 272;
-  if (v0 == 0) goto label80019CCC;
-  v0 = lw(0x80075688);
-  v1 = lw(0x8007587C);
-  v0 = v0 << 2;
-  v0 = lw(level_gems + v0);
-  a0 = lw(total_found_gems);
-  v0 -= v1;
-  a2 = a0 - v0;
-  goto label80019D84;
-label80019CCC:
-  v0 = lw(0x800756C8);
-  v0++;
-  a0 = v0 << 1;
-  if ((int32_t)a0 < 65) goto label80019CF0;
-  a0 = 64; // 0x0040
-label80019CF0:
-  v0 = v1 - 272; // 0xFFFFFEF0
-  a1 = a0 - v0;
-  v0 = (int32_t)a0 < (int32_t)a1;
-  if ((int32_t)a1 >= 0) goto label80019D04;
-  a1 = 0;
-  v0 = (int32_t)a0 < (int32_t)a1;
-label80019D04:
-  if (v0 == 0) goto label80019D10;
-  a1 = a0;
-label80019D10:
-  v0 = lw(0x80075688);
-  v1 = lw(0x8007587C);
-  v0 = v0 << 2;
-  v0 = lw(level_gems + v0);
-  v0 -= v1;
-  mult(v0, a1);
-  v0=lo;
-  div_psx(v0,a0);
-  v1=lo;
-  v0 = lw(total_found_gems);
-  a2 = v0 - v1;
-label80019D84:
+  if ((int32_t)v1 < 0x80) {
+    a2 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+  } else if ((int32_t)v1 < 0xE0) {
+    v0 = lw(0x800756C8)+1;
+    a0 = min_int(v0*2, 0x40);
+    a1 = max_int(a0 - (v1 - 0x80), 0);
+    a1 = min_int(a0, a1);
+
+    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    mult(v0, a1);
+    v0=lo;
+    div_psx(v0,a0);
+    a2=lo;
+  } else if ((int32_t)v1 < 0x110) {
+    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    a0 = lw(total_found_gems);
+    a2 = a0 - v0;
+  } else {
+    v0 = lw(0x800756C8)+1;
+    a0 = min_int(v0*2, 0x40);
+    v0 = v1 - 0x110;
+    a1 = max_int(a0 - v0, 0);
+    a1 = min_int(a0, a1);
+
+    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    mult(v0, a1);
+    v0=lo;
+    div_psx(v0,a0);
+    v1=lo;
+    v0 = lw(total_found_gems);
+    a2 = v0 - v1;
+  }
   sprintf(buf, "%d", a2);
 
   sw(sp + 0x18, s2 + 0x178);
   sw(sp + 0x20, 0xF80);
   object = addr_to_pointer(lw(gameobject_stack_ptr));
   create_3d_text2(buf, addr_to_pointer(sp + 0x18), 20, 2);
-  text_wave_effect1(object, lw(0x800756AC)*2, 12, 1, 128);
+  text_wave_effect1(object, lw(0x800756AC)*2, 12, 1, 0x80);
 
   object = addr_to_pointer(lw(gameobject_stack_ptr));
   
@@ -1099,7 +1047,7 @@ label80019D84:
   object--;
   memset(object, 0, 88);
   object->modelID = 0x1D9; // chest model
-  if ((int32_t)lw(0x800756AC) < 224) {
+  if ((int32_t)lw(0x800756AC) < 0xE0) {
     object->p = (vec3_32){
       s2 + 0x140,
       lw(sp + 0x1C) + 8,
@@ -1115,7 +1063,7 @@ label80019D84:
   object->rotx = 6;
   object->rotz = 0xB0;
   object->unknown47 = 0x7F;
-  object->unknown4F = 11;
+  object->unknown4F = 0x0B;
   object->render_distance = 0xFF;
   sw(gameobject_stack_ptr, pointer_to_addr(object));
 label8001A01C:
@@ -1133,12 +1081,13 @@ label8001A01C:
 void function_8001A050(void)
 {
   sp -= 96; // 0xFFFFFFA0
-  v0 = lbu(SKYBOX_DATA + 0x10);
-  v1 = lbu(SKYBOX_DATA + 0x11);
-  a3 = lbu(SKYBOX_DATA + 0x12);
   sw(sp + 0x58, ra);
   sw(sp + 0x54, s1);
   sw(sp + 0x50, s0);
+
+  v0 = lbu(SKYBOX_DATA + 0x10);
+  v1 = lbu(SKYBOX_DATA + 0x11);
+  a3 = lbu(SKYBOX_DATA + 0x12);
   sb(0x80076EF9, v0);
   sb(0x80076EFA, v1);
   sb(0x80076EFB, a3);
@@ -2196,10 +2145,10 @@ label8001B9F8:
 
   v0 = lw(0x80075744);
   s3 = 0;
-  v1 = v0 << 2;
+  v1 = v0*4;
   v0 = (int32_t)v0 < 3;
   a0 = lw(0x8006F7D4 + v1); // &0x8001006C
-  s7 = v0 << 3;
+  s7 = v0*8;
   v0 = spyro_strlen(a0);
   a1 = sp + 64; // 0x0040
   a2 = sp + 144; // 0x0090
@@ -2225,58 +2174,53 @@ label8001B9F8:
 
   a0 = lw(0x8006F7D4 + lw(0x80075744)*4); // &0x8001006C
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), 23, 2);
-  v0 = lw(0x80075744);
-  a1 = 0x8007555C; // &0x0B0D0C08
-  v0 = lbu(0x8007555C + v0); // &0x0B0D0C08
+  
+  v0 = lbu(0x8007555C + lw(0x80075744)); // &0x0B0D0C08
   s0 = lw(gameobject_stack_ptr);
   temp = (int32_t)v0 <= 0;
   a0 = 0;
-  if (temp) goto label8001BCA0;
   a2 = spyro_cos_lut;
+  if (temp) goto label8001BCA0;
 label8001BC44:
-  v0 = lw(0x800758B8);
-  v0 = v0 << 3;
-  v0 += a0;
-  v0 = v0 & 0xFF;
-  v0 = v0 << 1;
-  v0 += a2;
-  v1 = lh(v0 + 0x00);
+  v1 = cos_lut[(lw(0x800758B8)*8 + a0) & 0xFF];
   s3++;
-  v0 = v1 << 1;
-  v0 += v1;
-  v0 = (int32_t)v0 >> 9;
+  v0 = (int32_t)(v1*3)/0x200;
   sb(s0 + 0x46, v0);
   v0 = lw(0x80075744);
   a0 += 12; // 0x000C
   v0 += a1;
-  v0 = lbu(v0 + 0x00);
+  v0 = lbu(0x8007555C + v0);
   v0 = (int32_t)s3 < (int32_t)v0;
   temp = v0 != 0;
   s0 += 88; // 0x0058
   if (temp) goto label8001BC44;
-label8001BCA0:
-  a1 = 0;
+label8001BCA0: {}
+
+  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  object--;
+  *object = (struct game_object){0};
+
   a0 = lw(gameobject_stack_ptr);
   a0 -= 88; // 0xFFFFFFA8
   sw(gameobject_stack_ptr, a0);
   a2 = 88; // 0x0058
-  spyro_memset32(a0, a1, a2);
+  spyro_memset32(a0, 0, 88);
   a0 = lw(gameobject_stack_ptr);
   v0 = 471; // 0x01D7
   sh(a0 + 0x36, v0);
   v0 = lw(0x800757CC);
-  v1 = s7 + 346; // 0x015A
+  v1 = s7 + 0x15A;
   v0 += v1;
   sw(a0 + 0x0C, v0);
-  v0 = 108; // 0x006C
+  v0 = 0x6C;
   sw(a0 + 0x10, v0);
-  v0 = 3072; // 0x0C00
+  v0 = 0xC00;
   sw(a0 + 0x14, v0);
   v0 = lw(0x80077FE4);
-  s4 = sp + 64; // 0x0040
+  s4 = sp + 0x40;
   v0 = v0 << 1;
   v0 = lhu(spyro_cos_lut + v0);
-  s6 = sp + 32; // 0x0020
+  s6 = sp + 0x20;
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 25;
   sb(a0 + 0x45, v0);
@@ -2296,8 +2240,8 @@ label8001BCA0:
   a0 = lw(gameobject_stack_ptr);
   a0 -= 88; // 0xFFFFFFA8
   sw(gameobject_stack_ptr, a0);
-  a2 = 88; // 0x0058
-  spyro_memset32(a0, a1, a2);
+
+  spyro_memset32(a0, a1, 88);
   v0 = lw(0x800757CC);
   a0 = lw(gameobject_stack_ptr);
   v0 += 465; // 0x01D1

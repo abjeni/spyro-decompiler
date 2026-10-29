@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <assert.h>
 
 #include "psx_mem.h"
 #include "gte.h"
@@ -10,6 +11,29 @@ void spyro_unpack1(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3
   *reg1 = ((pack >> 21) & 0x7FF)*4;
   *reg2 = ((pack >> 10) & 0x7FF)*4;
   *reg3 = ((pack >>  0) & 0x3FF)*4;
+}
+
+void spyro_unpack3(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3)
+{
+  *reg1 = ((pack >> 21) & 0x7FF);
+  *reg2 = ((pack >> 10) & 0x7FF);
+  *reg3 = ((pack >>  0) & 0x3FF);
+}
+
+void spyro_unpack6(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3)
+{
+  *reg1 = (int32_t)(pack <<  0) >> 21;
+  *reg2 = (int32_t)(pack << 11) >> 21;
+  *reg3 = (int32_t)(pack << 22) >> 21;
+}
+
+vec3 spyro_unpack6_vec3(uint32_t pack)
+{
+  return (vec3){
+    (int32_t)(pack <<  0) >> 21,
+    (int32_t)(pack << 11) >> 21,
+    (int32_t)(pack << 22) >> 21
+  };
 }
 
 vec3 spyro_unpack1_vec3(uint32_t pack)
@@ -27,6 +51,24 @@ vec3 spyro_unpack3_vec3(uint32_t pack)
     ((pack >> 21) & 0x7FF),
     ((pack >> 10) & 0x7FF),
     ((pack >>  0) & 0x3FF)
+  };
+}
+
+vec3 spyro_unpack4_vec3(uint32_t pack, uint32_t x, uint32_t y, uint32_t z)
+{
+  return (vec3){
+    .z = x + ((pack >> 21) & 0x7FF),
+    .x = y - ((pack >> 10) & 0x7FF),
+    .y = z - ((pack >>  0) & 0x3FF)
+  };
+}
+
+vec3 spyro_unpack5_vec3(uint32_t pack, uint32_t x, uint32_t y, uint32_t z)
+{
+  return (vec3){
+    .z = x + ((pack >> 21) & 0x7FF)*4,
+    .x = y - ((pack >> 10) & 0x7FF)*4,
+    .y = z - ((pack >>  0) & 0x3FF)*4
   };
 }
 

@@ -437,6 +437,138 @@ void function_80016D08(void)
   v0 = spyro_log2_uint(a0);
 }
 
+// MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+
+/*
+
+  at = s4 >> 15;
+  at = at & 0x1FE;
+  temp = at == 0;
+  if (temp) goto label80022E84;
+  v0 = lhu(spyro_cos_lut + at);
+  at = lhu(spyro_sin_lut + at);
+  v0 = v0 & 0xFFFF;
+  cop2.VXY0 = v0;
+  cop2.VZ0 = at;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  at = -at;
+  at = at & 0xFFFF;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = at;
+  cop2.VZ0 = v0;
+  v1 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a3 = a3 & v1;
+  a0 = a0 & 0xFFFF;
+  a3 += a0;
+  t2 = t2 & v1;
+  a2 = a2 & 0xFFFF;
+  t2 += a2;
+  a1 = a1 << 16;
+  t1 = t1 & 0xFFFF;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  v1 = cop2.IR3;
+  at = at & 0xFFFF;
+  t0 = at + a1;
+  v0 = v0 << 16;
+  t1 += v0;
+  t3 = v1 & 0xFFFF;
+  cop2.RTM0 = a3;
+  cop2.RTM1 = t0;
+  cop2.RTM2 = t1;
+  cop2.RTM3 = t2;
+  cop2.RTM4 = t3;
+label80022E84:
+  at = s4 & 0xFF00;
+  temp = at == 0;
+  at = at >> 7;
+  if (temp) goto label80022F34;
+  v0 = lhu(spyro_cos_lut + at);
+  at = lhu(spyro_sin_lut + at);
+  v1 = v0 << 16;
+  cop2.VXY0 = v1;
+  cop2.VZ0 = at;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  v1 = at << 16;
+  v1 = -v1;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = v1;
+  cop2.VZ0 = v0;
+  v1 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a3 = a3 & 0xFFFF;
+  a0 = a0 << 16;
+  a3 += a0;
+  t2 = t2 & 0xFFFF;
+  a2 = a2 << 16;
+  t2 += a2;
+  a1 = a1 & 0xFFFF;
+  t0 = t0 & v1;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  v1 = cop2.IR3;
+  at = at & 0xFFFF;
+  t0 += at;
+  v0 = v0 << 16;
+  t1 = v0 + a1;
+  t3 = v1 & 0xFFFF;
+  cop2.RTM0 = a3;
+  cop2.RTM1 = t0;
+  cop2.RTM2 = t1;
+  cop2.RTM3 = t2;
+  cop2.RTM4 = t3;
+label80022F34:
+  at = s4 & 0xFF;
+  temp = at == 0;
+  at = at << 1;
+  if (temp) goto label80022FEC;
+  v0 = lhu(spyro_cos_lut + at);
+  at = lhu(spyro_sin_lut + at);
+  cop2.VZ0 = 0;
+  v1 = at << 16;
+  v1 += v0;
+  cop2.VXY0 = v1;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  at = -at;
+  at = at & 0xFFFF;
+  v0 = v0 << 16;
+  at += v0;
+  a0 = cop2.IR1;
+  a1 = cop2.IR2;
+  a2 = cop2.IR3;
+  cop2.VXY0 = at;
+  cop2.VZ0 = 0;
+  v1 = 0xFFFF0000;
+  MVMVA(SF_ON, MX_RT, V_V0, CV_NONE, LM_OFF);
+  a1 = a1 << 16;
+  t0 = t0 & 0xFFFF;
+  t0 += a1;
+  a0 = a0 & 0xFFFF;
+  a2 = a2 & 0xFFFF;
+  t1 = t1 & v1;
+  at = cop2.IR1;
+  v0 = cop2.IR2;
+  v1 = cop2.IR3;
+  at = at << 16;
+  a3 = at + a0;
+  v1 = v1 << 16;
+  t2 = v1 + a2;
+  v0 = v0 & 0xFFFF;
+  t1 += v0;
+  cop2.RTM0 = a3;
+  cop2.RTM1 = t0;
+  cop2.RTM2 = t1;
+  cop2.RTM3 = t2;
+  cop2.RTM4 = t3;
+label80022FEC:
+
+*/
+
 void spyro_mat3_rotation(uint32_t rot_addr, uint32_t dst, uint32_t src)
 {
   uint32_t rot = lw(rot_addr);
@@ -646,6 +778,7 @@ void function_80017330(void)
 }
 
 // size: 0x00000120
+// this is so confusing
 void function_80017428(void)
 {
   at = (int32_t)lw(a1 + 0) >> 4;

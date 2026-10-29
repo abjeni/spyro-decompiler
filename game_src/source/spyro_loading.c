@@ -89,8 +89,8 @@ void function_800144C8(void)
     lw(0x80078600) + lw(WAD_header + 0x50 + lw(CONTINUOUS_LEVEL_ID)*0x10),
     0x258
   );
+  
   a0 = 1;
-
   function_8001364C();
 
   a0 = lw(0x80075690) ? 0x20 : 0;
@@ -354,12 +354,8 @@ void function_80014B70(void)
   switch (v1)
   {
   case 0:
-    v0 = lw(0x80077054);
-    a0 = lw(0x80076760);
-    v1 = lw(0x800785E0);
-    v0 = v0 << 3;
-    a1 = lw(WAD_nested_header + 0x0024 + v0);
-    a0 -= v1;
+    a0 = lw(0x80076760) - lw(0x800785E0);
+    a1 = lw(WAD_nested_header + 0x24 + lw(0x80077054)*8);
     v0 = (int32_t)a0 < (int32_t)a1;
     temp = v0 != 0;
     v0 = a0;
@@ -370,378 +366,318 @@ void function_80014B70(void)
   label80014C54:
     temp = (int32_t)v0 >= 0;
     if (temp) goto label80014C60;
-    v0 += 2047; // 0x07FF
+    v0 += 2047; // 0x7FF
   label80014C60:
-    v0 = (int32_t)v0 >> 11;
-    v0 = v0 << 11;
-    sw(0x80077068, v0);
-    v0 = 1; // 0x0001
-    sw(0x80077064, v0);
+    sw(0x80077068, v0 & 0xFFFFF800);
+    sw(0x80077064, 1);
   label80014C7C:
-    a0 = lw(WAD_sector);
-    a1 = lw(0x800785E0);
-    a2 = lw(0x80077068);
-    v0 = lw(0x80077054);
-    v1 = lw(CONTINUOUS_LEVEL_ID);
-    v0 = v0 << 3;
-    v1 = v1 << 4;
-    t0 = lw(WAD_nested_header + 0x0020 + v0);
-    a3 = lw(WAD_header + 0x0050 + v1);
-    v0 = 600; // 0x0258
-    sw(sp + 0x0010, v0);
-    a3 += t0;
-    read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-    goto label80015008;
+    v0 = lw(0x80077054)*8;
+    v1 = lw(CONTINUOUS_LEVEL_ID)*16;
+    t0 = lw(WAD_nested_header + 0x20 + v0);
+    read_disk2(
+      lw(WAD_sector),
+      lw(0x800785E0),
+      lw(0x80077068),
+      lw(WAD_header + 0x50 + v1) + t0,
+      0x258
+    );
     break;
   case 1:
-    goto label80014CDC;
+    a0 = 0x80077030;
+    s0 = 0x800785E0;
+    a1 = lw(s0 + 0x0000);
+    a2 = 36; // 0x0024
+    spyro_memcpy32(a0, a1, a2);
+    v0 = lw(0x80077064);
+    temp = v0 != 0;
+    v0 = 0x2AAA0000;
+    if (temp) goto label80014D94;
+    a1 = lw(0x80077050);
+    v0 = v0 | 0xAAAB;
+    mult(a1, v0);
+    a0 = lw(0x8007703C);
+    v1 = lw(0x8007704C);
+    v0 = lw(s0 + 0x0000);
+    a1 = (int32_t)a1 >> 31;
+    a0 += v0;
+    v0 += v1;
+    sw(0x80077078, v0);
+    t1=hi;
+    v0 = (int32_t)t1 >> 2;
+    v0 -= a1;
+    sw(0x8007707C, v0);
+    v0 = func_800133E0(a0);
+    v1 = lw(s0 + 0x0000);
+    a0 = lw(0x80077044);
+    sw(0x80076B70, v0);
+    a0 += v1;
+    v0 = func_800133E0(a0);
+    sw(0x80076B74, v0);
+    sw(0x80077060, 0);
+    break;
+  label80014D94:
+    v0 = lw(0x80077038);
+    a0 = 0x00080000;
+    a0 -= v0;
+    function_8005CB24();
+    v0 = lw(s0 + 0x0000);
+    a0 = lw(0x80077034);
+    a1 = lw(0x80077038);
+    a0 += v0;
+    function_8005CAC4();
+  label80014DC4:
+    a0 = 0;
+    v0 = test_spu_event(a0);
+    temp = v0 == 0;
+    if (temp) goto label80014DC4;
+    s1 = 0x800785E0;
+    s0 = 0x8007703C;
+    a0 = lw(s1 + 0x0000);
+    v0 = lw(s0 + 0x0000);
+    a2 = lw(0x80077068);
+    a1 = a0 + v0;
+    a2 -= v0;
+    spyro_memcpy32(a0, a1, a2);
+    a0 = lw(WAD_sector);
+    a1 = lw(s1 + 0x0000);
+    t0 = lw(0x80077068);
+    v0 = lw(s0 + 0x0000);
+    v1 = lw(CONTINUOUS_LEVEL_ID);
+    a1 += t0;
+    a1 -= v0;
+    v1 = v1 << 4;
+    v0 = lw(0x80077054);
+    v1 = lw(WAD_header + 0x0050 + v1);
+    v0 = v0 << 3;
+    a2 = lw(WAD_nested_header + 0x0024 + v0);
+    a3 = lw(WAD_nested_header + 0x0020 + v0);
+    v0 = 600; // 0x0258
+    sw(sp + 0x0010, v0);
+    a2 -= t0;
+    a3 += v1;
+    a3 += t0;
+    read_disk2(a0, a1, a2, a3, lw(sp+0x10));
     break;
   case 2:
-    goto label80014E7C;
+    v0 = lw(0x80077058);
+    v0 = (int32_t)v0 < 2;
+    temp = v0 != 0;
+    if (temp) goto label8001534C;
+    v0 = lw(0x80077064);
+    temp = v0 != 0;
+    if (temp) goto label80015028;
+    v0 = 0x00080000;
+    a0 = lw(0x80077060);
+    v1 = lw(0x80077038);
+    a0 = a0 << 15;
+    a0 += v0;
+    a0 -= v1;
+    function_8005CB24();
+    v1 = lw(BACKBUFFER_DISP);
+    v0 = DISP1;
+    temp = v1 != v0;
+    v1 = 0 | 0x8000;
+    if (temp) goto label80014EF4;
+    s2 = lw(DISP2 + 0x0070);
+    goto label80014EFC;
+  label80014EF4:
+    s2 = lw(DISP1 + 0x0070);
+  label80014EFC:
+    v0 = lw(0x80077060);
+    a0 = lw(0x80077038);
+    v0 = v0 << 15;
+    v0 += v1;
+    v0 = (int32_t)a0 < (int32_t)v0;
+    temp = v0 == 0;
+    s1 = 0 | 0x8000;
+    if (temp) goto label80014F38;
+    temp = (int32_t)a0 >= 0;
+    v0 = a0;
+    if (temp) goto label80014F2C;
+    v0 = a0 + 32767; // 0x7FFF
+  label80014F2C:
+    s1 = (int32_t)v0 >> 15;
+    v0 = s1 << 15;
+    s1 = a0 - v0;
+  label80014F38:
+    a0 = s2;
+    a1 = s1;
+    function_8005CA64();
+  label80014F44:
+    a0 = 0;
+    v0 = test_spu_event(a0);
+    temp = v0 == 0;
+    v0 = 0x00080000;
+    if (temp) goto label80014F44;
+    s0 = 0x80077060;
+    a0 = lw(s0 + 0x0000);
+    v1 = lw(0x80077038);
+    a0 = a0 << 15;
+    a0 += v0;
+    a0 -= v1;
+    function_8005CB24();
+    a1 = s1;
+    v0 = lw(0x800785E0);
+    v1 = lw(0x80077034);
+    a0 = lw(s0 + 0x0000);
+    v0 += v1;
+    a0 = a0 << 15;
+    a0 += v0;
+    function_8005CAC4();
+  label80014FA0:
+    a0 = 0;
+    v0 = test_spu_event(a0);
+    temp = v0 == 0;
+    a1 = s2;
+    if (temp) goto label80014FA0;
+    a2 = s1;
+    v0 = lw(0x800785E0);
+    v1 = lw(0x80077034);
+    a0 = lw(0x80077060);
+    v0 += v1;
+    a0 = a0 << 15;
+    a0 += v0;
+    spyro_memcpy32(a0, a1, a2);
+    v0 = lw(0x80077060);
+    v1 = lw(0x80077038);
+    v0++;
+    sw(0x80077060, v0);
+    v0 = v0 << 15;
+    v0 = (int32_t)v0 < (int32_t)v1;
+    temp = v0 != 0;
+    if (temp) goto label8001534C;
+    break;
+  label80015028:
+    a1 = lw(0x80077050);
+    mult(a1, 0x2AAAAAAB);
+    s0 = 0x800785E0;
+    a0 = lw(s0 + 0x0000);
+    v1 = lw(0x8007704C);
+    v1 += a0;
+    v0 = lw(0x8007703C);
+    a1 = (int32_t)a1 >> 31;
+    v1 -= v0;
+    sw(0x80077078, v1);
+    t1=hi;
+    v0 = (int32_t)t1 >> 2;
+    v0 -= a1;
+    sw(0x8007707C, v0);
+    v0 = func_800133E0(a0);
+    sw(0x80076B70, v0);
+    a0 = lw(s0 + 0x0000);
+    v0 = lw(0x80077044);
+    v1 = lw(0x8007703C);
+    a0 += v0;
+    a0 -= v1;
+    v0 = func_800133E0(a0);
+    sw(0x80076B74, v0);
     break;
   case 3:
-    goto label800150D4;
+    v0 = lw(0x80077058);
+    v0 = (int32_t)v0 < 6;
+    temp = v0 != 0;
+    v0 = 1; // 0x0001
+    if (temp) goto label8001534C;
+    v1 = lw(0x80077064);
+    temp = v1 != v0;
+    if (temp) break;
+    v1 = lw(0x80077038);
+    v0 = v1 + 6159; // 0x180F
+    temp = (int32_t)v0 >= 0;
+    v0 = (int32_t)v0 >> 11;
+    if (temp) goto label80015120;
+    v0 = v1 + 8206; // 0x200E
+    v0 = (int32_t)v0 >> 11;
+  label80015120:
+    t0 = v0 << 11;
+    a2 = lw(WAD_nested_header + 0x0004);
+    v1 = 0x00100000;
+    sw(0x80077068, t0);
+    v0 = v1 - a2;
+    v0 = (int32_t)v0 < (int32_t)t0;
+    temp = v0 == 0;
+    t0 -= v1;
+    if (temp) goto label80015198;
+    a2 += t0;
+    a0 = lw(WAD_sector);
+    v0 = lw(CONTINUOUS_LEVEL_ID);
+    a1 = lw(0x800785E0);
+    a3 = lw(WAD_nested_header);
+    v0 = v0 << 4;
+    v1 = lw(WAD_header + 0x0050 + v0);
+    v0 = 600; // 0x0258
+    sw(sp + 0x0010, v0);
+    a3 += v1;
+    a3 -= t0;
+    read_disk2(a0, a1, a2, a3, lw(sp+0x10));
+    break;
+  label80015198:
+    sw(0x80077064, 0);
     break;
   case 4:
-    goto label800151A8;
+    v1 = lw(0x80077064);
+    v0 = 1; // 0x0001
+    temp = v1 != v0;
+    v0 = 0x00080000;
+    if (temp) goto label80015208;
+    a0 = lw(0x80077068);
+    v0 = v0 | 0x1010;
+    a0 = v0 - a0;
+    function_8005CB24();
+    v1 = 0xFFF00000;
+    a0 = lw(0x800785E0);
+    a1 = lw(0x80077068);
+    v0 = lw(WAD_nested_header + 0x0004);
+    a1 += v1;
+    a1 += v0;
+    function_8005CAC4();
+  label800151F8:
+    a0 = 0;
+    v0 = test_spu_event(a0);
+    temp = v0 == 0;
+    if (temp) goto label800151F8;
+  label80015208:
+    read_disk2(
+      lw(WAD_sector),
+      lw(0x800785E0),
+      lw(WAD_nested_header + 0x14),
+      lw(WAD_header + 0x50 + lw(CONTINUOUS_LEVEL_ID)*16) + lw(WAD_nested_header + 0x10),
+      0x258
+    );
     break;
   case 5:
-    goto label80015258;
+    s1 = 0;
+    s0 = 0x800785E0;
+    a0 = lw(WAD_nested_header + 0x050) - lw(WAD_nested_header + 0x010) + lw(0x800785E0);
+    function_80013230();
+    a1 = 0x00FFFFFF;
+    s0 = 0x800785E0 + 0x1C;
+    a0 = 0x80076378;
+  label80015298:
+    v1 = lw(a0) & 0x00FFFFFF;
+    v0 = lw(0x800785E0 + 0x1C) & 0x00FFFFFF;
+    if ((int32_t)v1 < (int32_t)v0)
+      sw(a0, 0);
+    s1++;
+    v0 = (int32_t)s1 < 0x200;
+    temp = v0 != 0;
+    a0 += 4; // 0x0004
+    if (temp) goto label80015298;
+    
+    for (int i = 1; i < 64; i++) {
+      v1 = lw(WAD_nested_header + 0x050 + i*4);
+      if ((int32_t)v1 <= 0) break;
+      sw(
+        0x80076378 + lh(WAD_nested_header + 0x150 + i*2)*4,
+        func_800133E0(v1 - lw(WAD_nested_header + 0x010) + lw(0x800785E0))
+      );
+    }
     break;
   default:
     goto label8001534C;
     break;
   }
-label80014CDC:
-  a0 = 0x80077030;
-  s0 = 0x800785E0;
-  a1 = lw(s0 + 0x0000);
-  a2 = 36; // 0x0024
-  spyro_memcpy32(a0, a1, a2);
-  v0 = lw(0x80077064);
-  temp = v0 != 0;
-  v0 = 0x2AAA0000;
-  if (temp) goto label80014D94;
-  a1 = lw(0x80077050);
-  v0 = v0 | 0xAAAB;
-  mult(a1, v0);
-  a0 = lw(0x8007703C);
-  v1 = lw(0x8007704C);
-  v0 = lw(s0 + 0x0000);
-  a1 = (int32_t)a1 >> 31;
-  a0 += v0;
-  v0 += v1;
-  sw(0x80077078, v0);
-  t1=hi;
-  v0 = (int32_t)t1 >> 2;
-  v0 -= a1;
-  sw(0x8007707C, v0);
-  v0 = func_800133E0(a0);
-  v1 = lw(s0 + 0x0000);
-  a0 = lw(0x80077044);
-  sw(0x80076B70, v0);
-  a0 += v1;
-  v0 = func_800133E0(a0);
-  sw(0x80076B74, v0);
-  sw(0x80077060, 0);
-  goto label80015334;
-label80014D94:
-  v0 = lw(0x80077038);
-  a0 = 0x00080000;
-  a0 -= v0;
-  function_8005CB24();
-  v0 = lw(s0 + 0x0000);
-  a0 = lw(0x80077034);
-  a1 = lw(0x80077038);
-  a0 += v0;
-  function_8005CAC4();
-label80014DC4:
-  a0 = 0;
-  v0 = test_spu_event(a0);
-  temp = v0 == 0;
-  if (temp) goto label80014DC4;
-  s1 = 0x800785E0;
-  s0 = 0x8007703C;
-  a0 = lw(s1 + 0x0000);
-  v0 = lw(s0 + 0x0000);
-  a2 = lw(0x80077068);
-  a1 = a0 + v0;
-  a2 -= v0;
-  spyro_memcpy32(a0, a1, a2);
-  a0 = lw(WAD_sector);
-  a1 = lw(s1 + 0x0000);
-  t0 = lw(0x80077068);
-  v0 = lw(s0 + 0x0000);
-  v1 = lw(CONTINUOUS_LEVEL_ID);
-  a1 += t0;
-  a1 -= v0;
-  v1 = v1 << 4;
-  v0 = lw(0x80077054);
-  v1 = lw(WAD_header + 0x0050 + v1);
-  v0 = v0 << 3;
-  a2 = lw(WAD_nested_header + 0x0024 + v0);
-  a3 = lw(WAD_nested_header + 0x0020 + v0);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0010, v0);
-  a2 -= t0;
-  a3 += v1;
-  a3 += t0;
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-  goto label80015334;
-label80014E7C:
-  v0 = lw(0x80077058);
-  v0 = (int32_t)v0 < 2;
-  temp = v0 != 0;
-  if (temp) goto label8001534C;
-  v0 = lw(0x80077064);
-  temp = v0 != 0;
-  v0 = 0x2AAA0000;
-  if (temp) goto label80015028;
-  v0 = 0x00080000;
-  a0 = lw(0x80077060);
-  v1 = lw(0x80077038);
-  a0 = a0 << 15;
-  a0 += v0;
-  a0 -= v1;
-  function_8005CB24();
-  v1 = lw(BACKBUFFER_DISP);
-  v0 = DISP1;
-  temp = v1 != v0;
-  v1 = 0 | 0x8000;
-  if (temp) goto label80014EF4;
-  s2 = lw(DISP2 + 0x0070);
-  goto label80014EFC;
-label80014EF4:
-  s2 = lw(DISP1 + 0x0070);
-label80014EFC:
-  v0 = lw(0x80077060);
-  a0 = lw(0x80077038);
-  v0 = v0 << 15;
-  v0 += v1;
-  v0 = (int32_t)a0 < (int32_t)v0;
-  temp = v0 == 0;
-  s1 = 0 | 0x8000;
-  if (temp) goto label80014F38;
-  temp = (int32_t)a0 >= 0;
-  v0 = a0;
-  if (temp) goto label80014F2C;
-  v0 = a0 + 32767; // 0x7FFF
-label80014F2C:
-  s1 = (int32_t)v0 >> 15;
-  v0 = s1 << 15;
-  s1 = a0 - v0;
-label80014F38:
-  a0 = s2;
-  a1 = s1;
-  function_8005CA64();
-label80014F44:
-  a0 = 0;
-  v0 = test_spu_event(a0);
-  temp = v0 == 0;
-  v0 = 0x00080000;
-  if (temp) goto label80014F44;
-  s0 = 0x80077060;
-  a0 = lw(s0 + 0x0000);
-  v1 = lw(0x80077038);
-  a0 = a0 << 15;
-  a0 += v0;
-  a0 -= v1;
-  function_8005CB24();
-  a1 = s1;
-  v0 = lw(0x800785E0);
-  v1 = lw(0x80077034);
-  a0 = lw(s0 + 0x0000);
-  v0 += v1;
-  a0 = a0 << 15;
-  a0 += v0;
-  function_8005CAC4();
-label80014FA0:
-  a0 = 0;
-  v0 = test_spu_event(a0);
-  temp = v0 == 0;
-  a1 = s2;
-  if (temp) goto label80014FA0;
-  a2 = s1;
-  v0 = lw(0x800785E0);
-  v1 = lw(0x80077034);
-  a0 = lw(0x80077060);
-  v0 += v1;
-  a0 = a0 << 15;
-  a0 += v0;
-  spyro_memcpy32(a0, a1, a2);
-  v0 = lw(0x80077060);
-  v1 = lw(0x80077038);
-  v0++;
-  sw(0x80077060, v0);
-  v0 = v0 << 15;
-  v0 = (int32_t)v0 < (int32_t)v1;
-  temp = v0 != 0;
-  if (temp) goto label8001534C;
-label80015008:
-  v0 = lw(0x8007705C);
-  v0++;
-  sw(0x8007705C, v0);
-  goto label8001534C;
-label80015028:
-  a1 = lw(0x80077050);
-  v0 = v0 | 0xAAAB;
-  mult(a1, v0);
-  s0 = 0x800785E0;
-  a0 = lw(s0 + 0x0000);
-  v1 = lw(0x8007704C);
-  v1 += a0;
-  v0 = lw(0x8007703C);
-  a1 = (int32_t)a1 >> 31;
-  v1 -= v0;
-  sw(0x80077078, v1);
-  t1=hi;
-  v0 = (int32_t)t1 >> 2;
-  v0 -= a1;
-  sw(0x8007707C, v0);
-  v0 = func_800133E0(a0);
-  sw(0x80076B70, v0);
-  a0 = lw(s0 + 0x0000);
-  v0 = lw(0x80077044);
-  v1 = lw(0x8007703C);
-  a0 += v0;
-  a0 -= v1;
-  v0 = func_800133E0(a0);
-  v1 = lw(0x8007705C);
-  sw(0x80076B74, v0);
-  v1++;
-  sw(0x8007705C, v1);
-  goto label8001534C;
-label800150D4:
-  v0 = lw(0x80077058);
-  v0 = (int32_t)v0 < 6;
-  temp = v0 != 0;
-  v0 = 1; // 0x0001
-  if (temp) goto label8001534C;
-  v1 = lw(0x80077064);
-  temp = v1 != v0;
-  if (temp) goto label80015334;
-  v1 = lw(0x80077038);
-  v0 = v1 + 6159; // 0x180F
-  temp = (int32_t)v0 >= 0;
-  v0 = (int32_t)v0 >> 11;
-  if (temp) goto label80015120;
-  v0 = v1 + 8206; // 0x200E
-  v0 = (int32_t)v0 >> 11;
-label80015120:
-  t0 = v0 << 11;
-  a2 = lw(WAD_nested_header + 0x0004);
-  v1 = 0x00100000;
-  sw(0x80077068, t0);
-  v0 = v1 - a2;
-  v0 = (int32_t)v0 < (int32_t)t0;
-  temp = v0 == 0;
-  t0 -= v1;
-  if (temp) goto label80015198;
-  a2 += t0;
-  a0 = lw(WAD_sector);
-  v0 = lw(CONTINUOUS_LEVEL_ID);
-  a1 = lw(0x800785E0);
-  a3 = lw(WAD_nested_header);
-  v0 = v0 << 4;
-  v1 = lw(WAD_header + 0x0050 + v0);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0010, v0);
-  a3 += v1;
-  a3 -= t0;
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-  goto label80015334;
-label80015198:
-  sw(0x80077064, 0);
-  goto label80015334;
-label800151A8:
-  v1 = lw(0x80077064);
-  v0 = 1; // 0x0001
-  temp = v1 != v0;
-  v0 = 0x00080000;
-  if (temp) goto label80015208;
-  a0 = lw(0x80077068);
-  v0 = v0 | 0x1010;
-  a0 = v0 - a0;
-  function_8005CB24();
-  v1 = 0xFFF00000;
-  a0 = lw(0x800785E0);
-  a1 = lw(0x80077068);
-  v0 = lw(WAD_nested_header + 0x0004);
-  a1 += v1;
-  a1 += v0;
-  function_8005CAC4();
-label800151F8:
-  a0 = 0;
-  v0 = test_spu_event(a0);
-  temp = v0 == 0;
-  if (temp) goto label800151F8;
-label80015208:
-  a0 = lw(WAD_sector);
-  a1 = lw(0x800785E0);
-  v0 = lw(CONTINUOUS_LEVEL_ID);
-  a2 = lw(WAD_nested_header + 0x0014);
-  v1 = lw(WAD_nested_header + 0x0010);
-  v0 = v0 << 4;
-  a3 = lw(WAD_header + 0x0050 + v0);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0010, v0);
-  a3 += v1;
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-  goto label80015334;
-label80015258:
-  s1 = 0;
-  s0 = 0x800785E0;
-  a0 = lw(WAD_nested_header + 0x0050);
-  v0 = lw(WAD_nested_header + 0x0010);
-  v1 = lw(s0 + 0x0000);
-  a0 -= v0;
-  a0 += v1;
-  function_80013230();
-  a1 = 0x00FFFFFF;
-  s0 += 28; // 0x001C
-  a0 = 0x80076378;
-label80015298:
-  v1 = lw(a0 + 0x0000);
-  v0 = lw(s0 + 0x0000);
-  v1 = v1 & a1;
-  v0 = v0 & a1;
-  v1 = (int32_t)v1 < (int32_t)v0;
-  temp = v1 == 0;
-  if (temp) goto label800152B8;
-  sw(a0 + 0x0000, 0);
-label800152B8:
-  s1++;
-  v0 = (int32_t)s1 < 512;
-  temp = v0 != 0;
-  a0 += 4; // 0x0004
-  if (temp) goto label80015298;
-  s1 = 1; // 0x0001
-  s4 = 0x80076378;
-  s3 = WAD_nested_header + 0x0050;
-  s2 = s3 + 258; // 0x0102
-  s0 = s3 + 4; // 0x0004
-label800152E4:
-  v1 = lw(s0 + 0x0000);
-  temp = (int32_t)v1 <= 0;
-  if (temp) goto label80015334;
-  s0 += 4; // 0x0004
-  s1++;
-  a0 = lw(s3 - 0x0040); // 0xFFFFFFC0
-  v0 = lw(0x800785E0);
-  a0 = v1 - a0;
-  a0 += v0;
-  v0 = func_800133E0(a0);
-  v1 = lh(s2 + 0x0000);
-  v1 = v1 << 2;
-  v1 += s4;
-  sw(v1 + 0x0000, v0);
-  v0 = (int32_t)s1 < 64;
-  temp = v0 != 0;
-  s2 += 2;
-  if (temp) goto label800152E4;
-label80015334:
-  v0 = lw(0x8007705C)+1;
-  sw(0x8007705C, v0);
+  sw(0x8007705C, lw(0x8007705C)+1);
 label8001534C:
   ra = lw(sp + 0x0054);
   s4 = lw(sp + 0x0050);
@@ -908,9 +844,8 @@ label8001556C:
   a0 = s0;
   a1 = 0;
   function_80012CF0();
-  v0 = -1; // 0xFFFFFFFF
-  sw(0x80076E24, v0);
-  v0 = 2; // 0x0002
+  sw(0x80076E24, -1);
+  v0 = 2;
   goto label800163B4;
 label800155B4:
   a0 = 0;
@@ -932,22 +867,24 @@ label800155E4:
   v0 = v1 + a1;
   sw(CONTINUOUS_LEVEL_ID, v0);
   if (s0) { // load level executable
-    read_disk2(lw(WAD_sector), lw(exe_end_ptr), lw(WAD_header + 0x48 + 4 + v0*0x10), lw(WAD_header + 0x48 + 0 + v0*0x10), 0x258);
+    read_disk2(
+      lw(WAD_sector),
+      lw(exe_end_ptr),
+      lw(WAD_header + 0x48 + 4 + v0*0x10),
+      lw(WAD_header + 0x48 + 0 + v0*0x10), 0x258
+    );
   }
   v0 = lw(0x80075864)+1;
   goto label800163B4;
 label800156B4:
-  a2 = 2048; // 0x0800
-  a0 = lw(WAD_sector);
-  v0 = lw(CONTINUOUS_LEVEL_ID);
-  a1 = lw(lib_end_ptr2);
-  v0 = v0 << 4;
-  a3 = lw(WAD_header + 0x0050 + v0);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0010, v0);
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-  v0 = lw(0x80075864);
-  v0++;
+  read_disk2(
+    lw(WAD_sector),
+    lw(lib_end_ptr2),
+    0x800,
+    lw(WAD_header + 0x050 + lw(CONTINUOUS_LEVEL_ID)*16),
+    0x258
+  );
+  v0 = lw(0x80075864)+1;
   goto label800163B4;
 label800156FC:
   s1 = WAD_nested_header + 0x00;
@@ -1084,16 +1021,11 @@ label800159FC:
   goto label800163B4;
 label80015A54:
   temp = s0 == 0;
-  s0 = 0;
   if (temp) goto label80015A84;
-  a0 = lw(WAD_nested_header + 0x0050);
-  v0 = lw(WAD_nested_header + 0x0010);
-  v1 = lw(0x800785E0);
-  a0 -= v0;
-  a0 += v1;
+  a0 = lw(WAD_nested_header + 0x050) - lw(WAD_nested_header + 0x010) + lw(0x800785E0);
   function_80013230();
-  s0 = 0;
 label80015A84:
+  s0 = 0;
   a1 = 0x00FFFFFF;
   a2 = 0x800785FC;
   a0 = 0x80076378;
@@ -3746,14 +3678,13 @@ label8007BDC0:
   sw(0x8007576C, 0);
   goto label8007BF9C;
 label8007BDD0:
-  s1 = 512; // 0x0200
-  s2 = 128; // 0x0080
+  s1 = 512; // 0x200
+  s2 = 128; // 0x80
   v1 = lw(0x80075768);
-  v0 = 256; // 0x0100
-  sh(sp + 0x0028, s1);
-  sh(sp + 0x002A, s2);
-  sh(sp + 0x002C, s1);
-  sh(sp + 0x002E, v0);
+  sh(sp + 0x28, 0x200);
+  sh(sp + 0x2A, 0x80);
+  sh(sp + 0x2C, 0x200);
+  sh(sp + 0x2E, 0x100);
   sw(lib_end_ptr, v1);
   sw(lib_end_ptr2, v1);
   DrawSync(0);
@@ -3764,30 +3695,23 @@ label8007BDD0:
   a1 = 512; // 0x0200
   a2 = 0;
   v0 = 384; // 0x0180
-  sh(sp + 0x0028, s1);
-  sh(sp + 0x002A, v0);
-  sh(sp + 0x002C, s1);
-  sh(sp + 0x002E, s2);
+  sh(sp + 0x28, 0x200);
+  sh(sp + 0x2A, v0);
+  sh(sp + 0x2C, 0x200);
+  sh(sp + 0x2E, 0x80);
   MoveImage(addr_to_pointer(sp + 0x28), a1, a2);
   DrawSync(0);
   s0 = 0x40000;
   a0 = lw(0x80075768);
-  a1 = lw(0x800757EC);
-  a2 = lw(0x80075958);
-  a1 += 0x40000;
-  a2 -= 0x40000;
+  a1 = lw(0x800757EC) + 0x40000;
+  a2 = lw(0x80075958) - 0x40000;
   spyro_memcpy32(a0, a1, a2);
-  v0 = lw(0x80075768);
-  v1 = lw(0x80075958);
+  sw(0x800757EC, lw(0x80075768) + lw(0x80075958) - 0x40000);
   a0 = lw(lib_end_ptr2);
-  v0 += v1;
-  v0 -= 0x40000;
-  sw(0x800757EC, v0);
   a1 = 1; // 0x0001
   function_80012D58();
-  v1 = 0x66660000;
+  v1 = 0x66666667;
   a0 = lw(0x800757AC);
-  v1 = v1 | 0x6667;
   sw(0x800785E0, v0);
   mult(a0, v1);
   v0 = lw(lib_end_ptr2);

@@ -48,6 +48,18 @@ struct game_object {
   uint8_t unknown57; // 0x57 - 0x58
 };
 
+#define MODEL_ID_CHEST 0x1D9
+#define MODEL_ID_0 0x104 // rest of the numbers following
+#define MODEL_ID_A 0x1AA // rest of the uppercase alphabet following
+#define MODEL_ID_FORWARDSLASH 0x115
+#define MODEL_ID_QUESTION_MARK 0x116
+#define MODEL_ID_PERCENT 0x110
+#define MODEL_ID_CARET 0x141
+#define MODEL_ID_PLUS 0x13D
+#define MODEL_ID_DOT 0x147
+#define MODEL_ID_EXCLAMATIONMARK 0x4B
+#define MODEL_ID_COMMA 0x4C
+
 uint32_t completion_percentage(void);
 
 struct game_object *create_3d_text2(const char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata);

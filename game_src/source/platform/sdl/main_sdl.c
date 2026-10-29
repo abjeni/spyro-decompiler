@@ -245,8 +245,8 @@ void init_game_window(void)
 
 void init_debug_window(void)
 {
-  assert(SDL_CreateWindowAndRenderer("examples/renderer/debug-text", 1024, 1024, SDL_WINDOW_RESIZABLE, &g_debug_window, &g_debug_renderer));
-  SDL_SetRenderLogicalPresentation(g_debug_renderer, 1024, 1024, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  assert(SDL_CreateWindowAndRenderer("examples/renderer/debug-text", 1024, 512, SDL_WINDOW_RESIZABLE, &g_debug_window, &g_debug_renderer));
+  SDL_SetRenderLogicalPresentation(g_debug_renderer, 1024, 512, SDL_LOGICAL_PRESENTATION_LETTERBOX);
   SDL_SetRenderScale(g_debug_renderer, 2.0f, 2.0f);
 }
 
@@ -257,11 +257,9 @@ int platform_init(void)
 
   assert(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS));
 
-  init_game_window();
-
   init_debug_window();
 
-  SDL_UpdateWindowSurface(g_debug_window);
+  init_game_window();
 
   return 0;
 }

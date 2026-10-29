@@ -3,8 +3,13 @@
 #include "int_math.h"
 
 void spyro_unpack1(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3);
+void spyro_unpack3(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3);
+void spyro_unpack6(uint32_t pack, uint32_t *reg1, uint32_t *reg2, uint32_t *reg3);
+vec3 spyro_unpack6_vec3(uint32_t pack);
 vec3 spyro_unpack2_vec3(uint32_t pack, vec3 v);
 uint32_t spyro_pack1_vec3(vec3 v);
+vec3 spyro_unpack4_vec3(uint32_t pack, uint32_t x, uint32_t y, uint32_t z);
+vec3 spyro_unpack5_vec3(uint32_t pack, uint32_t x, uint32_t y, uint32_t z);
 void spyro_interpolate_packed_vecs1(uint32_t *a, uint32_t *b, uint32_t *c, int32_t i, size_t iter);
 vec3 load_vec3(uint32_t addr);
 void save_vec3(uint32_t addr, vec3 v);

@@ -13,21 +13,21 @@ mat3 get_mat(uint32_t i)
   uint32_t list[5];
 
   switch (i) {
-  case 0:
+  case MX_RT:
     list[0] = cop2.RTM0;
     list[1] = cop2.RTM1;
     list[2] = cop2.RTM2;
     list[3] = cop2.RTM3;
     list[4] = cop2.RTM4;
     break;
-  case 1:
+  case MX_LLM:
     list[0] = cop2.LLM0;
     list[1] = cop2.LLM1;
     list[2] = cop2.LLM2;
     list[3] = cop2.LLM3;
     list[4] = cop2.LLM4;
     break;
-  case 2:
+  case MX_RCM:
     list[0] = cop2.LCM0;
     list[1] = cop2.LCM1;
     list[2] = cop2.LCM2;
@@ -55,19 +55,19 @@ vec3 get_mul_vec(uint32_t i)
   uint32_t xy, z;
 
   switch (i) {
-    case 0:
+    case V_V0:
       xy = cop2.VXY0;
       z = cop2.VZ0;
       break;
-    case 1:
+    case V_V1:
       xy = cop2.VXY1;
       z = cop2.VZ1;
       break;
-    case 2:
+    case V_V2:
       xy = cop2.VXY2;
       z = cop2.VZ2;
       break;
-    case 3:
+    case V_IR:
       return (vec3){
         .x = cop2.IR1,
         .y = cop2.IR2,
@@ -87,28 +87,28 @@ vec3 get_trans_vec(uint32_t i)
   vec3 vec;
 
   switch(i) {
-  case 0:
+  case CV_TR:
     vec = (vec3){
       .x = cop2.TRX & 0xFFFF,
       .y = cop2.TRY & 0xFFFF,
       .z = cop2.TRZ & 0xFFFF,
     };
     break;
-  case 1:
+  case CV_BK:
     vec = (vec3){
       .x = cop2.RBK & 0xFFFF,
       .y = cop2.GBK & 0xFFFF,
       .z = cop2.BBK & 0xFFFF,
     };
     break;
-  case 2:
+  case CV_FC:
     vec = (vec3){
       .x = cop2.RFC & 0xFFFF,
       .y = cop2.GFC & 0xFFFF,
       .z = cop2.BFC & 0xFFFF,
     };
     break;
-  case 3:
+  case CV_NONE:
     vec = (vec3){0};
     break;
   default:
@@ -193,8 +193,29 @@ void MVMVA(uint32_t sf, uint32_t mx, uint32_t v, uint32_t cv, uint32_t lm)
   clamp_REGS(lm);
 }
 
-void project(void)
+void push_S(void)
 {
+  cop2.SZ0 = cop2.SZ1;
+  cop2.SZ1 = cop2.SZ2;
+  cop2.SZ2 = cop2.SZ3;
+  cop2.SZ3 = cop2.MAC3;
+
+  cop2.SXY0=cop2.SXY1;
+  cop2.SXY1=cop2.SXY2;
+}
+
+void project(vec3 vt, vec3_32 r)
+{
+  cop2.MAC1 = vt.x + (((int32_t)r.x) >> 12);
+  cop2.MAC2 = vt.y + (((int32_t)r.y) >> 12);
+  cop2.MAC3 = vt.z + (((int32_t)r.z) >> 12);
+
+  cop2.IR1 = cop2.MAC1;
+  cop2.IR2 = cop2.MAC2;
+  cop2.IR3 = cop2.MAC3;
+
+  push_S();
+
   int64_t num = 0x20000;
   if (((int32_t)cop2.SZ3)*2 > (int32_t)cop2.H)
     num = ((((int64_t)cop2.H)*((int64_t)0x20000)/((int64_t)cop2.SZ3))+1)/2;
@@ -238,87 +259,32 @@ void RTPS(void)
 
   start_gte();
 
-  mat3 mm = get_mat(0);
-  vec3 vx = get_mul_vec(0);
-  vec3 vt = get_trans_vec(0);
+  mat3 mm = get_mat(MX_RT);
+  vec3 vx = get_mul_vec(V_V0);
+  vec3 vt = get_trans_vec(CV_TR);
   vec3_32 r = vec_mat_mul_gte(vx, mm);
 
-  cop2.MAC1 = vt.x + (((int32_t)r.x) >> 12);
-  cop2.MAC2 = vt.y + (((int32_t)r.y) >> 12);
-  cop2.MAC3 = vt.z + (((int32_t)r.z) >> 12);
-  cop2.IR1 = cop2.MAC1;
-  cop2.IR2 = cop2.MAC2;
-  cop2.IR3 = cop2.MAC3;
-
-  cop2.SZ0 = cop2.SZ1;
-  cop2.SZ1 = cop2.SZ2;
-  cop2.SZ2 = cop2.SZ3;
-  cop2.SZ3 = cop2.MAC3;
-
-  cop2.SXY0=cop2.SXY1;
-  cop2.SXY1=cop2.SXY2;
-
-  project();
+  project(vt, r);
 
   end_gte();
-}
-
-void push_S(void)
-{
-  cop2.SZ0 = cop2.SZ1;
-  cop2.SZ1 = cop2.SZ2;
-  cop2.SZ2 = cop2.SZ3;
-  cop2.SZ3 = cop2.MAC3;
-
-  cop2.SXY0=cop2.SXY1;
-  cop2.SXY1=cop2.SXY2;
 }
 
 void RTPT(void)
 {
   prepare_gte();
 
-  mat3 mm = get_mat(0);
-  vec3 vx0 = get_mul_vec(0);
-  vec3 vx1 = get_mul_vec(1);
-  vec3 vx2 = get_mul_vec(2);
-  vec3 vt = get_trans_vec(0);
+  mat3 mm = get_mat(MX_RT);
+  vec3 vx0 = get_mul_vec(V_V0);
+  vec3 vx1 = get_mul_vec(V_V1);
+  vec3 vx2 = get_mul_vec(V_V2);
+  vec3 vt = get_trans_vec(CV_TR);
   vec3_32 r0 = vec_mat_mul_gte(vx0, mm);
   vec3_32 r1 = vec_mat_mul_gte(vx1, mm);
   vec3_32 r2 = vec_mat_mul_gte(vx2, mm);
 
-  cop2.MAC1 = vt.x + ((int32_t)r0.x >> 12);
-  cop2.MAC2 = vt.y + ((int32_t)r0.y >> 12);
-  cop2.MAC3 = vt.z + ((int32_t)r0.z >> 12);
-  cop2.IR1 = cop2.MAC1;
-  cop2.IR2 = cop2.MAC2;
-  cop2.IR3 = cop2.MAC3;
-
-  push_S();
-
-  project();
-  
-  cop2.MAC1 = vt.x + (((int32_t)r1.x) >> 12);
-  cop2.MAC2 = vt.y + (((int32_t)r1.y) >> 12);
-  cop2.MAC3 = vt.z + (((int32_t)r1.z) >> 12);
-  cop2.IR1 = cop2.MAC1;
-  cop2.IR2 = cop2.MAC2;
-  cop2.IR3 = cop2.MAC3;
-
-  push_S();
-
-  project();
-
-  cop2.MAC1 = vt.x + (((int32_t)r2.x) >> 12);
-  cop2.MAC2 = vt.y + (((int32_t)r2.y) >> 12);
-  cop2.MAC3 = vt.z + (((int32_t)r2.z) >> 12);
-  cop2.IR1 = cop2.MAC1;
-  cop2.IR2 = cop2.MAC2;
-  cop2.IR3 = cop2.MAC3;
-
-  push_S();
-
-  project();
+  project(vt, r0);
+  project(vt, r1);
+  project(vt, r2);
 
   end_gte();
 }
@@ -397,20 +363,16 @@ void DPCS(void)
   end_gte();
 }
 
+int32_t nclip(vec2 a, vec2 b, vec2 c)
+{
+  return a.x*b.y + b.x*c.y + c.x*a.y - a.x*c.y - b.x*a.y - c.x*b.y;
+}
+
 void NCLIP(void)
 {
   prepare_gte();
 
-  int32_t SY0 = (int16_t)(cop2.SXY0 >> 16);
-  int32_t SX0 = (int16_t)(cop2.SXY0 & 0xFFFF);
-  
-  int32_t SY1 = (int16_t)(cop2.SXY1 >> 16);
-  int32_t SX1 = (int16_t)(cop2.SXY1 & 0xFFFF);
-  
-  int32_t SY2 = (int16_t)(cop2.SXY2 >> 16);
-  int32_t SX2 = (int16_t)(cop2.SXY2 & 0xFFFF);
-  
-  cop2.MAC0 = (SX0*SY1 + SX1*SY2 + SX2*SY0 - SX0*SY2 - SX1*SY0 - SX2*SY1);
+  cop2.MAC0 = nclip(vec2_from_32(cop2.SXY0), vec2_from_32(cop2.SXY1), vec2_from_32(cop2.SXY2));
 
   end_gte();
 }
@@ -475,9 +437,9 @@ void CC(void)
 {
   prepare_gte();
 
-  mat3 lcm = get_mat(2);
-  vec3 x = get_mul_vec(3);
-  vec3 t = get_trans_vec(1);
+  mat3 lcm = get_mat(MX_RCM);
+  vec3 x = get_mul_vec(V_IR);
+  vec3 t = get_trans_vec(CV_BK);
   vec3_32 res = vec_mat_mul_gte(x, lcm);
   cop2.MAC1 = t.x + (res.x >> 12);
   cop2.MAC2 = t.y + (res.y >> 12);
@@ -506,7 +468,7 @@ void OP(uint32_t sf, uint32_t lm)
 {
   prepare_gte();
 
-  mat3 m = get_mat(0);
+  mat3 m = get_mat(MX_RT);
   
   cop2.MAC1 = (((int32_t)cop2.IR3)*((int32_t)m.m[1][1]) - ((int32_t)cop2.IR2)*((int32_t)m.m[2][2])) >> (sf*12);
   cop2.MAC2 = (((int32_t)cop2.IR1)*((int32_t)m.m[2][2]) - ((int32_t)cop2.IR3)*((int32_t)m.m[0][0])) >> (sf*12);

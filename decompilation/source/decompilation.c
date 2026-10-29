@@ -315,6 +315,7 @@ struct address_name address_names[] = {
   {0x80075710, "gameobject_stack_ptr"},
   {0x80075714, "IS_DEMO_MODE"},
   {0x8007572C, "level_frame_counter"},
+  {0x80075744, "homeworld_to_load"},
   {0x80075750, "total_found_dragons"},
   {0x80075780, "allocator1_end"},
   {0x800757B0, "allocator1_ptr"},

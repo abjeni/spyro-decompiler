@@ -9,7 +9,7 @@
 do { \
   print_trace(); \
   fflush(stdout); \
-  raise(SIGABRT); \
+  assert(0); \
 } while(0);
 
 #define UNREACHABLE \
