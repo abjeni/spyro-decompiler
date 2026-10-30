@@ -1577,10 +1577,11 @@ struct segment segments[] = {
   //{LEVEL_ID, 4, MASK_WRITE},
   //{0x80074A10, 4, MASK_READONLY},
   //{0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
+  {0x8007555C, 8, MASK_WRITE},
   {0x80010000, 0x5BBDC, MASK_READONLY},
-  //{player_movestate, 4, MASK_WRITE}
+  //{PLAYER_MOVESTATE, 4, MASK_WRITE}
 
-  {VSync_last_vsync_time, 4 + 4, MASK_FORBIDDEN},
+  {VSYNC_LAST_VSYNC_TIME, 4 + 4, MASK_FORBIDDEN},
   //{VSync_last_frame_num, 4, MASK_FORBIDDEN},
 };
 

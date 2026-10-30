@@ -58,7 +58,7 @@ void function_80062230(void)
 {
   // assuming gpu version is v2
   if (a0 & 8) {
-    sw(lw(GPU_GP1_cmd_ptr), 0x09000001);
+    sw(lw(GPU_GP1_CMD_PTR), 0x09000001);
     v0 = 4;
   } else {
     v0 = 3;
@@ -75,18 +75,18 @@ void function_80061DEC(void)
   sw(0x80074B68, 0);
 
   if (mode == 0 || mode == 5) {
-    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
-    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(lw(DMA_GPU_CHANNEL_CONTROL_PTR), 0x401);
+    v1 = lw(DMA_CONTROL_REGISTER_COPY_2_PTR);
     sw(v1, lw(v1) | 0x800);
-    sw(lw(GPU_GP1_cmd_ptr), 0);
+    sw(lw(GPU_GP1_CMD_PTR), 0);
     spyro_memset8(0x800759BC, 0, 0x100);
     spyro_memset8(0x80078EA0, 0, 0x1800);
   } else if (mode == 1 || mode == 3) {
-    sw(lw(DMA_GPU_channel_control_ptr), 0x401);
-    v1 = lw(DMA_control_register_copy_2_ptr);
+    sw(lw(DMA_GPU_CHANNEL_CONTROL_PTR), 0x401);
+    v1 = lw(DMA_CONTROL_REGISTER_COPY_2_PTR);
     sw(v1, lw(v1) | 0x800);
-    sw(lw(GPU_GP1_cmd_ptr), 0x02000000);
-    sw(lw(GPU_GP1_cmd_ptr), 0x01000000);
+    sw(lw(GPU_GP1_CMD_PTR), 0x02000000);
+    sw(lw(GPU_GP1_CMD_PTR), 0x01000000);
   }
   set_I_MASK(istat);
   if (mode == 0) {
@@ -126,7 +126,7 @@ int32_t ResetGraph(int32_t mode)
     v0 = lbu(s0);
     break;
   default: // flush
-    if (lbu(psy_debug_level_ptr) >= 2) {
+    if (lbu(PSY_DEBUG_LEVEL_PTR) >= 2) {
       if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("ResetGraph(%d)...\n", mode);
     }
@@ -154,13 +154,13 @@ void SetDispMask(int32_t mask)
   sw(sp + 0x18, ra);
   sw(sp + 0x10, s0);
 
-  s1 = psy_debug_level_ptr;
-  if (lbu(psy_debug_level_ptr) >= 2) {
+  s1 = PSY_DEBUG_LEVEL_PTR;
+  if (lbu(PSY_DEBUG_LEVEL_PTR) >= 2) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("SetDispMask(%d)...\n", mask);
   }
   if (mask == 0)
-    memset(addr_to_pointer(psy_debug_level_ptr + 0x6A), -1, 0x14);
+    memset(addr_to_pointer(PSY_DEBUG_LEVEL_PTR + 0x6A), -1, 0x14);
   
   if (mask)
     a0 = 0x03000000;
@@ -186,7 +186,7 @@ void function_8005F6C8(void)
 // size: 0x0000006C
 uint32_t DrawSync(uint32_t mode)
 {
-  if (lbu(psy_debug_level_ptr) >= 2) {
+  if (lbu(PSY_DEBUG_LEVEL_PTR) >= 2) {
     v0 = lw(0x80074A60);
     if (v0 != 0x8006279C) UNREACHABLE;
     printf("DrawSync(%d)...\n", mode);
@@ -215,8 +215,8 @@ int32_t SetGraphDebug(int32_t level)
   //level = 2;
   level = 1;
 
-  uint32_t previous_debug_level = lbu(psy_debug_level_ptr);
-  sb(psy_debug_level_ptr, level);
+  uint32_t previous_debug_level = lbu(PSY_DEBUG_LEVEL_PTR);
+  sb(PSY_DEBUG_LEVEL_PTR, level);
 
   if (level & 0xFF) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
@@ -235,7 +235,7 @@ void function_8005F53C(void)
 // size: 0x00000128
 void psyq_check_box(const char *str, RECT box)
 {
-  uint32_t debug_level = lbu(psy_debug_level_ptr);
+  uint32_t debug_level = lbu(PSY_DEBUG_LEVEL_PTR);
   if (debug_level == 1) {
     int32_t size_x = (int32_t)lh(VRAM_SIZE_X);
     int32_t size_y = (int32_t)lh(VRAM_SIZE_Y);
@@ -355,7 +355,7 @@ void function_8005FAF0(void)
 // size: 0x00000074
 void DrawOTag(uint32_t *ot)
 {
-  if (lbu(psy_debug_level_ptr) >= 2) {
+  if (lbu(PSY_DEBUG_LEVEL_PTR) >= 2) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
     printf("DrawOTag(%08x)...\n", pointer_to_addr_maybe(ot));
   }
@@ -375,7 +375,7 @@ void function_8005FD64(void)
 // size: 0x00000104
 DRAWENV *PutDrawEnv(DRAWENV *env)
 {
-  if (lbu(psy_debug_level_ptr) >= 2) {
+  if (lbu(PSY_DEBUG_LEVEL_PTR) >= 2) {
     uint32_t func = lw(0x80074A60);
     if (func != 0x8006279C) UNREACHABLE;
     spyro_printf(0x80011910, pointer_to_addr_maybe(env), 0, 0); // "PutDrawEnv(%08x)...\n"
@@ -441,7 +441,7 @@ DISPENV *PutDispEnv(DISPENV *env)
   DISPENV *current_env = addr_to_pointer(0x80074AD0);
 
   s3 = 0x08000000;
-  v0 = lbu(psy_debug_level_ptr);
+  v0 = lbu(PSY_DEBUG_LEVEL_PTR);
   if (v0 > 2) {
     v0 = lw(0x80074A60);
     if (v0 != 0x8006279C) UNREACHABLE;

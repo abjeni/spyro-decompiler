@@ -98,7 +98,7 @@ void set_controller_interrupt_chain_node(void)
 
 void function_80069608(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   set_controller_interrupt_chain_node();
 }
 
@@ -258,7 +258,7 @@ void stop_registering_gamepads_internal(void)
 
 void function_800698E8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   stop_registering_gamepads_internal();
 }
 
@@ -271,7 +271,7 @@ void stop_registering_gamepads(void)
 // size: 0x00000020
 void function_80069080(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   stop_registering_gamepads();
 }
 
@@ -288,8 +288,8 @@ void start_registering_gamepads_internal(void)
   {
     SysDeqIntRP(2, 0x80075C58);
     SysEnqIntRP(2, 0x80075C58);
-    sw(lw(I_STAT_ptr), ~1);
-    sw(lw(I_MASK_ptr), lw(lw(I_MASK_ptr)) | 1);
+    sw(lw(I_STAT_PTR), ~1);
+    sw(lw(I_MASK_PTR), lw(lw(I_MASK_PTR)) | 1);
     ChangeClearRCnt(3, 0);
   }
   ExitCriticalSection();
@@ -313,7 +313,7 @@ void start_registering_gamepads_internal(void)
 
 void function_8006981C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   start_registering_gamepads_internal();
 }
 
@@ -326,7 +326,7 @@ void start_registering_gamepads(void)
 // size: 0x00000020
 void function_80069060(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   start_registering_gamepads();
 }
 
@@ -620,7 +620,7 @@ void func_80053940(uint8_t thing[4], uint32_t btns)
 }
 
 // size: 0x000000BC
-// a1: buttons
+// a1: BUTTONS
 void function_80053940(void)
 {
   func_80053940(addr_to_pointer(a0), a1);
@@ -783,7 +783,7 @@ label80053F4C:
   s1 = 1; // 0x0001
   if (temp) goto label80053F94;
 label80053F58:
-  s0 = buttons + 0x000C;
+  s0 = BUTTONS + 0x000C;
   v1 = lw(s0 + 0x0000);
   v0 = 3; // 0x0003
   temp = v1 == v0;
@@ -792,14 +792,14 @@ label80053F58:
   a0 = s0;
   function_8005375C();
   v0 = lw(0x800786A4);
-  sw(buttons + 0x20, v0);
+  sw(BUTTONS + 0x20, v0);
   a0 = s0;
   function_80053790();
 label80053F90:
   s1 = 3; // 0x0003
 label80053F94:
-  a1 = buttons + 0x10;
-  sw(buttons + 0x10, 0);
+  a1 = BUTTONS + 0x10;
+  sw(BUTTONS + 0x10, 0);
   if ((int32_t)s1 < 2) goto label80054298;
   v0 = lbu(0x800786A2);
   v1 = lbu(0x800786A3);
@@ -809,7 +809,7 @@ label80053F94:
   temp = s1 != v0;
   if (temp) goto label800540D0;
   sw(sp + 0x10, lw(0x800786A4));
-  func_80053940(addr_to_pointer(sp + 0x10), buttons);
+  func_80053940(addr_to_pointer(sp + 0x10), BUTTONS);
   v1 = lbu(0x800786A1);
   v0 = 83; // 0x0053
   temp = v1 != v0;
@@ -882,55 +882,55 @@ label800540A0:
   v0 = 1; // 0x0001
   if (temp) goto label800540D8;
 label800540C0:
-  sw(buttons + 0x0010, v0);
+  sw(BUTTONS + 0x0010, v0);
   goto label800540D8;
 label800540D0:
   sw(sp + 0x10, 0x7F7F7F7F);
 label800540D8:
-  a0 = lw(buttons + 0x08);
+  a0 = lw(BUTTONS + 0x08);
   a1 = (~a0) & s0;
   a0 = (~s0) & v0;
   if (lbu(0x80075868)) {
-    sw(buttons + 0x0C, s1);
-    sw(buttons + 0x08, s0);
+    sw(BUTTONS + 0x0C, s1);
+    sw(BUTTONS + 0x08, s0);
     if (lw(0x80075760)) {
-      sw(buttons + 0x00, lw(buttons + 0x00) | a1);
-      sw(buttons + 0x04, lw(buttons + 0x04) | a0);
+      sw(BUTTONS + 0x00, lw(BUTTONS + 0x00) | a1);
+      sw(BUTTONS + 0x04, lw(BUTTONS + 0x04) | a0);
     } else {
-      sw(buttons + 0x00, a1);
-      sw(buttons + 0x04, a0);
-      sw(buttons + 0x18, 1);
-      sw(buttons + 0x1C, 1);
+      sw(BUTTONS + 0x00, a1);
+      sw(BUTTONS + 0x04, a0);
+      sw(BUTTONS + 0x18, 1);
+      sw(BUTTONS + 0x1C, 1);
     }
-    sw(buttons + 0x14, lw(sp + 0x10));
-    if (lw(buttons + 0x18)) {
-      if ((lw(buttons + 0x08) & 0xF000) || ((s1 == 3)
+    sw(BUTTONS + 0x14, lw(sp + 0x10));
+    if (lw(BUTTONS + 0x18)) {
+      if ((lw(BUTTONS + 0x08) & 0xF000) || ((s1 == 3)
         && ((lbu(sp + 0x12) != 0x7F) || (lbu(sp + 0x12) != lbu(sp + 0x13))
         )))
-          sw(buttons + 0x1C, 0);
+          sw(BUTTONS + 0x1C, 0);
       
-      if ((lw(buttons + 0x1C) == 0) || (lw(buttons + 0x08) & 0xF0FF))
-        sw(buttons + 0x18, 0);
+      if ((lw(BUTTONS + 0x1C) == 0) || (lw(BUTTONS + 0x08) & 0xF0FF))
+        sw(BUTTONS + 0x18, 0);
     }
   } else {
-    if ((int32_t)lw(buttons + 0x0C) < 2) 
-      sw(buttons + 0x0C, s1);
+    if ((int32_t)lw(BUTTONS + 0x0C) < 2) 
+      sw(BUTTONS + 0x0C, s1);
   }
 
   v1 = lw(0x80075760);
   if (v1 < 4) {
-    sw(buttons + 0x44 + v1*24 + 0x00, s1);
-    sw(buttons + 0x44 + v1*24 + 0x04, s0);
-    sw(buttons + 0x44 + v1*24 + 0x08, a1);
-    sw(buttons + 0x44 + v1*24 + 0x0C, a0);
-    sw(buttons + 0x44 + v1*24 + 0x10, lw(buttons + 0x10));
-    sw(buttons + 0x44 + v1*24 + 0x14, a0);
+    sw(BUTTONS + 0x44 + v1*24 + 0x00, s1);
+    sw(BUTTONS + 0x44 + v1*24 + 0x04, s0);
+    sw(BUTTONS + 0x44 + v1*24 + 0x08, a1);
+    sw(BUTTONS + 0x44 + v1*24 + 0x0C, a0);
+    sw(BUTTONS + 0x44 + v1*24 + 0x10, lw(BUTTONS + 0x10));
+    sw(BUTTONS + 0x44 + v1*24 + 0x14, a0);
   }
   goto label800542B4;
 label80054298:
 
   if (lbu(0x80075868))
-    sw(buttons + 0x0C, s1);
+    sw(BUTTONS + 0x0C, s1);
 
 label800542B4:
   sw(0x80075760, lw(0x80075760)+1); // &0x00000000
@@ -980,21 +980,21 @@ void init_controller(void)
 // size: 0x00000028
 void controller_wait_for_data(void)
 {
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   while ((lhu(v1 + 4) & 2) == 0);
 }
 
 // size: 0x00000028
 void function_8006A0A4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   controller_wait_for_data();
 }
 
 // size: 0x00000098
 void function_800123C8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   init_controller();
 }
 
@@ -1023,8 +1023,8 @@ void function_8006B2CC(void)
 // size: 0x00000090
 void function_8006A014(void)
 {
-  uint32_t joy_base = lw(JOY_BASE_ptr);
-  sw(lw(I_STAT2_ptr), ~0x80);
+  uint32_t joy_base = lw(JOY_BASE_PTR);
+  sw(lw(I_STAT2_PTR), ~0x80);
   while (lhu(joy_base + 0x04) & 0x80) {
     v0 = 0;
     if (get_timer()) return;
@@ -1371,7 +1371,7 @@ void function_8006992C(void)
   sp -= 32; // 0xFFFFFFE0
   sw(sp + 0x0010, s0);
   s0 = a0;
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   v0 = 64; // 0x0040
   sw(sp + 0x0018, ra);
   sw(sp + 0x0014, s1);
@@ -1390,7 +1390,7 @@ void function_8006992C(void)
 label80069978:
   set_timer(a0);
   v0 = lw(0x800751FC); // &0x00000000
-  a0 = lw(JOY_BASE_ptr);
+  a0 = lw(JOY_BASE_PTR);
   temp = v0 == 0;
   v1 = 4099; // 0x1003
   if (temp) goto label8006999C;
@@ -1467,7 +1467,7 @@ label80069A34:
     JALR(temp, 0x80069A80);
   }
 label80069A88:
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   v0 = lhu(v1 + 0x0004);
   v0 = v0 & 0x200;
   temp = v0 == 0;
@@ -1482,12 +1482,12 @@ label80069A88:
   if (temp) goto label80069AF0;
   sb(v1 + 0x0000, v0);
   controller_wait_for_data();
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   v0 = 0;
   v1 = lbu(v1 + 0x0000);
   goto label80069B2C;
 label80069AF0:
-  v1 = lw(I_STAT2_ptr);
+  v1 = lw(I_STAT2_PTR);
   v0 = -129; // 0xFFFFFF7F
   sw(v1 + 0x0000, v0);
 label80069B00:
@@ -1613,7 +1613,7 @@ label8006B23C:
   a0 = s0;
   function_8006B2CC();
 label8006B24C:
-  v0 = lw(JOY_BASE2_ptr);
+  v0 = lw(JOY_BASE2_PTR);
   v1 = lw(0x800751FC); // &0x00000000
   sw(0x80075200, 0); // &0x00000000
   sh(v0 + 0x000A, 0);
@@ -1757,11 +1757,11 @@ void function_80069C08(void)
   temp = (int32_t)s2 >= 0;
   sw(sp + 0x0014, s1);
   if (temp) goto label80069CAC;
-  a0 = lbu(lw(JOY_BASE_ptr));
+  a0 = lbu(lw(JOY_BASE_PTR));
   sb(s0 + 0x44, 0xFF);
   sb(s0 + 0x45, 1);
   sb(lw(s0 + 0x40), ~s2);
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   v0 = lhu(v1 + 0x04) & 1;
   temp = v0 != 0;
   s1 = a0 & 0xFF;
@@ -1775,7 +1775,7 @@ label80069C84:
   temp = v0 == 0;
   v0 = ~s2;
   if (temp) goto label80069C84;
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   sb(v1 + 0x0000, v0);
   v0 = s1;
   goto label80069DC8;
@@ -1797,12 +1797,12 @@ label80069CE0:
   v0 = 0x1F800000;
 label80069CE4:
   v0 = v0 | 0x1120;
-  a1 = lw(JOY_BASE_ptr);
+  a1 = lw(JOY_BASE_PTR);
   a0 = lhu(v0 + 0x0000);
   v1 = lhu(a1 + 0x0004);
   v0 = 430; // 0x01AE
-  sw(timeout1_duration, v0);
-  sw(timeout1_start, a0);
+  sw(TIMEOUT1_DURATION, v0);
+  sw(TIMEOUT1_START, a0);
   v1 = v1 & 0x2;
   temp = v1 != 0;
   v1 = a1;
@@ -1813,8 +1813,8 @@ label80069D18:
   temp = v0 == 0;
   if (temp) goto label80069D18;
 label80069D2C:
-  v0 = lw(JOY_BASE_ptr);
-  v1 = lw(I_STAT2_ptr);
+  v0 = lw(JOY_BASE_PTR);
+  v1 = lw(I_STAT2_PTR);
   a0 = lbu(v0 + 0x0000);
   sh(v0 + 0x000E, a2);
   v0 = lw(v1 + 0x0000);
@@ -1827,13 +1827,13 @@ label80069D58:
   temp = v0 != 0;
   v0 = -20; // 0xFFFFFFEC
   if (temp) goto label80069DC8;
-  v0 = lw(I_STAT2_ptr);
+  v0 = lw(I_STAT2_PTR);
   v0 = lw(v0 + 0x0000);
   v0 = v0 & 0x80;
   temp = v0 == 0;
   if (temp) goto label80069D58;
 label80069D88:
-  v0 = lw(JOY_BASE_ptr);
+  v0 = lw(JOY_BASE_PTR);
   sb(v0 + 0x0000, s2);
   v0 = lbu(s0 + 0x0045);
   a0 = lbu(s0 + 0x0044);
@@ -1908,7 +1908,7 @@ void function_80069DE0(void)
   if (temp) goto label80069E34;
   s1 = 34; // 0x0022
 label80069E34:
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
 label80069E40:
   v0 = lhu(v1 + 0x0004);
   v0 = v0 & 0x2;
@@ -1916,7 +1916,7 @@ label80069E40:
   if (temp) goto label80069E40;
   a0 = 400; // 0x0190
   set_timer(a0);
-  a0 = lw(JOY_BASE_ptr);
+  a0 = lw(JOY_BASE_PTR);
   v0 = lbu(a0 + 0x0000);
   v1 = lbu(s0 + 0x0044);
   temp = v1 != 0;
@@ -1933,7 +1933,7 @@ label80069E8C:
 label80069E98:
   sh(a0 + 0x000E, v0);
 label80069E9C:
-  v1 = lw(I_STAT2_ptr);
+  v1 = lw(I_STAT2_PTR);
   v0 = lw(v1 + 0x0000);
   v0 = v0 & 0x80;
   temp = v0 != 0;
@@ -1943,8 +1943,8 @@ label80069E9C:
   t2 = 0x00010000;
   t0 = TIMER2_MODE;
   a3 = v1;
-  a0 = lw(timeout1_start);
-  a1 = lw(timeout1_duration);
+  a0 = lw(TIMEOUT1_START);
+  a1 = lw(TIMEOUT1_DURATION);
 label80069EEC:
   v0 = lhu(t1 + 0x0000);
   v1 = v0 & 0xFFFF;
@@ -1996,7 +1996,7 @@ label80069F98:
   temp = v0 == 0;
   if (temp) goto label80069F98;
 label80069FA8:
-  v0 = lw(JOY_BASE_ptr);
+  v0 = lw(JOY_BASE_PTR);
   sb(v0 + 0x0000, s3);
   v0 = lbu(s0 + 0x0045);
   v1 = lbu(s0 + 0x0044);
@@ -2705,7 +2705,7 @@ label8006AF88:
   v1 = lbu(s1 + 0x0044);
   v0 = v1 + 1; // 0x0001
   sb(s1 + 0x0044, v0);
-  v0 = lw(JOY_BASE3_ptr);
+  v0 = lw(JOY_BASE3_PTR);
   a0 = lw(s1 + 0x003C);
   v0 = lbu(v0 + 0x0000);
   v1 += a0;
@@ -2895,7 +2895,7 @@ label800697AC:
   temp = v0 == 0;
   if (temp) goto label800697AC;
 label800697E8:
-  v1 = lw(JOY_BASE_ptr);
+  v1 = lw(JOY_BASE_PTR);
   v0 = 136; // 0x0088
   sh(v1 + 0x000E, v0);
 label800697F8:

@@ -3,6 +3,7 @@
 #include "psx_mem.h"
 #include "decompilation.h"
 #include "spyro_string.h"
+#include "spyro_memory_card.h"
 #include "psx_ops.h"
 #include "not_renamed.h"
 #include "level_loading.h"
@@ -88,7 +89,7 @@ uint32_t init_memory_card(void)
 // size: 0x00000020
 void function_80012460(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = init_memory_card();
 }
 
@@ -124,14 +125,14 @@ label80067DB0:
 // size: 0x00000108
 void function_8006815C(void)
 {
-  TestEvent(lw(memcard_events + 0x00));
-  TestEvent(lw(memcard_events + 0x04));
-  TestEvent(lw(memcard_events + 0x08));
-  TestEvent(lw(memcard_events + 0x0C));
-  TestEvent(lw(memcard_events + 0x10));
-  TestEvent(lw(memcard_events + 0x14));
-  TestEvent(lw(memcard_events + 0x18));
-  TestEvent(lw(memcard_events + 0x1C));
+  TestEvent(lw(MEMCARD_EVENTS + 0x00));
+  TestEvent(lw(MEMCARD_EVENTS + 0x04));
+  TestEvent(lw(MEMCARD_EVENTS + 0x08));
+  TestEvent(lw(MEMCARD_EVENTS + 0x0C));
+  TestEvent(lw(MEMCARD_EVENTS + 0x10));
+  TestEvent(lw(MEMCARD_EVENTS + 0x14));
+  TestEvent(lw(MEMCARD_EVENTS + 0x18));
+  TestEvent(lw(MEMCARD_EVENTS + 0x1C));
   sw(0x80075B38, 0);
   sw(0x80075B34, lw(0x80075B38));
   sw(0x80075B30, lw(0x80075B34));
@@ -178,10 +179,10 @@ void function_80068340(void)
           + lw(0x80075B48)*8;
   }
 
-  TestEvent(lw(memcard_events + 0x00));
-  TestEvent(lw(memcard_events + 0x04));
-  TestEvent(lw(memcard_events + 0x08));
-  TestEvent(lw(memcard_events + 0x0C));
+  TestEvent(lw(MEMCARD_EVENTS + 0x00));
+  TestEvent(lw(MEMCARD_EVENTS + 0x04));
+  TestEvent(lw(MEMCARD_EVENTS + 0x08));
+  TestEvent(lw(MEMCARD_EVENTS + 0x0C));
 
   sw(0x80075B48, 0);
   sw(0x80075B44, lw(0x80075B48));
@@ -269,22 +270,22 @@ void function_80067E5C(void)
 void MemCardStart(void)
 {
   uint32_t crit = EnterCriticalSection();
-  sw(memcard_events + 0x00, OpenEvent(0xF4000001, 0x0004, 0x1000, 0x80067DD0));
-  sw(memcard_events + 0x04, OpenEvent(0xF4000001, 0x8000, 0x1000, 0x80067DE4));
-  sw(memcard_events + 0x08, OpenEvent(0xF4000001, 0x0100, 0x1000, 0x80067DF8));
-  sw(memcard_events + 0x0C, OpenEvent(0xF4000001, 0x2000, 0x1000, 0x80067E0C));
-  sw(memcard_events + 0x10, OpenEvent(0xF0000011, 0x0004, 0x1000, 0x80067E20));
-  sw(memcard_events + 0x14, OpenEvent(0xF0000011, 0x8000, 0x1000, 0x80067E34));
-  sw(memcard_events + 0x18, OpenEvent(0xF0000011, 0x0100, 0x1000, 0x80067E48));
-  sw(memcard_events + 0x1C, OpenEvent(0xF0000011, 0x2000, 0x1000, 0x80067E5C));
-  EnableEvent(lw(memcard_events + 0x00));
-  EnableEvent(lw(memcard_events + 0x04));
-  EnableEvent(lw(memcard_events + 0x08));
-  EnableEvent(lw(memcard_events + 0x0C));
-  EnableEvent(lw(memcard_events + 0x10));
-  EnableEvent(lw(memcard_events + 0x14));
-  EnableEvent(lw(memcard_events + 0x18));
-  EnableEvent(lw(memcard_events + 0x1C));
+  sw(MEMCARD_EVENTS + 0x00, OpenEvent(0xF4000001, 0x0004, 0x1000, 0x80067DD0));
+  sw(MEMCARD_EVENTS + 0x04, OpenEvent(0xF4000001, 0x8000, 0x1000, 0x80067DE4));
+  sw(MEMCARD_EVENTS + 0x08, OpenEvent(0xF4000001, 0x0100, 0x1000, 0x80067DF8));
+  sw(MEMCARD_EVENTS + 0x0C, OpenEvent(0xF4000001, 0x2000, 0x1000, 0x80067E0C));
+  sw(MEMCARD_EVENTS + 0x10, OpenEvent(0xF0000011, 0x0004, 0x1000, 0x80067E20));
+  sw(MEMCARD_EVENTS + 0x14, OpenEvent(0xF0000011, 0x8000, 0x1000, 0x80067E34));
+  sw(MEMCARD_EVENTS + 0x18, OpenEvent(0xF0000011, 0x0100, 0x1000, 0x80067E48));
+  sw(MEMCARD_EVENTS + 0x1C, OpenEvent(0xF0000011, 0x2000, 0x1000, 0x80067E5C));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x00));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x04));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x08));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x0C));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x10));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x14));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x18));
+  EnableEvent(lw(MEMCARD_EVENTS + 0x1C));
 
   function_8006815C();
   
@@ -294,7 +295,7 @@ void MemCardStart(void)
 // size: 0x000001E4
 void function_80067EA0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   MemCardStart();
 }
 
@@ -302,7 +303,7 @@ void function_80067EA0(void)
 void MemCardStop(void)
 {
   uint32_t crit = EnterCriticalSection();
-  CloseEvent(lw(memcard_events));
+  CloseEvent(lw(MEMCARD_EVENTS));
   CloseEvent(lw(0x80075B10));
   CloseEvent(lw(0x80075B14));
   CloseEvent(lw(0x80075B18));
@@ -316,7 +317,7 @@ void MemCardStop(void)
 // size: 0x000000B8
 void function_800680A4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   MemCardStop();
 }
 
@@ -1446,203 +1447,151 @@ label80067D64:
   return;
 }
 
-
-
-uint32_t savegame_checksum(uint8_t *savegame)
+uint32_t savegame_checksum(struct savegame *savegame)
 {
+  uint8_t *ptr = (void*)savegame;
   uint32_t sum = 0;
   for (int i = 0; i < 0x58C; i++)
-    sum += savegame[i];
+    sum += ptr[i];
   return sum;
 }
 
 // size: 0x00000028
 void function_8005956C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = savegame_checksum(addr_to_pointer(a0));
+}
+
+// size: 0x000001E4
+void create_savedata(struct savegame *save)
+{
+  memset(save, 0, sizeof(*save));
+
+  save->level_id = lw(LEVEL_ID);
+  save->unknown0 = lw(0x80075754);
+  save->unknown1 = lw(0x80075748);
+  save->unknown2 = lw(0x800757A4);
+  save->camera_mode = lw(CAMERA_MODE);
+  save->unknown3 = lw(0x80076240);
+  save->unknown4 = lw(0x80075838);
+  save->unknown5 = lw(0x8007583C);
+  save->lives = lw(LIVES);
+
+  memcpy(&save->unknown7, addr_to_pointer(0x80078618), 0x14);
+  memcpy(&save->unknown8, addr_to_pointer(0x80078680), 5*5);
+
+  memcpy(&save->unknown10, addr_to_pointer(0x80078E78), 0x24);
+  memcpy(&save->unknown11, addr_to_pointer(0x8007A6A8), 0x24);
+
+  for (int i = 0; i < 36; i++) {
+    save->level_dragons[i] = lw(LEVEL_DRAGONS + i*4);
+    save->level_gems[i] = lw(LEVEL_GEMS + i*4);
+  }
+
+  for (int i = 0; i < 18; i++) {
+    save->level_eggs[i] = lw(LEVEL_EGGS + i*4);
+  }
+
+  memcpy(&save->unknown12, addr_to_pointer(0x800758D0), 6);
+  memcpy(&save->unknown13, addr_to_pointer(0x80077908), 0x480);
+  save->checksum = savegame_checksum(save);
 }
 
 // size: 0x000001E4
 void function_80059864(void)
 {
-  uint32_t dst = a0;
-
-  spyro_memset32(dst, 0, 0x600);
-  sb(dst + 0x00, lw(LEVEL_ID));
-  sb(dst + 0x01, lw(0x80075754));
-  sb(dst + 0x02, lw(0x80075748));
-  sb(dst + 0x03, lw(0x800757A4));
-  sw(dst + 0x04, lw(CAMERA_MODE));
-  sb(dst + 0x08, lw(0x80076240));
-  sb(dst + 0x09, lw(0x80075838));
-  sb(dst + 0x0A, lw(0x8007583C));
-  sb(dst + 0x0B, lw(lives));
-  spyro_memcpy32(dst + 0x10, 0x80078618, 0x14);
-  memcpy(addr_to_pointer(dst + 0x24), addr_to_pointer(0x80078680), 5*5);
-  spyro_memcpy32(dst + 0x40, 0x80078E78, 0x24);
-  spyro_memcpy32(dst + 0x64, 0x8007A6A8, 0x24);
-
-  for (int i = 0; i < 36; i++) {
-    sb(dst + 0x88 + i, lw(level_dragons + i*4));
-    sh(dst + 0xAC + i*2, lw(level_gems + i*4));
-    sb(dst + 0xF4 + i, lw(level_eggs + i*4));
-  }
-
-  memcpy(addr_to_pointer(dst + 0x106), addr_to_pointer(0x800758D0), 6);
-  spyro_memcpy32(dst + 0x10C, 0x80077908, 0x480);
-  sw(dst + 0x58C, savegame_checksum(addr_to_pointer(dst)));
+  create_savedata(addr_to_pointer(a0));
 }
 
 // size: 0x000002D0
-void function_80059594(void)
+uint32_t load_savedata(struct savegame *save)
 {
-  uint32_t temp;
-  sp -= 32; // 0xFFFFFFE0
-  sw(sp + 0x0010, s0);
-  s0 = a0;
-  sw(sp + 0x0018, ra);
-  sw(sp + 0x0014, s1);
-  v0 = lbu(s0 + 0x0000);
-  v1 = 0x66660000;
-  sw(LEVEL_ID, v0);
-  a3 = lbu(s0 + 0x0001);
-  v1 = v1 | 0x6667;
+  sw(LEVEL_ID, save->level_id);
+  a3 = save->unknown0;
   v0 = a3 << 14;
   v0 -= a3;
-  mult(v0, v1);
-  a0 = 0x80020009; // &0x20304207
+  mult(v0, 0x66666667);
   v0 = (int32_t)v0 >> 31;
   t4=hi;
   a1 = (int32_t)t4 >> 2;
   a1 -= v0;
   v1 = a1 << 12;
-  mult(v1, a0);
-  a2 = 0x80076228;
-  sw(0x80075754, a3); // &0x00000000
-  sw(a2 + 0x0000, a1);
+  mult(v1, 0x80020009);
+  sw(0x80075754, a3);
+  sw(0x80076228, a1);
   t4=hi;
   v0 = t4 + v1;
   v0 = (int32_t)v0 >> 13;
   v1 = (int32_t)v1 >> 31;
   v0 -= v1;
   sw(0x8007622C, v0);
-  v0 = lbu(s0 + 0x0002);
-  v1 = 192; // 0x00C0
-  sw(a2 - 0x0320, v1); // 0xFFFFFCE0
-  sw(0x80075748, v0); // &0x00000000
+  v0 = save->unknown1;
+  sw(0x80075F08, 0xC0);
+  sw(0x80075748, v0);
   v0 = v0 << 11;
   sw(0x80076224, v0);
   sh(0x80075F18, v0);
   sh(0x80075F1A, v0);
-  a0 = a2 - 800; // 0xFFFFFCE0
+  a0 = 0x80075F08;
   function_8005CC58();
-  v0 = lbu(s0 + 0x0003);
-  v1 = lw(s0 + 0x0004);
-  sw(0x800757A4, v0); // &0x00000000
-  sw(CAMERA_MODE, v1);
-  v0 = lbu(s0 + 0x0008);
-  sw(0x80076240, v0);
-  v0 = lbu(s0 + 0x0009);
-  sw(0x80075838, v0);
-  v0 = lbu(s0 + 0x000A);
-  sw(0x8007583C, v0);
-  v0 = lbu(s0 + 0x000B);
-  sw(lives, v0);
-  v0 = (int32_t)v0 < 4;
-  temp = v0 == 0;
-  s1 = s0;
-  if (temp) goto label800596B4;
-  v0 = 4; // 0x0004
-  sw(lives, v0);
-label800596B4:
-  a0 = 0x80078618;
-  a1 = s0 + 16; // 0x0010
-  a2 = 20; // 0x0014
-  spyro_memcpy32(a0, a1, a2);
-  t0 = 0;
-  a3 = s0;
-  a1 = 0x80078680;
-label800596D8:
-  v1 = a1;
-  a0 = a3 + 36; // 0x0024
-  a2 = a1 + 5; // 0x0005
-label800596E4:
-  v0 = lbu(a0 + 0x0000);
-  sb(v1 + 0x0000, v0);
-  v1++;
-  v0 = (int32_t)v1 < (int32_t)a2;
-  temp = v0 != 0;
-  a0++;
-  if (temp) goto label800596E4;
-  a3 += 5; // 0x0005
-  t0++;
-  v0 = (int32_t)t0 < 5;
-  temp = v0 != 0;
-  a1 += 5; // 0x0005
-  if (temp) goto label800596D8;
-  a0 = 0x80078E78;
-  a1 = s0 + 64; // 0x0040
-  a2 = 36; // 0x0024
-  spyro_memcpy32(a0, a1, a2);
-  a0 = 0x8007A6A8;
-  a1 = s0 + 100; // 0x0064
-  a2 = 36; // 0x0024
-  spyro_memcpy32(a0, a1, a2);
-  a2 = 0;
-  t3 = level_eggs;
-  t2 = level_gems;
-  t1 = s0;
-  t0 = level_dragons;
-  sw(total_found_dragons, 0);
-  sw(total_found_gems, 0);
-  sw(total_found_eggs, 0);
-label80059774:
-  a3 = s0 + a2;
-  a0 = lbu(a3 + 0x0088);
-  v0 = lw(total_found_dragons);
-  v1 = lw(total_found_gems);
-  sw(t0 + 0x0000, a0);
-  a1 = lh(t1 + 0x00AC);
-  v0 += a0;
-  sw(total_found_dragons, v0);
-  v0 = (int32_t)a2 < 18;
-  v1 += a1;
-  sw(t2 + 0x0000, a1);
-  sw(total_found_gems, v1);
-  temp = v0 == 0;
-  if (temp) goto label800597DC;
-  v1 = lbu(a3 + 0x00F4);
-  v0 = lw(total_found_eggs);
-  v0 += v1;
-  sw(t3 + 0x0000, v1);
-  sw(total_found_eggs, v0);
-label800597DC:
-  t3 += 4; // 0x0004
-  t2 += 4; // 0x0004
-  t1 += 2; // 0x0002
-  a2++;
-  v0 = (int32_t)a2 < 36;
-  temp = v0 != 0;
-  t0 += 4; // 0x0004
-  if (temp) goto label80059774;
-  a2 = 0;
-  v0 = s0 + a2;
-label80059800:
-  v0 = lbu(v0 + 0x0106);
-  sb(0x800758D0 + a2, v0);
-  a2++;
-  v0 = (int32_t)a2 < 6;
-  temp = v0 != 0;
-  v0 = s0 + a2;
-  if (temp) goto label80059800;
-  spyro_memcpy32(0x80077908, s0 + 0x10C, 0x480);
-  v0 = lw(s0 + 0x58C) == savegame_checksum(addr_to_pointer(s1));
-  ra = lw(sp + 0x0018);
-  s1 = lw(sp + 0x0014);
-  s0 = lw(sp + 0x0010);
-  sp += 32; // 0x0020
-  return;
+
+  sw(0x800757A4, save->unknown2);
+  sw(CAMERA_MODE, save->camera_mode);
+  sw(0x80076240, save->unknown3);
+  sw(0x80075838, save->unknown4);
+  sw(0x8007583C, save->unknown5);
+  sw(LIVES, max_int(save->lives, 4));
+
+  memcpy(addr_to_pointer(0x80078618), &save->unknown7, 0x14);
+  memcpy(addr_to_pointer(0x80078680), &save->unknown8, 5*5);
+
+  memcpy(addr_to_pointer(0x80078E78), &save->unknown10, 0x24);
+  memcpy(addr_to_pointer(0x8007A6A8), &save->unknown11, 0x24);
+
+  uint32_t total_found_dragons = 0;
+  uint32_t total_found_gems = 0;
+
+  for (int i = 0; i < 36; i++)
+  {
+    uint32_t level_dragons = save->level_dragons[i];
+    uint32_t level_gems = save->level_gems[i];
+
+    total_found_dragons += level_dragons;
+    total_found_gems += level_gems;
+
+    sw(LEVEL_DRAGONS + i*4, level_dragons);
+    sw(LEVEL_GEMS + i*4, level_gems);
+  }
+
+  sw(TOTAL_FOUND_DRAGONS, total_found_dragons);
+  sw(TOTAL_FOUND_GEMS, total_found_gems);
+
+  uint32_t total_found_eggs = 0;
+
+  for (int i = 0; i < 18; i++)
+  {
+    uint32_t level_eggs = save->level_eggs[i];
+    total_found_eggs += level_eggs;
+    sw(LEVEL_EGGS + i*4, level_eggs);
+  }
+
+  sw(TOTAL_FOUND_EGGS, total_found_eggs);
+
+  memcpy(addr_to_pointer(0x800758D0), &save->unknown12, 6);
+  memcpy(addr_to_pointer(0x80077908), &save->unknown13, 0x480);
+
+  v0 = save->checksum == savegame_checksum(save);
+
+  assert(v0);
+
+  return v0;
+}
+
+// size: 0x000002D0
+void function_80059594(void)
+{
+  v0 = load_savedata(addr_to_pointer(a0));
 }
 
 
@@ -1744,7 +1693,7 @@ label80031630:
   v0 = spyro_cos(a0);
   mult(v0, s2);
   a0 = s0;
-  v0 = lw(player_position);
+  v0 = lw(PLAYER_POSITION);
   v1 = lw(0x80078D74);
   t0=lo;
   a1 = (int32_t)t0 >> 12;
@@ -1752,7 +1701,7 @@ label80031630:
   sw(v1 + 0x000C, v0);
   v0 = spyro_sin(a0);
   mult(v0, s2);
-  v0 = lw(player_position + 0x0004);
+  v0 = lw(PLAYER_POSITION + 0x0004);
   v1 = lw(0x80078D74);
   t0=lo;
   a0 = (int32_t)t0 >> 12;
@@ -1814,7 +1763,7 @@ label800317A0:
   v0 = spyro_cos(a0);
   mult(v0, s2);
   a0 = s0;
-  v0 = lw(player_position);
+  v0 = lw(PLAYER_POSITION);
   v1 = lw(0x80075898);
   t0=lo;
   a1 = (int32_t)t0 >> 12;
@@ -1822,7 +1771,7 @@ label800317A0:
   sw(v1 + 0x000C, v0);
   v0 = spyro_sin(a0);
   mult(v0, s2);
-  v0 = lw(player_position + 0x0004);
+  v0 = lw(PLAYER_POSITION + 0x0004);
   v1 = lw(0x80075898);
   t0=lo;
   a0 = (int32_t)t0 >> 12;
@@ -1864,7 +1813,7 @@ label80031884:
   mult(v0, s2);
   a0 = s0;
   s1 = 0x80076DF8;
-  s0 = player_position;
+  s0 = PLAYER_POSITION;
   v0 = lw(s0 + 0x0000);
   v1=lo;
   v1 = (int32_t)v1 >> 12;
@@ -1880,7 +1829,7 @@ label80031884:
   a0 = sp + 24; // 0x0018
   a2 = lw(0x80078D74);
   a1 = s0;
-  v0 = lw(player_position + 0x0004);
+  v0 = lw(PLAYER_POSITION + 0x0004);
   v1 = (int32_t)v1 >> 12;
   v0 += v1;
   sw(0x80076DFC, v0);
@@ -2013,7 +1962,7 @@ label80031BA8:
   v0 = spyro_cos(a0);
   v1 = lw(0x80078D3C);
   mult(v0, v1);
-  s0 = player_position;
+  s0 = PLAYER_POSITION;
   v0 = lw(s0 + 0x0000);
   v1 = lw(0x80078D74);
   t0=lo;
@@ -2107,10 +2056,10 @@ label80031DBC:
   function_80049660();
   function_80049E8C();
   a0 = lw(0x800756CC); // &0x00000000
-  v0 = lw(level_frame_counter);
+  v0 = lw(LEVEL_FRAME_COUNTER);
   v1 = lw(0x800756BC); // &0x00000000
   v0++;
-  sw(level_frame_counter, v0);
+  sw(LEVEL_FRAME_COUNTER, v0);
   function_loaded_800756BC();
   v1 = lw(s1 + 0x0008);
   v0 = v1 < 8;
@@ -2144,7 +2093,7 @@ label80031DBC:
     return;
   }
 label80031E34:
-  v1 = lw(buttons);
+  v1 = lw(BUTTONS);
   v0 = v1 & 0x4000;
   temp = v0 == 0;
   a1 = 0;
@@ -2154,14 +2103,10 @@ label80031E34:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80078D08);
   sw(0x80078D04, 0);
-  v0++;
-  sw(0x80078D08, v0);
-  v0 = (int32_t)v0 < 3;
-  temp = v0 != 0;
-  if (temp) goto label80031EEC;
-  sw(0x80078D08, 0);
+  sw(0x80078D08, lw(0x80078D08)+1);
+  if ((int32_t)lw(0x80078D08) >= 3)
+    sw(0x80078D08, 0);
   goto label80031EEC;
 label80031E9C:
   v0 = v1 & 0x1000;
@@ -2172,21 +2117,17 @@ label80031E9C:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80078D08);
   sw(0x80078D04, 0);
-  v0--;
-  sw(0x80078D08, v0);
-  temp = (int32_t)v0 >= 0;
-  v0 = 2; // 0x0002
-  if (temp) goto label80031EEC;
-  sw(0x80078D08, v0);
+  sw(0x80078D08, lw(0x80078D08)-1);
+  if ((int32_t)lw(0x80078D08) < 0)
+    sw(0x80078D08, 2);
 label80031EEC:
   s0 = 0x80078D04;
   v0 = lw(s0 + 0x0000);
   v0 = (int32_t)v0 < 8;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons);
+  v0 = lw(BUTTONS);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2241,14 +2182,14 @@ label80031F88:
   sh(a0 + 0x0034, v0);
   function_8002C924();
   a0 = lw(CONTINUOUS_LEVEL_ID);
-  v0 = level_dragons;
+  v0 = LEVEL_DRAGONS;
   a0 = a0 << 2;
   a0 += v0;
-  v0 = lw(total_found_dragons);
+  v0 = lw(TOTAL_FOUND_DRAGONS);
   v1 = lw(a0 + 0x0000);
   v0--;
   v1--;
-  sw(total_found_dragons, v0);
+  sw(TOTAL_FOUND_DRAGONS, v0);
   sw(a0 + 0x0000, v1);
   goto label800324B8;
 label80032054:
@@ -2257,7 +2198,7 @@ label80032054:
   v0 = (int32_t)v0 < 60;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons);
+  v0 = lw(BUTTONS);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2421,7 +2362,7 @@ label80032338:
   v0 = (int32_t)v0 < 60;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons);
+  v0 = lw(BUTTONS);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   a1 = 0;
@@ -2434,7 +2375,7 @@ label80032338:
   v0 = 6; // 0x0006
   goto label80032440;
 label8003238C:
-  s1 = buttons;
+  s1 = BUTTONS;
   v0 = lw(s1 + 0x0000);
   v0 = v0 & 0x5000;
   temp = v0 == 0;
@@ -2481,7 +2422,7 @@ label8003245C:
   v0 = (int32_t)v0 < 8;
   temp = v0 != 0;
   if (temp) goto label800324B8;
-  v0 = lw(buttons);
+  v0 = lw(BUTTONS);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   if (temp) goto label800324B8;

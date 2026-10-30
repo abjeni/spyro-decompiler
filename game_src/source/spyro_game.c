@@ -186,7 +186,7 @@ void function_80052F38(void)
   t9 = a1;
   at = a2;
   v0 = a3;
-  t7 = player_position;
+  t7 = PLAYER_POSITION;
   t6 = 0x80076378;
   t6 = lw(t6 + 0x0000);
   at = at << 2;
@@ -287,7 +287,7 @@ label800530B0:
 void function_80051FEC(void)
 {
   memset(addr_to_pointer(0x80077868), 0, 32);
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(player_position);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(PLAYER_POSITION);
   t6 = 0x8006FCF4 + 0x400;
   for (struct game_object *object = addr_to_pointer(lw(0x80075828)); object->unknown48 != -1; object++) {
     if ((int32_t)object->unknown48 < 0) continue;
@@ -344,7 +344,7 @@ void function_8003C358(void)
   sw(sp + 0x5C, s1);
   sw(sp + 0x58, s0);
 
-  vec3_32 pos = *(vec3_32*)addr_to_pointer(player_position);
+  vec3_32 pos = *(vec3_32*)addr_to_pointer(PLAYER_POSITION);
 
   s4 = a0;
   s3 = a1;
@@ -448,7 +448,7 @@ void function_8003C358(void)
 // size: 0x000001C8
 struct game_object *create_3d_text2(const char *str, vec3_32 *pos, uint32_t spacing, uint32_t unknown_metadata)
 {
-  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
 
   for (uint8_t ch = *str++; ch; ch = *str++) {
     if (ch == ' ') {
@@ -481,7 +481,7 @@ struct game_object *create_3d_text2(const char *str, vec3_32 *pos, uint32_t spac
     game_object->render_distance = 0xFF;
     pos->x += spacing;
   }
-  sw(gameobject_stack_ptr, pointer_to_addr(game_object));
+  sw(GAMEOBJECT_STACK_PTR, pointer_to_addr(game_object));
   return game_object;
 }
 
@@ -495,7 +495,7 @@ void function_80017FE4(void)
 struct game_object *create_3d_text1(const char *str, vec3_32 *pos, vec3_32 size, uint32_t unknown_spacing, uint32_t unknown_metadata)
 {
   uint32_t s2 = 1;
-  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   for (char ch = *str++; ch; ch = *str++) {
     if (ch == ' ') {
       s2 = 1;
@@ -541,7 +541,7 @@ struct game_object *create_3d_text1(const char *str, vec3_32 *pos, vec3_32 size,
 
     s2 = ch >= '0' && ch <= '9';
   }
-  sw(gameobject_stack_ptr, pointer_to_addr(game_object));
+  sw(GAMEOBJECT_STACK_PTR, pointer_to_addr(game_object));
   return game_object;
 }
 
@@ -982,18 +982,6 @@ label80055D28:
   a0 += s1;
   v1 = lhu(a0 + 0x000C);
   div_psx(v0,v1);
-  temp = v1 != 0;
-  if (temp) goto label80055D6C;
-  UNREACHABLE; // BREAK 0x01C00
-label80055D6C:
-  at = -1; // 0xFFFFFFFF
-  temp = v1 != at;
-  at = 0x80000000;
-  if (temp) goto label80055D84;
-  temp = v0 != at;
-  if (temp) goto label80055D84;
-  UNREACHABLE; // BREAK 0x01800
-label80055D84:
   v1=hi;
   v0 = lhu(a0 + 0x000E);
   mult(v1, v0);
@@ -1007,18 +995,6 @@ label80055DA4:
   a0 += s1;
   v1 = lhu(a0 + 0x000C);
   div_psx(v0,v1);
-  temp = v1 != 0;
-  if (temp) goto label80055DD4;
-  UNREACHABLE; // BREAK 0x01C00
-label80055DD4:
-  at = -1; // 0xFFFFFFFF
-  temp = v1 != at;
-  at = 0x80000000;
-  if (temp) goto label80055DEC;
-  temp = v0 != at;
-  if (temp) goto label80055DEC;
-  UNREACHABLE; // BREAK 0x01800
-label80055DEC:
   v1=hi;
   v0 = lhu(a0 + 0x000E);
   mult(v1, v0);
@@ -1032,18 +1008,6 @@ label80055E0C:
   a0 += s1;
   v1 = lhu(a0 + 0x000C);
   div_psx(v0,v1);
-  temp = v1 != 0;
-  if (temp) goto label80055E3C;
-  UNREACHABLE; // BREAK 0x01C00
-label80055E3C:
-  at = -1; // 0xFFFFFFFF
-  temp = v1 != at;
-  at = 0x80000000;
-  if (temp) goto label80055E54;
-  temp = v0 != at;
-  if (temp) goto label80055E54;
-  UNREACHABLE; // BREAK 0x01800
-label80055E54:
   v1=hi;
   v0 = lhu(a0 + 0x000E);
   mult(v1, v0);
@@ -1422,9 +1386,9 @@ void function_8002C714(void)
   function_80055A78();
   sw(0x800757CC, 0);
   sw(0x800756D4, 0);
-  sw(gamestate, 3);
+  sw(GAMESTATE, 3);
 
-  sw(0x80075744, lw(CONTINUOUS_LEVEL_ID)/6);
+  sw(HOMEWORLD_TO_LOAD, lw(CONTINUOUS_LEVEL_ID)/6);
   if (s0)
     sw(0x800758B8, 0);
     
@@ -1438,9 +1402,9 @@ void function_8002C714(void)
 // size: 0x000000C0
 uint32_t completion_percentage(void)
 {
-  uint32_t gems = lw(total_found_gems);
-  uint32_t dragons = lw(total_found_dragons);
-  uint32_t eggs = lw(total_found_eggs);
+  uint32_t gems = lw(TOTAL_FOUND_GEMS);
+  uint32_t dragons = lw(TOTAL_FOUND_DRAGONS);
+  uint32_t eggs = lw(TOTAL_FOUND_EGGS);
   uint32_t score = (gems*50 + dragons*6000 + eggs*10000)/12000;
   if (gems > 12000)
     score = 100 + (gems - 12000) / 100;
@@ -1459,7 +1423,7 @@ void function_8002F3E4(void)
 {
   uint32_t temp;
   sp -= 112; // 0xFFFFFF90
-  v1 = level_eggs + 0x0084;
+  v1 = LEVEL_EGGS + 0x0084;
   sw(sp + 0x006C, ra);
   sw(sp + 0x0068, s4);
   sw(sp + 0x0064, s3);
@@ -1471,7 +1435,7 @@ void function_8002F3E4(void)
   v0 += a0;
   sw(v1 + 0x0000, v0);
   v0 = lw(0x80077080);
-  v1 = lw(level_eggs + 0x0070);
+  v1 = lw(LEVEL_EGGS + 0x0070);
   v0 += a0;
   sw(0x80077080, v0);
   v0 = v1 < 8;
@@ -1511,11 +1475,11 @@ void function_8002F3E4(void)
     return;
   }
 label8002F460:
-  sw(level_frame_counter, lw(level_frame_counter)+1);
+  sw(LEVEL_FRAME_COUNTER, lw(LEVEL_FRAME_COUNTER)+1);
   function_loaded_80075734();
   function_8004A200();
   function_80037BD4();
-  a0 = lw(level_eggs + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0084);
   v1 = lw(0x800756CC); // &0x00000000
   v0 = (int32_t)a0 >> 4;
   v0 += 2; // 0x0002
@@ -1536,10 +1500,10 @@ label8002F460:
   v0 = a0 - 32; // 0xFFFFFFE0
   if (temp) goto label8002F510;
   v0 = v0 << 4;
-  sw(level_eggs + 0x008C, v0);
+  sw(LEVEL_EGGS + 0x008C, v0);
   goto label8002F518;
 label8002F510:
-  sw(level_eggs + 0x008C, 0);
+  sw(LEVEL_EGGS + 0x008C, 0);
 label8002F518:
   v0 = lw(0x800757D0); // &0x00000000
   v0 = (int32_t)v0 < 8;
@@ -1548,7 +1512,7 @@ label8002F518:
   if (temp) goto label8002F538;
   sw(0x800757D0, v0); // &0x00000000
 label8002F538:
-  s1 = level_eggs + 0x0084;
+  s1 = LEVEL_EGGS + 0x0084;
   v0 = lw(s1 + 0x0000);
   v1 = 70; // 0x0046
   sw(0x8007584C, v1);
@@ -1557,18 +1521,18 @@ label8002F538:
   v0 = 255; // 0x00FF
   if (temp) goto label800313F8;
   s2 = 1; // 0x0001
-  sw(level_eggs + 0x0070, s2);
+  sw(LEVEL_EGGS + 0x0070, s2);
   sw(s1 + 0x0000, 0);
   v1 = lw(0x800770C0);
   a2 = 1; // 0x0001
-  sw(level_eggs + 0x008C, v0);
+  sw(LEVEL_EGGS + 0x008C, v0);
   v0 = lw(v1 + 0x0014);
-  s0 = player_position;
+  s0 = PLAYER_POSITION;
   v0 -= 120; // 0xFFFFFF88
   sw(v1 + 0x0014, v0);
   v0 = lw(0x800770C0);
   a3 = lw(s0 + 0x0000);
-  v1 = lw(player_position + 0x0004);
+  v1 = lw(PLAYER_POSITION + 0x0004);
   a0 = lw(v0 + 0x000C);
   a1 = lw(v0 + 0x0010);
   a0 = a3 - a0;
@@ -1639,19 +1603,19 @@ label8002F538:
   v0 = spyro_two_angle_diff_12bit(a0, a1);
   v0 = (int32_t)v0 >> 4;
   v0 += 40; // 0x0028
-  sw(level_eggs + 0x0088, v0);
+  sw(LEVEL_EGGS + 0x0088, v0);
   v0 = (int32_t)v0 < 64;
   temp = v0 == 0;
   v0 = 64; // 0x0040
   if (temp) goto label8002F734;
-  sw(level_eggs + 0x0088, v0);
+  sw(LEVEL_EGGS + 0x0088, v0);
 label8002F734:
-  v0 = lw(level_eggs + 0x0088);
+  v0 = lw(LEVEL_EGGS + 0x0088);
   v0 = (int32_t)v0 < 129;
   temp = v0 != 0;
   v0 = 128; // 0x0080
   if (temp) goto label8002F754;
-  sw(level_eggs + 0x0088, v0);
+  sw(LEVEL_EGGS + 0x0088, v0);
 label8002F754:
   v0 = lw(0x800786C8 + 0x00A0);
   sw(0x800758A4, v0);
@@ -1677,7 +1641,7 @@ label8002F754:
   a2 = 16; // 0x0010
   goto label800312A0;
 label8002F7E4:
-  a0 = lw(level_eggs + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)a0 < 32;
   temp = v0 == 0;
   v1 = 32; // 0x0020
@@ -1702,17 +1666,17 @@ label8002F7E4:
 label8002F85C:
   sw(0x80076248, 0);
 label8002F864:
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v1 < 8;
   temp = v0 == 0;
   v0 = 8; // 0x0008
   if (temp) goto label8002F894;
   v0 -= v1;
   v0 = v0 << 5;
-  sw(level_eggs + 0x008C, v0);
+  sw(LEVEL_EGGS + 0x008C, v0);
   goto label8002F89C;
 label8002F894:
-  sw(level_eggs + 0x008C, 0);
+  sw(LEVEL_EGGS + 0x008C, 0);
 label8002F89C:
   v1 = lw(0x800770C0);
   v0 = lbu(v1 + 0x0049);
@@ -1740,8 +1704,8 @@ label8002F934:
   sw(0x8007584C, 0x46);
   a0 = 0xFB;
   function_loaded_800758CC();
-  a0 = lw(level_eggs + 0x84);
-  v1 = lw(level_eggs + 0x88);
+  a0 = lw(LEVEL_EGGS + 0x84);
+  v1 = lw(LEVEL_EGGS + 0x88);
   v0 = (int32_t)a0 < (int32_t)v1;
   temp = v0 == 0;
   v0 = v1 + 32; // 0x0020
@@ -1774,8 +1738,8 @@ label8002F9FC:
   v0 = (int32_t)t0 >> 13;
   s1 = v1 - v0;
 label8002FA1C:
-  a0 = lw(level_eggs + 0x84);
-  v0 = lw(level_eggs + 0x88);
+  a0 = lw(LEVEL_EGGS + 0x84);
+  v0 = lw(LEVEL_EGGS + 0x88);
   a0 = a0 << 10;
   div_psx(a0,v0);
   a0=lo;
@@ -1787,7 +1751,7 @@ label8002FA1C:
   v1 -= a2;
   mult(v1, v0);
   a0 = sp + 0x10;
-  s0 = player_position;
+  s0 = PLAYER_POSITION;
   a1 = s0;
   t0=lo;
   v0 = (int32_t)t0 >> 12;
@@ -1812,7 +1776,7 @@ label8002FA1C:
   t0=lo;
   v1 = (int32_t)t0 >> 12;
   v0 += v1;
-  sw(player_position + 0x0004, v0);
+  sw(PLAYER_POSITION + 0x0004, v0);
   a2 = a0;
   spyro_vec3_sub(a0, a1, a2);
   a0 = lw(sp + 0x0010);
@@ -1921,9 +1885,9 @@ label8002FC3C:
   t1=lo;
   v0 = (int32_t)t1 >> 13;
   a0 += v0;
-  v0 = lw(level_eggs + 0x0088);
+  v0 = lw(LEVEL_EGGS + 0x0088);
   sw(0x80076E00, a0);
-  a0 = lw(level_eggs + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0084);
   v1 = v0 - 16; // 0xFFFFFFF0
   v0 = (int32_t)a0 < (int32_t)v1;
   temp = v0 != 0;
@@ -1962,7 +1926,7 @@ label8002FD6C:
   t0=lo;
   v1 = (int32_t)t0 >> 12;
   v0 += v1;
-  sw(player_position, v0);
+  sw(PLAYER_POSITION, v0);
   v0 = spyro_sin(a0);
   v1 = lw(0x8007709C);
   mult(v0, v1);
@@ -1975,7 +1939,7 @@ label8002FD6C:
   t0=lo;
   v0 = (int32_t)t0 >> 12;
   a0 += v0;
-  sw(player_position + 4, a0);
+  sw(PLAYER_POSITION + 4, a0);
   spyro_vec3_copy(0x80076DF8, lw(a1 + 0x00));
 label8002FE58:
   a0 = lw(0x80077098);
@@ -1986,8 +1950,8 @@ label8002FE58:
   temp = v0 == 0;
   if (temp) goto label8002FEC8;
   v0 = spyro_two_angle_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x84);
-  a0 = lw(level_eggs + 0x88);
+  v1 = lw(LEVEL_EGGS + 0x84);
+  a0 = lw(LEVEL_EGGS + 0x88);
   v1 -= a0;
   mult(v0, v1);
   v0=lo;
@@ -2001,8 +1965,8 @@ label8002FEB4:
   goto label8002FF0C;
 label8002FEC8:
   v0 = spyro_two_angle_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x84);
-  a0 = lw(level_eggs + 0x88);
+  v1 = lw(LEVEL_EGGS + 0x84);
+  a0 = lw(LEVEL_EGGS + 0x88);
   v1 -= a0;
   mult(v0, v1);
   v0=lo;
@@ -2020,25 +1984,25 @@ label8002FF0C:
   sw(0x80078AB0, v0);
   goto label8002FF78;
 label8002FF2C:
-  sw(level_eggs + 0x0070, v0);
+  sw(LEVEL_EGGS + 0x0070, v0);
   v0 = 4; // 0x0004
   sb(0x80078A7C, v0);
   v0 = lw(0x80077098);
   v1 = 4; // 0x0004
-  sw(level_eggs + 0x0084, 0);
+  sw(LEVEL_EGGS + 0x0084, 0);
   sb(0x80078A71, 0);
   sb(0x80078A77, 0);
   sw(0x80078AB0, v1);
   v0 = (int32_t)v0 >> 4;
   sb(0x80078A66, v0);
 label8002FF78:
-  v1 = lw(level_eggs + 0x0070);
+  v1 = lw(LEVEL_EGGS + 0x0070);
   v0 = 1; // 0x0001
   temp = v1 != v0;
   a0 = sp + 16; // 0x0010
   if (temp) goto label80030258;
   a2 = lw(0x800770C0);
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   a2 += 12; // 0x000C
   spyro_vec3_add(a0, a1, a2);
   a0 = sp + 16; // 0x0010
@@ -2048,7 +2012,7 @@ label8002FF78:
   a2 = 0x80076DF8;
   a1 = a0;
   spyro_vec3_sub(a0, a1, a2);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v1 < 16;
   temp = v0 == 0;
   a0 = sp + 16; // 0x0010
@@ -2070,7 +2034,7 @@ label8002FF78:
   a1 = lh(0x80076E1C);
   sh(sp + 0x0024, v0);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   mult(v0, v1);
   a0 = lh(sp + 0x0022);
   a1 = lh(0x80076E1E);
@@ -2081,7 +2045,7 @@ label8002FF78:
   v0 = v0 & 0xFFF;
   sh(0x80076E1C, v0);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   mult(v0, v1);
   a0 = lh(sp + 0x0024);
   a1 = lh(0x80076E20);
@@ -2092,14 +2056,14 @@ label8002FF78:
   v0 = v0 & 0xFFF;
   sh(0x80076E1E, v0);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   mult(v0, v1);
   v0 = lhu(0x80076E20);
   t0=lo;
   v1 = (int32_t)t0 >> 4;
   goto label80030248;
 label800300D0:
-  v0 = lw(level_eggs + 0x0088);
+  v0 = lw(LEVEL_EGGS + 0x0088);
   v0 -= 32; // 0xFFFFFFE0
   v0 = (int32_t)v1 < (int32_t)v0;
   temp = v0 == 0;
@@ -2139,8 +2103,8 @@ label80030130:
   a0 = lw(s0 + 0x000C);
   a1 = lh(sp + 0x0020);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
-  a0 = lw(level_eggs + 0x0088);
+  v1 = lw(LEVEL_EGGS + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0088);
   v1 -= a0;
   v1 += 32; // 0x0020
   mult(v0, v1);
@@ -2153,8 +2117,8 @@ label80030130:
   sh(0x80076E1C, v0);
   a0 = lw(s0 + 0x0010);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
-  a0 = lw(level_eggs + 0x0088);
+  v1 = lw(LEVEL_EGGS + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0088);
   v1 -= a0;
   v1 += 32; // 0x0020
   mult(v0, v1);
@@ -2167,8 +2131,8 @@ label80030130:
   sh(0x80076E1E, v0);
   a0 = lw(s0 + 0x0014);
   v0 = spyro_two_angle_signed_diff_12bit(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
-  a0 = lw(level_eggs + 0x0088);
+  v1 = lw(LEVEL_EGGS + 0x0084);
+  a0 = lw(LEVEL_EGGS + 0x0088);
   v1 -= a0;
   v1 += 32; // 0x0020
   mult(v0, v1);
@@ -2239,14 +2203,14 @@ label80030258:
   function_8003CB24();
   function_80049660();
   function_80049E8C();
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   v0 += 1024; // 0x0400
-  sw(player_position + 0x0008, v0);
+  sw(PLAYER_POSITION + 0x0008, v0);
   a0 = s1 - 14; // 0xFFFFFFF2
   function_8004DF24();
   sw(0x80078AF8, v0);
   v0 += 356; // 0x0164
-  sw(player_position + 0x0008, v0);
+  sw(PLAYER_POSITION + 0x0008, v0);
   a0 = 0;
   function_80049FAC();
   goto label800313F8;
@@ -2278,11 +2242,11 @@ label80030468:
   sw(0x8007584C, v0);
   a0 = 251; // 0x00FB
   function_loaded_800758CC();
-  v0 = lw(level_eggs + 0x84);
+  v0 = lw(LEVEL_EGGS + 0x84);
   v0 = (int32_t)v0 < 16;
   temp = v0 != 0;
   if (temp) goto label800304BC;
-  v0 = lw(level_eggs + 0x74);
+  v0 = lw(LEVEL_EGGS + 0x74);
   v0 = (int32_t)v0 < 3;
   temp = v0 == 0;
   s0 = 0;
@@ -2294,8 +2258,8 @@ label800304BC:
   function_80049E8C();
   goto label800313F8;
 label800304E4:
-  sw(level_eggs + 0x70, 3);
-  sw(level_eggs + 0x84, 0);
+  sw(LEVEL_EGGS + 0x70, 3);
+  sw(LEVEL_EGGS + 0x84, 0);
   a0 = 251; // 0x00FB
 label800304FC:
   a1 = lw(0x800770C0);
@@ -2354,7 +2318,7 @@ label800304FC:
   v0 = 511; // 0x01FF
   sh(v1 + 0x0036, v0);
   a0 = lw(0x800770BC);
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   a0 += 12; // 0x000C
   spyro_vec3_copy(a0, a1);
   v0 = lw(0x800770BC);
@@ -2379,7 +2343,7 @@ label800304FC:
   function_80052568();
   goto label800313F8;
 label800306D4:
-  s0 = level_eggs + 0x0084;
+  s0 = LEVEL_EGGS + 0x0084;
   a0 = lw(s0 + 0x0000);
   v0 = (int32_t)a0 < 24;
   temp = v0 == 0;
@@ -2414,7 +2378,7 @@ label800306D4:
 label80030778:
   v1 = lw(0x800770C0);
   v0 = 4; // 0x0004
-  sw(level_eggs + 0x0070, v0);
+  sw(LEVEL_EGGS + 0x0070, v0);
   sw(s0 + 0x0000, 0);
   v0 = lw(v1 + 0x0000);
   v0 = lw(v0 + 0x0030);
@@ -2434,7 +2398,7 @@ label80030778:
   sb(v1 + 0x0046, v0);
   goto label800313F8;
 label80030804:
-  s3 = level_eggs + 0x0084;
+  s3 = LEVEL_EGGS + 0x0084;
   v0 = lw(0x8007707C);
   v1 = lw(s3 + 0x0000);
   v0 = v0 << 1;
@@ -2458,7 +2422,7 @@ label80030804:
   a2 = 20; // 0x0014
   spyro_memcpy32(a0, a1, a2);
   v0 = 0x00080000;
-  v1 = lw(level_eggs + 0x0050);
+  v1 = lw(LEVEL_EGGS + 0x0050);
   a0 = lw(0x800761D0);
   v0 -= v1;
   sw(a0 + 0x0000, v0);
@@ -2506,7 +2470,7 @@ label80030804:
   spyro_memcpy32(a0, a1, a2);
   sw(0x80077088, s0);
 label8003097C:
-  v0 = lw(level_eggs + 0x0084);
+  v0 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v0 >> 1;
   v1 = v0 << 1;
   v1 += v0;
@@ -2546,21 +2510,9 @@ label80030A24:
   if (temp) goto label80030A30;
   a1 = 4; // 0x0004
 label80030A30:
-  a0 = level_eggs + 0x0084;
+  a0 = LEVEL_EGGS + 0x0084;
   v0 = lw(a0 + 0x0000);
   div_psx(v0,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030A50;
-  UNREACHABLE; // BREAK 0x01C00
-label80030A50:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030A68;
-  temp = v0 != at;
-  if (temp) goto label80030A68;
-  UNREACHABLE; // BREAK 0x01800
-label80030A68:
   v0=lo;
   v1 = lw(0x800770B8);
   sb(v1 + 0x003E, v0);
@@ -2570,33 +2522,9 @@ label80030A68:
   sb(v1 + 0x003F, v0);
   v0 = lw(a0 + 0x0000);
   div_psx(v0,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030AB0;
-  UNREACHABLE; // BREAK 0x01C00
-label80030AB0:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030AC8;
-  temp = v0 != at;
-  if (temp) goto label80030AC8;
-  UNREACHABLE; // BREAK 0x01800
-label80030AC8:
   v1=hi;
   v1 = v1 << 6;
   div_psx(v1,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030AE4;
-  UNREACHABLE; // BREAK 0x01C00
-label80030AE4:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030AFC;
-  temp = v1 != at;
-  if (temp) goto label80030AFC;
-  UNREACHABLE; // BREAK 0x01800
-label80030AFC:
   v1=lo;
   v0 = lw(0x800770B8);
   sb(v0 + 0x0040, v1);
@@ -2635,21 +2563,9 @@ label80030B94:
   if (temp) goto label80030BA0;
   a1 = 4; // 0x0004
 label80030BA0:
-  a0 = level_eggs + 0x0084;
+  a0 = LEVEL_EGGS + 0x0084;
   v0 = lw(a0 + 0x0000);
   div_psx(v0,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030BC0;
-  UNREACHABLE; // BREAK 0x01C00
-label80030BC0:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030BD8;
-  temp = v0 != at;
-  if (temp) goto label80030BD8;
-  UNREACHABLE; // BREAK 0x01800
-label80030BD8:
   v0=lo;
   v1 = lw(0x800770BC);
   sb(v1 + 0x003E, v0);
@@ -2659,33 +2575,8 @@ label80030BD8:
   sb(v1 + 0x003F, v0);
   v0 = lw(a0 + 0x0000);
   div_psx(v0,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030C20;
-  UNREACHABLE; // BREAK 0x01C00
-label80030C20:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030C38;
-  temp = v0 != at;
-  if (temp) goto label80030C38;
-  UNREACHABLE; // BREAK 0x01800
-label80030C38:
-  v1=hi;
-  v1 = v1 << 6;
+  v1 = hi << 6;
   div_psx(v1,a1);
-  temp = a1 != 0;
-  if (temp) goto label80030C54;
-  UNREACHABLE; // BREAK 0x01C00
-label80030C54:
-  at = -1; // 0xFFFFFFFF
-  temp = a1 != at;
-  at = 0x80000000;
-  if (temp) goto label80030C6C;
-  temp = v1 != at;
-  if (temp) goto label80030C6C;
-  UNREACHABLE; // BREAK 0x01800
-label80030C6C:
   v1=lo;
   v0 = lw(0x800770BC);
   sb(v0 + 0x0040, v1);
@@ -2703,7 +2594,7 @@ label80030C6C:
   v0 = lw(0x800770BC);
   sb(v0 + 0x0040, 0);
 label80030CC8:
-  v0 = lw(buttons);
+  v0 = lw(BUTTONS);
   v0 = v0 & 0x40;
   temp = v0 == 0;
   if (temp) goto label80030D2C;
@@ -2724,7 +2615,7 @@ label80030D2C:
   temp = s4 != 0;
   if (temp) goto label80030D54;
   v0 = lw(0x8007707C);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = v0 << 1;
   v1 = (int32_t)v1 < (int32_t)v0;
   temp = v1 != 0;
@@ -2732,8 +2623,8 @@ label80030D2C:
 label80030D54:
   v1 = lw(0x8007707C);
   v0 = 5; // 0x0005
-  sw(level_eggs + 0x0070, v0);
-  sw(level_eggs + 0x0084, 0);
+  sw(LEVEL_EGGS + 0x0070, v0);
+  sw(LEVEL_EGGS + 0x0084, 0);
   v0 = v1 << 1;
   v0 += v1;
   v1 = lw(0x80077078);
@@ -2781,16 +2672,16 @@ label80030D54:
   a1 = 2; // 0x0002
   function_80056200();
   function_80056ED4();
-  v0 = lw(level_eggs + 0x007C);
+  v0 = lw(LEVEL_EGGS + 0x007C);
   temp = v0 != 0;
   a0 = 0x00080000;
   if (temp) goto label80030EF0;
-  v0 = lw(level_eggs + 0x0050);
+  v0 = lw(LEVEL_EGGS + 0x0050);
   a0 -= v0;
   function_8005CB24();
   v0 = lw(0x800785E0);
-  a0 = lw(level_eggs + 0x004C);
-  a1 = lw(level_eggs + 0x0050);
+  a0 = lw(LEVEL_EGGS + 0x004C);
+  a1 = lw(LEVEL_EGGS + 0x0050);
   a0 += v0;
   function_8005CAC4();
 label80030EE0:
@@ -2856,7 +2747,7 @@ label80030FFC:
   a1 = 0x8006F3F0; // &0x00000100
   a1 += s2;
   spyro_vec3_copy(a0, a1);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v1 < 25;
   temp = v0 == 0;
   v0 = (int32_t)v1 >> 1;
@@ -2887,14 +2778,14 @@ label80031080:
   temp = v0 != 0;
   s2 += 12; // 0x000C
   if (temp) goto label80030FFC;
-  s1 = level_eggs + 0x0084;
+  s1 = LEVEL_EGGS + 0x0084;
   v0 = lw(s1 + 0x0000);
   v0 = (int32_t)v0 < 25;
   temp = v0 != 0;
   if (temp) goto label800313F8;
   s0 = sp + 32; // 0x0020
   a0 = s0;
-  sw(level_eggs + 0x70, 6);
+  sw(LEVEL_EGGS + 0x70, 6);
   sw(s1, 0);
   sb(0x80077FAE, 0);
   
@@ -2926,7 +2817,7 @@ label8003115C:
   function_80049E8C();
   s0 = 0x80077FCC;
   a2 = lw(s0 + 0x0000);
-  v0 = lw(total_found_dragons);
+  v0 = lw(TOTAL_FOUND_DRAGONS);
   temp = a2 != v0;
   a0 = 5; // 0x0005
   if (temp) goto label800311B0;
@@ -2962,19 +2853,19 @@ label80031210:
   a2 = 16; // 0x0010
   function_80055A78();
 label80031238:
-  a3 = level_eggs + 0x0084;
+  a3 = LEVEL_EGGS + 0x0084;
   v0 = lw(a3 + 0x0000);
   v0 = (int32_t)v0 < 96;
   temp = v0 != 0;
   v0 = 6; // 0x0006
   if (temp) goto label800313F8;
-  v1 = lw(level_eggs + 0x0074);
+  v1 = lw(LEVEL_EGGS + 0x0074);
   temp = v1 != v0;
   a1 = 0;
   if (temp) goto label800313F8;
   v1 = lw(0x80075824);
   v0 = 7; // 0x0007
-  sw(level_eggs + 0x0070, v0);
+  sw(LEVEL_EGGS + 0x0070, v0);
   v0 = 255; // 0x00FF
   sw(a3 + 0x0000, 0);
   sw(0x80075738, v1); // &0x00000000
@@ -2991,7 +2882,7 @@ label800312B8:
   function_8003CB24();
   function_80049660();
   function_80049E8C();
-  v0 = lw(level_eggs + 0x0084);
+  v0 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v0 < 16;
   temp = v0 == 0;
   if (temp) goto label80031374;
@@ -3009,7 +2900,7 @@ label80031304:
   s1 += 12; // 0x000C
   s3++;
   a0 = 17; // 0x0011
-  v0 = lw(level_eggs + 0x0084);
+  v0 = lw(LEVEL_EGGS + 0x0084);
   v1 = lw(s0 + 0x0000);
   a0 -= v0;
   v0 = a0 << 1;
@@ -3020,20 +2911,20 @@ label80031304:
   temp = v0 != 0;
   s0 += 88; // 0x0058
   if (temp) goto label80031304;
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = (int32_t)v1 < 16;
   temp = v0 != 0;
   v0 = v1 << 4;
   if (temp) goto label80031388;
 label80031374:
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 = 32; // 0x0020
   v1 = v0 - v1;
   v0 = v1 << 4;
 label80031388:
   v0--;
   a0 = 0x80076248;
-  sw(level_eggs + 0x008C, v0);
+  sw(LEVEL_EGGS + 0x008C, v0);
   v0 = 1; // 0x0001
   sw(a0 + 0x0000, v0);
   v0 = v1 << 3;
@@ -3044,7 +2935,7 @@ label80031388:
   v0 = v0 << 4;
   sw(0x8007626C, v0);
   v0 = lbu(0x80076272);
-  v1 = lw(level_eggs + 0x0084);
+  v1 = lw(LEVEL_EGGS + 0x0084);
   v0 += 8; // 0x0008
   v1 = (int32_t)v1 < 32;
   sb(0x80076272, v0);
@@ -3055,7 +2946,7 @@ label80031388:
 label800313F8:
   a0 = lw(0x800756CC); // &0x00000000
   function_loaded_800756BC();
-  v0 = lw(level_eggs + 0x0070);
+  v0 = lw(LEVEL_EGGS + 0x0070);
   temp = (int32_t)v0 <= 0;
   if (temp) goto label80031430;
   function_80014B70();
@@ -3102,9 +2993,9 @@ void function_8003385C(void)
   sw(0x8007579C, 0);
   function_8005637C();
   function_8002BBE0();
-  switch (lw(gamestate)) {
+  switch (lw(GAMESTATE)) {
   case GAMESTATE_INGAME: // in game
-    sw(level_frame_counter, lw(level_frame_counter)+1);
+    sw(LEVEL_FRAME_COUNTER, lw(LEVEL_FRAME_COUNTER)+1);
     if (lw(IS_DEMO_MODE)) {
       function_800334D4();
       if (v0) return;
@@ -3112,10 +3003,10 @@ void function_8003385C(void)
     a0 = lw(0x800756CC);
     function_8002A6FC();
     function_loaded_80075734();
-    v1 = lw(gamestate);
+    v1 = lw(GAMESTATE);
     if (v1 == 1 || v1 == 7 || v1 == 11 || v1 == 12) return;
     function_8004A200();
-    v1 = lw(gamestate);
+    v1 = lw(GAMESTATE);
     if (v1 == 1 || v1 == 4 || v1 == 5 || v1 == 7) return;
     a0 = lw(0x800756CC);
     function_loaded_800756BC();
@@ -3129,15 +3020,15 @@ void function_8003385C(void)
     if (lw(0x80075918))
       sw(0x80075918, max_int(lw(0x80075918) - lw(0x800756CC), 0));
     
-    if (lw(gamestate)) break;
+    if (lw(GAMESTATE)) break;
     if (lw(0x8007570C)) break;
     if ((int32_t)lw(0x80078BBC) < 0) break;
     if (lw(0x80076E28) == 0x8000000E) break;
 
-    if (lw(buttons + 0x0C) < 2 || lw(buttons) & 0x800) {
+    if (lw(BUTTONS + 0x0C) < 2 || lw(BUTTONS) & 0x800) {
       a0 = 1;
       function_8002C420();
-    } else if (lw(buttons) & 0x100) {
+    } else if (lw(BUTTONS) & 0x100) {
       a0 = 1;
       function_8002C714();
     }
@@ -3202,10 +3093,10 @@ void function_8003385C(void)
 void function_80012604(void)
 {
   for (int i = 0; i < 36; i++) {
-    sw(level_eggs + i*4, 0);
-    sw(level_dragons + i*4, 0);
+    sw(LEVEL_EGGS + i*4, 0);
+    sw(LEVEL_DRAGONS + i*4, 0);
     if ((int32_t)i < 18)
-      sw(level_gems + i*4, 0);
+      sw(LEVEL_GEMS + i*4, 0);
     
     sb(0x80078E78 + i, 0);
     sb(0x8007A6A8 + i, 0);
@@ -3222,10 +3113,10 @@ void function_80012604(void)
   }
 
   sw(0x80078BBC, 3);
-  sw(lives, 4);
-  sw(total_found_gems, 0);
-  sw(total_found_dragons, 0);
-  sw(total_found_eggs, 0);
+  sw(LIVES, 4);
+  sw(TOTAL_FOUND_GEMS, 0);
+  sw(TOTAL_FOUND_DRAGONS, 0);
+  sw(TOTAL_FOUND_EGGS, 0);
   sw(0x8007587C, 0);
   sw(0x800756C8, 0);
   sw(0x80075830, 0);
@@ -3250,7 +3141,7 @@ void function_8001277C(void)
 void function_8003EA68(void)
 {
   uint32_t temp;
-  v0 = lw(player_movestate);
+  v0 = lw(PLAYER_MOVESTATE);
   sp -= 80;
   sw(sp + 0x48, ra);
   sw(sp + 0x44, s5);
@@ -3263,7 +3154,7 @@ void function_8003EA68(void)
   switch (v0)
   {
   case 11:case 15:case 32:case 44:
-    a0 = player_position;
+    a0 = PLAYER_POSITION;
     a1 = 2;
     function_800562A4();
     break;
@@ -3274,7 +3165,7 @@ void function_8003EA68(void)
 #endif
   case 14:case 22:case 27:case 28:
     a0 = lbu(lw(0x800761D4) + 0x1B);
-    a1 = player_position;
+    a1 = PLAYER_POSITION;
     v0 = lw(0x800761D4);
     a2 = 4;
     a3 = a1 + 0x2A0;
@@ -3282,7 +3173,7 @@ void function_8003EA68(void)
     break;
   case 25:
     a0 = lbu(lw(0x800761D4) + 0x20);
-    a1 = player_position;
+    a1 = PLAYER_POSITION;
     a2 = 4;
     a3 = a1 + 0x2A0;
     function_80055A78();
@@ -3540,14 +3431,14 @@ label8003EE10:
   v0 = -192; // 0xFFFFFF40
   sw(0x80078BA4, v0);
   v0 = lw(0x80078B54);
-  v1 = lw(player_position + 0x0008);
+  v1 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078AD4, 0);
   sw(0x80078BAC, 0);
   sw(0x80078BB4, 0);
   v0 = (int32_t)v0 >> 6;
   v1 += v0;
   sw(0x80078BB0, v1);
-  v1 = lw(player_movestate);
+  v1 = lw(PLAYER_MOVESTATE);
   v0 = 29; // 0x001D
   temp = v1 != v0;
   v0 = 1; // 0x0001
@@ -3618,7 +3509,7 @@ label8003EF84:
   v0 = 129; // 0x0081
   if (temp) goto label8003F000;
   a0 = s0;
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078BB0, v0);
   a1 = 1; // 0x0001
   v0 = spyro_vec_length(a0, a1);
@@ -3751,7 +3642,7 @@ label8003F1D4:
   s1 = 0;
   spyro_rand();
   s2 = v0 & 0x3F;
-  s3 = spyro_cos_lut;
+  s3 = SPYRO_COS_LUT;
   s0 = sp + 32; // 0x0020
 label8003F1EC:
   a0 = 0x80078A8C;
@@ -3764,7 +3655,7 @@ label8003F1EC:
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 23;
   sw(sp + 0x0024, v0);
-  v0 = lhu(spyro_sin_lut + v1);
+  v0 = lhu(SPYRO_SIN_LUT + v1);
   s1++;
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 23;
@@ -3949,7 +3840,7 @@ label8003F520:
   function_loaded_800758E4();
   goto label8003FB7C;
 label8003F570:
-  s0 = player_movestate;
+  s0 = PLAYER_MOVESTATE;
   v1 = lw(s0 + 0x0000);
   v0 = 15; // 0x000F
   temp = v1 == v0;
@@ -4001,12 +3892,12 @@ label8003F630:
   temp = v0 != 0;
   if (temp) goto label8003F674;
   v0 = lw(0x80078BB0);
-  v1 = lw(player_position + 0x0008);
+  v1 = lw(PLAYER_POSITION + 0x0008);
   v0 = (int32_t)v0 < (int32_t)v1;
   temp = v0 == 0;
   if (temp) goto label8003F684;
 label8003F674:
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078BB0, v0);
 label8003F684:
   v0 = lw(0x80078B78);
@@ -4031,7 +3922,7 @@ label8003F6BC:
   spyro_vec3_clear(a0);
   v1 = lw(0x80078C58);
   a0 = lw(0x80078B74);
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078BB0, v1);
   v1 -= v0;
   v1 -= 2048; // 0xFFFFF800
@@ -4110,7 +4001,7 @@ label8003F810:
   temp = v0 != 0;
   a0 = s0;
   if (temp) goto label8003F89C;
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078BB0, v0);
   a1 = 1; // 0x0001
   v0 = spyro_vec_length(a0, a1);
@@ -4326,7 +4217,7 @@ label8003FC88:
   temp = v0 != 0;
   a0 = s0;
   if (temp) goto label8003FCE8;
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078BB0, v0);
   a1 = 1; // 0x0001
   v0 = spyro_vec_length(a0, a1);
@@ -4358,8 +4249,8 @@ label8003FD48:
   function_80055A78();
 label8003FD50:
   v0 = lw(0x80078AD8);
-  sw(player_movestate, s5);
-  v1 = lw(player_movestate);
+  sw(PLAYER_MOVESTATE, s5);
+  v1 = lw(PLAYER_MOVESTATE);
   sw(0x80078AD8, 0);
   sw(0x80078ADC, v0);
   v0 = lbu(0x8006C470 + v1); // &0x03020100
@@ -4388,7 +4279,7 @@ void function_8003FDC8(void)
 {
   spyro_change_movestate(a0);
 
-  a0 = lw(player_movestate);
+  a0 = lw(PLAYER_MOVESTATE);
   v1 = lbu(0x8006C470 + a0);
   sb(0x80078A76, 0);
   sb(0x80078A70, v1);
@@ -4405,7 +4296,7 @@ void function_8002C618(void)
   a0 = 0;
   function_80056B28();
   v0 = 10; // 0x000A
-  sw(gamestate, v0); // &0x00000000
+  sw(GAMESTATE, v0); // &0x00000000
   sw(0x8007568C, 0); // &0x00000000
   sw(0x800758B8, 0);
   a0 = 0;
@@ -4426,7 +4317,7 @@ void function_8002C664(void)
   v0 = 1; // 0x0001
   sw(0x800758AC, level_id);
   a0 = (int32_t)level_id >> 31;
-  sw(gamestate, 1);
+  sw(GAMESTATE, 1);
   sw(0x800756D0, 1);
   sw(0x800756B0, 1);
   sw(0x8007579C, 1);
@@ -4439,7 +4330,7 @@ void function_8002C7BC(void)
   RECT rect = {0x200, 0, 0x100, 0xE1};
   LoadImage(&rect, addr_to_pointer(lw(0x800785F0) - 0x1C200));
   DrawSync(0);
-  sw(gamestate, 0); // &0x00000000
+  sw(GAMESTATE, 0); // &0x00000000
   function_80058C7C();
   a0 = lw(0x800774B0);
   sb(0x80077FA8, 0);
@@ -4454,14 +4345,14 @@ void function_8002C7BC(void)
 // size: 0x00000048
 void function_8002C85C(void)
 {
-  v0 = lw(lives);
+  v0 = lw(LIVES);
   if (v0) {
-    sw(lives, v0-1);
+    sw(LIVES, v0-1);
     v0 = GAMESTATE_DEAD;
   } else
     v0 = GAMESTATE_GAMEOVER;
   
-  sw(gamestate, v0);
+  sw(GAMESTATE, v0);
   sw(0x80075940, 0);
   sw(0x8007593C, 0);
   return;
@@ -4482,9 +4373,9 @@ void function_80059474(void)
   sw(0x80077888, 1);
   v1 = lw(CONTINUOUS_LEVEL_ID)*4;
   sw(0x80077888 + 0x58, lw(0x80077888 + 0x58) + 0x164);
-  sw(0x80077888 + 0x04, lw(level_dragons + v1));
+  sw(0x80077888 + 0x04, lw(LEVEL_DRAGONS + v1));
   sw(0x80077888 + 0x0C, 0);
-  sw(0x80077888 + 0x08, lw(level_gems + v1));
+  sw(0x80077888 + 0x08, lw(LEVEL_GEMS + v1));
   spyro_memcpy32(0x80077888 + 0x10, 0x80077888 + 0x30, 0x20);
   
   sw(0x80077888 + 0x64, lw(0x80077888 + 0x60));

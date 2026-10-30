@@ -52,12 +52,12 @@ uint32_t test_spu_event(uint32_t sync)
     return 1;
   
   if (sync == 1) {
-    while (TestEvent(lw(spu_event)) == 0);
+    while (TestEvent(lw(SPU_EVENT)) == 0);
     sw(0x80073588, 1);
     return 1;
   }
 
-  if (TestEvent(lw(spu_event)) == 1) {
+  if (TestEvent(lw(SPU_EVENT)) == 1) {
     sw(0x80073588, 1);
     return 1;
   }
@@ -68,7 +68,7 @@ uint32_t test_spu_event(uint32_t sync)
 // size: 0x000000A8
 void function_8005CBB0(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = test_spu_event(a0);
 }
 
@@ -121,7 +121,7 @@ void sound_ram_data_transfer(uint16_t *data, size_t len)
 // size: 0x000001CC
 void function_8005BE88(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   sound_ram_data_transfer(addr_to_pointer(a0), a1);
 }
 
@@ -135,7 +135,7 @@ void function_8005BBF4(void)
   
   s0 = a0;
 
-  a0 = lw(DMA_control_register_copy_4_ptr);
+  a0 = lw(DMA_CONTROL_REGISTER_COPY_4_PTR);
   sw(a0, lw(a0) | 0x000B0000);
   sw(0x80073570, 0);
   sw(0x80073574, 0);
@@ -236,7 +236,7 @@ void dma_spu_callback(uint32_t callback)
 // size: 0x00000024
 void function_8005C788(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   dma_spu_callback(a0);
 }
 
@@ -250,7 +250,7 @@ void spu_enable_irq(void)
     dma_spu_callback(0x8005C054);
     
     uint32_t event = OpenEvent(0xF0000009, 0x20, 0x2000, 0);
-    sw(spu_event, event);
+    sw(SPU_EVENT, event);
     EnableEvent(event);
   ExitCriticalSection();
 }
@@ -258,7 +258,7 @@ void spu_enable_irq(void)
 // size: 0x0000007C
 void function_8005BB78(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spu_enable_irq();
 }
 
@@ -381,7 +381,7 @@ void init_spu(void)
 
 void function_8005595C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   init_spu();
 }
 
@@ -513,7 +513,7 @@ label8005C3B4:
   a0 = lw(s0 - 0x0004); // 0xFFFFFFFC
   sw(0x800735A8, a0); // &0x00000000
   a0 = lw(s0 + 0x0000);
-  a1 = lw(DMA_SPU_address_ptr);
+  a1 = lw(DMA_SPU_ADDRESS_PTR);
   v1 = a0 >> 6;
   v0 = a0 & 0x3F;
   v0 = 0 < v0;
@@ -522,7 +522,7 @@ label8005C3B4:
   sw(0x800735AC, v1); // &0x00000000
   sw(a1 + 0x0000, a0);
   v0 = lw(0x800735AC); // &0x00000000
-  v1 = lw(DMA_SPU_block_control_ptr);
+  v1 = lw(DMA_SPU_BLOCK_CONTROL_PTR);
   v0 = v0 << 16;
   v0 = v0 | 0x10;
   sw(v1 + 0x0000, v0);
@@ -533,7 +533,7 @@ label8005C3B4:
   if (temp) goto label8005C428;
   a2 = 0x01000200;
 label8005C428:
-  v0 = lw(DMA_SPU_channel_control_ptr);
+  v0 = lw(DMA_SPU_CHANNEL_CONTROL_PTR);
   sw(v0 + 0x0000, a2);
   v0 = 0;
 label8005C43C:
@@ -817,77 +817,25 @@ void function_8005CC58(void)
   a2 = 0;
   t1 = lw(a0 + 0x0000);
   t2 = t1 < 1;
-  temp = t2 != 0;
   t0 = 0;
-  if (temp) goto label8005CC88;
-  v0 = t1 & 0x1;
-  temp = v0 == 0;
-  v0 = t1 & 0x4;
-  if (temp) goto label8005CD38;
-  temp = v0 == 0;
-  if (temp) goto label8005CCEC;
+  if (t2) goto label8005CC88;
+  v0 = t1 & 1;
+  if (v0 == 0) goto label8005CD38;
+  v0 = t1 & 4;
+  if (v0 == 0) {
+    a2 = lhu(a0 + 0x0004);
+    a1 = 0;
+    goto label8005CCF4;
+  }
 label8005CC88:
   v1 = lh(a0 + 0x0008);
-  v0 = v1 < 8;
-  temp = v0 == 0;
-  v0 = v1 << 2;
-  if (temp) goto label8005CCEC;
-  v0 = lw(0x8001157C + v0); // &0x8005CCEC
-  temp = v0;
-  switch (temp)
-  {
-  case 0x8005CCEC: // 0
-    goto label8005CCEC;
-    break;
-  case 0x8005CCB4: // 1
-    goto label8005CCB4;
-    break;
-  case 0x8005CCBC: // 2
-    goto label8005CCBC;
-    break;
-  case 0x8005CCC4: // 3
-    goto label8005CCC4;
-    break;
-  case 0x8005CCCC: // 4
-    goto label8005CCCC;
-    break;
-  case 0x8005CCD4: // 5
-    goto label8005CCD4;
-    break;
-  case 0x8005CCDC: // 6
-    goto label8005CCDC;
-    break;
-  case 0x8005CCE4: // 7
-    goto label8005CCE4;
-    break;
-  default:
-    JR(temp, 0x8005CCAC);
-    return;
+
+  if (v1 == 0 || v1 >= 8) {
+    a2 = lhu(a0 + 0x0004);
+    a1 = 0;
+  } else {
+    a1 = 0x7000 + v1*0x1000;
   }
-label8005CCB4:
-  a1 = 0 | 0x8000;
-  goto label8005CCF4;
-label8005CCBC:
-  a1 = 0 | 0x9000;
-  goto label8005CCF4;
-label8005CCC4:
-  a1 = 0 | 0xA000;
-  goto label8005CCF4;
-label8005CCCC:
-  a1 = 0 | 0xB000;
-  goto label8005CCF4;
-label8005CCD4:
-  a1 = 0 | 0xC000;
-  goto label8005CCF4;
-label8005CCDC:
-  a1 = 0 | 0xD000;
-  goto label8005CCF4;
-label8005CCE4:
-  a1 = 0 | 0xE000;
-  goto label8005CCF4;
-label8005CCEC:
-  a2 = lhu(a0 + 0x0004);
-  a1 = 0;
 label8005CCF4:
   temp = a1 == 0;
   v0 = a2 & 0x7FFF;
@@ -1217,7 +1165,7 @@ label8005D0A0:
   if (temp) goto label8005D0CC;
 label8005D0B4:
   v0 = s4 << 4;
-  v1 = lw(spu_registers_base_ptr);
+  v1 = lw(SPU_REGISTERS_BASE_PTR);
   a0 = lhu(s0 + 0x0014);
   v0 += v1;
   sh(v0 + 0x0004, a0);
@@ -1247,7 +1195,7 @@ label8005D104:
   a2 = a3 >> 8;
   a3 = a3 & 0xFF;
   function_8005D6B8();
-  a0 = lw(spu_registers_base_ptr);
+  a0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += a0;
   sh(v1 + 0x0004, v0);
@@ -1261,7 +1209,7 @@ label8005D13C:
   v0 = s3 << 1;
   if (temp) goto label8005D168;
 label8005D154:
-  v1 = lw(spu_registers_base_ptr);
+  v1 = lw(SPU_REGISTERS_BASE_PTR);
   a0 = lhu(s0 + 0x003A);
   v0 += v1;
   sh(v0 + 0x0008, a0);
@@ -1275,7 +1223,7 @@ label8005D168:
   v0 = s3 << 1;
   if (temp) goto label8005D194;
 label8005D180:
-  v1 = lw(spu_registers_base_ptr);
+  v1 = lw(SPU_REGISTERS_BASE_PTR);
   a0 = lhu(s0 + 0x003C);
   v0 += v1;
   sh(v0 + 0x000A, a0);
@@ -1370,7 +1318,7 @@ label8005D248:
   v0 = s6 & 0x7FFF;
 label8005D24C:
   v1 = s3 << 1;
-  a0 = lw(spu_registers_base_ptr);
+  a0 = lw(SPU_REGISTERS_BASE_PTR);
   v0 = v0 | a1;
   v1 += a0;
   sh(v1 + 0x0000, v0);
@@ -1465,7 +1413,7 @@ label8005D318:
   v0 = s5 & 0x7FFF;
 label8005D31C:
   v1 = s3 << 1;
-  a0 = lw(spu_registers_base_ptr);
+  a0 = lw(SPU_REGISTERS_BASE_PTR);
   v0 = v0 | a1;
   v1 += a0;
   sh(v1 + 0x0002, v0);
@@ -1521,7 +1469,7 @@ label8005D3AC:
   if (temp) goto label8005D3C8;
   a1 = 127; // 0x007F
 label8005D3C8:
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += v0;
   v0 = lhu(v1 + 0x0008);
@@ -1544,7 +1492,7 @@ label8005D404:
   if (temp) goto label8005D420;
   a1 = 15; // 0x000F
 label8005D420:
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += v0;
   v0 = lhu(v1 + 0x0008);
@@ -1566,7 +1514,7 @@ label8005D458:
   if (temp) goto label8005D474;
   a1 = 15; // 0x000F
 label8005D474:
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += v0;
   v0 = lhu(v1 + 0x0008);
@@ -1620,7 +1568,7 @@ label8005D500:
   if (temp) goto label8005D51C;
   a1 = 127; // 0x007F
 label8005D51C:
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += v0;
   v0 = lhu(v1 + 0x000A);
@@ -1660,7 +1608,7 @@ label8005D584:
   if (temp) goto label8005D5A0;
   a1 = 31; // 0x001F
 label8005D5A0:
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = s3 << 1;
   v1 += v0;
   v0 = lhu(v1 + 0x000A);
@@ -1716,7 +1664,7 @@ void function_8005D9EC(void)
   a1 = a0;
 label8005DA04:
   a0 = a2 << 4;
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   v1 = lw(0x800730EC); // &0x00000000
   a0 += v0;
   v0 = a3 << a2;
@@ -1753,7 +1701,7 @@ void function_8005DA74(void)
   sp -= 24; // 0xFFFFFFE8
   a1 = a1 & 0x7FFF;
   a2 = a2 & 0x7FFF;
-  v0 = lw(spu_registers_base_ptr);
+  v0 = lw(SPU_REGISTERS_BASE_PTR);
   a0 = a0 << 4;
   sw(sp + 0x0010, ra);
   a0 += v0;

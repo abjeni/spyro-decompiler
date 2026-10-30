@@ -445,8 +445,8 @@ void function_80016D08(void)
   at = at & 0x1FE;
   temp = at == 0;
   if (temp) goto label80022E84;
-  v0 = lhu(spyro_cos_lut + at);
-  at = lhu(spyro_sin_lut + at);
+  v0 = lhu(SPYRO_COS_LUT + at);
+  at = lhu(SPYRO_SIN_LUT + at);
   v0 = v0 & 0xFFFF;
   cop2.VXY0 = v0;
   cop2.VZ0 = at;
@@ -486,8 +486,8 @@ label80022E84:
   temp = at == 0;
   at = at >> 7;
   if (temp) goto label80022F34;
-  v0 = lhu(spyro_cos_lut + at);
-  at = lhu(spyro_sin_lut + at);
+  v0 = lhu(SPYRO_COS_LUT + at);
+  at = lhu(SPYRO_SIN_LUT + at);
   v1 = v0 << 16;
   cop2.VXY0 = v1;
   cop2.VZ0 = at;
@@ -527,8 +527,8 @@ label80022F34:
   temp = at == 0;
   at = at << 1;
   if (temp) goto label80022FEC;
-  v0 = lhu(spyro_cos_lut + at);
-  at = lhu(spyro_sin_lut + at);
+  v0 = lhu(SPYRO_COS_LUT + at);
+  at = lhu(SPYRO_SIN_LUT + at);
   cop2.VZ0 = 0;
   v1 = at << 16;
   v1 += v0;

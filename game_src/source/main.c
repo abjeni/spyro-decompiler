@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     //print_psx_string_array("cd_cmd_str", 0x80074E5C, 32);
     //print_psx_string_array("cd_status_str", 0x80074EDC, 8);
 
-    //read_disk1(lw(WAD_sector), 0x80100000, 0x800, 0, 0x256);
+    //read_disk1(lw(WAD_SECTOR), 0x80100000, 0x800, 0, 0x256);
     return 0;
   }
 

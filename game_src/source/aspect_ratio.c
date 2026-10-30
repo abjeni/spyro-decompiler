@@ -177,20 +177,20 @@ label8001A334:
 label8001A358:
   a0 = -1; // 0xFFFFFFFF
   v0 = VSync(a0);
-  v1 = lw(drawn_frame);
-  sw(current_frame, v0);
+  v1 = lw(DRAWN_FRAME);
+  sw(CURRENT_FRAME, v0);
   v0 -= v1;
   v0 = (int32_t)v0 < 2;
   temp = v0 == 0;
   if (temp) goto label8001A3B4;
-  s0 = current_frame;
+  s0 = CURRENT_FRAME;
 label8001A388:
   a0 = 0;
   v0 = VSync(a0);
   a0 = -1; // 0xFFFFFFFF
   v0 = VSync(a0);
   v1 = lw(s0 - 0x0004); // 0xFFFFFFFC
-  sw(current_frame, v0);
+  sw(CURRENT_FRAME, v0);
   v0 -= v1;
   v0 = (int32_t)v0 < 2;
   temp = v0 != 0;
@@ -199,7 +199,7 @@ label8001A3B4:
   a0 = -1; // 0xFFFFFFFF
   v0 = VSync(a0);
   a0 = lw(BACKBUFFER_DISP);
-  sw(drawn_frame, v0);
+  sw(DRAWN_FRAME, v0);
   a0 += 92; // 0x005C
   function_80060030();
   a0 = lw(BACKBUFFER_DISP);

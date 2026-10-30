@@ -14,13 +14,13 @@
 // size: 0x00000020
 void set_timer(uint32_t duration)
 {
-  sw(timeout1_duration, duration);
-  sw(timeout1_start, lhu(TIMER2));
+  sw(TIMEOUT1_DURATION, duration);
+  sw(TIMEOUT1_START, lhu(TIMER2));
 }
 
 void function_8006BB20(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   set_timer(a0);
 }
 
@@ -28,24 +28,24 @@ void function_8006BB20(void)
 uint32_t get_timer(void)
 {
   a0 = lhu(TIMER2);
-  if (a0 < lw(timeout1_start)) {
+  if (a0 < lw(TIMEOUT1_START)) {
     if (lhu(TIMER2_TARGET)) {
       a0 += lhu(TIMER2_TARGET);
     } else {
       a0 += 0x10000;
     }
   }
-  v0 = a0 - lw(timeout1_start);
+  v0 = a0 - lw(TIMEOUT1_START);
   if ((lhu(TIMER2_MODE) & 0x200) == 0) {
     v0 /= 8;
   }
-  return v0 >= lw(timeout1_duration);
+  return v0 >= lw(TIMEOUT1_DURATION);
 }
 
 
 void function_8006BB40(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = get_timer();
 }
 
@@ -82,7 +82,7 @@ void do_literally_nothing(void)
 
 void function_8005C720(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   do_literally_nothing();
 }
 
@@ -103,7 +103,7 @@ void function_8005E224(void)
     v0 = s4;
     return;
   }
-  v0 = lw(I_MASK_ptr);
+  v0 = lw(I_MASK_PTR);
   uint32_t s3 = lhu(v0);
   sh(v0, 0);
   if (s2) {
@@ -122,15 +122,15 @@ void function_8005E224(void)
   if (s1 == 4) ChangeClearRCnt(0, s2 == 0);
   if (s1 == 5) ChangeClearRCnt(1, s2 == 0);
   if (s1 == 6) ChangeClearRCnt(2, s2 == 0);
-  sh(lw(I_MASK_ptr), s3);
+  sh(lw(I_MASK_PTR), s3);
   v0 = s4;
 }
 
 // size: 0x000000A8
 uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
 {
-  uint32_t DMA_interrupt_register = lw(DMA_interrupt_register_ptr);
-  v1 = DMA_callbacks + dma_num*4;
+  uint32_t DMA_interrupt_register = lw(DMA_INTERRUPT_REGISTER_PTR);
+  v1 = DMA_CALLBACKS + dma_num*4;
   a3 = lw(v1);
   if (callback != a3) {
     if (callback) {
@@ -147,7 +147,7 @@ uint32_t dma_callback(uint32_t dma_num, uint32_t callback)
 // size: 0x000000A8
 void function_8005E804(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = dma_callback(a0, a1);
 }
 
@@ -161,7 +161,7 @@ uint32_t dma_callback2(uint32_t dma_num, uint32_t callback)
 // size: 0x00000030
 void function_8005DE28(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = dma_callback2(a0, a1);
 }
 
@@ -186,7 +186,7 @@ void spyro_patch_bios(void)
 // size: 0x00000068
 void function_80062648(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_patch_bios();
 }
 
@@ -228,8 +228,8 @@ void spyro_start(void)
   fp = sp;
   gp = 0x80075264;
   v1 = lw(0x800755A4);
-  sw(heap_base, lib_begin);
-  sw(heap_size, sp_num - 0x800 - 0x7AA38); // 0x184DC0
+  sw(HEAP_BASE, LIB_BEGIN);
+  sw(HEAP_SIZE, sp_num - 0x800 - 0x7AA38); // 0x184DC0
   InitHeap(0x8007AA3C, sp_num - 0x800 - 0x7AA38); // do not use this heap!!!
   game_loop();
 }
@@ -244,8 +244,8 @@ void function_8005DDF8(void)
 // size: 0x00000058
 void function_8005E508(void)
 {
-  sw(lw(TIMER_1_horizontal_retrace_counter_mode_ptr), 0x0107);
-  sw(frame_counter, 0);
+  sw(lw(TIMER_1_HORIZONTAL_RETRACE_COUNTER_MODE_PTR), 0x0107);
+  sw(FRAME_COUNTER, 0);
   spyro_memclr32(0x800749C0, 8);
   a1 = 0x8005E560; // &0x3C028007
   a0 = 0;
@@ -256,8 +256,8 @@ void function_8005E508(void)
 // size: 0x00000050
 void function_8005E630(void)
 {
-  spyro_memclr32(DMA_callbacks, 8);
-  sw(lw(DMA_interrupt_register_ptr), 0);
+  spyro_memclr32(DMA_CALLBACKS, 8);
+  sw(lw(DMA_INTERRUPT_REGISTER_PTR), 0);
   a0 = 3;
   a1 = 0x8005E680; // &0x3C028007
   function_8005DDF8();
@@ -268,9 +268,9 @@ void function_8005E630(void)
 uint32_t init_hook_entry_int(void)
 {
   if (lhu(0x80073924)) return 0;
-  sh(lw(I_MASK_ptr), 0);
-  sh(lw(I_STAT_ptr), 0);
-  sw(lw(DMA_control_register_copy_1_ptr), 0x33333333);
+  sh(lw(I_MASK_PTR), 0);
+  sh(lw(I_STAT_PTR), 0);
+  sw(lw(DMA_CONTROL_REGISTER_COPY_1_PTR), 0x33333333);
   spyro_memclr32(0x80073924, 0x41A);
   a0 = 0x80073924 + 0x38;
   function_800638EC();
@@ -291,7 +291,7 @@ uint32_t init_hook_entry_int(void)
 
 void function_8005DF60(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = init_hook_entry_int();
 }
 
@@ -305,7 +305,7 @@ uint32_t init_hook_entry_int2(void)
 // size: 0x00000030
 void function_8005DDC8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = init_hook_entry_int2();
 }
 
@@ -321,16 +321,16 @@ void function_8005E03C(void)
   sw(sp + 0x0010, s0);
   
   if (lhu(0x80073924) == 0) {
-    printf("unexpected interrupt(%04x)\n", lhu(lw(I_STAT_ptr)));
+    printf("unexpected interrupt(%04x)\n", lhu(lw(I_STAT_PTR)));
     //ReturnFromException();
     goto end;
   }
   sh(0x80073926, 1);
-  while ((s0 = lhu(lw(I_MASK_ptr)) & lhu(0x80073954) & lhu(lw(I_STAT_ptr)))) {
+  while ((s0 = lhu(lw(I_MASK_PTR)) & lhu(0x80073954) & lhu(lw(I_STAT_PTR)))) {
     for (int i = 0; i < 12; i++) {
       if (!(s0 & 0xFFF)) break;
       if (s0 & 1) {
-        sh(lw(I_STAT_ptr), ~(1 << i)); // acknowledge interrupt
+        sh(lw(I_STAT_PTR), ~(1 << i)); // acknowledge interrupt
         uint32_t callback = lw(0x80073928 + i*4);
         switch (callback)
         {
@@ -349,15 +349,15 @@ void function_8005E03C(void)
       s0 = s0 >> 1;
     }
   }
-  if (!(lhu(lw(I_MASK_ptr)) & lhu(lw(I_STAT_ptr))))
+  if (!(lhu(lw(I_MASK_PTR)) & lhu(lw(I_STAT_PTR))))
   {
     sw(0x800749BC, 0);
   } else {
     sw(0x800749BC, lw(0x800749BC) + 1);
     if ((int32_t)v0 > 2048) {
-      printf("intr timeout(%04x:%04x)\n", lhu(lw(I_STAT_ptr)), lhu(lw(I_MASK_ptr)));
+      printf("intr timeout(%04x:%04x)\n", lhu(lw(I_STAT_PTR)), lhu(lw(I_MASK_PTR)));
       sw(0x800749BC, 0);
-      sh(lw(I_STAT_ptr), 0);
+      sh(lw(I_STAT_PTR), 0);
     }
   }
   sh(0x80073926, 0);
@@ -380,7 +380,7 @@ void function_80067CD4(void);
 void function_8005E560(void)
 {
   uint32_t temp;
-  v0 = lw(frame_counter);
+  v0 = lw(FRAME_COUNTER);
   sp -= 32; // 0xFFFFFFE0
   sw(sp + 0x0014, s1);
   s1 = 0;
@@ -388,8 +388,8 @@ void function_8005E560(void)
   s0 = 0x800749C0; // &0x00000000
   sw(sp + 0x0018, ra);
   v0++;
-  sw(frame_counter, v0);
-  v0 = lw(frame_counter);
+  sw(FRAME_COUNTER, v0);
+  v0 = lw(FRAME_COUNTER);
 label8005E598:
   v0 = lw(s0 + 0x0000);
   temp = v0 == 0;

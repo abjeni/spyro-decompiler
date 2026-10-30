@@ -48,7 +48,7 @@ struct game_object {
   uint8_t unknown57; // 0x57 - 0x58
 };
 
-#define MODEL_ID_CHEST 0x1D9
+#define MODEL_ID_CHEST_ICON1 0x1D9
 #define MODEL_ID_0 0x104 // rest of the numbers following
 #define MODEL_ID_A 0x1AA // rest of the uppercase alphabet following
 #define MODEL_ID_FORWARDSLASH 0x115
@@ -59,6 +59,32 @@ struct game_object {
 #define MODEL_ID_DOT 0x147
 #define MODEL_ID_EXCLAMATIONMARK 0x4B
 #define MODEL_ID_COMMA 0x4C
+#define MODEL_RED_GEM 0x53
+#define MODEL_GREEN_GEM 0x54
+#define MODEL_BLUE_GEM 0x55
+#define MODEL_YELLOW_GEM 0x56
+#define MODEL_PURPLE_GEM 0x57
+
+/*
+
+known model ids:
+0x4B: '!'
+0x4C: ','
+0x53: red gem
+0x54: green gem
+0x55: blue gem
+0x56: yellow gem
+0x57: purple gem
+0x104-0x10E: numbers '0' to '9'
+0x110: '%'
+0x115: '/'
+0x116: '?'
+0x13D: '+'
+0x141: '^'
+0x147: '.'
+0x1AA-0x1D4: letters 'A' to 'Z'
+0x1D9: chest model
+*/
 
 uint32_t completion_percentage(void);
 
@@ -104,24 +130,3 @@ void game_loop(void);
 #define GAMESTATE_CREDITS 15
 
 void spyro_change_movestate(uint32_t movestate);
-
-/*
-
-known model ids:
-0x4B: '!'
-0x4C: ','
-0x53: red gem
-0x54: green gem
-0x55: blue gem
-0x56: yellow gem
-0x57: purple gem
-0x104-0x10E: numbers '0' to '9'
-0x110: '%'
-0x115: '/'
-0x116: '?'
-0x13D: '+'
-0x141: '^'
-0x147: '.'
-0x1AA-0x1D4: letters 'A' to 'Z'
-0x1D9: chest model
-*/

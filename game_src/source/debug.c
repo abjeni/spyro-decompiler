@@ -82,16 +82,16 @@ void update_debug_text(void)
   // TODO: remove the update prefix from debug
   debug_begin();
   {
-    sprintf(buf, "player_movestate: %d", lw(player_movestate));
+    sprintf(buf, "player_movestate: %d", lw(PLAYER_MOVESTATE));
     debug_text(buf);
-    sprintf(buf, "gamestate: %s", gamestate_labels[lw(gamestate)]);
+    sprintf(buf, "gamestate: %s", gamestate_labels[lw(GAMESTATE)]);
     debug_text(buf);
-    sprintf(buf, "lives: %d", lw(lives));
+    sprintf(buf, "lives: %d", lw(LIVES));
     debug_text(buf);
-    vec3_32 pos = load_vec3_32(player_position);
+    vec3_32 pos = load_vec3_32(PLAYER_POSITION);
     sprintf(buf, "player position: {%d, %d, %d}", pos.x, pos.y, pos.z);
     debug_text(buf);
-    vec3_32 d_buttons = load_vec3_32(buttons);
+    vec3_32 d_buttons = load_vec3_32(BUTTONS);
     sprintf(buf, "buttons: 0x%.8X, 0x%.8X, 0x%.8X}", d_buttons.x, d_buttons.y, d_buttons.z);
     debug_text(buf);
     sprintf(buf, "world: %s", homeworld_names[lw(WORLD_ID)]);
@@ -99,9 +99,9 @@ void update_debug_text(void)
     sprintf(buf, "level: %s", level_names[level_id]);
     debug_text(buf);
     sprintf(buf, "level data: dragons %d gems %d eggs %d 0x%.2X 0x%.2X",
-      lw(level_dragons + level_id*4),
-      lw(level_gems + level_id*4),
-      lw(level_eggs + level_id*4),
+      lw(LEVEL_DRAGONS + level_id*4),
+      lw(LEVEL_GEMS + level_id*4),
+      lw(LEVEL_EGGS + level_id*4),
       lb(0x80078E78 + level_id),
       lb(0x8007A6A8 + level_id)
     );

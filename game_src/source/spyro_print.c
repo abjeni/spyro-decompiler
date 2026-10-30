@@ -35,7 +35,7 @@ void spyro_putchar(uint32_t chr)
 // meant to be used by other printing functions
 void function_80062F10(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_putchar(a0);
 }
 
@@ -55,7 +55,7 @@ void spyro_puts(uint32_t str)
 // a0: string address
 void function_8006389C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_puts(a0);
 }
 
@@ -450,10 +450,6 @@ label80062BBC:
   if (temp) goto label80062C44;
 label80062BD4:
   divu_psx(v1, a1);
-  temp = a1 != 0;
-  if (temp) goto label80062BE4;
-  UNREACHABLE; // BREAK 0x01C00
-label80062BE4:
   v1=lo;
   v0=hi;
   a3 = lw(sp + 0x0058);
@@ -961,7 +957,7 @@ label800637F8:
 
 void function_80062FD4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_sprintf();
 }
 
@@ -988,6 +984,6 @@ void spyro_printf(uint32_t fmt, uint32_t param1, uint32_t param2, uint32_t param
 
 void function_8006279C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   spyro_printf(a0, a1, a2, a3);
 }

@@ -214,8 +214,8 @@ void int_load_regs(void)
 
 uint32_t function_80069634(void)
 {
-  if ((lw(lw(I_MASK_ptr)) & 1) == 0) return 0;
-  if ((lw(lw(I_STAT_ptr)) & 1) == 0) return 0;
+  if ((lw(lw(I_MASK_PTR)) & 1) == 0) return 0;
+  if ((lw(lw(I_STAT_PTR)) & 1) == 0) return 0;
   if (lw(0x800751E4))
     UNREACHABLE;
   

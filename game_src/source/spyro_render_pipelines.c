@@ -26,24 +26,27 @@ void function_80023AC4(void);
 DISP *backbuffer_disp = NULL;
 DISP *frontbuffer_disp = NULL;
 
+DISP *disp1 = NULL;
+DISP *disp2 = NULL;
+
 void wait_two_vsyncs()
 {
   DrawSync(0);
   if (lw(0x80075784))
     VSync(0);
 
-  sw(current_frame, VSync(-1));
-  while ((int32_t)(lw(current_frame) - lw(drawn_frame)) < 2) {
+  sw(CURRENT_FRAME, VSync(-1));
+  while ((int32_t)(lw(CURRENT_FRAME) - lw(DRAWN_FRAME)) < 2) {
     VSync(0);
-    sw(current_frame, VSync(-1));
+    sw(CURRENT_FRAME, VSync(-1));
   }
 
-  sw(drawn_frame, VSync(-1));
+  sw(DRAWN_FRAME, VSync(-1));
 }
 
 void text_wave_effect1(struct game_object *game_object, uint32_t offset, uint32_t freq, uint32_t mult, uint32_t div)
 {
-  struct game_object *game_object_end = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object_end = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
 
   uint32_t rot = 0;
   while (game_object > game_object_end) {
@@ -55,7 +58,7 @@ void text_wave_effect1(struct game_object *game_object, uint32_t offset, uint32_
 
 void text_wave_effect2(uint32_t num, uint32_t offset, uint32_t freq, uint32_t mult, uint32_t div)
 {
-  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
 
   uint32_t rot = 0;
   for (uint32_t i = 0; i < num; i++) {
@@ -78,7 +81,7 @@ void text_wave_effect3(struct game_object *game_object, uint32_t num, uint32_t o
 // size: 0x000000E8
 void gui_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 {
-  uint32_t cmd_ptr = lw(allocator1_ptr);
+  uint32_t cmd_ptr = lw(ALLOCATOR1_PTR);
   sw(cmd_ptr + 0x00, 0x04000000);
   sb(cmd_ptr + 0x07, 0x50);
   sh(cmd_ptr + 0x08, x1);
@@ -95,12 +98,12 @@ void gui_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
   sb(cmd_ptr + 0x0E, angle2);
   append_gpu_command_block(addr_to_pointer(cmd_ptr));
   cmd_ptr += 0x14;
-  sw(allocator1_ptr, cmd_ptr);
+  sw(ALLOCATOR1_PTR, cmd_ptr);
 }
 
 void function_8001844C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   gui_line(a0, a1, a2, a3);
 }
 
@@ -108,8 +111,8 @@ void function_8001844C(void)
 void blinking_arrow(vec3_32 p, uint32_t frame, int32_t direction)
 {
   if ((frame & 0xF) < 16) {
-    sw(gameobject_stack_ptr, lw(gameobject_stack_ptr) - 88);
-    struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+    sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+    struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
     *object = (struct game_object){0};
     object->modelID = 0x105;
     object->p = p;
@@ -126,14 +129,14 @@ void blinking_arrow(vec3_32 p, uint32_t frame, int32_t direction)
 // size: 0x000000D8
 void function_80018534(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   blinking_arrow(*(vec3_32*)addr_to_pointer(a0), a1, a2);
 }
 
 // size: 0x0000011C
 void gui_box_balloonist(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 {
-  uint32_t cmd_ptr = lw(allocator1_ptr);
+  uint32_t cmd_ptr = lw(ALLOCATOR1_PTR);
   SetDrawMode(addr_to_pointer(cmd_ptr), 1, 0, 0x40, NULL);
   append_gpu_command_block(addr_to_pointer(cmd_ptr));
 
@@ -157,7 +160,7 @@ void gui_box_balloonist(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 
   append_gpu_command_block(addr_to_pointer(cmd_ptr + 0x0C));
   cmd_ptr += 0x24;
-  sw(allocator1_ptr, cmd_ptr);
+  sw(ALLOCATOR1_PTR, cmd_ptr);
 
   gui_line(x, w, y, w);
   gui_line(y, w, y, h);
@@ -168,7 +171,7 @@ void gui_box_balloonist(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
 // size: 0x0000011C
 void function_8001860C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   gui_box_balloonist(a0, a1, a2, a3);
 }
 
@@ -178,7 +181,7 @@ void rescued_dragon_name(void)
   const char *dragon_name = dragon_names[lw(lw(lw(0x800770C0)) + 0x38)];
   uint32_t len = strlen(dragon_name);
   uint32_t centering = (len-1)*13;
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   create_3d_text2("RESCUED", &(vec3_32){0xB0 - centering, 0xC8, 0x1000}, 20, 2);
   create_3d_text2(dragon_name, &(vec3_32){0x150 - centering, 0xC8, 0xC00}, 26, 2);
 
@@ -188,7 +191,7 @@ void rescued_dragon_name(void)
 // size: 0x00000150
 void function_80018728(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   rescued_dragon_name();
 }
 
@@ -200,22 +203,22 @@ void function_80018880(void)
   while (lw(a0))
     a0 += 4;
 
-  a1 = lw(gameobject_stack_ptr);
+  a1 = lw(GAMEOBJECT_STACK_PTR);
 
-  while (a1 < lw(gameobject_stack_ptr_base)) {
+  while (a1 < lw(GAMEOBJECT_STACK_PTR_BASE)) {
     sw(a0, a1);
     a0 += 4;
     a1 += 88;
   }
 
-  sw(gameobject_stack_ptr, a1);
+  sw(GAMEOBJECT_STACK_PTR, a1);
   sw(a0, 0);
 }
 
 // size: 0x000000C8
 void fade_in(uint32_t semi_transparency, uint8_t r, uint8_t g, uint8_t b)
 {
-  uint32_t cmd = lw(allocator1_ptr);
+  uint32_t cmd = lw(ALLOCATOR1_PTR);
 
   SetDrawMode(addr_to_pointer(cmd), 1, 0, semi_transparency << 5, NULL);
 
@@ -241,13 +244,13 @@ void fade_in(uint32_t semi_transparency, uint8_t r, uint8_t g, uint8_t b)
 
   append_gpu_command_block(addr_to_pointer(cmd + 0x0C));
 
-  sw(allocator1_ptr, cmd + 0x24);
+  sw(ALLOCATOR1_PTR, cmd + 0x24);
 }
 
 // size: 0x000000C8
 void function_800190D4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   fade_in(a0, a1, a2, a3);
 }
 
@@ -259,7 +262,7 @@ void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
   sw(sp + 0x10, s0);
   sw(sp + 0x14, ra);
 
-  s0 = lw(allocator1_ptr);
+  s0 = lw(ALLOCATOR1_PTR);
   sw(s0 + 0x00, 0x09000000);
   if (a2){
     sb(s0 + 0x04, col->x);
@@ -296,7 +299,7 @@ void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
   sb(s0 + 0x25, lbu(s0 + 0x0D) + box->h);
   
   append_gpu_command_block(addr_to_pointer(s0));
-  sw(allocator1_ptr, s0 + 0x28);
+  sw(ALLOCATOR1_PTR, s0 + 0x28);
 
   ra = lw(sp + 0x14);
   s0 = lw(sp + 0x10);
@@ -306,7 +309,7 @@ void draw_sprite(RECT *box, uint32_t sprite[], vec3_32 *col)
 // size: 0x00000164
 void function_8001919C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2));
 }
 
@@ -316,7 +319,7 @@ void function_80018908(void)
   vec3_32 pos = {0xC7, 0xC8, 0x1100};
   vec3_32 size = {0x10, 1, 0x1400};
   
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   create_3d_text1("DEMO MODE", &pos, size, 18, 2);
   text_wave_effect1(object, lw(0x800758C8)*4, 12, 1, 128);
   function_80018880();
@@ -465,7 +468,7 @@ label80018C6C:
       SWAP(col2.r, col2.g);
     }
 
-    s0 = lw(allocator1_ptr);
+    s0 = lw(ALLOCATOR1_PTR);
     sw(sp + 0x10, 0);
     sw(sp + 0xC0, t0);
     SetDrawMode(addr_to_pointer(s0), 1, 0, 0x20, addr_to_pointer(lw(sp + 0x10)));
@@ -505,7 +508,7 @@ label80018C6C:
 
     append_gpu_command_block_depth_slot(addr_to_pointer(s0 + 0x0C), lw(sp + 0xC0));
     s0 += 0x30;
-    sw(allocator1_ptr, s0);
+    sw(ALLOCATOR1_PTR, s0);
   }
   sw(sp + 0x50, lw(sp + 0x30));
   sw(sp + 0x58, lw(sp + 0x38));
@@ -581,7 +584,7 @@ void function_80018F30(void)
     if ((int32_t)v0 < 0)
       sw(0x800756C0, 0);
   }
-  s0 = lw(allocator1_ptr);
+  s0 = lw(ALLOCATOR1_PTR);
   s1 = 512; // 0x0200
   sb(s0 + 0x07, 0x28);
   v0 = lw(0x800756C0);
@@ -601,7 +604,7 @@ void function_80018F30(void)
   append_gpu_command_block(addr_to_pointer(a0));
 
   s0 += 0x18;
-  sw(allocator1_ptr, s0);
+  sw(ALLOCATOR1_PTR, s0);
 
   sb(s0 + 0x07, 0x28);
   v1 = lw(0x800756C0);
@@ -623,7 +626,7 @@ void function_80018F30(void)
   append_gpu_command_block(addr_to_pointer(a0));
 
   s0 += 0x18;
-  sw(allocator1_ptr, s0);
+  sw(ALLOCATOR1_PTR, s0);
 
   ra = lw(sp + 0x20);
   s3 = lw(sp + 0x1C);
@@ -691,10 +694,10 @@ label800193B0:
   if (temp) goto label80019484;
   char buf[0x20];
   sprintf(buf, "%d/%d", lw(0x80077FC8), lw(0x80077FC8));
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   create_3d_text2(buf, &(vec3_32){0x5A, 0x24, 0xB40}, 0x1C, 11);
   text_wave_effect1(object, lw(s2 + 0x0C)*4, 12, 1, 128);
-  struct game_object *game_object_end = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object_end = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   while (object > game_object_end) {
     object--;
     sw(s1, pointer_to_addr(object));
@@ -754,7 +757,7 @@ label80019528:
   temp = (int32_t)v0 <= 0;
   s0 = 0;
   if (temp) goto label800195E0;
-  s3 = spyro_cos_lut;
+  s3 = SPYRO_COS_LUT;
   s2 = a1 + 0x4C2;
   s1 = s2;
 label80019568:
@@ -880,7 +883,7 @@ void function_8001973C(void)
   else
     v0 = 0x20;
   sw(sp + 0x1C, v0);
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
 
   sw(sp + 0x20, 0x1100);
 
@@ -895,7 +898,7 @@ void function_8001973C(void)
   v0 = lw(0x800756AC);
   v0 = (int32_t)v0 < 64;
   if (v0) goto label8001A01C;
-  s0 = lw(total_found_gems);
+  s0 = lw(TOTAL_FOUND_GEMS);
   v0 = (int32_t)s0 < 10;
   s2 = 40;
   if (v0) goto label8001999C;
@@ -916,7 +919,7 @@ label8001999C:
   if (v0 == 0) goto label800199E4;
   v0 = v1 - 64; // 0xFFFFFFC0
   v0 = v0 << 2;
-  v1 = lhu(spyro_sin_lut + v0);
+  v1 = lhu(SPYRO_SIN_LUT + v0);
   v0 = 0x110;
   v1 = (int32_t)(v1 << 16) >> 22;
   v0 -= v1;
@@ -929,7 +932,7 @@ label800199E4:
   v0 = v1 - 0x20;
   v0 = a0 - v0;
   v0 = v0 << 2;
-  v1 = lhu(spyro_sin_lut + v0);
+  v1 = lhu(SPYRO_SIN_LUT + v0);
   v0 = 0x110;
   v1 = v1 << 16;
   v1 = (int32_t)v1 >> 22;
@@ -941,7 +944,7 @@ label80019A34:
   v0 = v1 - 0xE0;
   if ((int32_t)v1 >= 0x100) goto label80019A70;
   v0 = v0 << 2;
-  v1 = lhu(spyro_sin_lut + v0);
+  v1 = lhu(SPYRO_SIN_LUT + v0);
   v0 = 0x110;
   v1 = v1 << 16;
   v1 = (int32_t)v1 >> 22;
@@ -955,7 +958,7 @@ label80019A70:
   v0 = 416; // 0x01A0
   v0 -= v1;
   v0 = v0 << 2;
-  v1 = lhu(spyro_sin_lut + v0);
+  v1 = lhu(SPYRO_SIN_LUT + v0);
   v0 = 272; // 0x0110
   v1 = v1 << 16;
   v1 = (int32_t)v1 >> 22;
@@ -970,7 +973,7 @@ label80019AB4:
     v0 = lw(sp + 0x18) - 0x10;
     sw(sp + 0x18, v0);
   }
-  object = addr_to_pointer(lw(gameobject_stack_ptr));
+  object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
 
   sw(sp + 0x28, 0x10);
   sw(sp + 0x2C, 1);
@@ -981,21 +984,21 @@ label80019AB4:
   
   v1 = lw(0x800756AC);
   if ((int32_t)v1 < 0x80) {
-    a2 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    a2 = lw(LEVEL_GEMS + lw(0x80075688)*4) - lw(0x8007587C);
   } else if ((int32_t)v1 < 0xE0) {
     v0 = lw(0x800756C8)+1;
     a0 = min_int(v0*2, 0x40);
     a1 = max_int(a0 - (v1 - 0x80), 0);
     a1 = min_int(a0, a1);
 
-    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    v0 = lw(LEVEL_GEMS + lw(0x80075688)*4) - lw(0x8007587C);
     mult(v0, a1);
     v0=lo;
     div_psx(v0,a0);
     a2=lo;
   } else if ((int32_t)v1 < 0x110) {
-    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
-    a0 = lw(total_found_gems);
+    v0 = lw(LEVEL_GEMS + lw(0x80075688)*4) - lw(0x8007587C);
+    a0 = lw(TOTAL_FOUND_GEMS);
     a2 = a0 - v0;
   } else {
     v0 = lw(0x800756C8)+1;
@@ -1004,23 +1007,23 @@ label80019AB4:
     a1 = max_int(a0 - v0, 0);
     a1 = min_int(a0, a1);
 
-    v0 = lw(level_gems + lw(0x80075688)*4) - lw(0x8007587C);
+    v0 = lw(LEVEL_GEMS + lw(0x80075688)*4) - lw(0x8007587C);
     mult(v0, a1);
     v0=lo;
     div_psx(v0,a0);
     v1=lo;
-    v0 = lw(total_found_gems);
+    v0 = lw(TOTAL_FOUND_GEMS);
     a2 = v0 - v1;
   }
   sprintf(buf, "%d", a2);
 
   sw(sp + 0x18, s2 + 0x178);
   sw(sp + 0x20, 0xF80);
-  object = addr_to_pointer(lw(gameobject_stack_ptr));
+  object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   create_3d_text2(buf, addr_to_pointer(sp + 0x18), 20, 2);
   text_wave_effect1(object, lw(0x800756AC)*2, 12, 1, 0x80);
 
-  object = addr_to_pointer(lw(gameobject_stack_ptr));
+  object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   
   for (int i = 0; i < 32; i++) {
     s1 = i*16;
@@ -1046,7 +1049,7 @@ label80019AB4:
   }
   object--;
   memset(object, 0, 88);
-  object->modelID = 0x1D9; // chest model
+  object->modelID = MODEL_ID_CHEST_ICON1;
   if ((int32_t)lw(0x800756AC) < 0xE0) {
     object->p = (vec3_32){
       s2 + 0x140,
@@ -1065,7 +1068,7 @@ label80019AB4:
   object->unknown47 = 0x7F;
   object->unknown4F = 0x0B;
   object->render_distance = 0xFF;
-  sw(gameobject_stack_ptr, pointer_to_addr(object));
+  sw(GAMEOBJECT_STACK_PTR, pointer_to_addr(object));
 label8001A01C:
   sw(0x8006FCF4 + 0x2400, 0);
   function_80018880();
@@ -1159,7 +1162,7 @@ void rgb_to_grey(void *buf, uint32_t len)
 
 void function_80017E98(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   rgb_to_grey(addr_to_pointer(a0), a1);
 }
 
@@ -1204,7 +1207,7 @@ void function_8001A40C(void)
 
   for (int i = 0; i < 4; i++)
   {
-    if (backbuffer_disp == addr_to_pointer(DISP1))
+    if (backbuffer_disp == disp1)
       a2 = 0x08;
     else
       a2 = 0xF8;
@@ -1216,33 +1219,27 @@ void function_8001A40C(void)
   }
 
   LoadImage((RECT[]){{0x200, 0xE0, 0x20, 1}}, addr_to_pointer(0x8006F310)); // color pallette
-  sw(drawn_frame, VSync(-1));
+  sw(DRAWN_FRAME, VSync(-1));
   goto label8001C648;
 label8001A5E0:
-  if (backbuffer_disp == addr_to_pointer(DISP1))
-    a0 = DISP2;
-  else
-    a0 = DISP1;
 
   s3 = 0;
-  PutDrawEnv(addr_to_pointer(a0));
-  a0 =  0x1C000;
-  a1 = -0x1C200;
+  PutDrawEnv(&frontbuffer_disp->draw);
   v1 = lw(0x800785E8);
   v0 = lw(0x800785F0);
   sw(0x800758B0, 0);
-  sw(allocator1_ptr, v1);
+  sw(ALLOCATOR1_PTR, v1);
   v1 += 0x1C000;
   v0 -= 0x1C200;
-  sw(allocator1_end, v1);
-  sw(gameobject_stack_ptr_base, v0);
-  sw(gameobject_stack_ptr, v0);
+  sw(ALLOCATOR1_END, v1);
+  sw(GAMEOBJECT_STACK_PTR_BASE, v0);
+  sw(GAMEOBJECT_STACK_PTR, v0);
   
   for (int i = 0; i < 4; i++)
   {
     v1 = i*0x80;
     a3 = i + 0x88;
-    s0 = lw(allocator1_ptr);
+    s0 = lw(ALLOCATOR1_PTR);
     sw(s0 + 0x00, 0x09000000);
     sb(s0 + 0x04, 0x4C); // r
     sb(s0 + 0x05, 0x80); // g
@@ -1277,7 +1274,7 @@ label8001A5E0:
     sb(s0 + 0x24, lbu(s0 + 0x0C) + 0x80);
     sb(s0 + 0x25, lbu(s0 + 0x0D) + 0xDF);
     append_gpu_command_block(addr_to_pointer(s0));
-    sw(allocator1_ptr, s0 + 0x28);
+    sw(ALLOCATOR1_PTR, s0 + 0x28);
   }
 
   sw(s0 + 0x28, 0x03000000);
@@ -1290,10 +1287,10 @@ label8001A5E0:
   sb(s0 + 0x2D, 0);
   sb(s0 + 0x2E, 0);
   append_gpu_command_block(addr_to_pointer(s0 + 0x28));
-  v1 = lw(gamestate);
-  sw(allocator1_ptr, s0 + 0x38);
+  v1 = lw(GAMESTATE);
+  sw(ALLOCATOR1_PTR, s0 + 0x38);
   temp = v1 != 2;
-  v0 = 3; // 0x0003
+  v0 = 3;
   if (temp) goto label8001B64C;
   SetDrawMode(addr_to_pointer(s0 + 0x38), 1, 0, 0x40, NULL);
   append_gpu_command_block(addr_to_pointer(s0 + 0x38));
@@ -1302,22 +1299,19 @@ label8001A5E0:
   sb(s0 + 0x48, 0x40);
   sb(s0 + 0x49, 0x40);
   sb(s0 + 0x4A, 0x40);
-  v1 = lw(0x800757C8);
   sh(s0 + 0x4E, 0x43);
   sh(s0 + 0x52, 0x43);
-  v0 = 1; // 0x0001
-  temp = v1 != v0;
+  temp = lw(0x800757C8) != 1;
   s1 = s0 + 0x44;
   if (temp) goto label8001A82C;
   v0 = 84; // 0x0054
   sh(s0 + 0x4C, v0);
   v0 = lw(0x800756D8);
-  v1 = 428; // 0x01AC
+  v1 = 428; // 0x1AC
   sh(s0 + 0x50, v1);
-  v0 = 0 < v0;
+  v0 = v0 != 0;
   sb(sp + 0xA0, v0);
-  v0 = v0 << 4;
-  v0 += 182; // 0x00B6
+  v0 = v0*0x10 + 0xB6;
   goto label8001A848;
 label8001A82C:
   t1 = 1; // 0x0001
@@ -1326,7 +1320,7 @@ label8001A82C:
   sh(s0 + 0x4C, v0);
   v0 = 372; // 0x0174
   sh(s0 + 0x50, v0);
-  v0 = 176; // 0x00B0
+  v0 = 0xB0;
 label8001A848:
   sh(s0 + 0x56, v0);
   sh(s0 + 0x5A, v0);
@@ -1336,10 +1330,9 @@ label8001A848:
   sh(s1 + 0x10, v0);
   sh(s1 + 0x14, v1);
   append_gpu_command_block(addr_to_pointer(a0));
-  sw(allocator1_ptr, s1 + 0x18);
+  sw(ALLOCATOR1_PTR, s1 + 0x18);
   gui_line(0xE0, 0x61, 0x120, 0x61);
-  v1 = lw(0x800757C8);
-  if (v1 == 1) {
+  if (lw(0x800757C8) == 1) {
     s0 = 0xB6 + lbu(sp + 0xA0)*0x10;
 
     gui_line(0x54, 0x43, 0x1AC, 0x43);
@@ -1387,7 +1380,7 @@ label8001A848:
   v0 = lw(0x80075720);
   temp = v0 != 0;
   if (temp) goto label8001AA40;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 3; // 0x0003
 label8001AA40:
   sw(sp + 0x40, 0x128);
@@ -1398,14 +1391,14 @@ label8001AA40:
   temp = v0 != s7;
   a1 = s5 & 0xFF;
   if (temp) goto label8001AA90;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 2;
   a1 = s5 & 0xFF;
 label8001AA90:
   temp = (int32_t)a1 <= 0;
   s3 = 0;
   if (temp) goto label8001C53C;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001AAA4:
   v0 = lw(0x800758B8);
@@ -1442,7 +1435,7 @@ label8001AAF0:
   v0 = lw(0x80075720);
   temp = v0 != 0;
   if (temp) goto label8001AB64;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 11; // 0x000B
 label8001AB64:
   sw(sp + 0x40, 0x79);
@@ -1452,7 +1445,7 @@ label8001AB64:
   v0 = lw(0x80075720);
   temp = v0 != 1;
   if (temp) goto label8001ABB4;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 11; // 0x000B
 label8001ABB4:
   sw(sp + 0x40, s7);
@@ -1462,7 +1455,7 @@ label8001ABB4:
   v0 = lw(0x80075720);
   temp = v0 != 2;
   if (temp) goto label8001AC00;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 12; // 0x000C
 label8001AC00:
   v0 = lw(0x800756D8);
@@ -1477,7 +1470,7 @@ label8001AC00:
   v0 = 3; // 0x0003
   temp = v1 != v0;
   if (temp) goto label8001AC60;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 9; // 0x0009
 label8001AC60:
   s3 = sp + 0x40;
@@ -1492,7 +1485,7 @@ label8001AC60:
   v0 = 4; // 0x0004
   temp = v1 != v0;
   if (temp) goto label8001ACC8;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 6;
 label8001ACC8:
   sw(sp + 0x40, 0xEE);
@@ -1504,14 +1497,14 @@ label8001ACC8:
   temp = v1 != v0;
   a1 = s5 & 0xFF;
   if (temp) goto label8001AD1C;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 4; // 0x0004
   a1 = s5 & 0xFF;
 label8001AD1C:
   temp = (int32_t)a1 <= 0;
   s3 = 0;
   if (temp) goto label8001AD74;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001AD30:
   v0 = lw(0x800758B8);
@@ -1544,9 +1537,9 @@ label8001AD74:
   temp = v0 != 0;
   a0 = 0;
   if (temp) goto label8001AF28;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s3 = 0;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
 label8001ADE4:
   v0 = lw(0x800758B8);
   s3++;
@@ -1570,13 +1563,13 @@ label8001AE30:
   temp = (int32_t)v0 <= 0;
   s3 = 0;
   if (temp) goto label8001AF28;
-  s2 = spyro_cos_lut;
+  s2 = SPYRO_COS_LUT;
   s1 = 0;
   s0 = 320; // 0x140
 label8001AE48:
-  sw(gameobject_stack_ptr, lw(gameobject_stack_ptr) - 88);
-  spyro_memset32(lw(gameobject_stack_ptr), 0, 88);
-  a0 = lw(gameobject_stack_ptr);
+  sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+  spyro_memset32(lw(GAMEOBJECT_STACK_PTR), 0, 88);
+  a0 = lw(GAMEOBJECT_STACK_PTR);
   sh(a0 + 0x36, 0x1B2); // 'I'
 
   sw(a0 + 0x0C, s0);
@@ -1600,7 +1593,7 @@ label8001AED8:
   sb(a0 + 0x46, 0);
 label8001AEDC:
   s1 += 12; // 0x000C
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   sb(v1 + 0x47, 0x7F);
   sb(v1 + 0x4F, 0x0B);
   sb(v1 + 0x50, 0xFF);
@@ -1624,9 +1617,9 @@ label8001AF28:
   temp = v1 != v0;
   a0 = 0;
   if (temp) goto label8001B0E0;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s3 = 0;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
 label8001AF98:
   v0 = lw(0x800758B8);
   s3++;
@@ -1650,13 +1643,13 @@ label8001AFE4:
   temp = (int32_t)v0 <= 0;
   s3 = 0;
   if (temp) goto label8001B0E0;
-  s2 = spyro_cos_lut;
+  s2 = SPYRO_COS_LUT;
   s1 = 0;
   s0 = 320; // 0x0140
 label8001AFFC:
-  sw(gameobject_stack_ptr, lw(gameobject_stack_ptr) - 88);
-  spyro_memset32(lw(gameobject_stack_ptr), 0, 88);
-  a0 = lw(gameobject_stack_ptr);
+  sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+  spyro_memset32(lw(GAMEOBJECT_STACK_PTR), 0, 88);
+  a0 = lw(GAMEOBJECT_STACK_PTR);
   v1 = lw(0x80075720);
   sh(a0 + 0x36, 0x1B2); // 'I'
   v0 = 125; // 0x007D
@@ -1683,13 +1676,13 @@ label8001B090:
   sb(a0 + 0x46, 0);
 label8001B094:
   s1 += 12; // 0x000C
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 127; // 0x007F
   sb(v1 + 0x47, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 11; // 0x000B
   sb(v1 + 0x4F, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 255; // 0x00FF
   sb(v1 + 0x50, v0);
   v0 = lw(0x80075748);
@@ -1704,20 +1697,20 @@ label8001B0E0:
   sw(sp + 0x48, 0x1400);
   if (lw(0x80076240)) {
     create_3d_text1("MONO", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
-    a1 = 4; // 0x0004
+    a1 = 4;
   } else {
     create_3d_text1("STEREO", addr_to_pointer(sp + 0x40), *(vec3_32 *)addr_to_pointer(sp + 0x60), 16, 11);
-    a1 = 6; // 0x0006
+    a1 = 6;
   }
   v1 = lw(0x80075720);
-  v0 = 2; // 0x0002
-  temp = v1 != v0;
+  v0 = 2;
+  temp = v1 != 2;
   if (temp) goto label8001B1C4;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   temp = a1 == 0;
   s3 = 0;
   if (temp) goto label8001B1C4;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001B180:
   v0 = lw(0x800758B8);
@@ -1758,11 +1751,11 @@ label8001B244:
   v0 = 3; // 0x0003
   temp = v1 != v0;
   if (temp) goto label8001B2B8;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   temp = a1 == 0;
   s3 = 0;
   if (temp) goto label8001B2B8;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001B274:
   v0 = lw(0x800758B8);
@@ -1800,11 +1793,11 @@ label8001B330:
   v0 = 4; // 0x0004
   temp = v1 != v0;
   if (temp) goto label8001C53C;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   temp = a1 == 0;
   s3 = 0;
   if (temp) goto label8001C53C;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001B360:
   v0 = lw(0x800758B8);
@@ -1837,7 +1830,7 @@ label8001B3AC:
   create_3d_text1("CONTINUE", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
   
   if (lw(0x80075720) == 0) {
-    s2 = lw(gameobject_stack_ptr);
+    s2 = lw(GAMEOBJECT_STACK_PTR);
     s5 = 8;
   }
 
@@ -1847,7 +1840,7 @@ label8001B3AC:
   create_3d_text1("OPTIONS", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
 
   if (lw(0x80075720) == 1) {
-    s2 = lw(gameobject_stack_ptr);
+    s2 = lw(GAMEOBJECT_STACK_PTR);
     s5 = 7;
   }
   
@@ -1857,7 +1850,7 @@ label8001B3AC:
   create_3d_text1("INVENTORY", addr_to_pointer(s0), *(vec3_32 *)addr_to_pointer(s1), 18, 11);
 
   if (lw(0x80075720) == 2) {
-    s2 = lw(gameobject_stack_ptr);
+    s2 = lw(GAMEOBJECT_STACK_PTR);
     s5 = 9;
   }
   v0 = lw(0x80075690);
@@ -1872,7 +1865,7 @@ label8001B3AC:
   temp = v1 != v0;
   a1 = s5 & 0xFF;
   if (temp) goto label8001B5EC;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 4; // 0x0004
   goto label8001B5E8;
 label8001B51C:
@@ -1898,7 +1891,7 @@ label8001B51C:
   temp = v1 != v0;
   a1 = s5 & 0xFF;
   if (temp) goto label8001B5EC;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 9; // 0x0009
   goto label8001B5E8;
 label8001B5A0:
@@ -1911,7 +1904,7 @@ label8001B5A0:
   temp = v1 != v0;
   a1 = s5 & 0xFF;
   if (temp) goto label8001B5EC;
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   s5 = 8; // 0x0008
 label8001B5E8:
   a1 = s5 & 0xFF;
@@ -1919,7 +1912,7 @@ label8001B5EC:
   temp = (int32_t)a1 <= 0;
   s3 = 0;
   if (temp) goto label8001C53C;
-  a2 = spyro_cos_lut;
+  a2 = SPYRO_COS_LUT;
   a0 = 0;
 label8001B600:
   v0 = lw(0x800758B8);
@@ -1979,14 +1972,14 @@ label8001B6A4:
   a1 = s3;
   v0 = 90; // 0x005A
   s1 = 36; // 0x0024
-  a2 = lw(total_found_gems);
+  a2 = lw(TOTAL_FOUND_GEMS);
   s0 = 2880; // 0x0B40
   sw(sp + 0x40, v0);
   sw(sp + 0x44, s1);
   sw(sp + 0x48, s0);
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s2), addr_to_pointer(s4), 27, 2);
-  a2 = lw(total_found_dragons);
+  a2 = lw(TOTAL_FOUND_DRAGONS);
   sw(sp + 0x40, 0x14D);
   sw(sp + 0x44, s1);
   v0 = (int32_t)a2 < 10;
@@ -2001,13 +1994,13 @@ label8001B760:
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s2), addr_to_pointer(s4), 27, 2);
   a1 = 0;
-  a0 = lw(gameobject_stack_ptr);
+  a0 = lw(GAMEOBJECT_STACK_PTR);
   a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
+  sw(GAMEOBJECT_STACK_PTR, a0);
   a2 = 88; // 0x0058
   spyro_memset32(a0, a1, a2);
   v0 = 471; // 0x01D7
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   s1 = 46; // 0x002E
   sh(v1 + 0x36, v0);
   v0 = 3072; // 0x0C00
@@ -2016,49 +2009,49 @@ label8001B760:
   sw(v1 + 0x14, v0);
   v0 = lw(0x80077FE4);
   v0 = v0 << 1;
-  v0 = lhu(spyro_cos_lut + v0);
+  v0 = lhu(SPYRO_COS_LUT + v0);
   s5 = 0x80077FE4;
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 25;
   sb(v1 + 0x45, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = lw(s5 + 0x00);
   a1 = 0;
   sb(v1 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   sb(v0 + 0x47, 0x7F);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s3 = 11; // 0x000B
   sb(v0 + 0x4F, s3);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s2 = 255; // 0x00FF
   sb(v0 + 0x50, s2);
-  a0 = lw(gameobject_stack_ptr);
+  a0 = lw(GAMEOBJECT_STACK_PTR);
   a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
+  sw(GAMEOBJECT_STACK_PTR, a0);
   a2 = 88; // 0x0058
   spyro_memset32(a0, a1, a2);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 506; // 0x01FA
   sh(v1 + 0x36, v0);
   v0 = 300; // 0x012C
   sw(v1 + 0x0C, v0);
-  v0 = lw(total_found_dragons);
-  s0 = spyro_cos_lut;
+  v0 = lw(TOTAL_FOUND_DRAGONS);
+  s0 = SPYRO_COS_LUT;
   v0 = (int32_t)v0 < 10;
   temp = v0 != 0;
   v0 = 273; // 0x0111
   if (temp) goto label8001B894;
   sw(v1 + 0x0C, v0);
 label8001B894:
-  sw(lw(gameobject_stack_ptr) + 0x10, s1);
-  sw(lw(gameobject_stack_ptr) + 0x14, 0x780);
-  sb(lw(gameobject_stack_ptr) + 0x46, lhu(s0 + (lw(0x800758B8) & 0x1F) * 16) >> 8);
-  sb(lw(gameobject_stack_ptr) + 0x47, 0x7F);
-  sb(lw(gameobject_stack_ptr) + 0x4F, s3);
-  sb(lw(gameobject_stack_ptr) + 0x50, s2);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x10, s1);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x14, 0x780);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x46, lhu(s0 + (lw(0x800758B8) & 0x1F) * 16) >> 8);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x47, 0x7F);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x4F, s3);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x50, s2);
   s1 = 0x24;
-  if ((int32_t)lw(total_found_eggs) <= 0) goto label8001B9F8;
+  if ((int32_t)lw(TOTAL_FOUND_EGGS) <= 0) goto label8001B9F8;
   s3 = 0;
   s2 = s4;
   s4 = 0x20;
@@ -2069,7 +2062,7 @@ label8001B928:
   sh(sp + 0x82, 0x32);
   sh(sp + 0x84, 0x18);
   sh(sp + 0x80, s0);
-  v1 = (int32_t)s3 < (int32_t)lw(total_found_eggs);
+  v1 = (int32_t)s3 < (int32_t)lw(TOTAL_FOUND_EGGS);
   temp = v1 != 0;
   sh(sp + 0x86, 0x10);
   if (temp) goto label8001B9A0;
@@ -2110,7 +2103,7 @@ label8001B9E0:
 label8001B9F8:
   gui_line(0x40, 0x45, 0x1C0, 0x45);
 
-  s1 = lw(allocator1_ptr);
+  s1 = lw(ALLOCATOR1_PTR);
   SetDrawMode(addr_to_pointer(s1), 1, 0, 0x40, NULL);
   append_gpu_command_block(addr_to_pointer(s1));
 
@@ -2128,14 +2121,14 @@ label8001B9F8:
   sh(s1 + 0x20, 0x1C0);
   sh(s1 + 0x22, 0x47);
   append_gpu_command_block(addr_to_pointer(s1 + 0x0C));
-  sw(allocator1_ptr, s1 + 0x24);
+  sw(ALLOCATOR1_PTR, s1 + 0x24);
 
   gui_line(0x40, 0x47, 0x1C0, 0x47);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   if ((int32_t)v1 > 0) {
     if (lbu(0x80078E72 + v1*6)) {
       blinking_arrow((vec3_32){0x28, 0x48, 0x1100}, lw(0x800758B8)*2, 1);
-      v1 = lw(0x80075744);
+      v1 = lw(HOMEWORLD_TO_LOAD);
     }
   }
 
@@ -2143,11 +2136,11 @@ label8001B9F8:
     if (lbu(0x80078E7E + v1*6))
       blinking_arrow((vec3_32){0x1D7, 0x48, 0x1100}, lw(0x800758B8)*2, 0);
 
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   s3 = 0;
   v1 = v0*4;
   v0 = (int32_t)v0 < 3;
-  a0 = lw(0x8006F7D4 + v1); // &0x8001006C
+  a0 = lw(HOMEWORLD_NAMES + v1); // &0x8001006C
   s7 = v0*8;
   v0 = spyro_strlen(a0);
   a1 = sp + 64; // 0x0040
@@ -2172,102 +2165,44 @@ label8001B9F8:
   sw(sp + 0x40, v0);
   sw(sp + 0x10, a3);
 
-  a0 = lw(0x8006F7D4 + lw(0x80075744)*4); // &0x8001006C
-  create_3d_text1(addr_to_pointer(a0), addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), 23, 2);
-  
-  v0 = lbu(0x8007555C + lw(0x80075744)); // &0x0B0D0C08
-  s0 = lw(gameobject_stack_ptr);
-  temp = (int32_t)v0 <= 0;
-  a0 = 0;
-  a2 = spyro_cos_lut;
-  if (temp) goto label8001BCA0;
-label8001BC44:
-  v1 = cos_lut[(lw(0x800758B8)*8 + a0) & 0xFF];
-  s3++;
-  v0 = (int32_t)(v1*3)/0x200;
-  sb(s0 + 0x46, v0);
-  v0 = lw(0x80075744);
-  a0 += 12; // 0x000C
-  v0 += a1;
-  v0 = lbu(0x8007555C + v0);
-  v0 = (int32_t)s3 < (int32_t)v0;
-  temp = v0 != 0;
-  s0 += 88; // 0x0058
-  if (temp) goto label8001BC44;
-label8001BCA0: {}
+  create_3d_text1(homeworld_names[lw(HOMEWORLD_TO_LOAD)], addr_to_pointer(a1), *(vec3_32 *)addr_to_pointer(a2), 23, 2);
 
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
-  object--;
-  *object = (struct game_object){0};
+  // the specified 3d character length of gnasty's world (lbu(0x8007555C + 5)) is 10 but should be 13
+  text_wave_effect2(lbu(0x8007555C + lw(HOMEWORLD_TO_LOAD)), lw(0x800758B8)*8, 12, 3, 0x200);
 
-  a0 = lw(gameobject_stack_ptr);
-  a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
-  a2 = 88; // 0x0058
-  spyro_memset32(a0, 0, 88);
-  a0 = lw(gameobject_stack_ptr);
-  v0 = 471; // 0x01D7
-  sh(a0 + 0x36, v0);
-  v0 = lw(0x800757CC);
-  v1 = s7 + 0x15A;
-  v0 += v1;
-  sw(a0 + 0x0C, v0);
-  v0 = 0x6C;
-  sw(a0 + 0x10, v0);
-  v0 = 0xC00;
-  sw(a0 + 0x14, v0);
-  v0 = lw(0x80077FE4);
-  s4 = sp + 0x40;
-  v0 = v0 << 1;
-  v0 = lhu(spyro_cos_lut + v0);
-  s6 = sp + 0x20;
-  v0 = v0 << 16;
-  v0 = (int32_t)v0 >> 25;
-  sb(a0 + 0x45, v0);
-  v1 = lw(gameobject_stack_ptr);
-  v0 = lw(0x80077FE4);
-  a1 = 0;
-  sb(v1 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
-  s0 = 127; // 0x007F
-  sb(v0 + 0x47, s0);
-  v0 = lw(gameobject_stack_ptr);
-  s1 = 11; // 0x000B
-  sb(v0 + 0x4F, s1);
-  v0 = lw(gameobject_stack_ptr);
-  s2 = 255; // 0x00FF
-  sb(v0 + 0x50, s2);
-  a0 = lw(gameobject_stack_ptr);
-  a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
+  //struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
+  //object--;
+  // *object = (struct game_object){0};
 
-  spyro_memset32(a0, a1, 88);
-  v0 = lw(0x800757CC);
-  a0 = lw(gameobject_stack_ptr);
-  v0 += 465; // 0x01D1
-  sw(a0 + 0x0C, v0);
-  v0 = 110; // 0x006E
-  sw(a0 + 0x10, v0);
-  v0 = lw(0x800758B8);
-  v1 = 506; // 0x01FA
-  sh(a0 + 0x36, v1);
-  v1 = 1920; // 0x0780
-  sw(a0 + 0x14, v1);
-  v0 = v0 << 4;
-  v0 = v0 & 0x1F0;
-  v0 = lhu(spyro_cos_lut + v0);
-  v0 = v0 >> 8;
-  sb(a0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
-  sb(v0 + 0x47, s0);
-  v0 = lw(gameobject_stack_ptr);
+  sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+  spyro_memset32(lw(GAMEOBJECT_STACK_PTR), 0, 88);
+  sh(lw(GAMEOBJECT_STACK_PTR) + 0x36, 0x1D7);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x0C, lw(0x800757CC) + s7 + 0x15A);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x10, 0x6C);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x14, 0xC00);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x45, cos_lut[lw(0x80077FE4)]/0x200);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x46, lw(0x80077FE4));
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x47, 0x7F);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x4F, 0x0B);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x50, 0xFF);
+  sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+  spyro_memset32(lw(GAMEOBJECT_STACK_PTR), 0, 88);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x0C, 0x1D1);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x10, 0x6E);
+  sh(lw(GAMEOBJECT_STACK_PTR) + 0x36, 0x1FA);
+  sw(lw(GAMEOBJECT_STACK_PTR) + 0x14, 0x780);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x46, cos_lut[(lw(0x800758B8) & 0x1F)*8]/0x100);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x47, 0x7F);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x4F, 0x0B);
+  sb(lw(GAMEOBJECT_STACK_PTR) + 0x50, 0xFF);
+
   s3 = 0;
-  sb(v0 + 0x4F, s1);
-  v0 = lw(gameobject_stack_ptr);
-  s5 = 123; // 0x007B
-  sb(v0 + 0x50, s2);
+  s4 = sp + 0x40;
+  s5 = 0x7B;
+  s6 = sp + 0x20;
+
 label8001BE14:
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v1 = v0 << 1;
   v1 += v0;
   v1 = v1 << 1;
@@ -2277,7 +2212,7 @@ label8001BE14:
   a2 = 0;
   if (temp) goto label8001C4D8;
   a1 = 1; // 0x0001
-  s1 = lw(allocator1_ptr);
+  s1 = lw(ALLOCATOR1_PTR);
   a3 = 64; // 0x0040
   sw(sp + 0x10, 0);
   a0 = s1;
@@ -2311,7 +2246,7 @@ label8001BE14:
   a3 = s0;
   a2 = lw(0x800757CC);
   v0 = s1 + 36; // 0x0024
-  sw(allocator1_ptr, v0);
+  sw(ALLOCATOR1_PTR, v0);
   a0 = a2 + 112; // 0x0070
   a2 += 208; // 0x00D0
   gui_line(a0, a1, a2, a3);
@@ -2335,7 +2270,7 @@ label8001BE14:
   sw(sp + 0x98, v0);
   v1 += 36; // 0x0024
   sw(sp + 0x40, v1);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   v0 = 2; // 0x0002
   sw(sp + 0x44, s5);
   sw(sp + 0x48, t1);
@@ -2345,19 +2280,19 @@ label8001BE14:
   v0 = v0 << 1;
   v0 += s3;
   v0 = v0 << 2;
-  a0 = lw(0x8006F7F0 + v0); // &0x80075578
-  s0 = lw(gameobject_stack_ptr);
+  a0 = lw(LEVEL_NAMES + v0); // &0x80075578
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   a3 = 18; // 0x0012
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(s4), *(vec3_32 *)addr_to_pointer(sp + 0x90), 18, 2);
   a0 = s7 + 275; // 0x0113
   v0 = lw(0x800757CC);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   a0 += v0;
   v0 = v1 << 1;
   v0 += v1;
   v0 = v0 << 1;
   v0 += s3;
-  v1 = level_gems;
+  v1 = LEVEL_GEMS;
   v0 = v0 << 2;
   a2 = v0 + v1;
   sw(sp + 0x40, a0);
@@ -2397,7 +2332,7 @@ label8001C04C:
   create_3d_text2("/", addr_to_pointer(s4), 18, 2);
   t1 = 4352; // 0x1100
   v0 = lw(0x800757CC);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   a1 = s7 + 363; // 0x016B
   sw(sp + 0x48, t1);
   v0 += a1;
@@ -2412,7 +2347,7 @@ label8001C04C:
   a0 = s6;
   spyro_sprintf();
   create_3d_text2(addr_to_pointer(s6), addr_to_pointer(s4), 18, 2);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   t1 = 0x8006F414; // &0x04030404
   v0 = v1 << 1;
   v0 += v1;
@@ -2427,7 +2362,7 @@ label8001C04C:
   v0 += 445; // 0x01BD
   sw(sp + 0x40, v0);
   v0 = v1 << 2;
-  a2 = lw(level_dragons + v0);
+  a2 = lw(LEVEL_DRAGONS + v0);
   a1 = 0x800755BC; // "%d"
   a0 = s6;
   spyro_sprintf();
@@ -2439,7 +2374,7 @@ label8001C04C:
   sw(sp + 0x48, t1);
   t1 = 0x8006F414; // &0x04030404
   v0 = lw(0x800757CC);
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   v0 += 479; // 0x01DF
   sw(sp + 0x40, v0);
   v0 = v1 << 1;
@@ -2463,11 +2398,11 @@ label8001C228:
   v0 += 462; // 0x01CE
   sw(sp + 0x40, v0);
   create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 41; // 0x0029
   sb(v1 + 0x44, v0);
 label8001C264:
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v1 = v0 << 1;
   v1 += v0;
   v1 = v1 << 1;
@@ -2475,12 +2410,12 @@ label8001C264:
   v1 += s3;
   temp = v1 != v0;
   if (temp) goto label8001C304;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 != 0;
   if (temp) goto label8001C304;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8001C2B4:
   v0 = lw(0x800758B8);
@@ -2494,17 +2429,17 @@ label8001C2B4:
   v0 += v1;
   v0 = (int32_t)v0 >> 9;
   sb(s0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 == 0;
   a0 += 12; // 0x000C
   if (temp) goto label8001C2B4;
 label8001C304:
-  v0 = lw(total_found_eggs);
+  v0 = lw(TOTAL_FOUND_EGGS);
   temp = (int32_t)v0 <= 0;
   if (temp) goto label8001C4D4;
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v1 < 3;
   temp = v0 == 0;
   v0 = v1 << 1;
@@ -2518,7 +2453,7 @@ label8001C304:
   s0 = 0;
   if (temp) goto label8001C4D4;
   s2 = 0x80077FE8;
-  fp = s2 + 1324; // 0x052C
+  fp = s2 + 0x52C;
   s1 = 0;
 label8001C36C:
   v0 = lw(0x800757CC);
@@ -2536,7 +2471,7 @@ label8001C36C:
   if (temp) goto label8001C3A8;
   t0 = a0 + 24; // 0x0018
 label8001C3A8:
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   v0 = s5 - 8; // 0xFFFFFFF8
   sh(sp + 0x8A, v0);
   v0 = 24; // 0x0018
@@ -2549,7 +2484,7 @@ label8001C3A8:
   v0 = v0 << 1;
   v0 += s3;
   v0 = v0 << 2;
-  v0 = lw(level_eggs + v0);
+  v0 = lw(LEVEL_EGGS + v0);
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 != 0;
   v0 = 0x38E30000;
@@ -2589,7 +2524,7 @@ label8001C454:
 label8001C490:
   s1 += 24; // 0x0018
   draw_sprite(addr_to_pointer(a0), addr_to_pointer(a1), addr_to_pointer(a2));
-  v1 = lw(0x80075744);
+  v1 = lw(HOMEWORLD_TO_LOAD);
   s0++;
   v0 = v1 << 1;
   v0 += v1;
@@ -2616,7 +2551,7 @@ label8001C4D8:
   gui_line(a2 + 0x1AE, s0, a2 + 0x1EE, s0);
 label8001C53C:
   sw(0x8006FCF4 + 0x2400, 0); // "H^^^oooooofffOOO((("
-  if (lw(gamestate) != GAMESTATE_PAUSE) goto label8001C574;
+  if (lw(GAMESTATE) != GAMESTATE_PAUSE) goto label8001C574;
   v0 = lw(0x80075690);
   temp = v0 != 0;
   if (temp) goto label8001C574;
@@ -2657,9 +2592,9 @@ void function_8001C694(void)
   sw(sp + 0x24, s1);
   sw(sp + 0x20, s0);
   sw(0x800758B0, 0);
-  sw(allocator1_ptr, v0);
+  sw(ALLOCATOR1_PTR, v0);
   v0 += v1;
-  sw(allocator1_end, v0);
+  sw(ALLOCATOR1_END, v0);
   temp = a0 == 0;
   v0 = 1; // 0x0001
   if (temp) goto label8001C6F4;
@@ -2678,8 +2613,8 @@ label8001C6F4:
   LoadImage(&(RECT){v1 + 0x200, 0xE0, 0x20 - v1, 1}, addr_to_pointer(0x8006F310));
   DrawSync(0);
 label8001C760:
-  s0 = lw(allocator1_ptr);
-  sw(allocator1_ptr, s0 + 0x28);
+  s0 = lw(ALLOCATOR1_PTR);
+  sw(ALLOCATOR1_PTR, s0 + 0x28);
   sw(s0 + 0x00, 0x09000000);
 
   sb(s0 + 0x04, 0x4C);
@@ -2728,7 +2663,7 @@ label8001C760:
   sh(s0 + 0x34, 0x200);
   sh(s0 + 0x36, 0xE7);
   append_gpu_command_block_depth_slot(addr_to_pointer(s0 + 0x28), 0x3FF);
-  sw(allocator1_ptr, s0 + 0x38);
+  sw(ALLOCATOR1_PTR, s0 + 0x38);
   goto label8001C950;
 label8001C8A4:
   a0 = lw(SKYBOX_DATA + 0x10);
@@ -2824,9 +2759,9 @@ label8001CB10:
       }[i]; // 0x800752E0
       s0 = lw(0x8007593C) - 60 - v0;
       if ((int32_t)s0 >= 0) {
-        sw(gameobject_stack_ptr, lw(gameobject_stack_ptr) - 88);
+        sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
 
-        struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+        struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         memset(object, 0, sizeof(*object));
 
         if ((int32_t)s0 < 24)
@@ -2834,7 +2769,7 @@ label8001CB10:
         else
           object->p.z = 0x400;
 
-        object->modelID = "GAMEOVER"[i] + 0x169; // 0x8006F304
+        object->modelID = "GAMEOVER"[i] - 'A' + MODEL_ID_A;
         object->p.x = lh(0x8006F2B4 + i*4);
         object->p.y = lh(0x8006F2B6 + i*4);
         object->rotz = lbu(0x800752D0 + i);
@@ -3293,20 +3228,19 @@ label8001D644:
 // size: 0x00000B34
 void function_8001D718(void)
 {
-  struct game_object *object;
+  struct game_object *object = 0;
 
   sp -= 0x68;
   sw(sp + 0x64, ra);
   sw(sp + 0x60, s4);
   sw(sp + 0x5C, s3);
   sw(sp + 0x58, s2);
-  sw(sp + 0x54, s1);
   sw(sp + 0x50, s0);
   
-  if (lw(gameobject_stack_ptr_base) == lw(0x800785F0)) {
-    v0 = lw(allocator1_ptr) + 0x1BA00;
-    sw(gameobject_stack_ptr_base, v0);
-    sw(gameobject_stack_ptr, v0);
+  if (lw(GAMEOBJECT_STACK_PTR_BASE) == lw(0x800785F0)) {
+    v0 = lw(ALLOCATOR1_PTR) + 0x1BA00;
+    sw(GAMEOBJECT_STACK_PTR_BASE, v0);
+    sw(GAMEOBJECT_STACK_PTR, v0);
   }
   s0 = lw(0x80078D00);
   if (s0 == 1) {
@@ -3318,206 +3252,192 @@ void function_8001D718(void)
     a3 = lh(0x8006F356 + v0*8);
     gui_box_balloonist(a0, a1, a2, a3);
 
-    sw(sp + 0x20, 0x1100);
+    vec3_32 char_size = {0x10, 0x01, 0x1400};
 
-    sw(sp + 0x28, 0x10);
-    sw(sp + 0x2C, 1);
-    sw(sp + 0x30, 0x1400);
+    vec3_32 pos = {lw(0x80078D10) + 0x40, 0x32, 0x1100};
 
     switch (lw(0x80078D0C))
     {
     case 0:
+      create_3d_text1("HI SPYRO,", &pos, char_size, 18, 11);
 
-      sw(sp + 0x18, lw(0x80078D10) + 0x40);
-      sw(sp + 0x1C, 0x32);
-
-      create_3d_text1("HI SPYRO,", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
-      
-      sw(sp + 0x18, lw(0x80078D10) + 0x4C);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x18);
-      
-      create_3d_text1("SAVE GAME", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x4C;
+      pos.y += 0x18;
+      create_3d_text1("SAVE GAME", &pos, char_size, 18, 11);
       
       if (lw(0x80078D08) == 0) {
-        s1 = lw(gameobject_stack_ptr);
+        object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         s3 = 8;
       }
-      sw(sp + 0x18, lw(0x80078D10) + 0x4C);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x13);
-      
-      create_3d_text1("REPLAY DRAGON", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+
+      pos.x = lw(0x80078D10) + 0x4C;
+      pos.y += 0x13;
+      create_3d_text1("REPLAY DRAGON", &pos, char_size, 18, 11);
       
       if (lw(0x80078D08) == 1) {
-        s1 = lw(gameobject_stack_ptr);
+        object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         s3 = 12;
       }
-      sw(sp + 0x18, lw(0x80078D10) + 0x4C);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x13);
-      
-      create_3d_text1("CONTINUE", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+
+      pos.x = lw(0x80078D10) + 0x4C;
+      pos.y += 0x13;
+      create_3d_text1("CONTINUE", &pos, char_size, 18, 11);
       
       if (lw(0x80078D08) == 2) {
-        s1 = lw(gameobject_stack_ptr);
+        object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         s3 = 8;
       }
-      object = addr_to_pointer(s1);
+
+      assert(object);
+
       text_wave_effect3(object, s3, lw(0x80078D04)*4, 12, 3, 0x200);
       break;
     case 1:
-      sw(sp + 0x18, lw(0x80078D10) + 0x52);
-      sw(sp + 0x1C, 0x32);
-      create_3d_text1("NO SAVE FILE", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x52;
+      create_3d_text1("NO SAVE FILE", &pos, char_size, 18, 11);
 
       text_wave_effect2(10, lw(0x80078D04)*4, 12, 3, 0x200);
 
-      sw(sp + 0x18, lw(0x80078D10) + 0x2D);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x1A);
-      sw(sp + 0x20, 0x1400);
+      pos.x = lw(0x80078D10) + 0x2D;
+      pos.y += 0x1A;
+      pos.z = 0x1400;
 
-      sw(sp + 0x28, 0x0E);
-      sw(sp + 0x2C, 0x01);
-      sw(sp + 0x30, 0x1600);
+      char_size = (vec3_32){0x0E, 0x01, 0x1600};
 
-      create_3d_text1("PLEASE RESTART WITH", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      create_3d_text1("PLEASE RESTART WITH", &pos, char_size, 16, 11);
 
-      sw(sp + 0x18, lw(0x80078D10) + 0x43);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
+      pos.x = lw(0x80078D10) + 0x43;
+      pos.y += 0x11;
+      create_3d_text1("A MEMORY CARD TO", &pos, char_size, 16, 11);
 
-      create_3d_text1("A MEMORY CARD TO", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
-      
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
-      sw(sp + 0x18, lw(0x80078D10) + 0x38);
-
-      create_3d_text1("ENABLE GAME SAVES.", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      pos.x = lw(0x80078D10) + 0x38;
+      pos.y += 0x11;
+      create_3d_text1("ENABLE GAME SAVES.", &pos, char_size, 16, 11);
       break;
     case 2:
-      sw(sp + 0x18, lw(0x80078D10) + 0x6A);
-      sw(sp + 0x1C, 0x52);
+      pos.x = lw(0x80078D10) + 0x6A;
+      pos.y = 0x52;
 
-      create_3d_text1("SAVING...", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      create_3d_text1("SAVING...", &pos, char_size, 18, 11);
       
       text_wave_effect2(9, lw(0x80078D04)*4, 12, 3, 0x200);
       break;
     case 3:
-    case 4:
-      sw(sp + 0x1C, 0x32);
+    case 4:{}
       const char *str;
       if (lw(0x80078D0C) == 3) {
         str = "NO MEMORY CARD";
         s3 = 12;
-        sw(sp + 0x18, lw(0x80078D10) + 0x42);
+        pos.x = lw(0x80078D10) + 0x42;
       } else {
         str = "NO SAVE FILE";
         s3 = 10;
-        sw(sp + 0x18, lw(0x80078D10) + 0x54);
+        pos.x = lw(0x80078D10) + 0x54;
       }
-      create_3d_text1(str, addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), a3, 11);
+      
+      create_3d_text1(str, &pos, char_size, a3, 11);
       
       text_wave_effect2(s3, lw(0x80078D04)*4, 12, 3, 0x200);
+
+      char_size = (vec3_32){0x0E, 0x01, 0x1600};
+
+      pos.x = lw(0x80078D10) + 0x3B;
+      pos.y += 0x1A;
+      pos.z = 0x1400;
+
+      create_3d_text1("PLEASE INSERT THE", &pos, char_size, 16, 11);
+
+      pos.x = lw(0x80078D10) + 0x43;
+      pos.y += 0x11;
+
+      create_3d_text1("MEMORY CARD WITH", &pos, char_size, 16, 11);
+
+      pos.x = lw(0x80078D10) + 0x2D;
+      pos.y += 0x11;
       
-      sw(sp + 0x28, 0x0E);
-      sw(sp + 0x2C, 1);
-      sw(sp + 0x30, 0x1600);
-
-      sw(sp + 0x18, lw(0x80078D10) + 0x3B);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x1A);
-      sw(sp + 0x20, 0x1400);
-
-      create_3d_text1("PLEASE INSERT THE", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
-
-      sw(sp + 0x18, lw(0x80078D10) + 0x43);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
-
-      create_3d_text1("MEMORY CARD WITH", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
-
-      sw(sp + 0x18, lw(0x80078D10) + 0x2D);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
-      
-      create_3d_text1("THIS GAME SAVE FILE", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      create_3d_text1("THIS GAME SAVE FILE", &pos, char_size, 16, 11);
       break;
     case 5:
-      sw(sp + 0x18, lw(0x80078D10) + 0x5E);
-      sw(sp + 0x1C, 0x32);
+      pos.x = lw(0x80078D10) + 0x5E;
 
-      create_3d_text1("SAVE ERROR", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      create_3d_text1("SAVE ERROR", &pos, char_size, 18, 11);
 
       text_wave_effect2(9, lw(0x80078D04)*4, 12, 3, 0x200);
 
-      sw(sp + 0x28, 0x0E);
-      sw(sp + 0x2C, 0x01);
-      sw(sp + 0x30, 0x1600);
-      
-      sw(sp + 0x18, lw(0x80078D10) + 0x3B);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x1A);
-      sw(sp + 0x20, 0x1400);
+      char_size = (vec3_32){0x0E, 0x01, 0x1600};
 
-      create_3d_text1("PLEASE CHECK THAT", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      pos.x = lw(0x80078D10) + 0x3B;
+      pos.y += 0x1A;
+      pos.z = 0x1400;
 
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
-      sw(sp + 0x18, lw(0x80078D10) + 0x49);
+      create_3d_text1("PLEASE CHECK THAT", &pos, char_size, 16, 11);
 
-      create_3d_text1("THE MEMORY CARD", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      pos.x = lw(0x80078D10) + 0x49;
+      pos.y += 0x11;
 
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x11);
-      sw(sp + 0x18, lw(0x80078D10) + 0x36);
+      create_3d_text1("THE MEMORY CARD", &pos, char_size, 16, 11);
 
-      create_3d_text1("IS STILL IN PLACE.", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 11);
+      pos.x = lw(0x80078D10) + 0x36;
+      pos.y += 0x11;
+
+      create_3d_text1("IS STILL IN PLACE.", &pos, char_size, 16, 11);
       break;
     case 6:
-      sw(sp + 0x18, lw(0x80078D10) + 0x56);
-      sw(sp + 0x1C, 0x35);
 
-      create_3d_text1("SAVE FAILED", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x56;
+      pos.y = 0x35;
+
+      create_3d_text1("SAVE FAILED", &pos, char_size, 18, 11);
       
-      sw(sp + 0x18, lw(0x80078D10) + 0x87);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x28);
 
-      create_3d_text1("RETRY", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x87;
+      pos.y += 0x28;
+
+      create_3d_text1("RETRY", &pos, char_size, 18, 11);
       
       if (lw(0x80078D08) == 0) {
-        s1 = lw(gameobject_stack_ptr);
+        object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         s3 = 5;
       }
-      sw(sp + 0x18, lw(0x80078D10) + 0x87);
-      sw(sp + 0x1C, lw(sp + 0x1C) + 0x13);
 
-      create_3d_text1("ABORT", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x87;
+      pos.y += 0x13;
+
+      create_3d_text1("ABORT", &pos, char_size, 18, 11);
       
       if (lw(0x80078D08) == 1) {
-        s1 = lw(gameobject_stack_ptr);
+        object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
         s3 = 5;
       }
-      object = addr_to_pointer(s1);
+
+      assert(object);
+
       text_wave_effect3(object, s3, lw(0x80078D04)*4, 12, 3, 0x200);
       break;
     case 7:
-      sw(sp + 0x18, lw(0x80078D10) + 0x5E);
-      sw(sp + 0x1C, 0x52);
-      create_3d_text1("GAME SAVED", addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
+      pos.x = lw(0x80078D10) + 0x5E;
+      pos.y = 0x52;
+      create_3d_text1("GAME SAVED", &pos, char_size, 18, 11);
       
       text_wave_effect2(9, lw(0x80078D04)*4, 12, 3, 0x200);
       break;
     }
     if ((int32_t)lw(0x80078D0C) >= 2) {
 
+      vec3_32 pos = {0, 0x1D, 0x1600};
+
       const char *str;
       if (lw(0x80078D18) == 0) {
         str = "SLOT 1";
-        v0 = lw(0x80078D10) + 0x30;
+        pos.x = lw(0x80078D10) + 0x30;
       } else {
         str = "SLOT 2";
-        v0 = 0xE6;
+        pos.x = 0xE6;
       }
 
-      sw(sp + 0x18, v0);
-      sw(sp + 0x1C, 0x1D);
-      sw(sp + 0x20, 0x1600);
+      char_size = (vec3_32){0x0D, 0x01, 0x1A00};
 
-      sw(sp + 0x28, 0x0D);
-      sw(sp + 0x2C, 0x01);
-      sw(sp + 0x30, 0x1A00);
-
-      create_3d_text1(str, addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 14, 11);
+      create_3d_text1(str, &pos, char_size, 14, 11);
     }
   }
   function_800521C0();
@@ -3542,7 +3462,6 @@ void function_8001D718(void)
   s4 = lw(sp + 0x60);
   s3 = lw(sp + 0x5C);
   s2 = lw(sp + 0x58);
-  s1 = lw(sp + 0x54);
   s0 = lw(sp + 0x50);
   sp += 0x68;
 }
@@ -3569,7 +3488,7 @@ void function_ptr_800758D8(void)
   temp = v0 == 0;
   if (temp) goto label8007D114;
   s0 = sp + 56; // 0x0038
-  s1 = lw(gameobject_stack_ptr);
+  s1 = lw(GAMEOBJECT_STACK_PTR);
   if (lw(LEVEL_ID)/10 != lw(WORLD_ID)+1) {
     printf("LEVEL_ID: %d\n", lw(LEVEL_ID));
     printf("WORLD_ID: %d\n", lw(WORLD_ID));
@@ -3586,13 +3505,13 @@ void function_ptr_800758D8(void)
   sw(sp + 0x30, 0x1400);
   
   create_3d_text1(buf, addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 18, 11);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s1 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s1 < (int32_t)v0;
   temp = v0 != 0;
   if (temp) goto label8007D114;
   a1 = s2 + 4; // 0x0004
-  a0 = spyro_cos_lut;
+  a0 = SPYRO_COS_LUT;
   v1 = 0;
 label8007D0D0:
   v0 = lw(a1 + 0x00);
@@ -3604,7 +3523,7 @@ label8007D0D0:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 8;
   sb(s1 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s1 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s1 < (int32_t)v0;
   temp = v0 == 0;
@@ -3638,7 +3557,7 @@ label8007D114:
   sw(sp + 0x70, v0);
   s0 = lbu(0x8006F89C + v1);
   v0 = lbu(0x8006F89D + v1);
-  s2 = lw(gameobject_stack_ptr);
+  s2 = lw(GAMEOBJECT_STACK_PTR);
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 == 0;
   v0 = s0 << 2;
@@ -3674,20 +3593,20 @@ label8007D214:
   v0 = v0 << 2;
   v0 -= v1;
   v0 = v0 << 3;
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = s2 - v0;
   v1 = (int32_t)v0 < (int32_t)v1;
   temp = v1 != 0;
   if (temp) goto label8007D25C;
-  sw(gameobject_stack_ptr, v0);
+  sw(GAMEOBJECT_STACK_PTR, v0);
 label8007D25C:
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s2 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s2 < (int32_t)v0;
   temp = v0 != 0;
   if (temp) goto label8007D2CC;
   a1 = 0x800777EC;
-  a0 = spyro_cos_lut;
+  a0 = SPYRO_COS_LUT;
   v1 = 0;
 label8007D288:
   v0 = lw(a1 + 0x00);
@@ -3699,7 +3618,7 @@ label8007D288:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 8;
   sb(s2 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s2 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s2 < (int32_t)v0;
   temp = v0 == 0;
@@ -3741,7 +3660,7 @@ label8007D378:
   a0 = 0x8007AA90; // "WHERE TO, SPYRO?"
 label8007D384:
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(sp + 0x78), *(vec3_32 *)addr_to_pointer(sp + 0x88), 16, 11);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 272; // 0x0110
   sw(sp + 0x78, v0);
   v0 = lw(sp + 0x7C);
@@ -3756,13 +3675,13 @@ label8007D384:
   temp = v1 != 0;
   sw(sp + 0x7C, v0);
   if (temp) goto label8007D45C;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   v0 = s0 < v0;
   temp = v0 != 0;
   s2 = 1; // 0x0001
   if (temp) goto label8007D460;
   v1 = a0 - 4; // 0xFFFFFFFC
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8007D418:
   v0 = lw(v1 + 0x00);
@@ -3774,7 +3693,7 @@ label8007D418:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 8;
   sb(s0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = s0 < v0;
   temp = v0 == 0;
@@ -3785,7 +3704,7 @@ label8007D45C:
 label8007D460:
   s1 = 0;
   s4 = 0x800777EC;
-  s3 = spyro_cos_lut;
+  s3 = SPYRO_COS_LUT;
   v0 = 0x66660000;
 label8007D478:
   v1 = lw(LEVEL_ID);
@@ -3804,7 +3723,7 @@ label8007D478:
   v0 = 272; // 0x0110
   sw(sp + 0x78, v0);
   v0 = s1 << 2;
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   s0 = v1 - 88; // 0xFFFFFFA8
   
   create_3d_text1(homeworld_names[s1], addr_to_pointer(sp + 0x78), *(vec3_32 *)addr_to_pointer(sp + 0x88), 16, 11);
@@ -3814,7 +3733,7 @@ label8007D478:
   temp = v1 != s2;
   sw(sp + 0x7C, v0);
   if (temp) goto label8007D56C;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   v0 = s0 < v0;
   temp = v0 != 0;
   if (temp) goto label8007D56C;
@@ -3829,7 +3748,7 @@ label8007D528:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 8;
   sb(s0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = s0 < v0;
   temp = v0 == 0;
@@ -3901,7 +3820,7 @@ label8007D6B4:
   a0 = 0x8007AAC8; // "WOULD YOU LIKE TO GO?"
 label8007D6C4:
   create_3d_text1(addr_to_pointer(a0), addr_to_pointer(s2), *(vec3_32 *)addr_to_pointer(sp + 0xA8), 18, 11);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 128; // 0x0080
   sw(sp + 0x98, v0);
   v0 = lw(sp + 0x9C);
@@ -3918,12 +3837,12 @@ label8007D6C4:
   temp = v1 != 0;
   sw(sp + 0x9C, v0);
   if (temp) goto label8007D798;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   v0 = s0 < v0;
   temp = v0 != 0;
   v1 = a0 - 4; // 0xFFFFFFFC
   if (temp) goto label8007D798;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8007D754:
   v0 = lw(v1 + 0x00);
@@ -3935,14 +3854,14 @@ label8007D754:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 8;
   sb(s0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = s0 < v0;
   temp = v0 == 0;
   a0 += 12; // 0x000C
   if (temp) goto label8007D754;
 label8007D798:
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 128; // 0x0080
   sw(sp + 0x98, v0);
   s0 = v1 - 88; // 0xFFFFFFA8
@@ -4062,16 +3981,16 @@ label8001E384:
   sw(sp + 0x28, 14);
   sw(sp + 0x2C, 1);
   sw(sp + 0x30, 0x1600);
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   create_3d_text1(addr_to_pointer(sp + 0x38), addr_to_pointer(sp + 0x18), *(vec3_32 *)addr_to_pointer(sp + 0x28), 16, 2);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 != 0;
   v1 = 0;
   if (temp) goto label8001E468;
   a1 = 0x800777EC;
-  a0 = spyro_cos_lut;
+  a0 = SPYRO_COS_LUT;
 label8001E424:
   v0 = lw(a1 + 0x00);
   v0 = v0 << 1;
@@ -4082,7 +4001,7 @@ label8001E424:
   v0 = lhu(v0 + 0x00);
   v0 = v0 >> 7;
   sb(s0 + 0x46, v0);
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 == 0;
@@ -4185,7 +4104,7 @@ void function_8001E6B8(void)
   v0 = 5120; // 0x1400
   sw(sp + 0x20, v0);
   v0 = 14; // 0x000E
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   v1 = lw(0x80078D94);
   a0 = 1; // 0x0001
   sw(sp + 0x28, v0);
@@ -4245,19 +4164,19 @@ label8001E7EC:
   v1 += v0;
   v1 = v1 << 2;
   v1 -= v0;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   v1 = v1 << 3;
   v0 += v1;
-  sw(gameobject_stack_ptr, v0);
+  sw(GAMEOBJECT_STACK_PTR, v0);
 label8001E834:
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 != 0;
   a3 = 0;
   if (temp) goto label8001E8C4;
   t1 = a1;
-  t0 = spyro_cos_lut;
+  t0 = SPYRO_COS_LUT;
   a1 = s0 + 70; // 0x0046
   a2 = 0;
 label8001E860:
@@ -4282,7 +4201,7 @@ label8001E8A0:
   sb(a1 + 0x00, v0);
   a2 += 12; // 0x000C
   a3++;
-  v0 = lw(gameobject_stack_ptr);
+  v0 = lw(GAMEOBJECT_STACK_PTR);
   s0 -= 88; // 0xFFFFFFA8
   v0 = (int32_t)s0 < (int32_t)v0;
   temp = v0 == 0;
@@ -4305,8 +4224,8 @@ label8001E8C4:
   function_80022A2C();
   if (lw(0x80078D7C) == 2) {
     function_80023AC4();
-    v1 = lw(linked_list1);
-    a0 = lw(ordered_linked_list);
+    v1 = lw(LINKED_LIST1);
+    a0 = lw(ORDERED_LINKED_LIST);
     sw(a0 + 0x100, lw(v1 + 0));
     sw(a0 + 0x104, lw(v1 + 4));
     sw(v1 + 0, 0);
@@ -4381,7 +4300,7 @@ label8001EAAC:
 // size: 0x000001DC
 void function_8001EB80(void)
 {
-  struct game_object *game_object = addr_to_pointer(lw(gameobject_stack_ptr));
+  struct game_object *game_object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   sb(0x80076EF9, 0);
   sb(0x80076EFA, 0);
   sb(0x80076EFB, 0);
@@ -4536,7 +4455,7 @@ void function_8002C534(void)
 
   LoadImage((RECT[]){{0x200, 0, 0x100, 0xE1}}, addr_to_pointer(lw(0x800785F0) - 0x1C200));
   DrawSync(0);
-  sw(gamestate, 0);
+  sw(GAMESTATE, 0);
   function_80058C7C();
   sb(0x80077FA8, 3);
   sb(0x80077FA9, 3);
@@ -4588,15 +4507,11 @@ void function_8007B68C(void)
   a0 = 0;
   v0 = VSync(a0);
   s5 = DISP1;
-  a0 = lw(BACKBUFFER_DISP);
-  a0 += 92; // 0x005C
-  v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
+  PutDispEnv(&backbuffer_disp->disp);
   s0 = 0x800785F0;
-  a0 = lw(BACKBUFFER_DISP);
-  s3 = s0 - 8; // 0xFFFFFFF8
-  v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
-  a0 = 2048; // 0x0800
-  v0 = pointer_to_addr(spyro_combine_all_command_buffers(a0));
+  s3 = 0x800785E8;
+  PutDrawEnv(&backbuffer_disp->draw);
+  spyro_combine_all_command_buffers(0x800);
   a0 = v0;
   DrawOTag(addr_to_pointer(a0));
   a0 = 0;
@@ -4621,54 +4536,37 @@ void function_8007B68C(void)
   a2 = 8; // 0x0008
 label8007B788:
   v1 = lw(BACKBUFFER_DISP);
-  v0 = s1 << 7;
-  temp = v1 == s5;
-  sh(sp + 0x0010, v0);
+  temp = v1 == DISP1;
   if (temp) goto label8007B7A0;
-  a2 = 248; // 0x00F8
+  a2 = 0xF8;
 label8007B7A0:
-  a0 = sp + 16; // 0x0010
+  sh(sp + 0x10, s1*0x80);
   s1++;
-  a1 = lw(s3 + 0x0000);
-  v0 = 128; // 0x0080
-  sh(sp + 0x0012, a2);
-  sh(sp + 0x0014, v0);
-  sh(sp + 0x0016, s4);
-  v0 = StoreImage(addr_to_pointer(a0), addr_to_pointer(a1));
-  a0 = 0;
-  v0 = DrawSync(a0);
-  a0 = lw(s3 + 0x0000);
-  a1 = 28672; // 0x7000
-  rgb_to_grey(addr_to_pointer(a0), a1);
-  a1 = lw(s3 + 0x0000);
-  a0 = sp + 16; // 0x0010
-  sh(sp + 0x0010, s2);
-  s2 += 64; // 0x0040
-  v0 = 64; // 0x0040
-  sh(sp + 0x0012, 0);
-  sh(sp + 0x0014, v0);
-  sh(sp + 0x0016, s4);
-  v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
+  sh(sp + 0x12, a2);
+  sh(sp + 0x14, 0x80);
+  sh(sp + 0x16, s4);
+  StoreImage(addr_to_pointer(sp + 0x10), addr_to_pointer(lw(s3)));
+  DrawSync(0);
+  rgb_to_grey(addr_to_pointer(lw(s3)), 0x7000);
+  sh(sp + 0x10, s2);
+  s2 += 0x40;
+  sh(sp + 0x12, 0);
+  sh(sp + 0x14, 0x40);
+  sh(sp + 0x16, s4);
+  LoadImage(addr_to_pointer(sp + 0x10), addr_to_pointer(lw(s3)));
   v0 = (int32_t)s1 < 4;
   temp = v0 != 0;
-  a2 = 8; // 0x0008
+  a2 = 8;
   if (temp) goto label8007B788;
-  a0 = sp + 16; // 0x0010
+  a0 = 0x10;
   a1 = 0x8006F310;
-  v0 = 512; // 0x0200
-  sh(sp + 0x0010, v0);
-  v0 = 224; // 0x00E0
-  sh(sp + 0x0012, v0);
-  v0 = 32; // 0x0020
-  sh(sp + 0x0014, v0);
-  v0 = 1; // 0x0001
-  sh(sp + 0x0016, v0);
-  v0 = LoadImage(addr_to_pointer(a0), addr_to_pointer(a1));
-  a0 = 0;
-  v0 = DrawSync(a0);
-  a0 = -1; // 0xFFFFFFFF
-  v0 = VSync(a0);
-  sw(drawn_frame, v0);
+  sh(sp + 0x10, 0x200);
+  sh(sp + 0x12, 0xE0);
+  sh(sp + 0x14, 0x20);
+  sh(sp + 0x16, 1);
+  LoadImage(addr_to_pointer(sp + 0x10), addr_to_pointer(0x8006F310));
+  DrawSync(0);
+  sw(DRAWN_FRAME, VSync(-1));
   goto label8007CE90;
 label8007B854:
   v0 = lw(BACKBUFFER_DISP);
@@ -4676,7 +4574,7 @@ label8007B854:
   temp = v0 != a0;
   s5 = 0;
   if (temp) goto label8007B870;
-  a0 += 132; // 0x0084
+  a0 += 0x84;
 label8007B870:
   s1 = 0;
   v0 = pointer_to_addr(PutDrawEnv(addr_to_pointer(a0)));
@@ -4685,27 +4583,21 @@ label8007B870:
   v1 = lw(0x800785E8);
   v0 = lw(0x800785F0);
   sw(0x800758B0, 0);
-  sw(allocator1_ptr, v1);
+  sw(ALLOCATOR1_PTR, v1);
   v1 += a0;
   v0 += a1;
-  sw(allocator1_end, v1);
-  sw(gameobject_stack_ptr_base, v0);
-  sw(gameobject_stack_ptr, v0);
-  v1 = s1 << 7;
+  sw(ALLOCATOR1_END, v1);
+  sw(GAMEOBJECT_STACK_PTR_BASE, v0);
+  sw(GAMEOBJECT_STACK_PTR, v0);
 label8007B8CC:
-  a3 = s1 + 136; // 0x0088
-  s0 = lw(allocator1_ptr);
-  v0 = 0x09000000;
-  sw(s0 + 0x0000, v0);
-  v0 = 44; // 0x002C
-  sb(s0 + 0x0007, v0);
-  v0 = 76; // 0x004C
-  sb(s0 + 0x0004, v0);
-  v0 = 128; // 0x0080
-  sb(s0 + 0x0005, v0);
-  v0 = 8; // 0x0008
-  sh(s0 + 0x0008, v1);
-  sh(s0 + 0x000A, v0);
+  a3 = s1 + 0x88;
+  s0 = lw(ALLOCATOR1_PTR);
+  sw(s0 + 0x00, 0x09000000);
+  sb(s0 + 0x07, 0x2C);
+  sb(s0 + 0x04, 0x4C);
+  sb(s0 + 0x05, 0x80);
+  sh(s0 + 0x08, s1 << 7);
+  sh(s0 + 0x0A, 8);
   v0 = lhu(s0 + 0x0008);
   a1 = lhu(s0 + 0x000A);
   a2 = lhu(s0 + 0x0008);
@@ -4720,7 +4612,7 @@ label8007B8CC:
   sb(s0 + 0x000D, 0);
   sh(s0 + 0x0012, a1);
   a1 = lbu(s0 + 0x000D);
-  s2 = 64; // 0x0040
+  s2 = 0x40;
   sb(s0 + 0x000C, 0);
   sh(s0 + 0x0018, a2);
   a2 = lbu(s0 + 0x000C);
@@ -4742,37 +4634,34 @@ label8007B8CC:
   v1 = lbu(s0 + 0x000D);
   v0 += 128; // 0x0080
   v1 -= 33; // 0xFFFFFFDF
-  sb(s0 + 0x0024, v0);
-  v0 = 14368; // 0x3820
-  sb(s0 + 0x0025, v1);
-  sh(s0 + 0x000E, v0);
-  sh(s0 + 0x0016, a3);
+  sb(s0 + 0x24, v0);
+  sb(s0 + 0x25, v1);
+  sh(s0 + 0x0E, 0x3820);
+  sh(s0 + 0x16, a3);
   append_gpu_command_block(addr_to_pointer(a0));
-  a0 = s0 + 40; // 0x0028
+  a0 = s0 + 0x28;
   v0 = (int32_t)s1 < 4;
-  sw(allocator1_ptr, a0);
+  sw(ALLOCATOR1_PTR, a0);
   temp = v0 != 0;
-  v1 = s1 << 7;
   if (temp) goto label8007B8CC;
-  v0 = 0x03000000;
-  v1 = 231; // 0x00E7
-  sw(s0 + 0x0028, v0);
-  v0 = 512; // 0x0200
-  sb(s0 + 0x002F, s2);
-  sh(s0 + 0x0030, 0);
-  sh(s0 + 0x0032, v1);
-  sh(s0 + 0x0034, v0);
-  sh(s0 + 0x0036, v1);
-  sb(s0 + 0x002C, 0);
-  sb(s0 + 0x002D, 0);
-  sb(s0 + 0x002E, 0);
+
+  sw(s0 + 0x28, 0x03000000);
+  sb(s0 + 0x2C, 0);
+  sb(s0 + 0x2D, 0);
+  sb(s0 + 0x2E, 0);
+  sb(s0 + 0x2F, s2);
+  sh(s0 + 0x30, 0);
+  sh(s0 + 0x32, 0xE7);
+  sh(s0 + 0x34, 0x200);
+  sh(s0 + 0x36, 0xE7);
+
   append_gpu_command_block(addr_to_pointer(a0));
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v1 = s0 + 56; // 0x0038
-  sw(allocator1_ptr, v1);
+  sw(ALLOCATOR1_PTR, v1);
   v0 = (int32_t)v0 < 100;
   temp = v0 == 0;
-  s3 = sp + 56; // 0x0038
+  s3 = sp + 0x38;
   if (temp) goto label8007C8D8;
   v0 = lw(0x80078630);
   v1 = lw(0x80078634);
@@ -4809,22 +4698,16 @@ label8007BAB0:
   temp = (int32_t)v0 >= 0;
   if (temp) goto label8007BAF8;
   a1 = 0x8007AA74; // "TIME IS UP"
-  v0 = lw(a1 + 0x0000);
-  v1 = lw(a1 + 0x0004);
-  a0 = lh(a1 + 0x0008);
-  sw(sp + 0x0018, v0);
-  sw(sp + 0x001C, v1);
-  sh(sp + 0x0020, a0);
-  v0 = lb(a1 + 0x000A);
-  sb(sp + 0x0022, v0);
+  sw(sp + 0x18, lw(a1 + 0x00));
+  sw(sp + 0x1C, lw(a1 + 0x04));
+  sh(sp + 0x20, lh(a1 + 0x08));
+  sb(sp + 0x22, lb(a1 + 0x0A));
   goto label8007BB14;
 label8007BAF8:
-  v0 = lw(0x8007AA80); // "CRASHED"
-  v1 = lw(0x8007AA84); // "HED"
-  sw(sp + 0x0018, v0);
-  sw(sp + 0x001C, v1);
+  sw(sp + 0x18, lw(0x8007AA80));
+  sw(sp + 0x1C, lw(0x8007AA84));
 label8007BB10:
-  s1 = sp + 24; // 0x0018
+  s1 = sp + 0x18;
 label8007BB14:
   a0 = s1;
   v0 = spyro_strlen(a0);
@@ -4843,15 +4726,15 @@ label8007BB14:
   s0 = 3072; // 0x0C00
   sw(sp + 0x003C, v0);
   sw(sp + 0x0040, s0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   a1 = 0;
-  a0 = lw(gameobject_stack_ptr);
+  a0 = lw(GAMEOBJECT_STACK_PTR);
   a0 -= 88; // 0xFFFFFFA8
-  sw(gameobject_stack_ptr, a0);
+  sw(GAMEOBJECT_STACK_PTR, a0);
   a2 = 88; // 0x0058
   spyro_memset32(a0, a1, a2);
   a0 = 60; // 0x003C
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 471; // 0x01D7
   sh(v1 + 0x0036, v0);
   v0 = 460; // 0x01CC
@@ -4862,22 +4745,22 @@ label8007BB14:
   v0 = lw(0x80077FE4);
   a1 = 46; // 0x002E
   v0 = v0 << 1;
-  v0 = lhu(spyro_cos_lut + v0);
+  v0 = lhu(SPYRO_COS_LUT + v0);
   a2 = 452; // 0x01C4
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 25;
   sb(v1 + 0x0045, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = lw(0x80077FE4);
   a3 = 46; // 0x002E
   sb(v1 + 0x0046, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 127; // 0x007F
   sb(v1 + 0x0047, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 11; // 0x000B
   sb(v1 + 0x004F, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = 255; // 0x00FF
   sb(v1 + 0x0050, v0);
   gui_line(a0, a1, a2, a3);
@@ -4893,8 +4776,8 @@ label8007BB14:
   v0 = v0 << 4;
   a0 = lw(0x8006E8C0 + v0);
   a3 = 11; // 0x000B
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   temp = (int32_t)v0 <= 0;
   v0 = (int32_t)v0 < 2;
   if (temp) goto label8007BCC0;
@@ -4910,8 +4793,8 @@ label8007BB14:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s3);
   sw(sp + 0x0040, s0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 2;
 label8007BCC0:
   temp = v0 != 0;
@@ -4968,13 +4851,13 @@ label8007BD84:
   sw(sp + 0x003C, v0);
   v0 = 4352; // 0x1100
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v0 = lw(0x8007569C);
   v0 = (int32_t)v0 < 2;
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007BE14;
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x0000);
@@ -4996,8 +4879,8 @@ label8007BE14:
   v0 = v0 << 4;
   a0 = lw(0x8006E8C4 + v0);
   a3 = 11; // 0x000B
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 3;
   temp = v0 != 0;
   s0 = sp + 24; // 0x0018
@@ -5014,9 +4897,9 @@ label8007BE14:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s3);
   sw(sp + 0x0040, s2);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
 label8007BEAC:
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 4;
   temp = v0 != 0;
   v0 = 8; // 0x0008
@@ -5053,32 +4936,20 @@ label8007BF6C:
   a1 = 0x8007AA98; // &0x00000030
   a0 = sp + 24; // 0x0018
   spyro_sprintf();
-  s1 = 33; // 0x0021
+  s1 = 0x21;
 label8007BF80:
-  s0 = sp + 24; // 0x0018
+  s0 = sp + 0x18;
   a0 = s0;
-  v0 = spyro_strlen(a0);
-  a0 = s0;
-  a1 = sp + 56; // 0x0038
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v1 = v0 << 3;
-  v1 += v0;
-  v1 = v1 << 1;
-  v0 = 480; // 0x01E0
-  v0 -= v1;
-  sw(sp + 0x0038, v0);
-  v0 = 80; // 0x0050
-  sw(sp + 0x003C, v0);
-  v0 = 4352; // 0x1100
-  sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x8007569C);
-  v0 = (int32_t)v0 < 4;
+  v1 = spyro_strlen(s0)*0x12;
+  sw(sp + 0x0038, 0x1E0 - v1);
+  sw(sp + 0x003C, 0x50);
+  sw(sp + 0x0040, 0x1100);
+  create_3d_text2(addr_to_pointer(s0), addr_to_pointer(sp + 0x38), 0x12, 0x0B);
+  v0 = (int32_t)lw(0x8007569C) < 4;
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C010;
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x0000);
@@ -5092,15 +4963,15 @@ label8007C010:
   a2 = 18; // 0x0012
   s1 = 100; // 0x0064
   v0 = lw(WORLD_ID);
-  s3 = 4352; // 0x1100
+  s3 = 0x1100;
   sw(sp + 0x0038, s1);
   sw(sp + 0x003C, s1);
   sw(sp + 0x0040, s3);
   v0 = v0 << 4;
   a0 = lw(0x8006E8C8 + v0);
   a3 = 11; // 0x000B
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 5;
   temp = v0 != 0;
   s0 = sp + 24; // 0x0018
@@ -5109,17 +4980,12 @@ label8007C010:
   a1 = 0x8007AA88; // "%d/8"
   a0 = s0;
   spyro_sprintf();
-  a0 = s0;
-  a1 = s2;
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v0 = 320; // 0x0140
-  sw(sp + 0x0038, v0);
-  sw(sp + 0x003C, s1);
-  sw(sp + 0x0040, s3);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  sw(sp + 0x38, 0x140);
+  sw(sp + 0x3C, s1);
+  sw(sp + 0x40, s3);
+  create_3d_text2(addr_to_pointer(s0), addr_to_pointer(s2), 0x12, 0x0B);
 label8007C0A4:
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 6;
   temp = v0 != 0;
   s1 = sp + 56; // 0x0038
@@ -5161,28 +5027,18 @@ label8007C164:
 label8007C178:
   s0 = sp + 24; // 0x0018
   a0 = s0;
-  v0 = spyro_strlen(a0);
-  a0 = s0;
-  a1 = sp + 56; // 0x0038
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v1 = v0 << 3;
-  v1 += v0;
-  v1 = v1 << 1;
-  v0 = 480; // 0x01E0
-  v0 -= v1;
-  sw(sp + 0x0038, v0);
-  v0 = 100; // 0x0064
-  sw(sp + 0x003C, v0);
-  v0 = 4352; // 0x1100
-  sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  v0 = spyro_strlen(s0);
+  v0 = 0x1E0 - v0*0x12;
+  sw(sp + 0x38, v0);
+  sw(sp + 0x3C, 0x64);
+  sw(sp + 0x40, 0x1100);
+  create_3d_text2(addr_to_pointer(s0), addr_to_pointer(sp + 0x38), 0x12, 0x0B);
   v0 = lw(0x8007569C);
   v0 = (int32_t)v0 < 6;
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C208;
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x0000);
@@ -5205,8 +5061,8 @@ label8007C20C:
   v0 = v0 << 4;
   a0 = lw(0x8006E8CC + v0);
   a3 = 11; // 0x000B
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 7;
   temp = v0 != 0;
   s0 = sp + 24; // 0x0018
@@ -5223,9 +5079,9 @@ label8007C20C:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s3);
   sw(sp + 0x0040, s2);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
 label8007C2A0:
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 8;
   temp = v0 != 0;
   v0 = 8; // 0x0008
@@ -5281,13 +5137,13 @@ label8007C374:
   sw(sp + 0x003C, v0);
   v0 = 4352; // 0x1100
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v0 = lw(0x8007569C);
   v0 = (int32_t)v0 < 8;
   temp = v0 == 0;
   a2 = 16; // 0x0010
   if (temp) goto label8007C404;
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   v0 = lw(0x800761D4);
   v0 += s1;
   a0 = lbu(v0 + 0x0000);
@@ -5306,8 +5162,8 @@ label8007C404:
   sw(sp + 0x003C, v0);
   v0 = 4352; // 0x1100
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  v0 = lw(0x80075744);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 9;
   temp = v0 != 0;
   a0 = 416; // 0x01A0
@@ -5370,12 +5226,12 @@ label8007C530:
   sw(sp + 0x003C, v0);
   v0 = 4352; // 0x1100
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v0 = lw(0x8007569C);
   v0 = (int32_t)v0 < 9;
   temp = v0 == 0;
   if (temp) goto label8007C5C0;
-  a1 = player_position;
+  a1 = PLAYER_POSITION;
   v0 = lw(0x800761D4);
   a2 = 16; // 0x0010
   v0 += s1;
@@ -5402,7 +5258,7 @@ label8007C5C4:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s1);
   sw(sp + 0x0040, s3);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   s0 = sp + 24; // 0x0018
   a0 = s0;
   a1 = 0x8007AA94; // "%d"
@@ -5419,64 +5275,45 @@ label8007C5C4:
   v1 = v1 << 1;
   v0 = 480; // 0x01E0
   v0 -= v1;
-  sw(sp + 0x0038, v0);
-  sw(sp + 0x003C, s1);
-  sw(sp + 0x0040, s3);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  sw(sp + 0x38, v0);
+  sw(sp + 0x3C, s1);
+  sw(sp + 0x40, s3);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   a0 = 60; // 0x003C
   a1 = 176; // 0x00B0
   a2 = 452; // 0x01C4
   a3 = 176; // 0x00B0
   gui_line(a0, a1, a2, a3);
-  v0 = lw(0x80075744);
+  v0 = lw(HOMEWORLD_TO_LOAD);
   v0 = (int32_t)v0 < 9;
   temp = v0 != 0;
   if (temp) goto label8007C8A4;
   temp = s5 != 0;
   if (temp) goto label8007C6B8;
-  v0 = lw(WORLD_ID);
-  v0 = v0 << 2;
-  v0 = lw(0x80078618 + v0);
-  temp = v0 == 0;
   a1 = s2;
-  if (temp) goto label8007C70C;
+  if (lw(0x80078618 + lw(WORLD_ID)*4)) goto label8007C70C;
 label8007C6B8:
-  a0 = 0x8007AAB0; // "PRESS   TO CONTINUE"
-  a1 = s2;
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v0 = 80; // 0x0050
-  sw(sp + 0x0038, v0);
-  v0 = 210; // 0x00D2
-  sw(sp + 0x003C, v0);
-  sw(sp + 0x0040, s3);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  a0 = 0x8007AAC4; // &0x00000058
-  a1 = s2;
-  a2 = 18; // 0x0012
-  a3 = 10; // 0x000A
-  v0 = 188; // 0x00BC
-  sw(sp + 0x0038, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  sw(sp + 0x38, 0x50);
+  sw(sp + 0x3C, 0xD2);
+  sw(sp + 0x40, s3);
+  create_3d_text2("PRESS   TO CONTINUE", addr_to_pointer(s2), 0x12, 0x0B);
+  sw(sp + 0x38, 0xBC);
+  sw(sp + 0x3C, 0xD2);
+  sw(sp + 0x40, s3);
+  create_3d_text2("X", addr_to_pointer(s2), 0x12, 0x0A);
   goto label8007C8A4;
 label8007C70C:
-  a0 = 0x8007AAC8; // "TRY AGAIN?"
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
-  v0 = 140; // 0x008C
-  s0 = 190; // 0x00BE
-  sw(sp + 0x0038, v0);
-  sw(sp + 0x003C, s0);
-  sw(sp + 0x0040, s3);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  sw(sp + 0x38, 0x8C);
+  sw(sp + 0x3C, 0xBE);
+  sw(sp + 0x40, s3);
+  create_3d_text2("TRY AGAIN?", addr_to_pointer(a1), 0x12, 0x0B);
   a3 = 0;
-  v0 = 348; // 0x015C
-  sw(sp + 0x0038, v0);
+  sw(sp + 0x38, 0x15C);
   v0 = lw(0x80075720);
   a1 = s2;
-  sw(sp + 0x003C, s0);
+  sw(sp + 0x3C, 0xBE);
   temp = v0 != 0;
-  sw(sp + 0x0040, s3);
+  sw(sp + 0x40, s3);
   if (temp) goto label8007C78C;
   v1 = lw(0x8007568C);
   temp = (int32_t)v1 >= 0;
@@ -5496,7 +5333,7 @@ label8007C78C:
   a2 = 18; // 0x0012
   a3 = a3 << 1;
   a3 += 10; // 0x000A
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   s2 = 3; // 0x0003
   a3 = 0;
   v0 = 348; // 0x015C
@@ -5507,7 +5344,7 @@ label8007C78C:
   sw(sp + 0x0040, v0);
   v0 = 1; // 0x0001
   v1 = lw(0x80075720);
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   temp = v1 != v0;
   a1 = sp + 56; // 0x0038
   if (temp) goto label8007C814;
@@ -5529,17 +5366,17 @@ label8007C814:
   a2 = 18; // 0x0012
   a3 = a3 << 1;
   a3 += 10; // 0x000A
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v0 = lw(0x80075720);
   temp = v0 == 0;
   if (temp) goto label8007C84C;
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   s2 = 2; // 0x0002
 label8007C84C:
   temp = (int32_t)s2 <= 0;
   s1 = 0;
   if (temp) goto label8007C8A4;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8007C860:
   v0 = lw(0x800758B8);
@@ -5564,52 +5401,35 @@ label8007C8A4:
   s1 = 0;
   a0 = 0x80077FEC;
 label8007C8B8:
-  sw(v1 + 0x0000, a0);
+  sw(v1, a0);
   v1 += 4; // 0x0004
   s1++;
   v0 = (int32_t)s1 < 4;
   temp = v0 != 0;
   a0 += 88; // 0x0058
   if (temp) goto label8007C8B8;
-  sw(v1 + 0x0000, 0);
+  sw(v1, 0);
   goto label8007CE90;
 label8007C8D8:
-  a0 = 0x8007AADC; // "TIME ATTACK"
   a1 = s3;
-  a2 = 24; // 0x0018
-  a3 = 11; // 0x000B
-  v0 = 136; // 0x0088
-  sw(sp + 0x0038, v0);
-  v0 = 40; // 0x0028
-  sw(sp + 0x003C, v0);
-  v0 = 3072; // 0x0C00
-  sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  a0 = 60; // 0x003C
-  a1 = 61; // 0x003D
-  a2 = 452; // 0x01C4
-  a3 = 61; // 0x003D
-  gui_line(a0, a1, a2, a3);
-  a0 = 0x8007AAE8; // "BEST TIME"
-  a1 = s3;
-  a2 = 18; // 0x0012
-  a3 = 11; // 0x000B
+  sw(sp + 0x38, 0x88);
+  sw(sp + 0x3C, 0x28);
+  sw(sp + 0x40, 0xC00);
+  create_3d_text2("TIME ATTACK", addr_to_pointer(s3), 0x18, 0x0B);
+  gui_line(0x3C, 0x3D, 0x1C4, 0x3D);
   v0 = 320; // 0x0140
   s2 = 80; // 0x0050
   s0 = 4352; // 0x1100
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s2);
   sw(sp + 0x0040, s0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2("BEST TIME", addr_to_pointer(s3), 0x18, 0x0B);
   a1 = s3;
-  v0 = 401; // 0x0191
-  sw(sp + 0x0038, v0);
-  v0 = lw(WORLD_ID);
-  s1 = 100; // 0x0064
-  sw(sp + 0x003C, s1);
-  sw(sp + 0x0040, s0);
-  v0 = v0 << 2;
-  a0 = lw(0x80078618 + v0);
+  sw(sp + 0x38, 0x191);
+  s1 = 0x64;
+  sw(sp + 0x3C, s1);
+  sw(sp + 0x40, s0);
+  a0 = lw(0x80078618 + lw(WORLD_ID)*4);
   v0 = lw(0x800758C4);
   temp = v0;
   a2 = 11; // 0x000B
@@ -5629,7 +5449,7 @@ label8007C8D8:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s2);
   sw(sp + 0x0040, s0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v1 = lw(WORLD_ID);
   a1 = lw(0x800758F4);
   v0 = 137; // 0x0089
@@ -5670,11 +5490,11 @@ label8007C9FC:
     JALR(temp, 0x8007CA50);
   }
   s2 = v0;
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   temp = (int32_t)s2 <= 0;
   a0 = 0;
   if (temp) goto label8007CAD8;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
 label8007CA74:
   v0 = lw(0x800758B8);
   s1++;
@@ -5750,12 +5570,12 @@ label8007CB60:
   sw(sp + 0x003C, v0);
   v0 = 3072; // 0x0C00
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
-  s0 = lw(gameobject_stack_ptr);
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   temp = (int32_t)s2 <= 0;
   s1 = 0;
   if (temp) goto label8007CCD0;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8007CBC4:
   v0 = lw(0x800758B8);
@@ -5796,12 +5616,12 @@ label8007CC10:
   sw(sp + 0x003C, v0);
   v0 = 3072; // 0x0C00
   sw(sp + 0x0040, v0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   s2 = 10; // 0x000A
   s1 = 0;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
 label8007CC8C:
   v0 = lw(0x800758B8);
   s1++;
@@ -5838,7 +5658,7 @@ label8007CCD4:
   sw(sp + 0x0038, v0);
   sw(sp + 0x003C, s1);
   sw(sp + 0x0040, s0);
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   a3 = 0;
   v0 = 340; // 0x0154
   sw(sp + 0x0038, v0);
@@ -5866,7 +5686,7 @@ label8007CD70:
   a2 = 18; // 0x0012
   a3 = a3 << 1;
   a3 += 10; // 0x000A
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   s2 = 3; // 0x0003
   a3 = 0;
   v0 = 340; // 0x0154
@@ -5877,7 +5697,7 @@ label8007CD70:
   sw(sp + 0x0040, v0);
   v0 = 1; // 0x0001
   v1 = lw(0x80075720);
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   temp = v1 != v0;
   a1 = sp + 56; // 0x0038
   if (temp) goto label8007CDF8;
@@ -5899,17 +5719,17 @@ label8007CDF8:
   a2 = 18; // 0x0012
   a3 = a3 << 1;
   a3 += 10; // 0x000A
-  v0 = pointer_to_addr(create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3));
+  create_3d_text2(addr_to_pointer(a0), addr_to_pointer(a1), a2, a3);
   v0 = lw(0x80075720);
   temp = v0 == 0;
   if (temp) goto label8007CE30;
-  s0 = lw(gameobject_stack_ptr);
+  s0 = lw(GAMEOBJECT_STACK_PTR);
   s2 = 2; // 0x0002
 label8007CE30:
   temp = (int32_t)s2 <= 0;
   s1 = 0;
   if (temp) goto label8007CE88;
-  a1 = spyro_cos_lut;
+  a1 = SPYRO_COS_LUT;
   a0 = 0;
 label8007CE44:
   v0 = lw(0x800758B8);
@@ -5956,8 +5776,8 @@ label8007CEC8:
 label8007CEFC:
   a0 = -1; // 0xFFFFFFFF
   v0 = VSync(a0);
-  v1 = lw(drawn_frame);
-  a0 = current_frame;
+  v1 = lw(DRAWN_FRAME);
+  a0 = CURRENT_FRAME;
   sw(a0 + 0x0000, v0);
   v0 -= v1;
   v0 = (int32_t)v0 < 2;
@@ -5976,12 +5796,9 @@ label8007CF2C:
   temp = v0 != 0;
   if (temp) goto label8007CF2C;
 label8007CF54:
-  a0 = -1; // 0xFFFFFFFF
-  v0 = VSync(a0);
-  a0 = lw(BACKBUFFER_DISP);
-  sw(drawn_frame, v0);
-  a0 += 92; // 0x005C
-  v0 = pointer_to_addr(PutDispEnv(addr_to_pointer(a0)));
+  v0 = VSync(-1);
+  sw(DRAWN_FRAME, v0);
+  PutDispEnv(&backbuffer_disp->disp);
   v0 = lw(0x800758B8);
   v0++;
   sw(0x800758B8, v0);
@@ -6970,24 +6787,24 @@ label8007C05C:
   if ((int32_t)lw(0x800756E4) <= 0) goto label8007C1D4;
   s2 = 0;
 label8007C0B8:
-  sw(gameobject_stack_ptr, lw(gameobject_stack_ptr) - 88);
-  struct game_object *object = addr_to_pointer(lw(gameobject_stack_ptr));
+  sw(GAMEOBJECT_STACK_PTR, lw(GAMEOBJECT_STACK_PTR) - 88);
+  struct game_object *object = addr_to_pointer(lw(GAMEOBJECT_STACK_PTR));
   s0 = lw(0x8007589C) + s2;
   memset(object, 0, sizeof(*object));
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   sw(v1 + 0x0C, lh(s0 + 0x12));
   sw(v1 + 0x10, lh(s0 + 0x14));
   sw(v1 + 0x14, lh(s0 + 0x16));
   sb(v1 + 0x44, lbu(s0 + 0x05));
   if (lh(s0 + 0x1A) == 0x115) {
-    v1 = lw(gameobject_stack_ptr);
+    v1 = lw(GAMEOBJECT_STACK_PTR);
     sb(v1 + 0x44, lbu(v1 + 0x44) + 0x29);
     sw(v1 + 0x14, 0x1C00);
   }
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   v0 = lbu(s0 + 0x06);
   sb(v1 + 0x45, v0);
-  v1 = lw(gameobject_stack_ptr);
+  v1 = lw(GAMEOBJECT_STACK_PTR);
   sb(v1 + 0x46, lbu(s0 + 0x07));
   sh(v1 + 0x36, lhu(s0 + 0x1A));
   sb(v1 + 0x4F, 0x0B);
@@ -7051,8 +6868,8 @@ void function_8005B6F8(void)
   a3 = lw(0x800785EC);
   a0 = lw(0x800785F0);
   v0 = lw(0x800785F4);
-  DISP *disp1 = addr_to_pointer(DISP1);
-  DISP *disp2 = addr_to_pointer(DISP2);
+  disp1 = addr_to_pointer(DISP1);
+  disp2 = addr_to_pointer(DISP2);
   disp1->memory_arena = v1;
   disp2->memory_arena = a3;
   disp1->memory_link_list = a0;
@@ -7083,16 +6900,16 @@ void function_8001ED5C(void)
   v1 = backbuffer_disp->memory_ordered_link_list;
   a0 = backbuffer_disp->memory_link_list;
   sw(0x800758B0, 0);
-  sw(allocator1_ptr, v0);
+  sw(ALLOCATOR1_PTR, v0);
   v0 += 0x1C000;
-  sw(allocator1_end, v0);
-  sw(gameobject_stack_ptr_base, v0);
-  sw(gameobject_stack_ptr, v0);
-  sw(ordered_linked_list, v1);
-  sw(linked_list1, a0);
+  sw(ALLOCATOR1_END, v0);
+  sw(GAMEOBJECT_STACK_PTR_BASE, v0);
+  sw(GAMEOBJECT_STACK_PTR, v0);
+  sw(ORDERED_LINKED_LIST, v1);
+  sw(LINKED_LIST1, a0);
   function_80033C50();
 
-  switch (lw(gamestate))
+  switch (lw(GAMESTATE))
   {
   case 0: // in game
     v0 = lbu(SKYBOX_DATA + 0x10);

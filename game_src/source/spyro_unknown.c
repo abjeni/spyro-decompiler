@@ -291,7 +291,7 @@ void function_800333DC(void)
       sw(0x800758B4, v0);
       sw(0x80075818, -1);
     } else
-      if (lw(total_found_gems) == 14000)
+      if (lw(TOTAL_FOUND_GEMS) == 14000)
         sw(0x800758B4, 10);
       else
         sw(0x800758B4, 60);
@@ -441,7 +441,7 @@ void function_8001364C(void)
   s0 = lw(0x800785E4);
   v1 = lw(LEVEL_ID);
   sw(0x800758C8, 0);
-  sw(level_frame_counter, 0);
+  sw(LEVEL_FRAME_COUNTER, 0);
   sw(0x80075814, 0);
   sw(0x80075684, 0);
   s2 = s0;
@@ -454,7 +454,7 @@ void function_8001364C(void)
   else
     sw(0x8007591C, 0);
   
-  a0 = buttons;
+  a0 = BUTTONS;
   function_800536A4();
   v0 = lw(0x80075690); // &0x00000000
   temp = v0 != 0;
@@ -466,7 +466,7 @@ label80013730:
   v0 = lw(a1 + 0x0000);
   temp = v0 == 0;
   if (temp) goto label80013768;
-  a0 = player_position;
+  a0 = PLAYER_POSITION;
   a1 += 80; // 0x0050
   spyro_vec3_copy(a0, a1);
   v0 = lw(0x80077888 + 0x005C);
@@ -488,7 +488,7 @@ label80013768:
   temp = v1 != 0;
   v0 = 12; // 0x000C
   if (temp) goto label8001388C;
-  v1 = lw(gamestate); // &0x00000000
+  v1 = lw(GAMESTATE); // &0x00000000
   temp = v1 == v0;
   v0 = 5; // 0x0005
   if (temp) goto label8001388C;
@@ -508,7 +508,7 @@ label80013768:
   temp = v0 == 0;
   a1 = a2 << 1;
   if (temp) goto label80013864;
-  a0 = player_position;
+  a0 = PLAYER_POSITION;
   a1 += a2;
   a1 = a1 << 2;
   v0 = 0x8006F140; // &0x00000027
@@ -518,7 +518,7 @@ label80013768:
   v0 = lbu(0x8006F296 + v0); // &0x3D630000
   goto label80013884;
 label80013864:
-  a0 = player_position;
+  a0 = PLAYER_POSITION;
   a1 = 0x80077888 + 0x0050;
   spyro_vec3_copy(a0, a1);
   v0 = lw(0x80077888 + 0x005C);
@@ -527,7 +527,7 @@ label80013884:
 label8001388C:
   v0 = lw(0x8007580C);
   sw(0x80078BBC, v0);
-  v0 = lw(gamestate); // &0x00000000
+  v0 = lw(GAMESTATE); // &0x00000000
   s1 = 12; // 0x000C
   temp = v0 == s1;
   v0 = 0x66660000;
@@ -560,7 +560,7 @@ label800138C4:
   v0 = lw(0x800756D0); // &0x00000000
   temp = v0 != 0;
   if (temp) goto label80013A44;
-  v0 = lw(player_position + 0x0008);
+  v0 = lw(PLAYER_POSITION + 0x0008);
   sw(0x80078AD4, 0);
   sb(0x80078A64, 0);
   sb(0x80078A65, 0);
@@ -570,7 +570,7 @@ label800138C4:
   sw(0x800758A0, 0);
   sw(0x80075700, 0); // &0x00000000
   v0 -= 1024; // 0xFFFFFC00
-  sw(player_position + 0x0008, v0);
+  sw(PLAYER_POSITION + 0x0008, v0);
   goto label80013A44;
 label8001399C:
   v0 = lw(0x800756D0); // &0x00000000
@@ -587,13 +587,13 @@ label8001399C:
   a0 = a0 << 1;
   v1 += v0;
   sw(a1 + 0x0000, v1);
-  v0 = lhu(spyro_cos_lut + a0);
+  v0 = lhu(SPYRO_COS_LUT + a0);
   v1 = lw(0x80077888 + 0x0050);
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 18;
   v1 -= v0;
   sw(0x80077888 + 0x0050, v1);
-  v0 = lhu(spyro_sin_lut + a0);
+  v0 = lhu(SPYRO_SIN_LUT + a0);
   v1 = lw(0x80077888 + 0x0054);
   v0 = v0 << 16;
   v0 = (int32_t)v0 >> 18;
@@ -615,7 +615,7 @@ label80013A70:
   temp = v0 != 0;
   v0 = 12; // 0x000C
   if (temp) goto label80013B34;
-  v1 = lw(gamestate); // &0x00000000
+  v1 = lw(GAMESTATE); // &0x00000000
   temp = v1 == v0;
   if (temp) goto label80013B68;
   a0 = 0x80078668;
@@ -633,7 +633,7 @@ label80013A70:
   sw(a0 + 0x0010, v1);
   sw(a0 + 0x0014, a1);
   v1 = lw(0x80078B74);
-  v0 = player_position;
+  v0 = PLAYER_POSITION;
   sw(0x80076EA0, v0);
   v0 = 1536; // 0x0600
   sw(0x80076E28, 0);
@@ -645,12 +645,12 @@ label80013A70:
   v0 = 32; // 0x0020
   sw(0x80075918, v0);
 label80013B34:
-  v1 = lw(gamestate); // &0x00000000
+  v1 = lw(GAMESTATE); // &0x00000000
   v0 = 12; // 0x000C
   temp = v1 == v0;
   v0 = 1; // 0x0001
   if (temp) goto label80013B68;
-  sw(gamestate, 0); // &0x00000000
+  sw(GAMESTATE, 0); // &0x00000000
   sw(0x8007579C, v0); // &0x00000000
   sw(0x8007570C, 0); // &0x00000000
   sw(0x800756C0, 0); // &0x00000000
@@ -969,11 +969,11 @@ label80014084:
   v1 = lw(0x800757B8); // &0x00000000
   v1 = v1 << 4;
   v0 = lw(0x8006EE9C + v1); // &0x00029EBE
-  sw(player_position, v0);
+  sw(PLAYER_POSITION, v0);
   v0 = lw(0x8006EEA0 + v1); // &0x0002254F
-  sw(player_position + 0x0004, v0);
+  sw(PLAYER_POSITION + 0x0004, v0);
   v0 = lw(0x8006EEA4 + v1); // "jQ"
-  sw(player_position + 0x0008, v0);
+  sw(PLAYER_POSITION + 0x0008, v0);
   v0 = lw(0x8006EEA8 + v1); // &0x00000020
   v1 = lw(IS_DEMO_MODE);
   a0 = 1; // 0x0001

@@ -5,6 +5,7 @@
 /game_src/objdump
 /root
 /mem_card
+/mem_card2
 build/
 program
 .cache

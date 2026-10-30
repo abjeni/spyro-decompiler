@@ -15,6 +15,7 @@
 #include "spyro_cdrom.h"
 #include "spyro_psy.h"
 #include "spyro_system.h"
+#include "spyro_controller.h"
 
 int CdSync(int mode, uint8_t *result)
 {
@@ -28,7 +29,7 @@ int CdSync(int mode, uint8_t *result)
 // size: 0x00000020
 void function_80063BD8(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = CdSync(a0, addr_to_pointer(a1));
 }
 
@@ -87,20 +88,20 @@ void read_disk2(uint32_t sector, uint32_t dst, uint32_t len, uint32_t offset, ui
 
 void function_80016500(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   read_disk1(a0, a1, a2, a3, lw(sp+0x10));
 }
 
 void function_80016698(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   read_disk2(a0, a1, a2, a3, lw(sp+0x10));
 }
 
 // size: 0x00000010
 void function_80063A8C(void)
 {
-  v0 = lbu(cd_result1);
+  v0 = lbu(CD_RESULT1);
 }
 
 // size: 0x00000010
@@ -112,7 +113,7 @@ void function_80063A9C(void)
 // size: 0x00000010
 void function_80063AAC(void)
 {
-  v0 = lbu(cd_current_command);
+  v0 = lbu(CD_CURRENT_COMMAND);
 }
 
 // size: 0x00000010
@@ -177,7 +178,7 @@ void function_8002BA68(void)
   function_8006623C();
   a0 = 0;
   function_8005DE58();
-  function_80069080();
+  stop_registering_gamepads();
   ResetGraph(3);
   function_8005DEBC();
 }
@@ -220,7 +221,7 @@ void write_cdrom_header(uint32_t sector_num, char header[])
 // size: 0x00000104
 void function_80064094(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   write_cdrom_header(a0, addr_to_pointer(a1));
 }
 
@@ -239,7 +240,7 @@ uint32_t parse_cdrom_header(char header[])
 // size: 0x00000080
 void function_80064198(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = parse_cdrom_header(addr_to_pointer(a0));
 }
 
@@ -252,7 +253,7 @@ uint32_t dma_cdrom_callback(uint32_t callback)
 // size: 0x00000024
 void function_80064050(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = dma_cdrom_callback(a0);
 }
 
@@ -261,8 +262,8 @@ void function_80065364(void)
 {
   sw(0x80074E38, 0);
   sw(0x80074E34, 0);
-  sw(cd_result2, 0);
-  sw(cd_result1, 0);
+  sw(CD_RESULT2, 0);
+  sw(CD_RESULT1, 0);
   init_hook_entry_int2();
   a1 = 0x8006590C;
   a0 = 2; // 0x0002
@@ -272,7 +273,7 @@ void function_80065364(void)
 // size: 0x000000F4
 void function_80065270(void)
 {
-  v1 = lw(SPU_voice_base_ptr);
+  v1 = lw(SPU_VOICE_BASE_PTR);
   if (lhu(v1 + 0x01B8) == 0 && lhu(v1 + 0x01BA) == 0) {
     sh(v1 + 0x0180, 0x3FFF);
     sh(v1 + 0x0182, 0x3FFF);
@@ -281,14 +282,14 @@ void function_80065270(void)
   sh(v1 + 0x01B2, 0x3FFF);
   sh(v1 + 0x01AA, 0xC001);
   
-  sb(lw(CDROM_INDEX_ptr), 2);
-  sb(lw(CDROM_REG_2_ptr), 0x80);
-  sb(lw(CDROM_REG_3_ptr), 0);
+  sb(lw(CDROM_INDEX_PTR), 2);
+  sb(lw(CDROM_REG_2_PTR), 0x80);
+  sb(lw(CDROM_REG_3_PTR), 0);
 
-  sb(lw(CDROM_INDEX_ptr), 3);
-  sb(lw(CDROM_REG_1_ptr), 0x80);
-  sb(lw(CDROM_REG_2_ptr), 0);
-  sb(lw(CDROM_REG_3_ptr), 0x20);
+  sb(lw(CDROM_INDEX_PTR), 3);
+  sb(lw(CDROM_REG_1_PTR), 0x80);
+  sb(lw(CDROM_REG_2_PTR), 0);
+  sb(lw(CDROM_REG_3_PTR), 0x20);
   v0 = 0;
 }
 
@@ -353,7 +354,7 @@ uint32_t CdInit(void)
 // size: 0x00000098
 void function_8006397C(void)
 {
-  UNREACHABLE
+  DEPRECATED
   v0 = CdInit();
 }
 
@@ -392,7 +393,7 @@ void init_cdrom(void)
 // size: 0x0000008C
 void function_80012480(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   init_cdrom();
 }
 
@@ -404,9 +405,9 @@ void function_80064218(void)
   sw(sp + 0x24, s1);
   sw(sp + 0x20, s0);
 
-  sb(lw(CDROM_INDEX_ptr), 1);
-  int intsts = lbu(lw(CDROM_REG_3_ptr)) & 7;
-  sb(sp + 0x10, lbu(lw(CDROM_REG_3_ptr)) & 7);
+  sb(lw(CDROM_INDEX_PTR), 1);
+  int intsts = lbu(lw(CDROM_REG_3_PTR)) & 7;
+  sb(sp + 0x10, lbu(lw(CDROM_REG_3_PTR)) & 7);
   s1 = 0;
   if (intsts == CdlNoIntr) {
     v0 = 0;
@@ -415,32 +416,32 @@ void function_80064218(void)
 
   int i;
   for (i = 0; i < 8; i++) {
-    if ((lbu(lw(CDROM_INDEX_ptr)) & 0x20) == 0) break;
-    sb(sp + 0x18 + i, lbu(lw(CDROM_REG_1_ptr)));
+    if ((lbu(lw(CDROM_INDEX_PTR)) & 0x20) == 0) break;
+    sb(sp + 0x18 + i, lbu(lw(CDROM_REG_1_PTR)));
   }
 
   for (; i < 8; i++) {
     sb(sp + 0x18 + i, 0);
   }
 
-  sb(lw(CDROM_INDEX_ptr), 1);
-  sb(lw(CDROM_REG_3_ptr), 7);
-  sb(lw(CDROM_REG_2_ptr), 7);
-  if (intsts != CdlAcknowledge || lw(0x80074FFC + lbu(cd_current_command)*4)) {
-    if ((lw(cd_result1) & 0x10) == 0 && lbu(sp + 0x18) & 0x10)
+  sb(lw(CDROM_INDEX_PTR), 1);
+  sb(lw(CDROM_REG_3_PTR), 7);
+  sb(lw(CDROM_REG_2_PTR), 7);
+  if (intsts != CdlAcknowledge || lw(0x80074FFC + lbu(CD_CURRENT_COMMAND)*4)) {
+    if ((lw(CD_RESULT1) & 0x10) == 0 && lbu(sp + 0x18) & 0x10)
       sw(0x80074E4C, lw(0x80074E4C) + 1);
 
     v0 = lbu(sp + 0x18);
     s1 = v0 & 0x1D;
-    sw(cd_result1, v0);
-    sw(cd_result2, lbu(sp + 0x19));
+    sw(CD_RESULT1, v0);
+    sw(CD_RESULT2, lbu(sp + 0x19));
   }
 
   if (intsts == CdlDiskError && (int32_t)lw(0x80074E40) > 0) {
     printf("DiskError: com=%s,code=(%02x:%02x)\n",
-  	  cd_cmd_str[lbu(cd_current_command)],
-  	  lw(cd_result1),
-  	  lw(cd_result2)
+  	  cd_cmd_str[lbu(CD_CURRENT_COMMAND)],
+  	  lw(CD_RESULT1),
+  	  lw(CD_RESULT2)
   	);
   }
 
@@ -457,10 +458,10 @@ void function_80064218(void)
       } else {
         v0 = CdlDataReady;
       }
-      sb(cd_ready_status, v0);
+      sb(CD_READY_STATUS, v0);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
-      sb(lw(CDROM_INDEX_ptr), 0);
-      sb(lw(CDROM_REG_3_ptr), 0);
+      sb(lw(CDROM_INDEX_PTR), 0);
+      sb(lw(CDROM_REG_3_PTR), 0);
       v0 = 4;
       break;
     case CdlComplete:
@@ -468,33 +469,33 @@ void function_80064218(void)
         v0 = CdlDiskError;
       else
         v0 = CdlComplete;
-      sb(cd_sync_status, v0); // &0x00000000
+      sb(CD_SYNC_STATUS, v0); // &0x00000000
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       v0 = 2;
       break;
     case CdlAcknowledge:
       if (s1) {
-        sb(cd_sync_status, CdlDiskError);
+        sb(CD_SYNC_STATUS, CdlDiskError);
         v0 = 2;
-      } else if (lw(0x80074EFC + lbu(cd_current_command)*4)) {
-        sb(cd_sync_status, 3);
+      } else if (lw(0x80074EFC + lbu(CD_CURRENT_COMMAND)*4)) {
+        sb(CD_SYNC_STATUS, 3);
         v0 = 1;
       } else {
-        sb(cd_sync_status, CdlComplete);
+        sb(CD_SYNC_STATUS, CdlComplete);
         v0 = 2;
       }
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       break;
     case CdlDataEnd:
       sb(0x80075116, CdlDataEnd);
-      sb(cd_ready_status, CdlDataEnd);
+      sb(CD_READY_STATUS, CdlDataEnd);
       spyro_memcpy8(0x80075AE0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
       v0 = 4;
       break;
     case CdlDiskError:
-      sb(cd_ready_status, CdlDiskError);
-      sb(cd_sync_status, lbu(cd_ready_status));
+      sb(CD_READY_STATUS, CdlDiskError);
+      sb(CD_SYNC_STATUS, lbu(CD_READY_STATUS));
       spyro_memcpy8(0x80075AD0, sp + 0x18, 8);
       spyro_memcpy8(0x80075AD8, sp + 0x18, 8);
       v0 = 6;
@@ -516,18 +517,18 @@ end:
 // size: 0x000000E0
 void function_80065190(void)
 {
-  sb(lw(CDROM_INDEX_ptr), 1);
-  while (lbu(lw(CDROM_REG_3_ptr)) & 7) {
-    sb(lw(CDROM_INDEX_ptr), 1);
-    sb(lw(CDROM_REG_3_ptr), 7);
-    sb(lw(CDROM_REG_2_ptr), 7);
+  sb(lw(CDROM_INDEX_PTR), 1);
+  while (lbu(lw(CDROM_REG_3_PTR)) & 7) {
+    sb(lw(CDROM_INDEX_PTR), 1);
+    sb(lw(CDROM_REG_3_PTR), 7);
+    sb(lw(CDROM_REG_2_PTR), 7);
   }
   sb(0x80075116, CdlNoIntr);
-  sb(cd_ready_status, CdlNoIntr);
-  sb(cd_sync_status, CdlComplete);
-  sb(lw(CDROM_INDEX_ptr), 0);
-  sb(lw(CDROM_REG_3_ptr), 0);
-  sw(lw(MEM_COMMON_DELAY_ptr), 0x1325);
+  sb(CD_READY_STATUS, CdlNoIntr);
+  sb(CD_SYNC_STATUS, CdlComplete);
+  sb(lw(CDROM_INDEX_PTR), 0);
+  sb(lw(CDROM_REG_3_PTR), 0);
+  sw(lw(MEM_COMMON_DELAY_PTR), 0x1325);
 }
 
 // size: 0x0000016C
@@ -541,15 +542,15 @@ void function_800655A0(void)
       puts("CD timeout: ");
       printf("%s:(%s) Sync=%s, Ready=%s\n",
         "CD_datasync",
-        cd_cmd_str[lbu(cd_current_command)],
-        cd_status_str[lbu(cd_sync_status)],
-        cd_status_str[lbu(cd_ready_status)]
+        cd_cmd_str[lbu(CD_CURRENT_COMMAND)],
+        cd_status_str[lbu(CD_SYNC_STATUS)],
+        cd_status_str[lbu(CD_READY_STATUS)]
       );
       function_80065190();
       v0 = -1;
       return;
     }
-    if ((lw(lw(DMA_CDROM_channel_control_ptr)) & 0x01000000) == 0) {
+    if ((lw(lw(DMA_CDROM_CHANNEL_CONTROL_PTR)) & 0x01000000) == 0) {
       v0 = 0;
       return;
     }
@@ -562,22 +563,22 @@ void function_800655A0(void)
 // size: 0x00000100
 void function_8006570C(void)
 {
-  sb(lw(CDROM_INDEX_ptr), 0);
-  sb(lw(CDROM_REG_3_ptr), 0x80);
-  sw(lw(MEM_CDROM_DELAY_ptr), 0x20943);
-  sw(lw(MEM_COMMON_DELAY_ptr), 0x1323);
-  v1 = lw(DMA_control_register_copy_3_ptr);
+  sb(lw(CDROM_INDEX_PTR), 0);
+  sb(lw(CDROM_REG_3_PTR), 0x80);
+  sw(lw(MEM_CDROM_DELAY_PTR), 0x20943);
+  sw(lw(MEM_COMMON_DELAY_PTR), 0x1323);
+  v1 = lw(DMA_CONTROL_REGISTER_COPY_3_PTR);
   sw(v1, lw(v1) | 0x8000);
-  sw(lw(DMA_CDROM_address_ptr), a0);
-  sw(lw(DMA_CDROM_block_control_ptr), a1 | 0x00010000);
+  sw(lw(DMA_CDROM_ADDRESS_PTR), a0);
+  sw(lw(DMA_CDROM_BLOCK_CONTROL_PTR), a1 | 0x00010000);
 
-  while ((lbu(lw(CDROM_INDEX_ptr)) & 0x40) == 0);
+  while ((lbu(lw(CDROM_INDEX_PTR)) & 0x40) == 0);
 
-  sw(lw(DMA_CDROM_channel_control_ptr), 0x11000000);
+  sw(lw(DMA_CDROM_CHANNEL_CONTROL_PTR), 0x11000000);
   
-  while (lw(lw(DMA_CDROM_channel_control_ptr)) & 0x01000000);
+  while (lw(lw(DMA_CDROM_CHANNEL_CONTROL_PTR)) & 0x01000000);
   
-  sw(lw(MEM_COMMON_DELAY_ptr), 0x1325);
+  sw(lw(MEM_COMMON_DELAY_PTR), 0x1325);
   v0 = 0;
   return;
 }
@@ -585,19 +586,19 @@ void function_8006570C(void)
 // size: 0x000000F0
 void function_8006580C(void)
 {
-  sb(lw(CDROM_INDEX_ptr), 0);
-  sb(lw(CDROM_REG_3_ptr), 0x80);
-  sw(lw(MEM_CDROM_DELAY_ptr), 0x21020843);
-  sw(lw(MEM_COMMON_DELAY_ptr), 0x1325);
-  v1 = lw(DMA_control_register_copy_3_ptr);
+  sb(lw(CDROM_INDEX_PTR), 0);
+  sb(lw(CDROM_REG_3_PTR), 0x80);
+  sw(lw(MEM_CDROM_DELAY_PTR), 0x21020843);
+  sw(lw(MEM_COMMON_DELAY_PTR), 0x1325);
+  v1 = lw(DMA_CONTROL_REGISTER_COPY_3_PTR);
   sw(v1, lw(v1) | 0x8000);
-  sw(lw(DMA_CDROM_address_ptr), a0);
-  sw(lw(DMA_CDROM_block_control_ptr), a1 | 0x10000);
+  sw(lw(DMA_CDROM_ADDRESS_PTR), a0);
+  sw(lw(DMA_CDROM_BLOCK_CONTROL_PTR), a1 | 0x10000);
 
-  while ((lbu(lw(CDROM_INDEX_ptr)) & 0x40) == 0);
+  while ((lbu(lw(CDROM_INDEX_PTR)) & 0x40) == 0);
 
-  sw(lw(DMA_CDROM_channel_control_ptr), 0x11400100);
-  lw(lw(DMA_CDROM_channel_control_ptr));
+  sw(lw(DMA_CDROM_CHANNEL_CONTROL_PTR), 0x11400100);
+  lw(lw(DMA_CDROM_CHANNEL_CONTROL_PTR));
 
   v0 = 0;
   return;
@@ -621,7 +622,7 @@ void function_8006590C(void)
   sp -= 40; // 0xFFFFFFD8
   sw(sp + 0x20, ra);
   sw(sp + 0x10, s0);
-  uint32_t saved_cdrom_index = lbu(lw(CDROM_INDEX_ptr)) & 3;
+  uint32_t saved_cdrom_index = lbu(lw(CDROM_INDEX_PTR)) & 3;
   while (1) {
     function_80064218();
     s0 = v0;
@@ -629,7 +630,7 @@ void function_8006590C(void)
 
     v0 = lw(0x80074E38);
     if ((s0 & 4) && v0) {
-      a0 = lbu(cd_ready_status);
+      a0 = lbu(CD_READY_STATUS);
       a1 = 0x80075AD8;
       switch (v0)
       {
@@ -645,7 +646,7 @@ void function_8006590C(void)
     }
     v0 = lw(0x80074E34);
     if ((s0 & 2) && v0) {
-      a0 = lbu(cd_ready_status);
+      a0 = lbu(CD_READY_STATUS);
       a1 = 0x80075AD0;
       switch (v0)
       {
@@ -657,7 +658,7 @@ void function_8006590C(void)
       }
     }
   }
-  sb(lw(CDROM_INDEX_ptr), saved_cdrom_index);
+  sb(lw(CDROM_INDEX_PTR), saved_cdrom_index);
   ra = lw(sp + 0x20);
   s0 = lw(sp + 0x10);
   sp += 40; // 0x0028
@@ -937,7 +938,7 @@ label80065CAC:
 
 // size: 0x000002D0
 void function_800659F0(void) {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = CdFunc1(a0, addr_to_pointer(a1));
 }
 

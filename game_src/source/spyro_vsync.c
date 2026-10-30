@@ -17,15 +17,15 @@ void function_8005DEBC(void)
 // size: 0x0000001C
 uint32_t set_I_MASK(uint32_t i_mask)
 {
-  uint32_t i_mask_old = lw(lw(I_MASK_ptr));
-  sh(lw(I_MASK_ptr), i_mask);
+  uint32_t i_mask_old = lw(lw(I_MASK_PTR));
+  sh(lw(I_MASK_PTR), i_mask);
   return i_mask_old;
 }
 
 // size: 0x0000001C
 void function_8005DF44(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = set_I_MASK(a0);
 }
 
@@ -56,7 +56,7 @@ void function_8005DE58(void)
 void wait_until_frame(int32_t frame, uint32_t timeout_time)
 {
   uint32_t timeout_counter = timeout_time << 15;
-  while ((int32_t)lw(frame_counter) < frame) {
+  while ((int32_t)lw(FRAME_COUNTER) < frame) {
     inter(0);
     timeout_counter--;
     if (timeout_counter == (uint32_t)-1) {
@@ -70,7 +70,7 @@ void wait_until_frame(int32_t frame, uint32_t timeout_time)
 
 void function_8005DD0C(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   wait_until_frame(a0, a1);
 }
 
@@ -82,9 +82,9 @@ int VSync(int mode)
 
   uint32_t time_delta;
 
-  time_delta = (lw(lw(TIMER_1_horizontal_retrace_ptr)) - last_vsync_time) & 0xFFFF;
+  time_delta = (lw(lw(TIMER_1_HORIZONTAL_RETRACE_PTR)) - last_vsync_time) & 0xFFFF;
 
-  if ((int32_t)mode < 0) return lw(frame_counter);
+  if ((int32_t)mode < 0) return lw(FRAME_COUNTER);
 
   if (mode == 1) return time_delta;
 
@@ -93,17 +93,17 @@ int VSync(int mode)
 
   union gpustat GPUSTAT = psx_gpustat();
 
-  wait_until_frame(lw(frame_counter)+1, 1);
+  wait_until_frame(lw(FRAME_COUNTER)+1, 1);
 
   if (GPUSTAT.vertical_interlace) while (GPUSTAT.even_odd_interlace == psx_gpustat().even_odd_interlace);
-  last_frame_num = lw(frame_counter);
-  last_vsync_time = lw(lw(TIMER_1_horizontal_retrace_ptr));
+  last_frame_num = lw(FRAME_COUNTER);
+  last_vsync_time = lw(lw(TIMER_1_HORIZONTAL_RETRACE_PTR));
   return time_delta;
 }
 
 // size: 0x00000148
 void function_8005DBC4(void)
 {
-  UNREACHABLE;
+  DEPRECATED;
   v0 = VSync(a0);
 }
