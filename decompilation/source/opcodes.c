@@ -928,6 +928,28 @@ void print_function_call(struct program prog, instruction inst, uint32_t addr)
   fprintf(prog.output, ";\n");
 }
 
+void output_memory_write(struct program prog, const char *op, instruction inst)
+{
+  if (inst.i16type.imm == 0)
+    fprintf(prog.output, "  %s(%s, %s);", op, registers_nospace[inst.i16type.r1], registers_nospace[inst.i16type.r2]);
+  else if (inst.i16type.imm&0x8000)
+    fprintf(prog.output, "  %s(%s - 0x%X, %s);", op, registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+  else
+    fprintf(prog.output, "  %s(%s + 0x%X, %s);", op, registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+}
+
+void output_memory_read(struct program prog, const char *op, instruction inst)
+{
+  if (inst.i16type.imm == 0)
+    fprintf(prog.output, "  %s = %s(%s);", registers_nospace[inst.i16type.r2], op, registers_nospace[inst.i16type.r1]);
+  else if (inst.i16type.imm&0x8000)
+    fprintf(prog.output, "  %s = %s(%s - 0x%X);", registers_nospace[inst.i16type.r2], op, registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm);
+  else
+    fprintf(prog.output, "  %s = %s(%s + 0x%X);", registers_nospace[inst.i16type.r2], op, registers_nospace[inst.i16type.r1], inst.i16type.imm);
+}
+
+#define INST_IN_BRANCH_DELAY -1
+
 int output_instruction(instruction inst, instruction inst2, instruction inst3, instruction inst4, struct program prog, function_list *func_list, int double_inst)
 {
   if (validate_instruction(inst)) assert(0);
@@ -939,8 +961,8 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
   
   if (inst.inst == INSTRUCTION_RETURN)
   {
-    assert(double_inst != -1);
-    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
+    assert(double_inst != INST_IN_BRANCH_DELAY);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, INST_IN_BRANCH_DELAY);
     fprintf(prog.output, "  return;\n");
     return 1;
   }
@@ -971,9 +993,9 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
         break;
       default:
         if (num > 0)
-          fprintf(prog.output, "  %s += %d; // 0x%4.4X", registers_nospace[inst.i16type.r2], num, num);
+          fprintf(prog.output, "  %s += 0x%X;", registers_nospace[inst.i16type.r2], num);
         else
-          fprintf(prog.output, "  %s -= %d; // 0x%4.4X", registers_nospace[inst.i16type.r2], -num, num);
+          fprintf(prog.output, "  %s -= 0x%X;", registers_nospace[inst.i16type.r2], -num);
       }
 
       break;
@@ -987,14 +1009,14 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
 
     if (inst.i16type.r1 == 0)
     {
-      fprintf(prog.output, "  %s = %d; // 0x%4.4X", registers_nospace[inst.i16type.r2], num, num);
+      fprintf(prog.output, "  %s = 0x%X;", registers_nospace[inst.i16type.r2], num);
       break;
     }
 
     if (num > 0)
-      fprintf(prog.output, "  %s = %s + %d; // 0x%4.4X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], num, num);
+      fprintf(prog.output, "  %s = %s + 0x%X;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], num);
     else
-      fprintf(prog.output, "  %s = %s - %d; // 0x%4.4X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], -num, num);
+      fprintf(prog.output, "  %s = %s - 0x%X;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], -num);
     break;
   case ADDU:
   case ADD:
@@ -1060,52 +1082,28 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
   case LUI:
     return simplify_lui(prog, inst, inst2, inst3, inst4, func_list, double_inst);
   case SW:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  sw(%s - 0x%.4X, %s); // 0xFFFF%X", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, registers_nospace[inst.i16type.r2], inst.i16type.imm);
-    else
-      fprintf(prog.output, "  sw(%s + 0x%.4X, %s);", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+    output_memory_write(prog, "sw", inst);
     break;
   case SH:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  sh(%s - 0x%.4X, %s); // 0xFFFF%X", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, registers_nospace[inst.i16type.r2], inst.i16type.imm);
-    else
-      fprintf(prog.output, "  sh(%s + 0x%.4X, %s);", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+    output_memory_write(prog, "sh", inst);
     break;
   case SB:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  sb(%s - 0x%.4X, %s); // 0xFFFF%X", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, registers_nospace[inst.i16type.r2], inst.i16type.imm);
-    else
-      fprintf(prog.output, "  sb(%s + 0x%.4X, %s);", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+    output_memory_write(prog, "sb", inst);
     break;
   case LW:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  %s = lw(%s - 0x%.4X); // 0xFFFF%X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
-    else
-      fprintf(prog.output, "  %s = lw(%s + 0x%.4X);", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    output_memory_read(prog, "lw", inst);
     break;
   case LH:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  %s = lh(%s - 0x%.4X); // 0xFFFF%X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
-    else
-      fprintf(prog.output, "  %s = lh(%s + 0x%.4X);", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    output_memory_read(prog, "lh", inst);
     break;
   case LHU:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  %s = lhu(%s - 0x%.4X); // 0xFFFF%X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
-    else
-      fprintf(prog.output, "  %s = lhu(%s + 0x%.4X);", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    output_memory_read(prog, "lhu", inst);
     break;
   case LB:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  %s = lb(%s - 0x%.4X); // 0xFFFF%X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
-    else
-      fprintf(prog.output, "  %s = lb(%s + 0x%.4X);", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    output_memory_read(prog, "lb", inst);
     break;
   case LBU:
-    if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  %s = lbu(%s - 0x%.4X); // 0xFFFF%X", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
-    else
-      fprintf(prog.output, "  %s = lbu(%s + 0x%.4X);", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    output_memory_read(prog, "lbu", inst);
     break;
   case SLTU:
     fprintf(prog.output, "  %s = %s < %s;", registers_nospace[inst.rtype.r3], registers_nospace[inst.rtype.r1], registers_nospace[inst.rtype.r2]);
@@ -1115,10 +1113,13 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     break;
   case SLTI:
     num = inst.i16type.imm;
-    fprintf(prog.output, "  %s = (int32_t)%s < %d;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], num);
+    if (num > 0)
+      fprintf(prog.output, "  %s = (int32_t)%s < 0x%X;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], num);
+    else
+      fprintf(prog.output, "  %s = (int32_t)%s < -0x%X;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], -num);
     break;
   case SLTIU:
-    fprintf(prog.output, "  %s = %s < %d;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    fprintf(prog.output, "  %s = %s < 0x%X;", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
     break;
   case BNE:
     fprintf(prog.output, "  temp = %s != %s;", registers_nospace[inst.i16type.r1], registers_nospace[inst.i16type.r2]);
@@ -1188,32 +1189,29 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     break;
   case JAL:
 
-    assert(double_inst != -1);
-    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
+    assert(double_inst != INST_IN_BRANCH_DELAY);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, INST_IN_BRANCH_DELAY);
     print_function_call(prog, inst, addr);
     
     return 1;
   case JALR:
     fprintf(prog.output, "  temp = %s;\n", registers_nospace[inst.rtype.r1]);
-    assert(double_inst != -1);
-    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
+    assert(double_inst != INST_IN_BRANCH_DELAY);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, INST_IN_BRANCH_DELAY);
     assert(inst.rtype.r3 == 31);
     //fprintf(prog.output, "  JALR(temp, 0x%.8X);\n", inst.addr);
     //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: calling function %%.8X\\n\", __LINE__, temp); UNREACHABLE;\n");
     return 1;
   case J:
     // it doesn't matter what you return here, this is the final function in a subfunction
-    if (double_inst > 0) {
-      output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
-      fprintf(prog.output, "  goto label%.8X;", addr);
-    } else {
-      assert(0);
-    }
+    assert(double_inst > 0);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, INST_IN_BRANCH_DELAY);
+    fprintf(prog.output, "  goto label%.8X;", addr);
     break;
   case JR:
     fprintf(prog.output, "  temp = %s;\n", registers_nospace[inst.rtype.r1]);
-    assert(double_inst != -1);
-    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, -1);
+    assert(double_inst != INST_IN_BRANCH_DELAY);
+    output_instruction(inst2, inst2, inst2, inst2, prog, func_list, INST_IN_BRANCH_DELAY);
 
     //fprintf(prog.output, "  JR(temp, 0x%.8X);\n", inst.addr);
     //fprintf(prog.output, "  fprintf(prog.output, \"line %%d: goto %%.8X\\n\", __LINE__, temp); UNREACHABLE;\n");
@@ -1281,9 +1279,9 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
   {
     uint32_t cop = inst.opcode - LWC0;
     if (inst.i16type.imm&0x8000)
-      fprintf(prog.output, "  cop%d.%s = lw(%s - 0x%.4X); // 0xFFFF%X", cop, cop_regs_nospace[cop][inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, inst.i16type.imm);
+      fprintf(prog.output, "  cop%d.%s = lw(%s - 0x%X);", cop, cop_regs_nospace[cop][inst.i16type.r2], registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm);
     else
-      fprintf(prog.output, "  cop%d.%s = lw(%s + 0x%.4X);", cop, cop_regs_nospace[cop][inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+      fprintf(prog.output, "  cop%d.%s = lw(%s + 0x%X);", cop, cop_regs_nospace[cop][inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
     break;
   }
   case SWC0:
@@ -1292,14 +1290,14 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
     uint32_t cop = inst.opcode - SWC0;
     if (inst.i16type.imm&0x8000)
       if (inst.i16type.r2 == 31 && cop == 2)
-        fprintf(prog.output, "  sw(%s - 0x%.4X, LZCR());", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm);
+        fprintf(prog.output, "  sw(%s - 0x%X, LZCR());", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm);
       else
-        fprintf(prog.output, "  sw(%s - 0x%.4X, cop%d.%s); // 0xFFFF%X", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, cop, cop_regs_nospace[cop][inst.i16type.r2], inst.i16type.imm);
+        fprintf(prog.output, "  sw(%s - 0x%X, cop%d.%s);", registers_nospace[inst.i16type.r1], 0x10000-inst.i16type.imm, cop, cop_regs_nospace[cop][inst.i16type.r2]);
     else
       if (inst.i16type.r2 == 31 && cop == 2)
-        fprintf(prog.output, "  sw(%s + 0x%.4X, LZCR());", registers_nospace[inst.i16type.r1], inst.i16type.imm);
+        fprintf(prog.output, "  sw(%s + 0x%X, LZCR());", registers_nospace[inst.i16type.r1], inst.i16type.imm);
       else
-        fprintf(prog.output, "  sw(%s + 0x%.4X, cop%d.%s);", registers_nospace[inst.i16type.r1], inst.i16type.imm, cop, cop_regs_nospace[cop][inst.i16type.r2]);
+        fprintf(prog.output, "  sw(%s + 0x%X, cop%d.%s);", registers_nospace[inst.i16type.r1], inst.i16type.imm, cop, cop_regs_nospace[cop][inst.i16type.r2]);
     break;
   }
   case LWR:
@@ -1309,12 +1307,12 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
       {
         if (inst.i16type.imm+3 == inst2.i16type.imm)
         {
-          fprintf(prog.output, "  %s = lw_unaligned(%s + 0x%.4X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+          fprintf(prog.output, "  %s = lw_unaligned(%s + 0x%X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
           return 1;
         }
       }
     }
-    fprintf(prog.output, "  %s = LWR(%s, %s + 0x%.4X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    fprintf(prog.output, "  %s = LWR(%s, %s + 0x%X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
     break;
   case LWL:
     if (inst2.opcode == LWR)
@@ -1323,12 +1321,12 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
       {
         if (inst2.i16type.imm+3 == inst.i16type.imm)
         {
-          fprintf(prog.output, "  %s = lw_unaligned(%s + 0x%.4X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst2.i16type.imm);
+          fprintf(prog.output, "  %s = lw_unaligned(%s + 0x%X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst2.i16type.imm);
           return 1;
         }
       }
     }
-    fprintf(prog.output, "  %s = LWL(%s, %s + 0x%.4X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
+    fprintf(prog.output, "  %s = LWL(%s, %s + 0x%X);\n", registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r2], registers_nospace[inst.i16type.r1], inst.i16type.imm);
     break;
   case SWR:
     if (inst2.opcode == SWL)
@@ -1337,13 +1335,13 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
       {
         if (inst.i16type.imm+3 == inst2.i16type.imm)
         {
-          fprintf(prog.output, "  sw_unaligned(%s + 0x%.4X, %s);\n", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+          fprintf(prog.output, "  sw_unaligned(%s + 0x%X, %s);\n", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
           return 1;
         }
       }
     }
     assert(0);
-    fprintf(prog.output, "  SWR(%s + 0x%.4X, %s)", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+    fprintf(prog.output, "  SWR(%s + 0x%X, %s)", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
   case SWL:
     if (inst2.opcode == SWR)
     {
@@ -1351,13 +1349,13 @@ int output_instruction(instruction inst, instruction inst2, instruction inst3, i
       {
         if (inst2.i16type.imm+3 == inst.i16type.imm)
         {
-          fprintf(prog.output, "  sw_unaligned(%s + 0x%.4X, %s);\n", registers_nospace[inst.i16type.r1], inst2.i16type.imm, registers_nospace[inst.i16type.r2]);
+          fprintf(prog.output, "  sw_unaligned(%s + 0x%X, %s);\n", registers_nospace[inst.i16type.r1], inst2.i16type.imm, registers_nospace[inst.i16type.r2]);
           return 1;
         }
       }
     }
     assert(0);
-    fprintf(prog.output, "  SWL(%s + 0x%.4X, %s)", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
+    fprintf(prog.output, "  SWL(%s + 0x%X, %s)", registers_nospace[inst.i16type.r1], inst.i16type.imm, registers_nospace[inst.i16type.r2]);
     break;
   case SYSCALL:
     fprintf(prog.output, "  system_call();");

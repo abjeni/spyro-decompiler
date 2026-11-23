@@ -5,6 +5,7 @@ void spyro_memcpy32(uint32_t dst, uint32_t src, int len);
 uint32_t spyro_memcpy8(uint32_t dst, uint32_t src, int len);
 void spyro_memset8(uint32_t dst, uint8_t set, int len);
 uint32_t spyro_strlen(uint32_t str);
+uint32_t spyro_strcat(uint32_t dst, uint32_t src);
 uint32_t spyro_strchr(uint32_t str, uint32_t chr, int len);
 void spyro_memmove(uint32_t dst, uint32_t src, int len);
 void spyro_memclr32(uint32_t dst, int len);

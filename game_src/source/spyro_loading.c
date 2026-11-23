@@ -95,7 +95,7 @@ void function_800144C8(void)
 
   a0 = lw(0x80075690) ? 0x20 : 0;
   function_8003FDC8();
-  sw(0x80078BBC, 3);
+  sw(PLAYER_DATA + 0x164, 3);
 }
 
 
@@ -1108,7 +1108,7 @@ label80015BFC:
   v0 = lw(0x800758AC);
   temp = v0 == 0;
   if (temp) goto label80015C78;
-  v0 = lw(0x80078B74);
+  v0 = lw(PLAYER_DATA + 0x11C);
   v1 = lw(0x80076E60);
   v0 += v1;
   v1 = v0 & 0xFFF;
@@ -1129,8 +1129,8 @@ label80015C5C:
   v0++;
   goto label800163B4;
 label80015C78:
-  v0 = lbu(0x80078A66);
-  v1 = lbu(0x80078C5E);
+  v0 = lbu(PLAYER_DATA + 0x0E);
+  v1 = lbu(PLAYER_DATA + 0x206);
   v0 -= v1;
   v1 = v0 & 0xFF;
   v0 = (int32_t)v1 < 129;
@@ -1177,7 +1177,7 @@ label80015CF0:
   function_8001364C();
   if (lw(0x800756D0) == 0) {
     if (lw(0x80075690)) {
-      sw(0x80078AD4, 0);
+      sw(PLAYER_DATA + 0x7C, 0);
     } else {
       if (lw(0x800757D8) != 12)
         spyro_change_movestate(MOVESTATE_STAND);
@@ -1190,13 +1190,13 @@ label80015CF0:
   if (temp) goto label80015EB4;
   s1 = 0x80076DF8;
   a0 = s1;
-  s0 = 0x80078AD4;
+  s0 = PLAYER_DATA + 0x7C;
   sw(s0 + 0x0000, v0);
   function_80033F08();
   s0 -= 124; // 0xFFFFFF84
   a0 = s0;
   v0 = lw(0x80076E60);
-  v1 = lw(0x80078B74);
+  v1 = lw(PLAYER_DATA + 0x11C);
   v0 += v1;
   sw(0x80076E60, v0);
   a1 = s3 + 80; // 0x0050
@@ -1216,11 +1216,11 @@ label80015CF0:
   sw(a0 + 0x0010, v0);
   sw(a0 + 0x0014, v1);
   v0 = lw(0x800778E4);
-  sb(0x80078A66, v0);
+  sb(PLAYER_DATA + 0x0E, v0);
   v0 = v0 & 0xFF;
   v0 = v0 << 4;
-  sw(0x80078B74, v0);
-  v0 = lbu(0x80078A66);
+  sw(PLAYER_DATA + 0x11C, v0);
+  v0 = lbu(PLAYER_DATA + 0x0E);
   v1 = lw(0x80076E48);
   v0 = v0 << 4;
   v1 -= v0;
@@ -1248,7 +1248,7 @@ label80015EB4:
   temp = (int32_t)v0 <= 0;
   s0 = 0;
   if (temp) goto label80016314;
-  s1 = 0x80078A66;
+  s1 = PLAYER_DATA + 0x0E;
   s2 = s1 + 270; // 0x010E
   s4 = 0x80076DF8;
   s3 = s4 + 80; // 0x0050
@@ -1363,7 +1363,7 @@ label800160C8:
   s1 = 0x80076DF8;
   a0 = s1;
   function_80033F08();
-  s0 = 0x80078B74;
+  s0 = PLAYER_DATA + 0x11C;
   s2 = s0 - 284; // 0xFFFFFEE4
   a0 = s2;
   v0 = lw(0x80076E60);
@@ -1385,11 +1385,11 @@ label800160C8:
   a2 = lw(t0 + 0x0014);
   sw(a3 + 0x0010, v1);
   sw(a3 + 0x0014, a2);
-  sb(0x80078A66, v0);
+  sb(PLAYER_DATA + 0x0E, v0);
   v0 = v0 & 0xFF;
   v0 = v0 << 4;
   sw(s0 + 0x0000, v0);
-  v0 = lbu(0x80078A66);
+  v0 = lbu(PLAYER_DATA + 0x0E);
   v1 = lw(0x80076E48);
   v0 = v0 << 4;
   v1 -= v0;
@@ -1405,14 +1405,14 @@ label800160C8:
   temp = v1 != v0;
   spyro_vec3_add(s1, s1, s2);
   if (temp) goto label80016284;
-  a2 = lbu(0x80078A66)*2;
+  a2 = lbu(PLAYER_DATA + 0x0E)*2;
   sw(PLAYER_POSITION + 0, lw(PLAYER_POSITION + 0) - ((int32_t)lh(SPYRO_COS_LUT + a2))*5/2);
   sw(PLAYER_POSITION + 4, lw(PLAYER_POSITION + 4) - ((int32_t)lh(SPYRO_SIN_LUT + a2))*5/2);
   sw(PLAYER_POSITION + 8, lw(PLAYER_POSITION + 8) - 0x1600);
   function_800342F8();
-  sw(0x80078AD4, 11);
+  sw(PLAYER_DATA + 0x7C, 11);
   sw(0x800757D8, 0);
-  sb(0x80078A7F, 4);
+  sb(PLAYER_DATA + 0x27, 4);
   sw(0x80076E90, lbu(0x8006C588 + lw(PLAYER_MOVESTATE)));
   goto label80016314;
 label80016284:
@@ -1424,7 +1424,7 @@ label80016284:
   a0 = s0 - 24; // 0xFFFFFFE8
   function_80037714();
   v0 = 10; // 0x000A
-  sw(0x80078AD4, v0);
+  sw(PLAYER_DATA + 0x7C, v0);
   sw(0x800757D8, 9);
   goto label80016314;
 label80016314:
@@ -1494,7 +1494,7 @@ void function_8002D228(void)
 void function_8002E12C(void)
 {
   uint32_t temp;
-  v0 = lw(0x80075690); // &0x00000000
+  v0 = lw(0x80075690);
   sp -= 48; // 0xFFFFFFD0
   sw(sp + 0x0028, ra);
   sw(sp + 0x0020, s0);
@@ -1502,14 +1502,14 @@ void function_8002E12C(void)
   if (temp) goto label8002E150;
   function_80054988();
 label8002E150:
-  v0 = lw(0x8007568C); // &0x00000000
+  v0 = lw(0x8007568C);
   sw(0x80077FB4, 0);
   sw(0x80077FB8, 0);
   sw(0x80077FBC, 0);
   sw(0x80077FC0, 0);
   sw(0x80077FC4, 0);
   v0++;
-  sw(0x8007568C, v0); // &0x00000000
+  sw(0x8007568C, v0);
   a0 = 3; // 0x0003
   function_80058CC0();
   v0 = lw(0x800758B8);
@@ -1521,7 +1521,7 @@ label8002E150:
   temp = v0 != 0;
   v0 = 2; // 0x0002
   if (temp) goto label8002EA34;
-  v1 = lw(0x800757C8); // &0x00000000
+  v1 = lw(0x800757C8);
   temp = v1 != v0;
   v0 = 1; // 0x0001
   if (temp) goto label8002E384;
@@ -1534,17 +1534,17 @@ label8002E150:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = 1; // 0x0001
   v0 -= v1;
-  sw(0x80075720, v0); // &0x00000000
+  sw(0x80075720, v0);
   goto label8002EB14_end;
 label8002E21C:
   v0 = a0 & 0x50;
   temp = v0 == 0;
   v0 = 1; // 0x0001
   if (temp) goto label8002EB14_end;
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   temp = v1 == v0;
   v0 = a0 & 0x10;
   if (temp) goto label8002E244;
@@ -1607,20 +1607,20 @@ label8002E384:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  a0 = lw(0x80075720); // &0x00000000
-  sw(0x8007568C, 0); // &0x00000000
+  a0 = lw(0x80075720);
+  sw(0x8007568C, 0);
   v1 = a0 + 1; // 0x0001
   v0 = (int32_t)v1 < 6;
-  sw(0x80075720, v1); // &0x00000000
+  sw(0x80075720, v1);
   temp = v0 != 0;
   v0 = 3; // 0x0003
   if (temp) goto label8002E3E4;
-  sw(0x80075720, 0); // &0x00000000
+  sw(0x80075720, 0);
   goto label8002E47C;
 label8002E3E4:
   temp = v1 != v0;
   if (temp) goto label8002E47C;
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   temp = v0 != 0;
   v0 = a0 + 2; // 0x0002
   if (temp) goto label8002E47C;
@@ -1634,10 +1634,10 @@ label8002E408:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  a0 = lw(0x80075720); // &0x00000000
-  sw(0x8007568C, 0); // &0x00000000
+  a0 = lw(0x80075720);
+  sw(0x8007568C, 0);
   v1 = a0 - 1; // 0xFFFFFFFF
-  sw(0x80075720, v1); // &0x00000000
+  sw(0x80075720, v1);
   temp = (int32_t)v1 >= 0;
   v0 = 3; // 0x0003
   if (temp) goto label8002E458;
@@ -1646,19 +1646,19 @@ label8002E408:
 label8002E458:
   temp = v1 != v0;
   if (temp) goto label8002E47C;
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   temp = v0 != 0;
   v0 = a0 - 2; // 0xFFFFFFFE
   if (temp) goto label8002E47C;
 label8002E474:
-  sw(0x80075720, v0); // &0x00000000
+  sw(0x80075720, v0);
 label8002E47C:
   v0 = lw(BUTTONS);
   v0 = v0 & 0x10;
   temp = v0 != 0;
   a1 = 0;
   if (temp) goto label8002E8A0;
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   v0 = v1 < 6;
   temp = v0 == 0;
   v0 = v1 << 2;
@@ -1694,7 +1694,7 @@ label8002E4C4:
   v0 = v0 & 0x8000;
   temp = v0 == 0;
   if (temp) goto label8002E518;
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   temp = (int32_t)v0 <= 0;
   a1 = 0;
   if (temp) goto label8002E518;
@@ -1703,7 +1703,7 @@ label8002E4C4:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   v0--;
   goto label8002E570;
 label8002E518:
@@ -1712,7 +1712,7 @@ label8002E518:
   temp = v0 == 0;
   a0 = 0x66660000;
   if (temp) goto label8002E57C;
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   v0 = (int32_t)v0 < 10;
   temp = v0 == 0;
   a1 = 0;
@@ -1722,13 +1722,13 @@ label8002E518:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075754); // &0x00000000
+  v0 = lw(0x80075754);
   v0++;
 label8002E570:
-  sw(0x80075754, v0); // &0x00000000
+  sw(0x80075754, v0);
   a0 = 0x66660000;
 label8002E57C:
-  v1 = lw(0x80075754); // &0x00000000
+  v1 = lw(0x80075754);
   a0 = a0 | 0x6667;
   v0 = v1 << 14;
   v0 -= v1;
@@ -1753,7 +1753,7 @@ label8002E5E0:
   v0 = v0 & 0x8000;
   temp = v0 == 0;
   if (temp) goto label8002E634;
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   temp = (int32_t)v0 <= 0;
   a1 = 0;
   if (temp) goto label8002E634;
@@ -1762,7 +1762,7 @@ label8002E5E0:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   v0--;
   goto label8002E68C;
 label8002E634:
@@ -1770,7 +1770,7 @@ label8002E634:
   v0 = v0 & 0x2000;
   temp = v0 == 0;
   if (temp) goto label8002E694;
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   v0 = (int32_t)v0 < 10;
   temp = v0 == 0;
   a1 = 0;
@@ -1780,13 +1780,13 @@ label8002E634:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075748); // &0x00000000
+  v0 = lw(0x80075748);
   v0++;
 label8002E68C:
-  sw(0x80075748, v0); // &0x00000000
+  sw(0x80075748, v0);
 label8002E694:
   v0 = 0x80076224;
-  v1 = lw(0x80075748); // &0x00000000
+  v1 = lw(0x80075748);
   a1 = 192; // 0x00C0
   sw(v0 - 0x031C, a1); // 0xFFFFFCE4
   v1 = v1 << 11;
@@ -1831,7 +1831,7 @@ label8002E770:
   function_80063FF0();
   goto label8002EB14_end;
 label8002E788:
-  v0 = lw(0x800756D8); // &0x00000000
+  v0 = lw(0x800756D8);
   temp = v0 == 0;
   v0 = 4; // 0x0004
   if (temp) goto label8002E814;
@@ -1845,21 +1845,21 @@ label8002E788:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  v1 = lw(0x800757A4); // &0x00000000
+  v1 = lw(0x800757A4);
   v0 = 1; // 0x0001
   v0 -= v1;
-  sw(0x800757A4, v0); // &0x00000000
+  sw(0x800757A4, v0);
   temp = v0 == 0;
   if (temp) goto label8002EB14_end;
-  v0 = lw(0x80075764); // &0x00000000
+  v0 = lw(0x80075764);
   v0 = (int32_t)v0 < 10;
   temp = v0 == 0;
   v0 = 10; // 0x000A
   if (temp) goto label8002EB14_end;
-  sw(0x80075764, v0); // &0x00000000
+  sw(0x80075764, v0);
   goto label8002EB14_end;
 label8002E814:
-  sw(0x80075720, v0); // &0x00000000
+  sw(0x80075720, v0);
   goto label8002EB14_end;
 label8002E824:
 
@@ -1889,8 +1889,8 @@ label8002E8A0:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  sw(0x800757C8, 0); // &0x00000000
-  sw(0x80075720, 0); // &0x00000000
+  sw(0x800757C8, 0);
+  sw(0x80075720, 0);
   goto label8002EB14_end;
 label8002E8D0:
   temp = v0 == 0;
@@ -1902,14 +1902,14 @@ label8002E8D0:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075720); // &0x00000000
-  sw(0x8007568C, 0); // &0x00000000
+  v0 = lw(0x80075720);
+  sw(0x8007568C, 0);
   v0++;
-  sw(0x80075720, v0); // &0x00000000
+  sw(0x80075720, v0);
   v0 = (int32_t)3 < (int32_t)v0;
   temp = v0 == 0;
   if (temp) goto label8002E97C;
-  sw(0x80075720, 0); // &0x00000000
+  sw(0x80075720, 0);
   goto label8002E97C;
 label8002E92C:
   v0 = a0 & 0x1000;
@@ -1921,20 +1921,20 @@ label8002E92C:
   a0 = lbu(v0 + 0x002D);
   a3 = 0;
   function_80055A78();
-  v0 = lw(0x80075720); // &0x00000000
-  sw(0x8007568C, 0); // &0x00000000
+  v0 = lw(0x80075720);
+  sw(0x8007568C, 0);
   v0--;
-  sw(0x80075720, v0); // &0x00000000
+  sw(0x80075720, v0);
   temp = (int32_t)v0 >= 0;
   if (temp) goto label8002E97C;
-  sw(0x80075720, 3); // &0x00000000
+  sw(0x80075720, 3);
 label8002E97C:
   v0 = lw(BUTTONS);
   v0 = v0 & 0x840;
   temp = v0 == 0;
   s0 = 1; // 0x0001
   if (temp) goto label8002EB14_end;
-  v1 = lw(0x80075720); // &0x00000000
+  v1 = lw(0x80075720);
   temp = v1 == 1;
   v0 = (int32_t)v1 < 2;
   if (temp) goto label8002EA00;
@@ -1968,8 +1968,8 @@ label8002EA00:
   a0 = lbu(v0 + 0x002E);
   a3 = 0;
   function_80055A78();
-  sw(0x800757C8, 1); // &0x00000000
-  sw(0x80075720, 0); // &0x00000000
+  sw(0x800757C8, 1);
+  sw(0x80075720, 0);
   goto label8002EB14_end;
 label8002EA34:
   a0 = 0;
@@ -1994,20 +1994,20 @@ label8002EA44:
   v0 = v0 << 1;
   temp = a0 != v0;
   if (temp) goto label8002EAAC;
-  sw(0x80075720, 1); // &0x00000000
-  sw(0x800757C8, 2); // &0x00000000
+  sw(0x80075720, 1);
+  sw(0x800757C8, 2);
   goto label8002EB14_end;
 label8002EAAC:
-  spyro_vec3_clear(0x80078BFC);
-  v0 = lw(0x80075690); // &0x00000000
-  sw(0x80078BEC, 0);
+  spyro_vec3_clear(PLAYER_DATA + 0x1A4);
+  v0 = lw(0x80075690);
+  sw(PLAYER_DATA + 0x194, 0);
   temp = v0 == 0;
   v0 = 7; // 0x0007
   if (temp) goto label8002EB0C;
-  v1 = lw(0x80075734); // &0x00000000
-  sw(0x800757D8, v0); // &0x00000000
-  sw(0x80075720, 0); // &0x00000000
-  sw(0x8007568C, 0); // &0x00000000
+  v1 = lw(0x80075734);
+  sw(0x800757D8, v0);
+  sw(0x80075720, 0);
+  sw(0x8007568C, 0);
   sw(0x80075900, 1);
   temp = v1;
   switch (temp)
@@ -2115,194 +2115,267 @@ label8002EB14_end:
   return;
 }
 
-// function called on death/game over
+
+
 // size: 0x000005D4
 void function_8002EDF0(void)
 {
   uint32_t temp;
-  v0 = lw(0x8007593C);
-  sp -= 80; // 0xFFFFFFB0
-  sw(sp + 0x0048, ra);
-  sw(sp + 0x0044, s3);
-  sw(sp + 0x0040, s2);
-  sw(sp + 0x003C, s1);
-  sw(sp + 0x0038, s0);
+  sp -= 80;
+  sw(sp + 0x48, ra);
+  sw(sp + 0x44, s3);
+  sw(sp + 0x40, s2);
+  sw(sp + 0x3C, s1);
+  sw(sp + 0x38, s0);
 
-  if (lw(0x8007593C) == 0)
-  {
+  v0 = lw(0x8007593C);
+  if (v0 == 0) {
     a0 = 0;
     function_80056B28();
   }
 
   sw(0x8007593C, lw(0x8007593C)+1);
-
   a0 = 3;
   function_80058CC0();
   s2 = lw(0x80075940);
-  if (s2 != 0) goto label8002F0C4;
+  temp = s2 != 0;
+  v0 = 1; // 0x0001
+  if (temp) goto label8002F0C4;
+  v0 = 4;
   if ((int32_t)lw(0x8007593C) < 16) goto label8002F3A4;
-  if (lw(0x800757D8) != 4) goto label8002EE94;
+  if (lw(GAMESTATE) != GAMESTATE_DEAD) goto label8002EE94;
   function_8002C8A4();
   function_800144C8();
   goto label8002F3A4;
 label8002EE94:
+  s0 = WAD_HEADER + 0x3C;
+  s1 = 0x800785E8;
   read_disk1(
     lw(WAD_SECTOR),
-    lw(0x800785E8) - lw(WAD_HEADER + 0x3C),
-    lw(WAD_HEADER + 0x3C),
+    lw(s1) - lw(s0),
+    lw(s0),
     lw(WAD_HEADER + 0x38),
     0x258
   );
-  a1 = lw(0x800785E8) - lw(WAD_HEADER + 0x3C);
-  a0 = lbu(a1 + 0);
-  v1 = lbu(a1 + 1);
+  a1 = lw(s1) - lw(s0);
   a3 = a1;
-  v0 = lbu(a1 + 2);
-  a1 += 4;
 
+  a0 = lbu(a1 + 0x00);
+  v1 = lbu(a1 + 0x01);
+  v0 = lbu(a1 + 0x02);
   sb(SKYBOX_DATA + 0x10, a0);
   sb(SKYBOX_DATA + 0x11, v1);
-  sb(DISP1 + 0x19, a0);
-  sb(DISP1 + 0x1A, v1);
-  sb(DISP2 + 0x19, a0);
-  sb(DISP2 + 0x1A, v1);
   sb(SKYBOX_DATA + 0x12, v0);
+  a1 += 4;
+
+  sb(DISP1 + 0x19, a0);
+  sb(DISP2 + 0x19, a0);
+  sb(DISP1 + 0x1A, v1);
+  sb(DISP2 + 0x1A, v1);
   sb(DISP1 + 0x1B, v0);
   sb(DISP2 + 0x1B, v0);
-  v0 = lw(a1 + 0);
+  sw(SKYBOX_DATA + 0x00, lw(a1));
   a1 += 4;
   sw(SKYBOX_DATA + 0x04, a1);
-  sw(SKYBOX_DATA + 0x00, v0);
-  for (int i = 0; i < (int)lw(SKYBOX_DATA + 0x00); i++)
-    sw(a1 + i*4, lw(a1 + i*4) + a3);
-  v1 = lhu(0x800752D8);
-  a1 = lhu(0x800752DA);
+  
+  for (uint32_t i = 0; i < lw(SKYBOX_DATA + 0x00); i++)
+  {
+    sw(a1, lw(a1) + a3);
+    a1 += 4;
+  }
+  v1 = lhu(0x800752D8); // &0x040000B0
+  a1 = lhu(0x800752DA); // &0x0F500400
   sw(0x80076DF8, 0x2800);
   sw(0x80076DFC, 0x80);
   sh(0x80076E1C, 0);
   sw(0x80076E00, 0x800);
   sh(0x80076E1E, v1);
   sh(0x80076E20, a1);
-
-  a0 = 1;
+  a0 = 1; // 0x0001
   function_8004AC24();
-
-  sb(0x80078A70, 0x10);
-  sb(0x80078A71, 0x10);
-  sb(0x80078A77, 1);
-  sw(LIVES, 4);
+  a0 = 0x80077888;
+  a1 = 0;
+  v1 = lw(CONTINUOUS_LEVEL_ID);
+  v0 = 16; // 0x0010
+  sb(PLAYER_DATA + 0x18, v0);
+  sb(PLAYER_DATA + 0x19, v0);
+  v0 = 1; // 0x0001
+  sb(PLAYER_DATA + 0x1F, v0);
+  v0 = 4; // 0x0004
+  sw(LIVES, v0);
+  v0 = 3; // 0x0003
   sw(0x800758E8, 0);
-  sw(0x80078BBC, 3);
+  sw(PLAYER_DATA + 0x164, v0);
   sw(0x800756D0, 0);
   sw(0x800758AC, 0);
-  sw(0x800757E8, lw(CONTINUOUS_LEVEL_ID));
-  spyro_memset32(0x80077888, 0, 0x68);
-  if (lw(LEVEL_ID) % 10) {
-    sw(0x80075864, 11);
-    sw(0x80075940, 1);
-    sw(0x8007593C, 0);
-  } else {
-    sw(0x800758B4, v0);
-    sw(0x80075864, 2);
-    sw(0x8007576C, -1);
-    sw(0x80075940, 1);
-    sw(0x8007593C, 0);
-  }
-  goto label8002F3A4;
+  sw(0x800757E8, v1);
+  a2 = 104; // 0x0068
+  spyro_memset32(a0, a1, a2);
+  v0 = 0x66666667;
+  a0 = lw(LEVEL_ID);
+  mult(a0, v0);
+  v0 = (int32_t)a0 >> 31;
+  t1=hi;
+  v1 = (int32_t)t1 >> 2;
+  v1 -= v0;
+  v0 = v1 << 2;
+  v0 += v1;
+  v0 = v0 << 1;
+  temp = a0 == v0;
+  if (temp) goto label8002F0B0;
+  sw(0x800758B4, v0);
+  v0 = 2; // 0x0002
+  sw(0x80075864, v0);
+  v0 = -1; // 0xFFFFFFFF
+  sw(0x8007576C, v0);
+  v0 = 1; // 0x0001
+  goto label8002F350;
+label8002F0B0:
+  v0 = 11; // 0x000B
+  sw(0x80075864, v0);
+  v0 = 1; // 0x0001
+  goto label8002F350;
 label8002F0C4:
-  if (s2 != 1) goto label8002F368;
+  temp = s2 != v0;
+  if (temp) goto label8002F368;
   v0 = lw(0x8007593C);
   s3 = v0 - 180; // 0xFFFFFF4C
-  if (s3 < 192) {
-    s1 = (s0 + 0xE00) & 0xFFF;
-    s0 = s3*543;
-    s0 = s0 << 1;
-    mult(s0, 0x2AAAAAAB);
-    s0 = (int32_t)s0 >> 31;
-    t1=hi;
-    v1 = (int32_t)t1 >> 5;
-    v1 -= s0;
-    s0 = 0x87C - v1;
-    mult(spyro_cos(s1), s0);
-    v1=lo;
-    v0 = (int32_t)v1 >> 12;
-    v0 += 0x2A00;
-    sw(PLAYER_POSITION + 0, v0);
-    mult(spyro_sin(s1), s0);
-    a0=lo;
-    v1 = s3 << 1;
-    v1 += s3;
-    v1 = v1 << 1;
-    sw(PLAYER_POSITION + 8, 0xB44 - v1);
-    sb(0x80078A66, (s1 + 0x400) >> 4);
-    sb(0x80078A65, 0);
-    v0 = (int32_t)a0 >> 12;
-    a0 = lw(0x8007593C);
-    v0 += 3072; // 0x0C00
-    sw(PLAYER_POSITION + 4, v0);
-    t1=hi;
-    v0 = s1/12 - 32;
-    sb(0x80078A64, v0);
-    temp = v0 == 0;
-    if ((int32_t)a0 < 356) {
-      a0 = 3;
-      function_8003CB24();
-    }
-    else
-    {
-      v1 = a0 - 356;
-      v1 = v1*10;
-      sb(0x80078A71, 0x0E);
-      sb(0x80078A77, 0);
-      sb(0x80078A7C, a0 - 100);
-      v0 = (int32_t)v1 >> 4;
-      if ((int32_t)v1 < 0) {
-        v1 += 0x0F;
-        v0 = (int32_t)v1 >> 4;
-      }
-      sb(0x80078A65, -(((int32_t)v0)/16));
-      sb(0x80078A64, a0 - 116);
-    }
-    function_80049660();
-    function_80049E8C();
-  }
+  v0 = s3 < 192;
+  temp = v0 == 0;
+  s0 = s3 << 4;
+  if (temp) goto label8002F240;
+  s1 = s0 + 3584; // 0x0E00
+  s1 = s1 & 0xFFF;
+  a0 = s1;
+  v0 = spyro_cos(a0);
+  s2 = 0x2AAAAAAB;
+  s0 += s3;
+  s0 = s0 << 5;
+  s0 -= s3;
+  s0 = s0 << 1;
+  mult(s0, s2);
+  s0 = (int32_t)s0 >> 31;
+  t1=hi;
+  v1 = (int32_t)t1 >> 5;
+  v1 -= s0;
+  s0 = 2172; // 0x087C
+  s0 -= v1;
+  mult(v0, s0);
+  v1=lo;
+  v0 = (int32_t)v1 >> 12;
+  v0 += 10752; // 0x2A00
+  sw(PLAYER_POSITION, v0);
+  a0 = s1;
+  v0 = spyro_sin(a0);
+  mult(v0, s0);
+  v1 = s3 << 1;
+  v1 += s3;
+  a0=lo;
+  v1 = v1 << 1;
+  v0 = 2884; // 0x0B44
+  mult(s3, s2);
+  v0 -= v1;
+  s1 += 1024; // 0x0400
+  s1 = (int32_t)s1 >> 4;
+  v1 = (int32_t)s3 >> 31;
+  sw(PLAYER_POSITION + 0x0008, v0);
+  sb(PLAYER_DATA + 0x0E, s1);
+  sb(PLAYER_DATA + 0x0D, 0);
+  v0 = (int32_t)a0 >> 12;
+  a0 = lw(0x8007593C);
+  v0 += 3072; // 0x0C00
+  sw(PLAYER_POSITION + 0x0004, v0);
+  t1=hi;
+  v0 = (int32_t)t1 >> 1;
+  v0 -= v1;
+  v0 -= 32; // 0xFFFFFFE0
+  sb(PLAYER_DATA + 0x0C, v0);
+  v0 = (int32_t)a0 < 356;
+  temp = v0 == 0;
+  v1 = a0 - 356; // 0xFFFFFE9C
+  if (temp) goto label8002F1DC;
+  a0 = 3; // 0x0003
+  function_8003CB24();
+  goto label8002F230;
+label8002F1DC:
+  v0 = v1 << 2;
+  v0 += v1;
+  v1 = v0 << 1;
+  v0 = 14; // 0x000E
+  sb(PLAYER_DATA + 0x19, v0);
+  v0 = a0 - 100; // 0xFFFFFF9C
+  sb(PLAYER_DATA + 0x1F, 0);
+  sb(PLAYER_DATA + 0x24, v0);
+  temp = (int32_t)v1 >= 0;
+  v0 = (int32_t)v1 >> 4;
+  if (temp) goto label8002F218;
+  v1 += 15; // 0x000F
+  v0 = (int32_t)v1 >> 4;
+label8002F218:
+  v0 = -v0;
+  sb(PLAYER_DATA + 0x0D, v0);
+  v0 = a0 - 116; // 0xFFFFFF8C
+  sb(PLAYER_DATA + 0x0C, v0);
+label8002F230:
+  function_80049660();
+  function_80049E8C();
+label8002F240:
   v1 = lw(0x8007593C);
-  
-  if ((int32_t)v1 >= 372) {
-    if (v1 == 372) {
-      sb(0x80078A70, 0x0E);
-      sb(0x80078A71, 0x0E);
-      sb(0x80078A76, 0);
-      sb(0x80078A77, 1);
-      sb(0x80078A7C, 0);
-    }
-    sw(PLAYER_POSITION + 0, 0x26F8);
-    sw(PLAYER_POSITION + 4, 0x900);
-    sw(PLAYER_POSITION + 8, 0x6C4);
-    sb(0x80078A65, 0xF6);
-    sb(0x80078A64, 0);
-    sb(0x80078A66, 0xE0);
-    a0 = 3;
-    function_8003CB24();
-    function_80049660();
-    function_80049E8C();
-  }
-
-  if ((int32_t)lw(0x80075864) < 11) {
-    a0 = 1;
-    function_80015370();
-    goto label8002F3A4;
-  }
+  v0 = (int32_t)v1 < 372;
+  temp = v0 != 0;
+  v0 = 372; // 0x0174
+  if (temp) goto label8002F2EC;
+  temp = v1 != v0;
+  v0 = 9976; // 0x26F8
+  if (temp) goto label8002F294;
+  v0 = 14; // 0x000E
+  sb(PLAYER_DATA + 0x18, v0);
+  sb(PLAYER_DATA + 0x19, v0);
+  v0 = 1; // 0x0001
+  sb(PLAYER_DATA + 0x1E, 0);
+  sb(PLAYER_DATA + 0x1F, v0);
+  sb(PLAYER_DATA + 0x24, 0);
+  v0 = 9976; // 0x26F8
+label8002F294:
+  sw(PLAYER_POSITION + 0, v0);
+  sw(PLAYER_POSITION + 4, 0x900);
+  sw(PLAYER_POSITION + 8, 0x6C4);
+  v0 = 246; // 0x00F6
+  sb(PLAYER_DATA + 0x0D, v0);
+  v0 = 224; // 0x00E0
+  sb(PLAYER_DATA + 0x0C, 0);
+  sb(PLAYER_DATA + 0x0E, v0);
+  a0 = 3; // 0x0003
+  function_8003CB24();
+  function_80049660();
+  function_80049E8C();
+label8002F2EC:
+  v0 = lw(0x80075864);
+  v0 = (int32_t)v0 < 11;
+  temp = v0 == 0;
+  if (temp) goto label8002F314;
+  a0 = 1; // 0x0001
+  function_80015370();
+  goto label8002F3A4;
+label8002F314:
   v0 = lw(0x8007593C);
-  if ((int32_t)v0 > 360 && lw(BUTTONS + 8) & 0x800) {
-    a0 = 0;
-    function_8003FDC8();
-    sw(0x80075940, 2);
-    sw(0x8007593C, 0);
-  }
+  v0 = (int32_t)v0 < 361;
+  temp = v0 != 0;
+  if (temp) goto label8002F3A4;
+  v0 = lw(BUTTONS + 0x0008);
+  v0 = v0 & 0x800;
+  temp = v0 == 0;
+  if (temp) goto label8002F3A4;
+  a0 = 0;
+  function_8003FDC8();
+  v0 = 2; // 0x0002
+label8002F350:
+  sw(0x80075940, v0);
+  sw(0x8007593C, 0);
   goto label8002F3A4;
 label8002F368:
-  v0 = (int32_t)lw(0x8007593C) < 17;
+  v0 = lw(0x8007593C);
+  v0 = (int32_t)v0 < 17;
   temp = v0 != 0;
   if (temp) goto label8002F3A4;
   a0 = 1; // 0x0001
@@ -2312,12 +2385,12 @@ label8002F368:
   if (temp) goto label8002F3A4;
   function_8002C8A4();
 label8002F3A4:
-  ra = lw(sp + 0x48);
-  s3 = lw(sp + 0x44);
-  s2 = lw(sp + 0x40);
-  s1 = lw(sp + 0x3C);
-  s0 = lw(sp + 0x38);
-  sp += 0x50;
+  ra = lw(sp + 0x0048);
+  s3 = lw(sp + 0x0044);
+  s2 = lw(sp + 0x0040);
+  s1 = lw(sp + 0x003C);
+  s0 = lw(sp + 0x0038);
+  sp += 80; // 0x0050
   return;
 }
 
@@ -2408,7 +2481,7 @@ label80053C40:
   sw(BUTTONS + 0x18, 0);
   v0 = 2; // 0x0002
 label80053C4C:
-  sw(0x80075760, v0); // &0x00000000
+  sw(0x80075760, v0);
   ra = lw(sp + 0x0014);
   s0 = lw(sp + 0x0010);
   sp += 24; // 0x0018
@@ -2419,20 +2492,14 @@ label80053C4C:
 void function_800334D4(void)
 {
   uint32_t temp;
-  sp -= 48; // 0xFFFFFFD0
-  sw(sp + 0x002C, ra);
-  sw(sp + 0x0028, s0);
   function_800539FC();
-  v1 = lw(IS_DEMO_MODE);
-  v0 = 2; // 0x0002
-  temp = v1 == v0;
   v0 = 0;
-  if (temp) goto label80033848;
+  if (lw(IS_DEMO_MODE) == 2) return;
   v0 = lw(0x80075884);
   temp = v0 != 0;
   v0++;
   if (temp) goto label80033598;
-  v0 = lw(0x800757B8); // &0x00000000
+  v0 = lw(0x800757B8);
   v0 = v0 << 2;
   v0 = lw(0x8006EE8C + v0); // &0x0000035C
   v1 = lw(LEVEL_FRAME_COUNTER);
@@ -2468,23 +2535,12 @@ label800335AC:
   v0 = 16; // 0x0010
   temp = v1 != v0;
   v0 = 0;
-  if (temp) goto label80033848;
+  if (temp) return;
   a0 = 0;
   function_80056B28();
   function_80056ED4();
-  a0 = sp + 24; // 0x0018
-  a1 = 0;
-  a2 = 0;
-  a3 = 0;
-  v0 = 512; // 0x0200
-  sh(sp + 0x001C, v0);
-  v0 = 480; // 0x01E0
-  sh(sp + 0x0018, 0);
-  sh(sp + 0x001A, 0);
-  sh(sp + 0x001E, v0);
-  v0 = ClearImage(addr_to_pointer(a0), a1, a2, a3);
-  a0 = 0;
-  v0 = DrawSync(a0);
+  ClearImage(&(RECT){0, 0, 0x200, 0x1E0}, 0, 0, 0);
+  DrawSync(0);
   a0 = lw(WAD_SECTOR);
   a2 = lw(WAD_HEADER + 0x0014);
   a3 = lw(WAD_HEADER + 0x0010);
@@ -2492,18 +2548,16 @@ label800335AC:
   v0 = 0x8007DDE8;
   sw(LIB_END_PTR, v0);
   sw(LIB_END_PTR2, v0);
-  v0 = 600; // 0x0258
   sw(0x80075904, 0);
-  sw(0x80075764, 0); // &0x00000000
-  sw(0x800757D0, 0); // &0x00000000
+  sw(0x80075764, 0);
+  sw(0x800757D0, 0);
   sw(0x8007584C, 0);
   sw(IS_DEMO_MODE, 0);
   sw(0x80075864, 0);
-  sw(0x8007566C, 0); // &0x00000000
-  sw(0x80075690, 0); // &0x00000000
-  sw(0x80075784, 0); // &0x00000000
-  sw(sp + 0x0010, v0);
-  read_disk1(a0, a1, a2, a3, lw(sp+0x10));
+  sw(0x8007566C, 0);
+  sw(0x80075690, 0);
+  sw(0x80075784, 0);
+  read_disk1(a0, a1, a2, a3, 0x258);
   goto label800336A8;
 label80033698:
   function_80014564();
@@ -2512,13 +2566,13 @@ label800336A8:
   v0 = lw(0x80075864);
   v0 = (int32_t)v0 < 10;
   temp = v0 != 0;
-  v0 = 14; // 0x000E
+  v0 = 14;
   if (temp) goto label80033698;
-  sw(0x800757D8, v0); // &0x00000000
-  v0 = 15; // 0x000F
+  sw(0x800757D8, v0);
+  v0 = 15;
   sw(0x80075918, v0);
   function_8002D170();
-  v0 = lw(0x800757B8); // &0x00000000
+  v0 = lw(0x800757B8);
   v1 = lw(LEVEL_FRAME_COUNTER);
   v0 = v0 << 2;
   v0 = lw(0x8006EE8C + v0); // &0x0000035C
@@ -2526,7 +2580,7 @@ label800336A8:
   temp = v1 != 0;
   a0 = 0x00020000;
   if (temp) goto label800337D8;
-  v1 = lw(0x80075680); // &0x00000000
+  v1 = lw(0x80075680);
   v0 = 720; // 0x02D0
   sw(v1 + 0x0000, v0);
   v0 = 0x800778F0;
@@ -2562,31 +2616,24 @@ label800336A8:
   a2 = 0x00040000;
   goto label800337EC;
 label800337D8:
-  v1 = lw(0x80075680); // &0x00000000
+  v1 = lw(0x80075680);
   v0 = 1168; // 0x0490
   sw(v1 + 0x0000, v0);
   a2 = 0x00040000;
 label800337EC:
-  s0 = 1; // 0x0001
   a0 = lw(WAD_SECTOR);
-  a3 = lw(WAD_HEADER + 0x0008);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0010, v0);
+  a3 = lw(WAD_HEADER + 0x08);
   v0 = lw(0x800785E8);
   a1 = 0xFFFC0000;
-  sw(0x80078D78 + 0x0010, s0);
+  sw(0x80078D78 + 0x10, 1);
   a1 += v0;
-  read_disk2(a0, a1, a2, a3, lw(sp+0x10));
-  v1 = lw(0x800757B8); // &0x00000000
-  sw(0x8007579C, s0); // &0x00000000
+  read_disk2(a0, a1, a2, a3, 0x258);
+  v1 = lw(0x800757B8);
+  sw(0x8007579C, 1);
   v1++;
   v1 = v1 & 0x3;
-  sw(0x800757B8, v1); // &0x00000000
+  sw(0x800757B8, v1);
   v0 = 1; // 0x0001
-label80033848:
-  ra = lw(sp + 0x002C);
-  s0 = lw(sp + 0x0028);
-  sp += 48; // 0x0030
   return;
 }
 
@@ -2595,66 +2642,54 @@ void function_8005B7D8(void)
 {
   uint32_t temp;
   sp -= 48; // 0xFFFFFFD0
-  sw(sp + 0x0020, s2);
-  s2 = 0;
-  sw(sp + 0x0024, s3);
-  s3 = 0x80076378;
-  v1 = WAD_HEADER + 0x0044;
-  a0 = lw(WAD_SECTOR);
-  v0 = 600; // 0x0258
-  sw(sp + 0x0028, ra);
-  sw(sp + 0x001C, s1);
+
   sw(sp + 0x0018, s0);
-  a2 = lw(v1 + 0x0000);
+  sw(sp + 0x001C, s1);
+  sw(sp + 0x0020, s2);
+  sw(sp + 0x0024, s3);
+  sw(sp + 0x0028, ra);
+
+  s2 = 0;
   s1 = 0x80200000;
-  sw(sp + 0x0010, v0);
-  v1 = lw(v1 + 0x0000);
-  v0 = lw(0x800755A4); // &0x00000800
-  a3 = lw(WAD_HEADER + 0x0040);
-  s0 = s1 - v1;
-  s0 -= v1;
-  s0 -= v0;
-  a1 = s0;
-  read_disk1(a0, a1, a2, a3, lw(sp+0x10));
-  a1 = s0 + 2048; // 0x0800
-  v0 = lw(0x800755A4); // &0x00000800
-  v1 = lw(s0 + 0x0000);
-  s1 -= v0;
-  s1 -= v1;
+  s3 = 0x80076378;
+
+  s0 = s1 - lw(WAD_HEADER + 0x44)*2 - lw(0x800755A4); // 0x800
+  read_disk1(
+    lw(WAD_SECTOR),
+    s0,
+    lw(WAD_HEADER + 0x44),
+    lw(WAD_HEADER + 0x40),
+    0x258
+  );
+  s1 -= lw(s0) + lw(0x800755A4); // 0x800
   sw(0x800785FC, s1);
-  a2 = lw(s0 + 0x0000);
-  a0 = s1;
-  spyro_memcpy32(a0, a1, a2);
+  spyro_memcpy32(s1, s0 + 0x800, lw(s0));
 label8005B870:
-  v0 = lw(s0 + 0x0004);
+  v0 = lw(s0 + 0x04);
   temp = v0 == 0;
   if (temp) goto label8005B8B8;
-  a0 = lw(0x800785FC);
-  s2++;
-  a0 += v0;
-  a0 -= 2048; // 0xFFFFF800
-  v0 = func_800133E0(a0);
-  v1 = lw(s0 + 0x0008);
+  v0 = func_800133E0(lw(0x800785FC) + v0 - 0x800);
+  v1 = lw(s0 + 0x08);
   v1 = v1 << 2;
   v1 += s3;
-  sw(v1 + 0x0000, v0);
+  sw(v1, v0);
+  s2++;
   v0 = (int32_t)s2 < 64;
   temp = v0 != 0;
-  s0 += 8; // 0x0008
+  s0 += 8;
   if (temp) goto label8005B870;
 label8005B8B8:
   a0 = 0;
   function_8005B6F8();
-  ra = lw(sp + 0x0028);
-  s3 = lw(sp + 0x0024);
-  s2 = lw(sp + 0x0020);
-  s1 = lw(sp + 0x001C);
-  s0 = lw(sp + 0x0018);
-  sp += 48; // 0x0030
+  
+  ra = lw(sp + 0x28);
+  s3 = lw(sp + 0x24);
+  s2 = lw(sp + 0x20);
+  s1 = lw(sp + 0x1C);
+  s0 = lw(sp + 0x18);
+  sp += 0x30;
   return;
 }
-
-
 
 // size: 0x00001580
 void function_8007AA50_credits(void)

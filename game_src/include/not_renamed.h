@@ -10,7 +10,7 @@ void function_80069080(void);
 void function_8005DEBC(void);
 void function_8006397C(void);
 void function_8007BFD0_credits(void);
-void function_8007CEE4(void);
+void function_8007CEE4_title_screen(void);
 void function_80067DD0(void);
 void function_80067DE4(void);
 void function_80067DF8(void);
@@ -95,3 +95,18 @@ void function_80053940(void);
 void function_8005CB24(void);
 
 void function_8005CAC4(void);
+
+void function_8006631C(void);
+void function_80059594(void);
+void function_800163E4(void);
+void function_8007AAD4_title_screen(void);
+void function_80055A78(void);
+void function_800670E4(void);
+
+void function_80067718(void);
+void function_80017FD4(void);
+void function_80067B28(void);
+void function_80066E28(void);
+void function_800665B8(void);
+void function_800662BC(void);
+void function_8002BAB8(void);

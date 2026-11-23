@@ -108,10 +108,12 @@ void update_debug_text(void)
     debug_text(buf);
     sprintf(buf, "world data: 0x%.2X 0x%.2X", lw(0x80078618 + world_id*4), lb(0x800758D5 + world_id));
     debug_text(buf);
+    sprintf(buf, "skybox data: 0x%.8X 0x%.8X 0x%.8X 0x%.8X 0x%.8X", lw(SKYBOX_DATA + 0x00), lw(SKYBOX_DATA + 0x04), lw(SKYBOX_DATA + 0x08), lw(SKYBOX_DATA + 0x0C), lw(SKYBOX_DATA + 0x10));
+    debug_text(buf);
 
     uint32_t addrs[] = {
         0x800758D0,
-        0x80078BBC,
+        PLAYER_DATA + 0x164,
         0x8007587C,
         0x800756C8,
         0x80075830,
@@ -124,6 +126,14 @@ void update_debug_text(void)
     for (size_t i = 0; i < sizeof(addrs)/sizeof(addrs[0]); i++)
     {
       sprintf(buf, "0x%.8X -> 0x%.8X", addrs[i], lw(addrs[i]));
+      debug_text(buf);
+    }
+
+    debug_text(NULL);
+
+    for (uint32_t i = 0; i < 6; i++)
+    {
+      sprintf(buf, "0x%.8X -> 0x%.8X", 0x8006C5B8 + i*4, lw(0x8006C5B8 + i*4));
       debug_text(buf);
     }
 

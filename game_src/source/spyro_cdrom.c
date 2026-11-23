@@ -958,11 +958,12 @@ void function_800163E4(void)
   sw(0x800774B4, 0x40);
   sw(0x800776C4, 0);
   sw(0x800776C8, 0);
+
   while (CdSync(1, NULL) != CdlComplete);
   a0 = lw(0x80076B94);
   a1 = lw(0x80076B9C);
   sw(0x8007588C, 0);
-  a2 = 128; // 0x0080
+  a2 = 0x80;
   function_8006606C();
   return;
 }
@@ -975,10 +976,9 @@ void function_8002BBE0(void)
   sw(sp + 0x0028, ra);
   sw(sp + 0x0024, s1);
   sw(sp + 0x0020, s0);
-  v0 = CdSync(1, addr_to_pointer(0x800776BC));
+  s0 = CdSync(1, addr_to_pointer(0x800776BC));
   v1 = lw(0x800776C4);
   temp = v1 == 0;
-  s0 = v0;
   if (temp) goto label8002BC70;
   v0 = v1 < 8;
   temp = v0 != 0;

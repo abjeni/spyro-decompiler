@@ -44,10 +44,11 @@ int main(int argc, char *argv[])
 
   if (argc > 1)
   {
-    printf("%d\n", -2%3);
+
+    //printf("%d\n", -2%3);
     //wad_main();
 
-    print_psx_uint16_t_array("math_lut2", 0x8006CF04, 34);
+    //print_psx_uint16_t_array("math_lut2", 0x8006CF04, 34);
     
     //print_psx_string_array("dragon_names", 0x8006F694, 80);
     

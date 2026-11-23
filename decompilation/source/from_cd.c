@@ -116,7 +116,7 @@ int decompile_everything()
   addr_list external_calls = addr_list_alloc();
 
   struct exe_file files[] = {
-    {
+    /*{
       .name = "title_screen",
       .base = 0x8007AA38,
       .sector = 220,
@@ -130,7 +130,7 @@ int decompile_everything()
         0x8007CD38,
       )),
       .skips = SKIPS(ARR_U32()),
-    },
+    },*/
     {
       .name = "artisans_home",
       .base = 0x8007AA38,

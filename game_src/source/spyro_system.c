@@ -190,33 +190,6 @@ void function_80062648(void)
   spyro_patch_bios();
 }
 
-// size: 0x000000F0
-uint32_t func_80067628(uint32_t async, uint32_t a1, uint32_t a2)
-{
-  if (lw(0x80075B50) == 0 && lw(0x80075B58) == 0) return -1;
-  
-  if (!async) while (lw(0x80075B58) == 0) inter(0);
-  
-  if (lw(0x80075B58) || !async) {
-    if (a2) sw(a2, lw(0x80075B98));
-    if (a1) sw(a1, lw(0x80075B94));
-    sw(0x80075B58, 0);
-    return 1;
-  } else {
-    if (a2) sw(a2, lw(0x80075B54));
-    if (a1) sw(a1, lw(0x80075B50));
-    return 0;
-  }
-}
-
-// size: 0x000000F0
-void function_80067628(void)
-{
-  v0 = func_80067628(a0, a1, a2);
-}
-
-
-
 // size: 0x000000AC
 void spyro_start(void)
 {

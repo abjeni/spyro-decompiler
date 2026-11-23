@@ -12,18 +12,18 @@
 
 const uint32_t spu_registers_base = 0x1F801C00;
 
+const uint32_t spu_delay = 0x1F801014;
+
 // size: 0x0000002C
 void function_8005C6C8(void)
 {
-  a0 = lw(SPU_DELAY);
-  sw(a0, (lw(a0) & 0xF0FFFFFF) | 0x20000000);
+  psx_mem.memctl.spu_delay = (psx_mem.memctl.spu_delay & 0xF0FFFFFF) | 0x20000000;
 }
 
 // size: 0x0000002C
 void function_8005C6F4(void)
 {
-  a0 = lw(SPU_DELAY);
-  sw(a0, (lw(a0) & 0xF0FF0FFFF) | 0x22000000);
+  psx_mem.memctl.spu_delay = (psx_mem.memctl.spu_delay & 0xF0FF0FFFF) | 0x22000000;
 }
 
 // size: 0x000000A4
@@ -31,8 +31,8 @@ void function_8005C588(void)
 {
 
   a2 = lw(0x80073580);
-  if (lw(0x80073578) && a1 % a2)
-    a1 = (a1 + a2) & ~lw(0x80073584);
+  if (lw(0x80073578) && (a1 % a2))
+    a1 = (a1 + a2) & (~lw(0x80073584));
     
   a3 = a1 >> lw(0x8007357C);
   if (a0 == (uint32_t)-2) {
@@ -501,16 +501,13 @@ label8005C384:
   v0 = 1; // 0x0001
   temp = v1 != v0;
   if (temp) goto label8005C3A8;
-  s0 += 4; // 0x0004
   function_8005C6F4();
-  a2 = 0x01000000;
   goto label8005C3B4;
 label8005C3A8:
-  s0 += 4; // 0x0004
   function_8005C6C8();
-  a2 = 0x01000000;
 label8005C3B4:
-  a0 = lw(s0 - 0x0004); // 0xFFFFFFFC
+  a0 = lw(s0); // 0xFFFFFFFC
+  s0 += 4; // 0x0004
   sw(0x800735A8, a0); // &0x00000000
   a0 = lw(s0 + 0x0000);
   a1 = lw(DMA_SPU_ADDRESS_PTR);
@@ -529,12 +526,11 @@ label8005C3B4:
   v1 = lw(0x800735A4); // &0x00000000
   v0 = 1; // 0x0001
   temp = v1 != v0;
-  a2 = a2 | 0x201;
+  a2 = 0x01000201;
   if (temp) goto label8005C428;
   a2 = 0x01000200;
 label8005C428:
-  v0 = lw(DMA_SPU_CHANNEL_CONTROL_PTR);
-  sw(v0 + 0x0000, a2);
+  sw(lw(DMA_SPU_CHANNEL_CONTROL_PTR), a2);
   v0 = 0;
 label8005C43C:
   ra = lw(sp + 0x0014);
@@ -786,15 +782,14 @@ label8005CB10:
 void function_8005CB24(void)
 {
   uint32_t temp;
-  sp -= 24; // 0xFFFFFFE8
+  sp -= 24;
   a1 = a0;
-  v0 = 0x0007EFE8;
-  v1 = a1 - 4112; // 0xFFFFEFF0
-  v0 = v0 < v1;
+  v1 = a1 - 0x1010;
+  v0 = v1 > 0x0007EFE8;
   temp = v0 != 0;
   sw(sp + 0x0010, ra);
   if (temp) goto label8005CB68;
-  a0 = -1; // 0xFFFFFFFF
+  a0 = -1;
   function_8005C588();
   v1 = lw(0x8007357C); // &0x00000003
   sh(0x8007356C, v0); // &0x00000000
@@ -1101,48 +1096,36 @@ label8005D7E8:
 void function_8005CFEC(void)
 {
   uint32_t temp;
-  sp -= 80; // 0xFFFFFFB0
-  sw(sp + 0x0028, s0);
+  sp -= 80;
+  sw(sp + 0x28, s0);
+  sw(sp + 0x2C, s1);
+  sw(sp + 0x30, s2);
+  sw(sp + 0x34, s3);
+  sw(sp + 0x38, s4);
+  sw(sp + 0x3C, s5);
+  sw(sp + 0x40, s6);
+  sw(sp + 0x44, s7);
+  sw(sp + 0x48, fp);
+  sw(sp + 0x4C, ra);
+  
+  sw(sp + 0x10, a3);
   s0 = a0;
-  sw(sp + 0x0044, s7);
-  s7 = a2;
-  sw(sp + 0x0040, s6);
-  s6 = 0;
-  sw(sp + 0x003C, s5);
   s5 = 0;
+  s6 = 0;
+  s7 = a2;
   v0 = a1 ^ s7;
-  sw(sp + 0x004C, ra);
-  sw(sp + 0x0048, fp);
-  sw(sp + 0x0038, s4);
-  sw(sp + 0x0034, s3);
-  sw(sp + 0x0030, s2);
-  sw(sp + 0x002C, s1);
-  sw(sp + 0x0010, a3);
-  s1 = lw(s0 + 0x0004);
-  fp = v0 < 1;
-  temp = (int32_t)a1 >= 0;
-  s2 = s1 < 1;
-  if (temp) goto label8005D044;
-  a1 = 0;
-label8005D044:
-  v0 = (int32_t)a1 < 24;
-  temp = v0 == 0;
-  v0 = (int32_t)s7 < 24;
-  if (temp) goto label8005D06C;
-  temp = v0 != 0;
-  if (temp) goto label8005D05C;
-  s7 = 23; // 0x0017
-label8005D05C:
-  temp = (int32_t)s7 < 0;
-  v0 = (int32_t)s7 < (int32_t)a1;
-  if (temp) goto label8005D06C;
-  temp = v0 == 0;
+  s1 = lw(s0 + 0x04);
+  fp = v0 == 0;
+  s2 = s1 == 0;
+
+  a1 = max_int(a1, 0);
+  s7 = min_int(s7, 23);
+
+  if ((int32_t)a1 >= 24 || (int32_t)s7 < 0 || (int32_t)s7 < (int32_t)a1) {
+    v0 = -3;
+    goto label8005D5F4;
+  }
   s7++;
-  if (temp) goto label8005D074;
-label8005D06C:
-  v0 = -3; // 0xFFFFFFFD
-  goto label8005D5F4;
-label8005D074:
   s4 = a1;
   v0 = (int32_t)s4 < (int32_t)s7;
   temp = v0 == 0;
@@ -1189,125 +1172,64 @@ label8005D0F0:
   if (temp) goto label8005D13C;
 label8005D104:
   a1 = lhu(0x8007311C + v0); // &0xC000C000
-  a3 = lhu(s0 + 0x0016);
+  a3 = lhu(s0 + 0x16);
   a0 = a1 >> 8;
   a1 = a1 & 0xFF;
   a2 = a3 >> 8;
   a3 = a3 & 0xFF;
   function_8005D6B8();
   a0 = lw(SPU_REGISTERS_BASE_PTR);
-  v1 = s3 << 1;
-  v1 += a0;
-  sh(v1 + 0x0004, v0);
+  v1 = a0 + s3*2;
+  sh(v1 + 0x04, v0);
 label8005D13C:
   temp = s2 != 0;
-  v0 = s3 << 1;
   if (temp) goto label8005D154;
   v0 = 0x00020000;
   v0 = s1 & v0;
   temp = v0 == 0;
-  v0 = s3 << 1;
   if (temp) goto label8005D168;
 label8005D154:
   v1 = lw(SPU_REGISTERS_BASE_PTR);
-  a0 = lhu(s0 + 0x003A);
+  a0 = lhu(s0 + 0x3A);
+  v0 = s3*2;
   v0 += v1;
-  sh(v0 + 0x0008, a0);
+  sh(v0 + 0x08, a0);
 label8005D168:
-  temp = s2 != 0;
-  v0 = s3 << 1;
-  if (temp) goto label8005D180;
-  v0 = 0x00040000;
-  v0 = s1 & v0;
-  temp = v0 == 0;
-  v0 = s3 << 1;
-  if (temp) goto label8005D194;
-label8005D180:
-  v1 = lw(SPU_REGISTERS_BASE_PTR);
-  a0 = lhu(s0 + 0x003C);
-  v0 += v1;
-  sh(v0 + 0x000A, a0);
-label8005D194:
+  if (s2 || s1 & 0x00040000) {
+    v1 = lw(SPU_REGISTERS_BASE_PTR);
+    a0 = lhu(s0 + 0x3C);
+    sh(v1 + s3*2 + 0x0A, a0);
+  }
   temp = s2 != 0;
   v0 = s1 & 0x1;
   if (temp) goto label8005D1AC;
   temp = v0 == 0;
-  v0 = s1 & 0x4;
   if (temp) goto label8005D264;
+  v0 = s1 & 0x4;
   temp = v0 == 0;
-  if (temp) goto label8005D210;
-label8005D1AC:
-  v1 = lh(s0 + 0x000C);
-  v0 = v1 < 8;
-  temp = v0 == 0;
-  v0 = v1 << 2;
-  if (temp) goto label8005D210;
-  v0 = lw(0x800115BC + v0); // &0x8005D210
-  temp = v0;
-  switch (temp)
-  {
-  case 0x8005D210: // 0
-    goto label8005D210;
-    break;
-  case 0x8005D1D8: // 1
-    goto label8005D1D8;
-    break;
-  case 0x8005D1E0: // 2
-    goto label8005D1E0;
-    break;
-  case 0x8005D1E8: // 3
-    goto label8005D1E8;
-    break;
-  case 0x8005D1F0: // 4
-    goto label8005D1F0;
-    break;
-  case 0x8005D1F8: // 5
-    goto label8005D1F8;
-    break;
-  case 0x8005D200: // 6
-    goto label8005D200;
-    break;
-  case 0x8005D208: // 7
-    goto label8005D208;
-    break;
-  default:
-    JR(temp, 0x8005D1D0);
-    return;
+  if (temp) {
+    s6 = lhu(s0 + 0x0008);
+    a1 = 0;
+    goto label8005D218;
   }
-label8005D1D8:
-  a1 = 0 | 0x8000;
-  goto label8005D218;
-label8005D1E0:
-  a1 = 0 | 0x9000;
-  goto label8005D218;
-label8005D1E8:
-  a1 = 0 | 0xA000;
-  goto label8005D218;
-label8005D1F0:
-  a1 = 0 | 0xB000;
-  goto label8005D218;
-label8005D1F8:
-  a1 = 0 | 0xC000;
-  goto label8005D218;
-label8005D200:
-  a1 = 0 | 0xD000;
-  goto label8005D218;
-label8005D208:
-  a1 = 0 | 0xE000;
-  goto label8005D218;
-label8005D210:
-  s6 = lhu(s0 + 0x0008);
-  a1 = 0;
+label8005D1AC:
+
+  v1 = lh(s0 + 0x0C);
+  if (v1 == 0 || v1 >= 8) {
+    s6 = lhu(s0 + 0x08);
+    a1 = 0;
+  } else {
+    a1 = 0x7000 + v1*0x1000;
+  }
 label8005D218:
-  temp = a1 == 0;
   v0 = s6 & 0x7FFF;
-  if (temp) goto label8005D24C;
-  a0 = lh(s0 + 0x0008);
-  v0 = (int32_t)a0 < 128;
+  if (a1 == 0) goto label8005D24C;
+  a0 = lh(s0 + 0x08);
+  v0 = (int32_t)a0 < 0x80;
   temp = v0 != 0;
   v1 = a0;
   if (temp) goto label8005D23C;
-  s6 = 127; // 0x007F
+  s6 = 0x7F; // 0x007F
   goto label8005D248;
 label8005D23C:
   temp = (int32_t)a0 >= 0;
@@ -1323,95 +1245,40 @@ label8005D24C:
   v1 += a0;
   sh(v1 + 0x0000, v0);
 label8005D264:
-  temp = s2 != 0;
-  v0 = s1 & 0x2;
-  if (temp) goto label8005D27C;
-  temp = v0 == 0;
-  v0 = s1 & 0x8;
-  if (temp) goto label8005D334;
-  temp = v0 == 0;
-  if (temp) goto label8005D2E0;
-label8005D27C:
-  v1 = lh(s0 + 0x000E);
-  v0 = v1 < 8;
-  temp = v0 == 0;
-  v0 = v1 << 2;
-  if (temp) goto label8005D2E0;
-  v0 = lw(0x800115DC + v0); // &0x8005D2E0
-  temp = v0;
-  switch (temp)
-  {
-  case 0x8005D2E0: // 0
-    goto label8005D2E0;
-    break;
-  case 0x8005D2A8: // 1
-    goto label8005D2A8;
-    break;
-  case 0x8005D2B0: // 2
-    goto label8005D2B0;
-    break;
-  case 0x8005D2B8: // 3
-    goto label8005D2B8;
-    break;
-  case 0x8005D2C0: // 4
-    goto label8005D2C0;
-    break;
-  case 0x8005D2C8: // 5
-    goto label8005D2C8;
-    break;
-  case 0x8005D2D0: // 6
-    goto label8005D2D0;
-    break;
-  case 0x8005D2D8: // 7
-    goto label8005D2D8;
-    break;
-  default:
-    JR(temp, 0x8005D2A0);
-    return;
+  if (s2 != 0) goto label8005D27C;
+  v0 = s1 & 2;
+  if (v0 == 0) goto label8005D334;
+  v0 = s1 & 8;
+  if (v0 == 0) {
+    s5 = lhu(s0 + 0x0A);
+    a1 = 0;
+    goto label8005D2E8;
   }
-label8005D2A8:
-  a1 = 0 | 0x8000;
-  goto label8005D2E8;
-label8005D2B0:
-  a1 = 0 | 0x9000;
-  goto label8005D2E8;
-label8005D2B8:
-  a1 = 0 | 0xA000;
-  goto label8005D2E8;
-label8005D2C0:
-  a1 = 0 | 0xB000;
-  goto label8005D2E8;
-label8005D2C8:
-  a1 = 0 | 0xC000;
-  goto label8005D2E8;
-label8005D2D0:
-  a1 = 0 | 0xD000;
-  goto label8005D2E8;
-label8005D2D8:
-  a1 = 0 | 0xE000;
-  goto label8005D2E8;
-label8005D2E0:
-  s5 = lhu(s0 + 0x000A);
-  a1 = 0;
+label8005D27C:
+
+  v1 = lh(s0 + 0x0E);
+  if (v1 == 0 || v1 >= 8) {
+    s5 = lhu(s0 + 0x0A);
+    a1 = 0;
+  } else {
+    a1 = 0x7000 + v1*0x1000;
+  }
 label8005D2E8:
-  temp = a1 == 0;
-  v0 = s5 & 0x7FFF;
-  if (temp) goto label8005D31C;
-  a0 = lh(s0 + 0x000A);
-  v0 = (int32_t)a0 < 128;
+  if (a1 == 0) goto label8005D31C;
+  a0 = lh(s0 + 0x0A);
+  v0 = (int32_t)a0 < 0x80;
   temp = v0 != 0;
   v1 = a0;
   if (temp) goto label8005D30C;
-  s5 = 127; // 0x007F
-  goto label8005D318;
+  s5 = 0x7F;
+  goto label8005D31C;
 label8005D30C:
   temp = (int32_t)a0 >= 0;
   s5 = v1;
-  if (temp) goto label8005D318;
+  if (temp) goto label8005D31C;
   s5 = 0;
-label8005D318:
-  v0 = s5 & 0x7FFF;
 label8005D31C:
+  v0 = s5 & 0x7FFF;
   v1 = s3 << 1;
   a0 = lw(SPU_REGISTERS_BASE_PTR);
   v0 = v0 | a1;
@@ -1425,7 +1292,7 @@ label8005D334:
   temp = v0 == 0;
   if (temp) goto label8005D354;
 label8005D348:
-  a1 = lw(s0 + 0x0020);
+  a1 = lw(s0 + 0x20);
   a0 = s3 | 0x7;
   function_8005C588();
 label8005D354:
@@ -1435,7 +1302,7 @@ label8005D354:
   temp = v0 == 0;
   if (temp) goto label8005D370;
 label8005D364:
-  a1 = lw(s0 + 0x001C);
+  a1 = lw(s0 + 0x1C);
   a0 = s3 | 0x3;
   function_8005C588();
 label8005D370:
@@ -1622,11 +1489,9 @@ label8005D5C8:
   temp = v0 != 0;
   if (temp) goto label8005D084;
 label8005D5D8:
-  t0 = lw(sp + 0x0010);
-  temp = t0 != 0;
-  v0 = 0;
-  if (temp) goto label8005D5F4;
-  do_literally_nothing();
+  if (lw(sp + 0x10) == 0) {
+    do_literally_nothing();
+  }
   v0 = 0;
 label8005D5F4:
   ra = lw(sp + 0x004C);
@@ -1812,22 +1677,17 @@ void function_8005637C(void)
     function_8005DAB4();
     a1 = lw(0x80075F30 + i*0x1C + 0x00);
     s2 = lbu(a1 + 0x55) << 10;
-    s0 = sp + 88; // 0x0058
     if (s2 == 0)
       s2 = 0x4000;
       
-    spyro_vec3_sub(s0, a1 + 0x0C, 0x80076DF8);
-    a0 = s0;
-    a1 = 1; // 0x0001
-    v0 = spyro_vec_length(a0, a1);
-    s0 = v0;
+    spyro_vec3_sub(sp + 0x58, a1 + 0x0C, 0x80076DF8);
+    s0 = spyro_vec_length(sp + 0x58, 1);
     v0 = (int32_t)s0 < (int32_t)s2;
     temp = v0 != 0;
     a2 = 0;
     if (temp) goto label80056684;
-    a0 = fp - 44; // 0xFFFFFFD4
+    a0 = fp - 44 + i*0x1C; // 0xFFFFFFD4
     v0 = lhu(0x80075F30 + i*0x1C + 0x06);
-    a0 += s1;
     v0 = v0 << 16;
     v0 = (int32_t)v0 >> 17;
     sh(a0 + 0x002E, v0);
@@ -1939,7 +1799,6 @@ void function_8005637C(void)
   s5 = lw(sp + 0x84);
   s4 = lw(sp + 0x80);
   s2 = lw(sp + 0x78);
-  s1 = lw(sp + 0x74);
   s0 = lw(sp + 0x70);
   sp += 152; // 0x0098
   return;

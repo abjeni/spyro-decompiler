@@ -100,6 +100,15 @@ uint16_t keys = 0xFFFF;
 
 uint32_t get_key_mask(SDL_Keycode key)
 {
+  if (key == SDLK_1) // 0x0100
+    return 1 << 0;
+
+  if (key == SDLK_2) // 0x0200
+    return 1 << 1;
+
+  if (key == SDLK_3) // 0x0400
+    return 1 << 2;
+
   if (key == SDLK_RETURN) // 0x0800
     return 1 << 3;
 
@@ -245,8 +254,8 @@ void init_game_window(void)
 
 void init_debug_window(void)
 {
-  assert(SDL_CreateWindowAndRenderer("examples/renderer/debug-text", 1024, 512, SDL_WINDOW_RESIZABLE, &g_debug_window, &g_debug_renderer));
-  SDL_SetRenderLogicalPresentation(g_debug_renderer, 1024, 512, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+  assert(SDL_CreateWindowAndRenderer("examples/renderer/debug-text", 1600, 1000, SDL_WINDOW_RESIZABLE, &g_debug_window, &g_debug_renderer));
+  SDL_SetRenderLogicalPresentation(g_debug_renderer, 1600, 1000, SDL_LOGICAL_PRESENTATION_LETTERBOX);
   SDL_SetRenderScale(g_debug_renderer, 2.0f, 2.0f);
 }
 
@@ -277,7 +286,8 @@ void debug_begin()
 
 void debug_text(const char *text)
 {
-  SDL_RenderDebugText(g_debug_renderer, 2, 2 + g_debug_line_num*10, text);
+  if (text)
+    SDL_RenderDebugText(g_debug_renderer, 2, 2 + g_debug_line_num*10, text);
   g_debug_line_num++;
 }
 

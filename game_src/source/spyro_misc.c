@@ -4,8 +4,6 @@
 #include "decompilation.h"
 #include "not_renamed.h"
 
-#include <string.h>
-
 // small functions
 
 // size: 0x00000010
@@ -26,13 +24,6 @@ void function_8002C914(void)
 void function_8002C91C(void)
 {
   UNREACHABLE;
-}
-
-// size: 0x0000002C
-void function_8002D554(void)
-{
-  memset(addr_to_pointer(0x80076BC0), 0, 0x40);
-  sw(0x80075928, 0);
 }
 
 // NOP

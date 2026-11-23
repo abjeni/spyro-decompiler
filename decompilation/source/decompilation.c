@@ -145,8 +145,6 @@ struct function_name function_names[] = {
   
   {0x8005E8AC, "spyro_memclr32(a0, a1)"},
 
-
-
   {0x8005F2A4, "v0 = ResetGraph(a0)"},
   {0x8005F53C, "v0 = SetGraphDebug(a0)"},
   {0x8005F6C8, "SetDispMask(a0)"},
@@ -209,6 +207,8 @@ struct function_name function_names[] = {
   {0x80064094, "write_cdrom_header(a0, addr_to_pointer(a1))"},
   {0x80064198, "v0 = parse_cdrom_header(addr_to_pointer(a0))"},
 
+  {0x80067D74, "setup_bu_prefix(a0, a1)"},
+
   {0x80067EA0, "MemCardStart()"},
   {0x800680A4, "MemCardStop()"},
 
@@ -219,6 +219,9 @@ struct function_name function_names[] = {
   {0x800684D4, "v0 = psx_read(a0, addr_to_pointer(a1), a2)"},
   {0x800684E4, "v0 = psx_close(a0)"},
   {0x800684F4, "v0 = format(a0)"},
+
+  {0x800687D4, "v0 = spyro_strcat(a0, a1)"},
+
   {0x800688E0, "v0 = _card_info(a0)"},
   {0x800688F0, "v0 = _card_load(a0)"},
   {0x80068900, "_card_write(a0, a1, a2)"},
@@ -238,7 +241,9 @@ struct function_name function_names[] = {
   {0x8006B670, "v0 = spyro_memclr8(a0, a1)"},
   
   {0x8006BB20, "set_timer(a0)"},
-  {0x8006BB40, "v0 = get_timer()"}
+  {0x8006BB40, "v0 = get_timer()"},
+
+  {0x8007CD38, "spyro_draw_sprite_title_screen(a0, a1, a2, a3)", .id = "title_screen"},
 };
 
 struct address_name address_names[] = {
@@ -340,16 +345,16 @@ struct address_name address_names[] = {
   {0x80076C00, "WAD_NESTED_HEADER", 0x1D0},
   {0x80076EE0, "DISP1", 0x84},
   {0x80076F64, "DISP2", 0x84},
-  {0x80076FE8, "LEVEL_EGGS", 4*36},
+  {0x80076FE8, "LEVEL_EGGS", 4*18},
   {0x800770C8, NULL, 0x18},
   {0x800770E0, "VIEW_MATRIX", 2*9},
   {0x80077114, NULL, 0xC0},
   {0x800772D8, "LEVEL_DRAGONS", 4*36},
   {0x80077420, "LEVEL_GEMS", 4*36},
   {0x80077378, "BUTTONS", 0x44 + 0x18*4},
-  //{0x8007737C, "buttons_unpress"},
-  //{0x80077380, "buttons"},
+  {0x80077868, NULL, 0x20},
   {0x80077888, NULL, 0x68},
+  {0x800778F0, NULL, 0x14},
   {0x80077FEC, NULL, 0x420},
   {0x8007582C, "LIVES"},
   {0x8007840C, NULL, 0x100},
@@ -357,14 +362,21 @@ struct address_name address_names[] = {
   {0x800785A8, NULL, 0x34},
   {0x800785D8, "LIB_END_PTR"},
   {0x800785DC, "LIB_END_PTR2"},
+  {0x80078618, NULL, 0x14},
+  {0x80078680, NULL, 5*5},
   {0x800786C8, NULL, 0x138},
   {0x80078800, NULL, 0x240},
   {0x80078A40, "SKYBOX_DATA", 0x14},
+
   {0x80078A58, "PLAYER_POSITION", 0x0C},
   {0x80078AD0, "PLAYER_MOVESTATE"},
+  {0x80078A58, "PLAYER_DATA", 0x2A4},
+
   {0x80078D78, NULL, 0x5C},
+  {0x80078E78, NULL, 0x24},
   {0x80078E9C, "TIMEOUT1_DURATION"},
   {0x80078EA0, NULL, 0x1800},
+  {0x8007A6A8, NULL, 0x24},
   {0x8007A6D0, "WAD_HEADER", 0x330},
   {0x8007AA10, NULL, 0x28},
   {0x8007AA38, "LIB_BEGIN"},
@@ -468,10 +480,10 @@ char *get_address_name(struct program prog, uint32_t addr)
       } else {
         if (addr >= an.addr && addr < an.addr + an.size) {
           if (an.name != NULL) {
-            snprintf(buf, 256, "%s + 0x%.4hX", an.name, addr - an.addr);
+            snprintf(buf, 256, "%s + 0x%X", an.name, addr - an.addr);
             return buf;
           } else {
-            snprintf(buf, 256, "0x%.8X + 0x%.4hX", an.addr, addr - an.addr);
+            snprintf(buf, 256, "0x%.8X + 0x%X", an.addr, addr - an.addr);
             return buf;
           }
         }
@@ -518,6 +530,8 @@ char *address_description(struct program prog, uint32_t addr)
   uint32_t characters = 0;
   for (int i = 0; i < len; i++)
   {
+    assert(characters < 240);
+
     char ch = *ptr;
     if (ch == 0) break;
 
@@ -545,9 +559,15 @@ char *address_description(struct program prog, uint32_t addr)
   buf[characters+5] = '"';
   buf[characters+6] = 0;
 
-  if (characters >= 2) return buf; 
-  
-  snprintf(buf, sizeof(buf), " // &0x%.8X", *(uint32_t *)(prog.psx_mem + (addr - 0x80000000)));
+  if (characters >= 2) return buf;
+
+  uint32_t data = *(uint32_t *)(prog.psx_mem + (addr - 0x80000000));
+  if (data == 0) {
+    buf[0] = 0;
+    return buf;
+  }
+
+  snprintf(buf, sizeof(buf), " // &0x%.8X", data);
   return buf;
 }
 

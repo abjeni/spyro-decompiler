@@ -36,7 +36,6 @@
 #include "twilight_harbor.h"
 #include "wild_flight.h"
 #include "wizard_peak.h"
-#include "title_screen.h"
 
 
 
@@ -84,20 +83,6 @@ void function_8007AA50(void)
 void function_8007BFD0(void)
 {
   function_8007BFD0_credits();
-}
-
-*/
-
-void function_8007ABAC(void)
-{
-  function_8007ABAC_title_screen();
-}
-
-/*
-
-void function_8007CEE4(void)
-{
-  function_8007CEE4_title_screen();
 }
 
 */

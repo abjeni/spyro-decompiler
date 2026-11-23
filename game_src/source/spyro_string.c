@@ -1,3 +1,4 @@
+#include "debug.h"
 #include "decompilation.h"
 #include "psx_mem.h"
 #include "main.h"
@@ -77,6 +78,37 @@ void function_8006276C()
 {
   DEPRECATED;
   v0 = spyro_strlen(a0);
+}
+
+uint32_t spyro_strcat(uint32_t dst, uint32_t src)
+{
+  if (dst == 0 || src == 0) return 0;
+
+  // is dst and src part of the same string? return 0
+  if (dst + spyro_strlen(dst) == src + spyro_strlen(src)) return 0;
+
+  uint32_t buf = dst;
+
+  while (lbu(buf)) buf++;
+
+  while (1) {
+    char c = lbu(src);
+    sb(buf, c);
+    if (c == 0) break;
+    src++;
+    buf++;
+  }
+
+  return dst;
+}
+
+
+
+// size: 0x000000A8
+void function_800687D4(void)
+{
+  DEPRECATED;
+  spyro_strcat(a0, a1);
 }
 
 uint32_t spyro_strchr(uint32_t str, uint32_t chr, int len)

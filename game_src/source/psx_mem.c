@@ -1579,10 +1579,12 @@ struct segment segments[] = {
   //{0x80075888, 4, MASK_ACCESS}, // BACKBUFFER_DISP
   {0x8007555C, 8, MASK_WRITE},
   {0x80010000, 0x5BBDC, MASK_READONLY},
-  //{PLAYER_MOVESTATE, 4, MASK_WRITE}
+  //{PLAYER_MOVESTATE, 4, MASK_WRITE},
+  //{PLAYER_POSITION, 4*3, MASK_WRITE},
 
   {VSYNC_LAST_VSYNC_TIME, 4 + 4, MASK_FORBIDDEN},
-  //{VSync_last_frame_num, 4, MASK_FORBIDDEN},
+  //{VSYNC_LAST_FRAME_NUM, 4, MASK_FORBIDDEN},
+  //{0x80078D78 + 0x04, 4, MASK_WRITE},
 };
 
 void report_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, uint32_t value)
@@ -1630,6 +1632,8 @@ void check_addr(uint32_t addr, uint32_t size, file_loc loc, const char *func, ui
 
 uint32_t translate_addr(uint32_t addr)
 {
+  assert(addr != 0);
+
   if (addr < 0x00200000) 
     return addr | 0x80000000;
 

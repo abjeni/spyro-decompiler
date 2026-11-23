@@ -32,7 +32,7 @@ struct game_object {
   uint8_t unknown47; // 0x47 - 0x48
   int8_t unknown48; // 0x48 - 0x49
   uint8_t unknown49; // 0x49 - 0x4A
-  uint8_t unknown4A; // 0x4A - 0x4B
+  int8_t unknown4A; // 0x4A - 0x4B
   uint8_t unknown4B; // 0x4B - 0x4C
   uint8_t unknown4C; // 0x4C - 0x4D
   uint8_t unknown4D; // 0x4D - 0x4E
@@ -46,6 +46,12 @@ struct game_object {
   uint8_t unknown55; // 0x55 - 0x56
   uint8_t unknown56; // 0x56 - 0x57
   uint8_t unknown57; // 0x57 - 0x58
+};
+
+struct player_data {
+  vec3_32 pos;
+  uint8_t unknown00[0x6C]; // 0x0C
+  uint32_t movestate; // 0x78
 };
 
 #define MODEL_ID_CHEST_ICON1 0x1D9
@@ -98,18 +104,22 @@ void game_loop(void);
 
 // these are animations
 #define MOVESTATE_STAND 0
-#define MOVESTATE_STARTING 1
+#define MOVESTATE_STARTING 1 // turning (starting to walk lmao)
 #define MOVESTATE_RUN 2
 #define MOVESTATE_STOP 3
 #define MOVESTATE_JUMP 5
 #define MOVESTATE_FALL 6
 #define MOVESTATE_CHARGE 11
 #define MOVESTATE_CRASH 12
+#define MOVESTATE_EDGE 13
 #define MOVESTATE_GLIDE 15
 #define MOVESTATE_VORTEX 17
 #define MOVESTATE_IDLE_LOOKAROUND 18
 #define MOVESTATE_CHARGE_JUMP 20
 #define MOVESTATE_WALK 21
+#define MOVESTATE_FLYING 32
+#define MOVESTATE_FLYING_FLAPPY 33
+#define MOVESTATE_FLYING_DIVE 34
 #define MOVESTATE_IDLE_HAIR 39
 
 #define GAMESTATE_INGAME 0

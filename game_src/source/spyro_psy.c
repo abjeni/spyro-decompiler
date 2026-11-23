@@ -250,6 +250,7 @@ void psyq_check_box(const char *str, RECT box)
       if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
       printf("%s:bad RECT", str);
       printf("(%d,%d)-(%d,%d)\n", box.x, box.y, box.w, box.h);
+      BREAKPOINT;
      }
   } else if (debug_level == 2) {
     if (lw(0x80074A60) != 0x8006279C) UNREACHABLE;
